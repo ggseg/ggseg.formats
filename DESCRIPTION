@@ -1,14 +1,18 @@
 Package: ggseg.formats
-Title: What the Package Does (One Line, Title Case)
+Title: Utility package for the ggseg-packages
 Version: 0.0.0.9000
 Authors@R: 
-    person("Athanasia Mo", "Mowinckel", , "a.m.mowinckel@psykologi.uio.no", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-5756-0223"))
-Description: What the package does (one paragraph).
+    c(
+      person("Athanasia Mo", "Mowinckel", , "a.m.mowinckel@psykologi.uio.no", role = c("aut", "cre"),
+             comment = c(ORCID = "0000-0002-5756-0223"))
+    )
+Description: The ggseg, ggseg3d and ggsegExtra packages rely on common base formats, which
+    are contained in this package. It serves as the main base dependency for the other
+    packages in this suite.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
@@ -17,6 +21,7 @@ Imports:
     tidyr
 Suggests: 
     ggseg,
+    ggseg3d,
     knitr,
     here,
     rmarkdown,

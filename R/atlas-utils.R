@@ -13,27 +13,31 @@ brain_regions <- function(x){
 #' @export
 #' @rdname brain_regions
 brain_regions.ggseg_atlas <- function(x){
-  x <- unique(x$region)
-  x <- x[!is.na(x)]
-  x[order(x)]
+  get_uniq(x, "region")
 }
 
 #' @export
 #' @rdname brain_regions
 brain_regions.brain_atlas <- function(x){
-  x <- unique(x$data$region)
-  x <- x[!is.na(x)]
-  x[order(x)]
+  get_uniq(x$data, "region")
 }
 
 #' @export
 #' @rdname brain_regions
 brain_regions.data.frame <- function(x){
-  x <- unique(x$region)
+  get_uniq(x, "region")
+}
+
+
+#' Get unique label or region values
+#' @keywords internal
+#' @noRd
+get_uniq <- function(x, type){
+  type <- match.arg(type, c("label", "region"))
+  x <- unique(x[[type]])
   x <- x[!is.na(x)]
   x[order(x)]
 }
-
 
 #' Extract unique labels of brain regions
 #'
@@ -52,17 +56,13 @@ brain_labels <- function(x){
 #' @export
 #' @rdname brain_labels
 brain_labels.ggseg_atlas <- function(x){
-  x <- unique(x$label)
-  x <- x[!is.na(x)]
-  x[order(x)]
+  get_uniq(x, "label")
 }
 
 #' @export
 #' @rdname brain_labels
 brain_labels.brain_atlas <- function(x){
-  x <- unique(x$data$label)
-  x <- x[!is.na(x)]
-  x[order(x)]
+  get_uniq(x$data, "label")
 }
 
 
@@ -85,6 +85,7 @@ atlas_type.brain_atlas <- function(x){
   guess_type(x)
 }
 
+#' guess the atlas type
 #' @keywords internal
 #' @noRd
 guess_type <- function(x){
@@ -99,3 +100,6 @@ guess_type <- function(x){
 
   unique(k)
 }
+
+
+

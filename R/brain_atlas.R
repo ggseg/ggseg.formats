@@ -53,10 +53,10 @@ format.brain_atlas <- function(x, ...) {
 
   c(
     sprintf("# %s %s brain atlas", x$atlas, x$type),
-    sprintf("  regions: %s ", length(stats::na.omit(unique(x$data$region)))),
-    sprintf("  hemispheres: %s ", paste0(unique(x$data$hemi), collapse = ", ")),
-    sprintf("  side views: %s ", paste0(unique(x$data$side), collapse = ", ")),
-    sprintf("  use: %s ", ifelse(sf, "ggplot() + geom_brain()", "ggseg()")),
+    "----",
+    sprintf("regions:\t%s", length(stats::na.omit(unique(x$data$region)))),
+    sprintf("hemispheres:\t%s", paste0(unique(x$data$hemi), collapse = ", ")),
+    sprintf("side views:\t%s", paste0(unique(x$data$side), collapse = ", ")),
     "----",
     dt_print
   )
@@ -77,7 +77,8 @@ as.list.brain_atlas <- function(x, ...){
   )
 }
 
-## as_brain_atlas ----
+
+# as_brain_atlas ----
 #' Create brain atlas
 #'
 #' Coerce object into an object of class

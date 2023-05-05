@@ -13,8 +13,8 @@ test_that("brain-atlas format", {
   k <- capture.output(dk)
   expect_equal(k[1],
                "# dk cortical brain atlas")
-  expect_equal(k[2],
-               "  regions: 35 ")
+  expect_equal(k[3],
+               "regions:\t35")
 
 })
 
@@ -33,6 +33,20 @@ test_that("as_brain-atlas", {
                    label = NA)
   expect_error(as_brain_atlas(ka),
                "Cannot make object to brain_atlas")
+
+  expect_error(as_brain_atlas(list()),
+               "Cannot make object")
+
+  ka <- as.list(dk)
+  expect_equal(class(as_brain_atlas(ka)),
+               "brain_atlas")
+
+  expect_true(inherits(brain_data(dk$data),
+                       "brain_data"))
+
+  expect_true(inherits(as_brain_data(dk$data),
+                       "brain_data"))
+
 })
 
 test_that("brain-atlas changes", {
