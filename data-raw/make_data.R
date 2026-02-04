@@ -42,10 +42,10 @@ aseg_n <- make_volumetric_ggseg(
   vertex_size_limits = c(20, NA),
   ncores = 16,
   slices = dplyr::tribble(
-    ~x  , ~y  , ~z  , ~view     ,
-    130 , 130 , 130 , "axial"   ,
-    128 , 136 , 100 , "axial"   ,
-    127 , 135 , 128 , "coronal"
+    ~x, ~y, ~z, ~view,
+    130, 130, 130, "axial",
+    128, 136, 100, "axial",
+    127, 135, 128, "coronal"
   )
 )
 

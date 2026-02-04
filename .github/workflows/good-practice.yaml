@@ -6,7 +6,9 @@ on:
 
 name: good-practice
 
-permissions: read-all
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   gp:
@@ -26,5 +28,44 @@ jobs:
           needs: gp
 
       - name: Check Good Practice
-        run: goodpractice::gp()
+        id: gp
+        run: |
+          gp_result <- goodpractice::gp()
+          writeLines(capture.output(print(gp_result)), "gp-results.txt")
+          all_passed <- length(goodpractice::failed_checks(gp_result)) == 0
+          if (!all_passed) {
+            cat("status=failure\n", file = Sys.getenv("GITHUB_OUTPUT"), append = TRUE)
+          } else {
+            cat("status=success\n", file = Sys.getenv("GITHUB_OUTPUT"), append = TRUE)
+          }
         shell: Rscript {0}
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && steps.gp.outputs.status == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = fs.readFileSync('gp-results.txt', 'utf8');
+
+            const body = `⚠️ **Good Practice Check: Some checks need attention**
+
+            <details>
+            <summary>Click to see full results</summary>
+
+            \`\`\`
+            ${results}
+            \`\`\`
+
+            </details>`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Fail if checks failed
+        if: steps.gp.outputs.status == 'failure'
+        run: exit 1
