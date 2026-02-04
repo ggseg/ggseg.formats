@@ -1,0 +1,32 @@
+# Package index
+
+## All functions
+
+- [`as_brain_atlas()`](as_brain_atlas.md) : Coerce to brain atlas
+- [`aseg`](aseg.md) : FreeSurfer Automatic Subcortical Segmentation
+  Atlas
+- [`atlas_meshes()`](atlas_meshes.md) : Get atlas meshes for 3D
+  rendering
+- [`atlas_sf()`](atlas_sf.md) : Get atlas data for 2D rendering
+- [`atlas_vertices()`](atlas_vertices.md) : Get atlas vertices for 3D
+  rendering
+- [`brain_atlas()`](brain_atlas.md) : Constructor for brain atlas
+- [`brain_labels()`](brain_labels.md) : Extract unique labels of brain
+  regions
+- [`brain_pal()`](brain_pal.md) : Get brain atlas palette
+- [`brain_regions()`](brain_regions.md) : Extract unique names of brain
+  regions
+- [`convert_legacy_brain_atlas()`](convert_legacy_brain_atlas.md) :
+  Convert legacy brain_atlas to unified format
+- [`cortical_data()`](cortical_data.md) : Create cortical atlas data
+- [`dk`](dk.md) : Desikan-Killiany Cortical Atlas
+- [`is_brain_atlas()`](is_brain_atlas.md) : Validate brain atlas
+- [`read_atlas_files()`](read_atlas_files.md) : Read in atlas data from
+  all subjects
+- [`read_freesurfer_stats()`](read_freesurfer_stats.md) : Read in raw
+  FreeSurfer stats file
+- [`read_freesurfer_table()`](read_freesurfer_table.md) : Read in stats
+  table from FreeSurfer
+- [`subcortical_data()`](subcortical_data.md) : Create subcortical atlas
+  data
+- [`tract_data()`](tract_data.md) : Create tract atlas data

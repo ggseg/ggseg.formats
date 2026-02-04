@@ -1,57 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/as_brain_atlas.html</loc>
-  </url>
-  <url>
-    <loc>/reference/aseg.html</loc>
-  </url>
-  <url>
-    <loc>/reference/atlas_type.html</loc>
-  </url>
-  <url>
-    <loc>/reference/brain_atlas.html</loc>
-  </url>
-  <url>
-    <loc>/reference/brain_labels.html</loc>
-  </url>
-  <url>
-    <loc>/reference/brain_regions.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dk.html</loc>
-  </url>
-  <url>
-    <loc>/reference/ggseg.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/is_brain_atlas.html</loc>
-  </url>
-  <url>
-    <loc>/reference/read_atlas_files.html</loc>
-  </url>
-  <url>
-    <loc>/reference/read_freesurfer_stats.html</loc>
-  </url>
-  <url>
-    <loc>/reference/read_freesurfer_table.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/reference/as_brain_atlas.html</loc></url>
+<url><loc>/reference/aseg.html</loc></url>
+<url><loc>/reference/atlas_meshes.html</loc></url>
+<url><loc>/reference/atlas_sf.html</loc></url>
+<url><loc>/reference/atlas_type.html</loc></url>
+<url><loc>/reference/atlas_vertices.html</loc></url>
+<url><loc>/reference/brain_atlas.html</loc></url>
+<url><loc>/reference/brain_labels.html</loc></url>
+<url><loc>/reference/brain_pal.html</loc></url>
+<url><loc>/reference/brain_regions.html</loc></url>
+<url><loc>/reference/convert_legacy_brain_atlas.html</loc></url>
+<url><loc>/reference/convert_legacy_structure.html</loc></url>
+<url><loc>/reference/cortical_data.html</loc></url>
+<url><loc>/reference/dk.html</loc></url>
+<url><loc>/reference/ggseg.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/is_brain_atlas.html</loc></url>
+<url><loc>/reference/read_atlas_files.html</loc></url>
+<url><loc>/reference/read_freesurfer_stats.html</loc></url>
+<url><loc>/reference/read_freesurfer_table.html</loc></url>
+<url><loc>/reference/subcortical_data.html</loc></url>
+<url><loc>/reference/tract_data.html</loc></url>
+<url><loc>/reference/validate_data_labels.html</loc></url>
+<url><loc>/reference/validate_meshes.html</loc></url>
+<url><loc>/reference/validate_palette.html</loc></url>
+<url><loc>/reference/validate_sf.html</loc></url>
+<url><loc>/reference/validate_tract_metadata.html</loc></url>
+<url><loc>/reference/validate_vertices.html</loc></url>
 </urlset>
+
