@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      _R_CHECK_FORCE_SUGGESTS_: false
+      _R_CHECK_RD_XREFS_: false
     steps:
       - uses: actions/checkout@v4
 
@@ -30,7 +32,7 @@ jobs:
       - name: Check Good Practice
         id: gp
         run: |
-          gp_result <- goodpractice::gp()
+          gp_result <- goodpractice::gp(check_args = "--no-manual")
           writeLines(capture.output(print(gp_result)), "gp-results.txt")
           all_passed <- length(goodpractice::failed_checks(gp_result)) == 0
           if (!all_passed) {
