@@ -2,6 +2,14 @@
 
 background utility package for ggseg, ggseg3d and ggsegExtra
 
+## See also
+
+Useful links:
+
+- <https://github.com/ggseg/ggseg.formats>
+
+- Report bugs at <https://github.com/ggseg/ggseg.formats/issues>
+
 ## Author
 
 **Maintainer**: Athanasia Mo Mowinckel <a.m.mowinckel@psykologi.uio.no>
