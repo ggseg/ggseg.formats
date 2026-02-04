@@ -20,6 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install TeX Live
+        run: sudo apt-get update && sudo apt-get install -y texlive-base texlive-latex-recommended texlive-fonts-recommended texlive-extra-utils
+
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
@@ -32,7 +35,11 @@ jobs:
       - name: Check Good Practice
         id: gp
         run: |
-          gp_result <- goodpractice::gp(check_args = "--no-manual")
+          checks <- goodpractice::all_checks()
+          # checks <- checks[grep("pdf", checks, invert = TRUE)]
+
+          gp_result <- goodpractice::gp(checks = checks)
+
           writeLines(capture.output(print(gp_result)), "gp-results.txt")
           all_passed <- length(goodpractice::failed_checks(gp_result)) == 0
           if (!all_passed) {
