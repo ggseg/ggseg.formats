@@ -4,22 +4,46 @@
 \alias{brain_atlas}
 \title{Constructor for brain atlas}
 \usage{
-brain_atlas(atlas, type, data)
+brain_atlas(atlas, type, palette = NULL, core, data)
 }
 \arguments{
 \item{atlas}{atlas short name, length one}
 
-\item{type}{atlas type, cortical or subcortical, length one}
+\item{type}{atlas type: "cortical", "subcortical", or "tract"}
 
-\item{data}{data.frame with atlas data}
+\item{palette}{named character vector of colours keyed by label}
+
+\item{core}{data.frame with required columns hemi, region, label (one row per
+unique region). May contain additional columns for grouping or metadata
+(e.g., lobe, network, Brodmann area).}
+
+\item{data}{a brain_atlas_data object created by one of:
+\code{\link[=cortical_data]{cortical_data()}}, \code{\link[=subcortical_data]{subcortical_data()}}, or \code{\link[=tract_data]{tract_data()}}.
+Must match the specified type.}
 }
 \value{
-an object of class 'brain_atlas' containing information
-on atlas name, type, data and palette. To be used in plotting
-with \code{\link[ggseg]{geom_brain}}.
+an object of class 'brain_atlas'
 }
 \description{
-Creates an object of class 'brain_atlas'
-that is compatible for plotting using the
-ggseg-package plot functions
+Creates an object of class 'brain_atlas' for plotting brain parcellations
+using ggseg (2D) and ggseg3d (3D).
+}
+\examples{
+\dontrun{
+# Cortical atlas
+atlas <- brain_atlas(
+  atlas = "dk",
+  type = "cortical",
+  core = core_df,
+  data = cortical_data(sf = geometry, vertices = vertex_indices)
+)
+
+# Tract atlas
+atlas <- brain_atlas(
+  atlas = "hcp_tracts",
+  type = "tract",
+  core = core_df,
+  data = tract_data(meshes = tube_meshes, scalars = list(FA = fa_values))
+)
+}
 }

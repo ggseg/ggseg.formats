@@ -3,28 +3,91 @@
 \docType{data}
 \name{aseg}
 \alias{aseg}
-\title{Freesurfer automatic subcortical segmentation of a brain volume}
+\title{FreeSurfer Automatic Subcortical Segmentation Atlas}
 \format{
-An object of class \code{brain_atlas} of length 4.
+A \code{brain_atlas} object with components:
+\describe{
+\item{atlas}{Character. Atlas name ("aseg")}
+\item{type}{Character. Atlas type ("subcortical")}
+\item{palette}{Named character vector of colours for each region}
+\item{data}{A \code{subcortical_data} object containing:
+\describe{
+\item{meshes}{Data frame with \code{label} and \code{mesh} columns}
+\item{sf}{Simple features data frame for 2D rendering}
+}
+}
+}
 }
 \usage{
 data(aseg)
 }
-\value{
-An object of class 'brain_atlas' for plotting with ggseg
-}
 \description{
-Coordinate data for the subcortical parcellations implemented
-in Freesurfer.
+Brain atlas for FreeSurfer's automatic subcortical segmentation (aseg),
+containing deep brain structures including the thalamus, caudate, putamen,
+pallidum, hippocampus, amygdala, accumbens, and ventricles.
 }
+\details{
+This atlas is derived from FreeSurfer's \code{aseg.mgz} volumetric segmentation.
+It works with both ggseg (2D slice views) and ggseg3d (3D mesh
+visualizations) from a single object.
+}
+\section{Structures}{
+
+The atlas contains bilateral structures:
+\itemize{
+\item Thalamus
+\item Caudate
+\item Putamen
+\item Pallidum (globus pallidus)
+\item Hippocampus
+\item Amygdala
+\item Accumbens (nucleus accumbens)
+\item Ventral diencephalon
+}
+
+Plus midline and ventricular structures:
+\itemize{
+\item Lateral ventricles
+\item Third ventricle
+\item Fourth ventricle
+\item Brain stem
+\item Cerebellar cortex
+\item Cerebellar white matter
+}
+}
+
+\section{Usage}{
+
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{# 2D plot with ggseg
+library(ggseg)
+plot(aseg)
+
+# 3D plot with ggseg3d
+library(ggseg3d)
+ggseg3d(atlas = aseg, hemisphere = "subcort") |>
+  add_glassbrain()
+}\if{html}{\out{</div>}}
+}
+
 \examples{
 data(aseg)
+aseg
+
+# List regions
+brain_regions(aseg)
 }
 \references{
-Fischl et al., (2002). Neuron, 33:341-355
-(\href{https://www.pubmed.ncbi.nlm.nih.gov/11832223}{PubMed})
+Fischl B, Salat DH, Busa E, et al. (2002).
+Whole brain segmentation: automated labeling of neuroanatomical
+structures in the human brain.
+Neuron, 33(3):341-355.
+\doi{10.1016/S0896-6273(02)00569-X}
 }
 \seealso{
+\link{dk} for cortical parcellation,
+\code{\link[=brain_atlas]{brain_atlas()}} for the atlas class constructor
+
 Other ggseg_atlases: 
 \code{\link{dk}}
 }

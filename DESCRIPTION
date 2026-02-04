@@ -1,6 +1,6 @@
 Package: ggseg.formats
 Title: Utility package for the ggseg-packages
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     c(
       person("Athanasia Mo", "Mowinckel", , "a.m.mowinckel@psykologi.uio.no", role = c("aut", "cre"),
@@ -12,24 +12,24 @@ Description: The ggseg, ggseg3d and ggsegExtra packages rely on common base form
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 Depends: 
-    R (>= 2.10)
-Imports: 
+    R (>= 3.5)
+Imports:
+    cli,
     dplyr,
+    sf,
     tidyr
-Suggests: 
+Suggests:
     ggseg,
     ggseg3d,
     knitr,
     here,
     rmarkdown,
     covr,
-    sf,
     vdiffr,
     devtools,
     spelling,
     testthat (>= 3.0.0)
 LazyData: true
-

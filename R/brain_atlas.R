@@ -1,29 +1,90 @@
-# brain_atlas ----
 #' Constructor for brain atlas
 #'
-#' Creates an object of class 'brain_atlas'
-#' that is compatible for plotting using the
-#' ggseg-package plot functions
+#' Creates an object of class 'brain_atlas' for plotting brain parcellations
+#' using ggseg (2D) and ggseg3d (3D).
 #'
 #' @param atlas atlas short name, length one
-#' @param type atlas type, cortical or subcortical, length one
-#' @param data data.frame with atlas data
-#' @return an object of class 'brain_atlas' containing information
-#'        on atlas name, type, data and palette. To be used in plotting
-#'        with \code{\link[ggseg]{geom_brain}}.
+#' @param type atlas type: "cortical", "subcortical", or "tract"
+#' @param palette named character vector of colours keyed by label
+#' @param core data.frame with required columns hemi, region, label (one row per
+#'   unique region). May contain additional columns for grouping or metadata
+#'   (e.g., lobe, network, Brodmann area).
+#' @param data a brain_atlas_data object created by one of:
+#'   [cortical_data()], [subcortical_data()], or [tract_data()].
+#'   Must match the specified type.
+#'
+#' @return an object of class 'brain_atlas'
 #' @export
-brain_atlas <- function(atlas, type, data) {
-  type <- match.arg(type,
-                    c("cortical", "subcortical"))
+#'
+#' @examples
+#' \dontrun{
+#' # Cortical atlas
+#' atlas <- brain_atlas(
+#'   atlas = "dk",
+#'   type = "cortical",
+#'   core = core_df,
+#'   data = cortical_data(sf = geometry, vertices = vertex_indices)
+#' )
+#'
+#' # Tract atlas
+#' atlas <- brain_atlas(
+#'   atlas = "hcp_tracts",
+#'   type = "tract",
+#'   core = core_df,
+#'   data = tract_data(meshes = tube_meshes, scalars = list(FA = fa_values))
+#' )
+#' }
+brain_atlas <- function(atlas, type, palette = NULL, core, data) {
+  type <- match.arg(type, c("cortical", "subcortical", "tract"))
 
-  stopifnot(length(atlas) == 1)
+  if (length(atlas) != 1 || !is.character(atlas)) {
+    cli::cli_abort(
+      "{.arg atlas} must be a single character string, not {length(atlas)}."
+    )
+  }
 
-  structure(list(
-    atlas = atlas,
-    type = type,
-    data = brain_data(data)
-  ),
-  class = 'brain_atlas'
+  if (!is.data.frame(core)) {
+    cli::cli_abort("{.arg core} must be a data.frame.")
+  }
+
+  required_core <- c("hemi", "region", "label")
+  missing_core <- setdiff(required_core, names(core))
+  if (length(missing_core) > 0) {
+    cli::cli_abort(
+      "{.arg core} must contain columns: {.field {missing_core}}."
+    )
+  }
+
+  if (!inherits(data, "brain_atlas_data")) {
+    cli::cli_abort(
+      "{.arg data} must be a {.cls brain_atlas_data} object created by ",
+      "{.fn cortical_data}, {.fn subcortical_data}, or {.fn tract_data}."
+    )
+  }
+
+  expected_class <- paste0(type, "_data")
+  if (!inherits(data, expected_class)) {
+    cli::cli_abort(c(
+      "Atlas type {.val {type}} requires {.cls {expected_class}}.",
+      "x" = "Got {.cls {class(data)[1]}}."
+    ))
+  }
+
+  data <- validate_data_labels(data, core)
+
+  if (!is.null(palette)) {
+    palette <- validate_palette(palette, core)
+  }
+
+  structure(
+    list(
+      atlas = atlas,
+      type = type,
+      palette = palette,
+      core = core,
+      data = data
+    ),
+    class = "brain_atlas"
   )
 }
 
@@ -34,136 +95,107 @@ brain_atlas <- function(atlas, type, data) {
 #' @export
 is_brain_atlas <- function(x) inherits(x, "brain_atlas")
 
+
 #' @export
 #' @importFrom stats na.omit
-#' @importFrom utils capture.output
-format.brain_atlas <- function(x, ...) {
-  dt <- x$data
-
-  sf <- ifelse(any("geometry" %in% names(dt)),
-               TRUE, FALSE)
-  dt$geometry <- NULL
-  dt$vertices <- NULL
-  dt$colour <- NULL
-
-  idx <- !grepl("ggseg|geometry", names(dt))
-  dt <- dplyr::as_tibble(dt)
-  dt <- dt[!is.na(dt$region), idx]
-  dt_print <- utils::capture.output(print(dt, ...))[-1]
-
-  c(
-    sprintf("# %s %s brain atlas", x$atlas, x$type),
-    "----",
-    sprintf("regions:\t%s", length(stats::na.omit(unique(x$data$region)))),
-    sprintf("hemispheres:\t%s", paste0(unique(x$data$hemi), collapse = ", ")),
-    sprintf("side views:\t%s", paste0(unique(x$data$side), collapse = ", ")),
-    "----",
-    dt_print
-  )
-}
-
-#' @export
 print.brain_atlas <- function(x, ...) {
-  cat(format(x, ...), sep = "\n")
+  data <- x$data
+  has_sf <- !is.null(data$sf)
+  has_3d <- !is.null(data$vertices) || !is.null(data$meshes)
+  has_palette <- !is.null(x$palette) # nolint: object_usage_linter
+  n_regions <- length(stats::na.omit(unique(x$core$region))) # nolint
+  hemis <- paste0(unique(x$core$hemi), collapse = ", ") # nolint
+
+  cli::cli_h1("{x$atlas} ggseg atlas")
+
+  cli::cli_text("{.strong Type: {x$type}}")
+  cli::cli_text("{.strong Regions:} {n_regions}")
+  cli::cli_text("{.strong Hemispheres:} {hemis}")
+
+  if (has_sf) {
+    views <- paste0(unique(data$sf$view), collapse = ", ") # nolint
+    cli::cli_text("{.strong Views:} {views}")
+  }
+
+  check <- function(val) { # nolint: object_usage_linter
+    if (val) {
+      cli::col_green(cli::symbol$tick)
+    } else {
+      cli::col_red(cli::symbol$cross)
+    }
+  }
+
+  cli::cli_text("{.strong Palette:} {check(has_palette)}")
+
+  render_3d <- if (!is.null(data$meshes)) { # nolint: object_usage_linter
+    "meshes"
+  } else if (!is.null(data$vertices)) {
+    "vertices"
+  } else {
+    "none"
+  }
+  ggseg_status <- check(has_sf) # nolint: object_usage_linter
+  ggseg3d_status <- check(has_3d) # nolint: object_usage_linter
+  cli::cli_text("{.strong Rendering:} {ggseg_status} ggseg")
+  cli::cli_text("             {ggseg3d_status} ggseg3d ({render_3d})")
+
+  cli::cli_rule()
+
+  print(dplyr::as_tibble(x$core), ...)
+
   invisible(x)
 }
 
+
 #' @export
-as.list.brain_atlas <- function(x, ...){
+as.list.brain_atlas <- function(x, ...) {
   list(
     atlas = x$atlas,
     type = x$type,
+    palette = x$palette,
+    core = x$core,
     data = x$data
   )
 }
 
 
-# as_brain_atlas ----
-#' Create brain atlas
-#'
-#' Coerce object into an object of class
-#' 'brain_atlas'.
-#'
-#' @param x object to make into a brain_atlas
-#' @return an object of class 'brain_atlas'.
 #' @export
-as_brain_atlas <- function(x){
-  UseMethod("as_brain_atlas")
+#' @importFrom dplyr left_join select any_of
+as.data.frame.brain_atlas <- function(x, ...) {
+  sf_data <- if (inherits(x$data, "brain_atlas_data") && !is.null(x$data$sf)) {
+    sf::st_as_sf(x$data$sf)
+  } else if (inherits(x$data, "sf") || inherits(x$data, "data.frame")) {
+    sf::st_as_sf(x$data)
+  } else {
+    NULL
+  }
+
+  n <- if (!is.null(sf_data)) nrow(sf_data) else 0
+  if (is.null(n) || n == 0) {
+    cli::cli_abort("Cannot convert brain_atlas to data.frame: no 2D geometry.")
+  }
+
+  if (!is.null(x$core)) {
+    core_cols <- c("hemi", "region")
+    sf_has_core <- any(core_cols %in% names(sf_data))
+    if (sf_has_core) {
+      sf_data[core_cols] <- NULL
+    }
+    result <- merge(sf_data, x$core, by = "label", all.x = TRUE)
+  } else {
+    result <- sf_data
+  }
+
+  result$atlas <- x$atlas
+  result$type <- x$type
+
+  if (!is.null(x$palette)) {
+    result$colour <- x$palette[result$label]
+  }
+
+  sf::st_as_sf(result)
 }
-
-
-#' @export
-as_brain_atlas.default <- function(x){
-  stop(paste("Cannot make object of class", class(x)[1], "into a brain_atlas"),
-       call. = FALSE)
-}
-
-#' @export
-as_brain_atlas.data.frame <- function(x){
-
-  if(is.null(names(x)) | !all(c("atlas", "hemi", "region", "side", "label", "vertices") %in% names(x)))
-    stop("Cannot make object to brain_atlas", call. = FALSE)
-
-  if(!any(c("ggseg", "geometry") %in% names(x)))
-    stop("Object does not contain a 'ggseg' og 'geometry' column.", call. = FALSE)
-
-  type <- guess_type(x)
-
-  dt <- x[, !names(x) %in% c("atlas", "type")]
-
-  brain_atlas(unique(x$atlas), type, dt)
-}
-
-
-#' @export
-as_brain_atlas.list <- function(x){
-
-  if(is.null(names(x)) | !all(c("atlas", "type", "data") %in% names(x)))
-    stop("Cannot make object to brain_atlas", call. = FALSE)
-
-  if(is.na(x$type))
-    x$type <- ifelse(any("medial" %in% x$side),
-                     "cortical", "subcortical")
-
-  dt <- x$data[, !names(x$data) %in% c("atlas", "type")]
-
-  brain_atlas(unique(x$atlas), x$type, dt)
-}
-
-#' @export
-as_brain_atlas.brain_atlas <- function(x){
-  brain_atlas(x$atlas, x$type, x$data)
-}
-
-
-# brain data ----
-#' \code{brain_data} class
-#' @param x data.frame to be made a brain_data
-#' @return object of class brain_data, consisting of sf polygon
-#'        data for brain atlas plotting.
-#' @name brain_data-class
-#' @noRd
-brain_data <- function(x){
-
-  stopifnot(is.data.frame(x))
-  stopifnot(all(c("hemi", "region", "side") %in% names(x)))
-  stopifnot(any(c("geometry") %in% names(x)))
-  stopifnot(any(c("vertices") %in% names(x)))
-  stopifnot(inherits(x$geometry, 'sfc_MULTIPOLYGON'))
-  stopifnot(inherits(x$vertices, 'list'))
-
-#  x <- sf::st_as_sf(x)
-
-  structure(
-    x,
-    class = c("sf", "brain_data",
-              "tbl_df", "tbl",
-              "data.frame")
-  )
-}
-
-as_brain_data <- brain_data
 
 
 ## quiets concerns of R CMD checks
-utils::globalVariables(c("region", "lab"))
+utils::globalVariables(c("region", "label"))

@@ -4,6 +4,7 @@
 \name{ggseg}
 \alias{ggseg.formats}
 \alias{ggseg.formats-package}
+\alias{ggseg}
 \title{ggseg: Plot brain segmentations with ggplot}
 \description{
 background utility package for ggseg, ggseg3d and ggsegExtra

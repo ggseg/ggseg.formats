@@ -5,26 +5,86 @@
 \alias{dk}
 \title{Desikan-Killiany Cortical Atlas}
 \format{
-An object of class \code{brain_atlas} of length 3.
+A \code{brain_atlas} object with components:
+\describe{
+\item{atlas}{Character. Atlas name ("dk")}
+\item{type}{Character. Atlas type ("cortical")}
+\item{palette}{Named character vector of colours for each region}
+\item{data}{A \code{cortical_data} object containing:
+\describe{
+\item{vertices}{Data frame with \code{label} and \code{vertices} columns}
+\item{sf}{Simple features data frame for 2D rendering}
+}
+}
+}
 }
 \usage{
 data(dk)
 }
-\value{
-An object of class 'brain_atlas' for plotting with ggseg
-}
 \description{
-Coordinate data for the Desikan-Killiany Cortical atlas,
-with 40 regions in on the cortical surface of the brain.
+Brain atlas for the Desikan-Killiany cortical parcellation with 34 regions
+per hemisphere (68 total) on the cortical surface.
 }
+\details{
+This atlas is based on the FreeSurfer \code{aparc} annotation and is one of the
+most widely used cortical parcellations in neuroimaging research.
+
+The atlas works with both ggseg (2D polygon plots) and ggseg3d (3D mesh
+visualizations) from a single object.
+}
+\section{Regions}{
+
+The atlas contains 34 regions per hemisphere including:
+banks of superior temporal sulcus, caudal anterior cingulate,
+caudal middle frontal, cuneus, entorhinal, fusiform, inferior parietal,
+inferior temporal, isthmus cingulate, lateral occipital,
+lateral orbitofrontal, lingual, medial orbitofrontal, middle temporal,
+parahippocampal, paracentral, pars opercularis, pars orbitalis,
+pars triangularis, pericalcarine, postcentral, posterior cingulate,
+precentral, precuneus, rostral anterior cingulate, rostral middle frontal,
+superior frontal, superior parietal, superior temporal, supramarginal,
+frontal pole, temporal pole, transverse temporal, and insula.
+}
+
+\section{Usage}{
+
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{# 2D plot with ggseg
+library(ggseg)
+plot(dk)
+
+# 3D plot with ggseg3d
+library(ggseg3d)
+ggseg3d(atlas = dk)
+}\if{html}{\out{</div>}}
+}
+
 \examples{
 data(dk)
+dk
+
+# List regions
+brain_regions(dk)
+
+# List labels
+brain_labels(dk)
 }
 \references{
-Fischl et al. (2004) Cerebral Cortex 14:11-22
-(\href{https://academic.oup.com/cercor/article/14/1/11/433466}{PubMed})
+Desikan RS, Ségonne F, Fischl B, et al. (2006).
+An automated labeling system for subdividing the human cerebral cortex
+on MRI scans into gyral based regions of interest.
+NeuroImage, 31(3):968-980.
+\doi{10.1016/j.neuroimage.2006.01.021}
+
+Fischl B, van der Kouwe A, Destrieux C, et al. (2004).
+Automatically parcellating the human cerebral cortex.
+Cerebral Cortex, 14(1):11-22.
+\doi{10.1093/cercor/bhg087}
 }
 \seealso{
+\link{aseg} for subcortical structures,
+\code{\link[=brain_atlas]{brain_atlas()}} for the atlas class constructor
+
 Other ggseg_atlases: 
 \code{\link{aseg}}
 }
