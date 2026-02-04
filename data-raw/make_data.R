@@ -39,7 +39,6 @@ aseg_n <- make_volumetric_ggseg(
   steps = 8,
   tolerance = 1,
   smoothness = 2,
-
   vertex_size_limits = c(20, NA),
   ncores = 16,
   slices = dplyr::tribble(

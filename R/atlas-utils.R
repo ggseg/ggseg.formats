@@ -97,7 +97,6 @@ guess_type <- function(x) {
 
   views <- if (is_brain_atlas(x) && !is.null(x$sf)) {
     x$sf$view
-
   } else if ("view" %in% names(x)) {
     x$view
   } else {

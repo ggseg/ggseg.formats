@@ -17,7 +17,6 @@ aseg_3d <- ggseg3d::aseg_3d
 cli::cli_h1("Converting dk atlas")
 
 dk <- ggsegExtra::unify_legacy_atlases(
-
   atlas_2d = dk_2d,
   atlas_3d = dk_3d,
   atlas_name = "dk",

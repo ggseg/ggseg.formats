@@ -5,8 +5,10 @@ describe("read_freesurfer_stats()", {
 
     expect_equal(
       names(aseg_stats),
-      c("Index", "SegId", "NVoxels", "Volume_mm3", "label", "normMean",
-        "normStdDev", "normMin", "normMax", "normRange")
+      c(
+        "Index", "SegId", "NVoxels", "Volume_mm3", "label", "normMean",
+        "normStdDev", "normMin", "normMax", "normRange"
+      )
     )
     expect_equal(nrow(aseg_stats), 45)
   })
@@ -15,8 +17,10 @@ describe("read_freesurfer_stats()", {
     aseg_file <- test_path("data/bert/stats/aseg.stats")
     expect_equal(
       names(read_freesurfer_stats(aseg_file, FALSE)),
-      c("Index", "SegId", "NVoxels", "Volume_mm3", "StructName", "normMean",
-        "normStdDev", "normMin", "normMax", "normRange")
+      c(
+        "Index", "SegId", "NVoxels", "Volume_mm3", "StructName", "normMean",
+        "normStdDev", "normMin", "normMax", "normRange"
+      )
     )
   })
 
@@ -26,8 +30,10 @@ describe("read_freesurfer_stats()", {
 
     expect_equal(
       names(dkt_stats),
-      c("label", "NumVert", "SurfArea", "GrayVol", "ThickAvg", "ThickStd",
-        "MeanCurv", "GausCurv", "FoldInd", "CurvInd")
+      c(
+        "label", "NumVert", "SurfArea", "GrayVol", "ThickAvg", "ThickStd",
+        "MeanCurv", "GausCurv", "FoldInd", "CurvInd"
+      )
     )
     expect_equal(nrow(dkt_stats), 34)
   })
@@ -36,8 +42,10 @@ describe("read_freesurfer_stats()", {
     dkt_file <- test_path("data/bert/stats/lh.aparc.stats")
     expect_equal(
       names(read_freesurfer_stats(dkt_file, FALSE)),
-      c("StructName", "NumVert", "SurfArea", "GrayVol", "ThickAvg", "ThickStd",
-        "MeanCurv", "GausCurv", "FoldInd", "CurvInd")
+      c(
+        "StructName", "NumVert", "SurfArea", "GrayVol", "ThickAvg", "ThickStd",
+        "MeanCurv", "GausCurv", "FoldInd", "CurvInd"
+      )
     )
   })
 })
@@ -48,8 +56,10 @@ describe("read_atlas_files()", {
 
     expect_equal(
       names(dat),
-      c("subject", "label", "NumVert", "SurfArea", "GrayVol", "ThickAvg",
-        "ThickStd", "MeanCurv", "GausCurv", "FoldInd", "CurvInd")
+      c(
+        "subject", "label", "NumVert", "SurfArea", "GrayVol", "ThickAvg",
+        "ThickStd", "MeanCurv", "GausCurv", "FoldInd", "CurvInd"
+      )
     )
     expect_equal(nrow(dat), 68)
   })
@@ -58,9 +68,11 @@ describe("read_atlas_files()", {
     dat <- read_atlas_files(test_path("data"), "aparc")
     expect_equal(
       unique(dat$label)[1:10],
-      c("lh_bankssts", "lh_caudalanteriorcingulate", "lh_caudalmiddlefrontal",
+      c(
+        "lh_bankssts", "lh_caudalanteriorcingulate", "lh_caudalmiddlefrontal",
         "lh_cuneus", "lh_entorhinal", "lh_fusiform", "lh_inferiorparietal",
-        "lh_inferiortemporal", "lh_isthmuscingulate", "lh_lateraloccipital")
+        "lh_inferiortemporal", "lh_isthmuscingulate", "lh_lateraloccipital"
+      )
     )
   })
 })

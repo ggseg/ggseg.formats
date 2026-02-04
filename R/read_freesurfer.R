@@ -69,8 +69,8 @@ read_atlas_files <- function(subjects_dir, atlas) {
   stats <- lapply(stats_files, read_freesurfer_stats)
 
   subject <- gsub(subjects_dir, "", stats_files)
-  subject <- unname(sapply(subject, find_subject_fromdir))
-  hemi <- unname(sapply(stats_files, find_hemi_fromfile))
+  subject <- vapply(subject, find_subject_fromdir, character(1))
+  hemi <- vapply(stats_files, find_hemi_fromfile, character(1))
 
   if (all(hemi %in% c("rh", "lh"))) {
     names(stats) <- paste(subject, hemi, sep = "___")
