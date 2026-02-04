@@ -9,6 +9,14 @@
 \description{
 background utility package for ggseg, ggseg3d and ggsegExtra
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/ggseg/ggseg.formats}
+  \item Report bugs at \url{https://github.com/ggseg/ggseg.formats/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Athanasia Mo Mowinckel \email{a.m.mowinckel@psykologi.uio.no} (\href{https://orcid.org/0000-0002-5756-0223}{ORCID})
 
