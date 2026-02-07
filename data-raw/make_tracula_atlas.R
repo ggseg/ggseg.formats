@@ -47,11 +47,11 @@ cli::cli_alert_info("Source: {.path {tract_dir}}")
 tracula_raw <- create_tract_atlas(
   input_tracts = tract_files,
   input_aseg = aseg_file,
+  atlas_name = "tracula",
   output_dir = "data-raw",
-  tube_radius = 0.3,
+  tube_radius = 4,
   tube_segments = 6,
   n_points = 100,
-  tract_radius = 5,
   cleanup = FALSE,
   verbose = TRUE
 )
