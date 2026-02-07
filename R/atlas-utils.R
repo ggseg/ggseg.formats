@@ -524,6 +524,66 @@ atlas_view_keep <- function(atlas, views) {
 }
 
 
+#' Remove region geometry from views
+#'
+#' Removes matching regions from the 2D sf data only. Core metadata,
+#' palette, and 3D rendering data are unchanged. Use this for fine-grained
+#' cleanup of specific regions in certain views, or before plotting to
+#' hide regions without altering the atlas definition.
+#'
+#' @param atlas A `brain_atlas` object
+#' @param pattern Character pattern to match against region names or labels.
+#'   Uses `grepl(..., ignore.case = TRUE)`.
+#' @param match_on Column to match against: "label" (default) or "region".
+#'   When "region", labels are looked up from core metadata.
+#'
+#' @return Modified `brain_atlas` with matching region geometries removed
+#' @export
+#' @examples
+#' \dontrun{
+#' # Remove cortex outline from tract atlas views
+#' atlas <- atlas |> atlas_view_remove_region("cortex")
+#'
+#' # Remove specific label from 2D rendering
+#' atlas <- atlas |> atlas_view_remove_region("lh_unknown", match_on = "label")
+#' }
+atlas_view_remove_region <- function(atlas, pattern, match_on = c("label", "region")) {
+  match_on <- match.arg(match_on)
+
+  if (is.null(atlas$data$sf)) {
+    cli::cli_warn("Atlas has no sf data, nothing to remove")
+    return(atlas)
+  }
+
+  if (match_on == "region") {
+    match_col <- atlas$core$region
+    hit <- grepl(pattern, match_col, ignore.case = TRUE) & !is.na(match_col)
+    labels_to_remove <- atlas$core$label[hit]
+    keep_mask <- !atlas$data$sf$label %in% labels_to_remove
+  } else {
+    keep_mask <- !grepl(pattern, atlas$data$sf$label, ignore.case = TRUE)
+  }
+
+  keep_mask[is.na(atlas$data$sf$label)] <- TRUE
+  new_sf <- atlas$data$sf[keep_mask, , drop = FALSE]
+
+  if (nrow(new_sf) == 0) {
+    cli::cli_warn("All region geometries removed, sf data will be NULL")
+    new_sf <- NULL
+  }
+
+  new_data <- rebuild_atlas_data(atlas, new_sf)
+
+  brain_atlas(
+    atlas = atlas$atlas,
+    type = atlas$type,
+    palette = atlas$palette,
+    core = atlas$core,
+    data = new_data
+  )
+}
+
+
 #' Gather views to remove gaps
 #'
 #' After removing views with `atlas_view_remove()`, gaps remain in the

@@ -15,6 +15,7 @@
 
 library(dplyr)
 library(ggsegExtra)
+library(ggseg)
 devtools::load_all()
 options(freesurfer.verbose = FALSE)
 future::plan(future::multisession(workers = 4))
@@ -51,7 +52,7 @@ aseg_raw <- create_subcortical_atlas(
   output_dir = "data-raw/",
   tolerance = 1,
   smoothness = 2,
-  steps = 9,
+  steps = 1:9,
   skip_existing = TRUE,
   cleanup = FALSE,
   verbose = TRUE
@@ -136,6 +137,7 @@ brain_labels(aseg)
 ggplot2::ggplot() +
   geom_brain(
     atlas = aseg,
+    ggplot2::aes(fill = label),
     position = position_brain(ncol = 3),
     show.legend = FALSE,
     alpha = .7
