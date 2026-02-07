@@ -1,12 +1,18 @@
 # Create tract atlas data
 
-Creates a data object for white matter tract atlases. Tract atlases use
-tube meshes generated from streamline centerlines.
+Creates a data object for white matter tract atlases. Stores centerlines
+compactly; tube meshes are generated at render time for efficiency.
 
 ## Usage
 
 ``` r
-tract_data(sf = NULL, meshes = NULL)
+tract_data(
+  sf = NULL,
+  centerlines = NULL,
+  tube_radius = 5,
+  tube_segments = 8,
+  meshes = NULL
+)
 ```
 
 ## Arguments
@@ -16,17 +22,28 @@ tract_data(sf = NULL, meshes = NULL)
   sf data.frame with columns label, view, geometry for 2D rendering.
   Optional.
 
+- centerlines:
+
+  data.frame with columns:
+
+  - label: tract identifier (character)
+
+  - points: list-column of n x 3 matrices (centerline coordinates)
+
+  - tangents: list-column of n x 3 matrices (for orientation coloring)
+
+- tube_radius:
+
+  Radius for tube mesh generation. Default 5.
+
+- tube_segments:
+
+  Number of segments around tube circumference. Default 8.
+
 - meshes:
 
-  data.frame with columns label and mesh (list-column). Each mesh is a
-  list with:
-
-  - vertices: data.frame with x, y, z columns
-
-  - faces: data.frame with i, j, k columns
-
-  - metadata: list with n_centerline_points, centerline, tangents
-    (required for orientation coloring and data projection)
+  Deprecated. Use centerlines instead. If provided, will be converted to
+  centerlines format.
 
 ## Value
 
@@ -36,6 +53,11 @@ An object of class c("tract_data", "brain_atlas_data")
 
 ``` r
 if (FALSE) { # \dontrun{
-data <- tract_data(meshes = tube_meshes_df)
+centerlines_df <- data.frame(
+  label = "cst_left",
+  points = I(list(matrix(rnorm(150), ncol = 3))),
+  tangents = I(list(matrix(rnorm(150), ncol = 3)))
+)
+data <- tract_data(centerlines = centerlines_df)
 } # }
 ```

@@ -34,17 +34,33 @@ devtools::install_github("ggseg/ggseg.formats")
 - [`as_brain_atlas()`](as_brain_atlas.md) : Coerce to brain atlas
 - [`aseg`](aseg.md) : FreeSurfer Automatic Subcortical Segmentation
   Atlas
+- [`atlas_core_add()`](atlas_core_add.md) : Add metadata to atlas core
 - [`atlas_meshes()`](atlas_meshes.md) : Get atlas meshes for 3D
   rendering
+- [`atlas_region_contextual()`](atlas_region_contextual.md) : Mark
+  regions as context-only
+- [`atlas_region_keep()`](atlas_region_keep.md) : Keep only specified
+  regions
+- [`atlas_region_remove()`](atlas_region_remove.md) : Remove regions
+  from atlas
+- [`atlas_region_rename()`](atlas_region_rename.md) : Rename regions in
+  atlas
 - [`atlas_sf()`](atlas_sf.md) : Get atlas data for 2D rendering
 - [`atlas_vertices()`](atlas_vertices.md) : Get atlas vertices for 3D
   rendering
+- [`atlas_view_gather()`](atlas_view_gather.md) : Gather views to remove
+  gaps
+- [`atlas_view_keep()`](atlas_view_keep.md) : Keep only specified views
+- [`atlas_view_remove()`](atlas_view_remove.md) : Remove views from
+  atlas
+- [`atlas_view_reorder()`](atlas_view_reorder.md) : Reorder views
 - [`brain_atlas()`](brain_atlas.md) : Constructor for brain atlas
 - [`brain_labels()`](brain_labels.md) : Extract unique labels of brain
   regions
 - [`brain_pal()`](brain_pal.md) : Get brain atlas palette
 - [`brain_regions()`](brain_regions.md) : Extract unique names of brain
   regions
+- [`brain_views()`](brain_views.md) : Get available views in atlas
 - [`convert_legacy_brain_atlas()`](convert_legacy_brain_atlas.md) :
   Convert legacy brain_atlas to unified format
 - [`cortical_data()`](cortical_data.md) : Create cortical atlas data

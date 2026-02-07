@@ -6,7 +6,7 @@ parcellations using ggseg (2D) and ggseg3d (3D).
 ## Usage
 
 ``` r
-brain_atlas(atlas, type, palette = NULL, core, data)
+brain_atlas(atlas, type, core, data, palette = NULL)
 ```
 
 ## Arguments
@@ -18,10 +18,6 @@ brain_atlas(atlas, type, palette = NULL, core, data)
 - type:
 
   atlas type: "cortical", "subcortical", or "tract"
-
-- palette:
-
-  named character vector of colours keyed by label
 
 - core:
 
@@ -35,6 +31,10 @@ brain_atlas(atlas, type, palette = NULL, core, data)
   [`cortical_data()`](cortical_data.md),
   [`subcortical_data()`](subcortical_data.md), or
   [`tract_data()`](tract_data.md). Must match the specified type.
+
+- palette:
+
+  named character vector of colours keyed by label
 
 ## Value
 

@@ -1,6 +1,8 @@
 # Validate data labels against core
 
-Validate data labels against core
+Ensures all core labels have corresponding data. Labels in data that are
+not in core are allowed - these represent context-only geometry (like
+medial wall) that will display grey without appearing in legends.
 
 ## Usage
 

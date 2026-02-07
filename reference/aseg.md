@@ -111,37 +111,37 @@ aseg
 #> 
 #> ── aseg ggseg atlas ────────────────────────────────────────────────────────────
 #> Type: subcortical
-#> Regions: 18
-#> Hemispheres: right, left, midline
-#> Views: coronal, sagittal
+#> Regions: 17
+#> Hemispheres: left, NA, right
+#> Views: axial_3, axial_5, coronal_2, coronal_3, coronal_4, sagittal
 #> Palette: ✔
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (meshes)
 #> ────────────────────────────────────────────────────────────────────────────────
-#> # A tibble: 29 × 3
-#>    hemi  region            label                  
-#>    <chr> <chr>             <chr>                  
-#>  1 right NA                NA                     
-#>  2 left  NA                NA                     
-#>  3 left  thalamus proper   Left-Thalamus-Proper   
-#>  4 right thalamus proper   Right-Thalamus-Proper  
-#>  5 right lateral ventricle Right-Lateral-Ventricle
-#>  6 left  hippocampus       Left-Hippocampus       
-#>  7 left  lateral ventricle Left-Lateral-Ventricle 
-#>  8 right putamen           Right-Putamen          
-#>  9 right amygdala          Right-Amygdala         
-#> 10 left  putamen           Left-Putamen           
-#> # ℹ 19 more rows
+#> # A tibble: 27 × 4
+#>    hemi  region               label               structure    
+#>    <chr> <chr>                <chr>               <chr>        
+#>  1 left  thalamus             Left-Thalamus       thalamus     
+#>  2 left  caudate              Left-Caudate        basal ganglia
+#>  3 left  putamen              Left-Putamen        basal ganglia
+#>  4 left  pallidum             Left-Pallidum       basal ganglia
+#>  5 NA    brain stem           Brain-Stem          brain stem   
+#>  6 left  hippocampus          Left-Hippocampus    limbic       
+#>  7 left  amygdala             Left-Amygdala       limbic       
+#>  8 left  nucleus accumbens    Left-Accumbens-area basal ganglia
+#>  9 left  ventral diencephalon Left-VentralDC      diencephalon 
+#> 10 left  vessel               Left-vessel         NA           
+#> # ℹ 17 more rows
 
 # List regions
 brain_regions(aseg)
-#>  [1] "3rd ventricle"           "4th ventricle"          
-#>  [3] "CC anterior"             "CC central"             
-#>  [5] "CC mid anterior"         "CC mid posterior"       
-#>  [7] "CC posterior"            "amygdala"               
-#>  [9] "brain stem"              "caudate"                
-#> [11] "cerebellum cortex"       "cerebellum white matter"
-#> [13] "hippocampus"             "lateral ventricle"      
-#> [15] "pallidum"                "putamen"                
-#> [17] "thalamus proper"         "ventral DC"             
+#>  [1] "amygdala"                      "brain stem"                   
+#>  [3] "caudate"                       "choroid plexus"               
+#>  [5] "corpus callosum anterior"      "corpus callosum central"      
+#>  [7] "corpus callosum mid-anterior"  "corpus callosum mid-posterior"
+#>  [9] "corpus callosum posterior"     "hippocampus"                  
+#> [11] "nucleus accumbens"             "optic chiasm"                 
+#> [13] "pallidum"                      "putamen"                      
+#> [15] "thalamus"                      "ventral diencephalon"         
+#> [17] "vessel"                       
 ```
