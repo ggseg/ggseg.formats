@@ -53,6 +53,8 @@ devtools::install_github("ggseg/ggseg.formats")
 - [`atlas_view_keep()`](atlas_view_keep.md) : Keep only specified views
 - [`atlas_view_remove()`](atlas_view_remove.md) : Remove views from
   atlas
+- [`atlas_view_remove_region()`](atlas_view_remove_region.md) : Remove
+  region geometry from views
 - [`atlas_view_reorder()`](atlas_view_reorder.md) : Reorder views
 - [`brain_atlas()`](brain_atlas.md) : Constructor for brain atlas
 - [`brain_labels()`](brain_labels.md) : Extract unique labels of brain
