@@ -50,7 +50,7 @@ atlas_sf <- function(atlas) {
   result <- merge(sf_data, atlas$core, by = "label", all.x = TRUE)
 
   if (!is.null(atlas$palette)) {
-    result$colour <- atlas$palette[result$label]
+    result$colour <- unname(atlas$palette[result$label])
   }
 
   result
@@ -77,7 +77,7 @@ atlas_vertices <- function(atlas) {
   result <- dplyr::left_join(atlas$data$vertices, atlas$core, by = "label")
 
   if (!is.null(atlas$palette)) {
-    result$colour <- atlas$palette[result$label]
+    result$colour <- unname(atlas$palette[result$label])
   }
 
   result
@@ -104,7 +104,7 @@ atlas_meshes <- function(atlas) {
   result <- dplyr::left_join(atlas$data$meshes, atlas$core, by = "label")
 
   if (!is.null(atlas$palette)) {
-    result$colour <- atlas$palette[result$label]
+    result$colour <- unname(atlas$palette[result$label])
   }
 
   result

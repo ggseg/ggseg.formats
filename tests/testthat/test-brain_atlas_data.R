@@ -34,6 +34,16 @@ describe("cortical_data", {
     expect_error(cortical_data(vertices = vertices), "must be a list-column")
   })
 
+  it("errors when vertices entries are empty", {
+    vertices <- data.frame(label = c("region1", "region2"))
+    vertices$vertices <- list(integer(0), 1L:5L)
+
+    expect_error(
+      cortical_data(vertices = vertices),
+      "Empty vertices for.*region1"
+    )
+  })
+
   it("creates cortical_data with both sf and vertices", {
     sf_geom <- sf::st_sf(
       label = c("lh_frontal"),

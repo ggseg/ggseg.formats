@@ -34,7 +34,7 @@
 #'   data = tract_data(meshes = tube_meshes, scalars = list(FA = fa_values))
 #' )
 #' }
-brain_atlas <- function(atlas, type, palette = NULL, core, data) {
+brain_atlas <- function(atlas, type, core, data, palette = NULL) {
   type <- match.arg(type, c("cortical", "subcortical", "tract"))
 
   if (length(atlas) != 1 || !is.character(atlas)) {
@@ -47,7 +47,7 @@ brain_atlas <- function(atlas, type, palette = NULL, core, data) {
     cli::cli_abort("{.arg core} must be a data.frame.")
   }
 
-  required_core <- c("hemi", "region", "label")
+  required_core <- c("region", "label")
   missing_core <- setdiff(required_core, names(core))
   if (length(missing_core) > 0) {
     cli::cli_abort(
@@ -101,7 +101,9 @@ is_brain_atlas <- function(x) inherits(x, "brain_atlas")
 print.brain_atlas <- function(x, ...) {
   data <- x$data
   has_sf <- !is.null(data$sf)
-  has_3d <- !is.null(data$vertices) || !is.null(data$meshes)
+  has_3d <- !is.null(data$vertices) ||
+    !is.null(data$meshes) ||
+    !is.null(data$centerlines)
   has_palette <- !is.null(x$palette) # nolint: object_usage_linter
   n_regions <- length(stats::na.omit(unique(x$core$region))) # nolint
   hemis <- paste0(unique(x$core$hemi), collapse = ", ") # nolint
@@ -117,7 +119,8 @@ print.brain_atlas <- function(x, ...) {
     cli::cli_text("{.strong Views:} {views}")
   }
 
-  check <- function(val) { # nolint: object_usage_linter
+  check <- function(val) {
+    # nolint: object_usage_linter
     if (val) {
       cli::col_green(cli::symbol$tick)
     } else {
@@ -127,7 +130,9 @@ print.brain_atlas <- function(x, ...) {
 
   cli::cli_text("{.strong Palette:} {check(has_palette)}")
 
-  render_3d <- if (!is.null(data$meshes)) { # nolint: object_usage_linter
+  render_3d <- if (!is.null(data$centerlines)) {
+    "centerlines"
+  } else if (!is.null(data$meshes)) {
     "meshes"
   } else if (!is.null(data$vertices)) {
     "vertices"
@@ -186,11 +191,33 @@ as.data.frame.brain_atlas <- function(x, ...) {
     result <- sf_data
   }
 
+  if (x$type == "cortical") {
+    if (!"hemi" %in% names(result)) {
+      result$hemi <- NA_character_
+    }
+    missing_hemi <- is.na(result$hemi)
+    if (any(missing_hemi)) {
+      result$hemi[missing_hemi] <- ifelse(
+        grepl("^lh[_.]", result$label[missing_hemi]),
+        "left",
+        ifelse(
+          grepl("^rh[_.]", result$label[missing_hemi]),
+          "right",
+          NA_character_
+        )
+      )
+    }
+    still_missing <- is.na(result$hemi)
+    if (any(still_missing)) {
+      result <- result[!still_missing, , drop = FALSE]
+    }
+  }
+
   result$atlas <- x$atlas
   result$type <- x$type
 
   if (!is.null(x$palette)) {
-    result$colour <- x$palette[result$label]
+    result$colour <- unname(x$palette[result$label])
   }
 
   sf::st_as_sf(result)

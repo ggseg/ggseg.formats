@@ -3,5 +3,7 @@
 .Rdata
 .httr-oauth
 .DS_Store
-data-raw/dk/aparc
 docs
+data-raw/*.png
+data-raw/*.html
+data-raw/*/

@@ -23,6 +23,15 @@ validate_sf <- function(sf) {
     sf <- sf::st_as_sf(sf)
   }
 
+  empty_geom <- sf::st_is_empty(sf$geometry)
+  if (any(empty_geom)) {
+    empty_labels <- sf$label[empty_geom]
+    cli::cli_abort(c(
+      "All sf entries must contain geometry.",
+      "i" = "Empty geometry for: {.val {empty_labels}}."
+    ))
+  }
+
   sf
 }
 
@@ -46,7 +55,16 @@ validate_vertices <- function(vertices) {
     cli::cli_abort("{.field vertices} column must be a list-column.")
   }
 
-  vertices
+  vertex_lengths <- vapply(vertices$vertices, length, integer(1))
+  empty_labels <- vertices$label[vertex_lengths == 0]
+  if (length(empty_labels) > 0) {
+    cli::cli_abort(c(
+      "All vertex entries must contain data.",
+      "i" = "Empty vertices for: {.val {empty_labels}}."
+    ))
+  }
+
+  dplyr::as_tibble(vertices)
 }
 
 
@@ -70,11 +88,14 @@ validate_meshes <- function(meshes, tract = FALSE) {
     cli::cli_abort("{.field mesh} column must be a list-column.")
   }
 
+  empty_labels <- character(0)
+
   for (i in seq_len(nrow(meshes))) {
     mesh <- meshes$mesh[[i]]
     label <- meshes$label[i]
 
     if (is.null(mesh)) {
+      empty_labels <- c(empty_labels, label)
       next
     }
 
@@ -94,6 +115,11 @@ validate_meshes <- function(meshes, tract = FALSE) {
       ))
     }
 
+    if (nrow(mesh$vertices) == 0) {
+      empty_labels <- c(empty_labels, label)
+      next
+    }
+
     if (
       !is.data.frame(mesh$faces) ||
         !all(c("i", "j", "k") %in% names(mesh$faces))
@@ -104,9 +130,21 @@ validate_meshes <- function(meshes, tract = FALSE) {
       ))
     }
 
+    if (nrow(mesh$faces) == 0) {
+      empty_labels <- c(empty_labels, label)
+      next
+    }
+
     if (tract && !is.null(mesh$metadata)) {
       validate_tract_metadata(mesh$metadata, label)
     }
+  }
+
+  if (length(empty_labels) > 0) {
+    cli::cli_abort(c(
+      "All mesh entries must contain data.",
+      "i" = "Empty mesh for: {.val {empty_labels}}."
+    ))
   }
 
   meshes
@@ -136,38 +174,50 @@ validate_tract_metadata <- function(metadata, label) {
 
 
 #' Validate data labels against core
+#'
+#' Ensures all core labels have corresponding data. Labels in data that are
+#' not in core are allowed - these represent context-only geometry (like
+#' medial wall) that will display grey without appearing in legends.
+#'
 #' @param data brain_atlas_data object
 #' @param core core data.frame
 #' @return data (unchanged)
 #' @keywords internal
 validate_data_labels <- function(data, core) {
-  core_labels <- core$label
+  core_labels <- core$label[!is.na(core$label)]
 
+  data_labels <- character(0)
   if (!is.null(data$sf)) {
-    unknown <- setdiff(data$sf$label[!is.na(data$sf$label)], core_labels)
-    if (length(unknown) > 0) {
-      cli::cli_warn("Unknown labels in sf: {.val {unknown}}")
-    }
+    data_labels <- union(data_labels, data$sf$label[!is.na(data$sf$label)])
   }
 
   if (!is.null(data$vertices)) {
-    unknown <- setdiff(
-      data$vertices$label[!is.na(data$vertices$label)],
-      core_labels
+    data_labels <- union(
+      data_labels,
+      data$vertices$label[!is.na(data$vertices$label)]
     )
-    if (length(unknown) > 0) {
-      cli::cli_warn("Unknown labels in vertices: {.val {unknown}}")
-    }
   }
 
   if (!is.null(data$meshes)) {
-    unknown <- setdiff(
-      data$meshes$label[!is.na(data$meshes$label)],
-      core_labels
+    data_labels <- union(
+      data_labels,
+      data$meshes$label[!is.na(data$meshes$label)]
     )
-    if (length(unknown) > 0) {
-      cli::cli_warn("Unknown labels in meshes: {.val {unknown}}")
-    }
+  }
+
+  if (!is.null(data$centerlines)) {
+    data_labels <- union(
+      data_labels,
+      data$centerlines$label[!is.na(data$centerlines$label)]
+    )
+  }
+
+  missing_from_data <- setdiff(core_labels, data_labels)
+  if (length(missing_from_data) > 0) {
+    cli::cli_abort(c(
+      "All core labels must have corresponding data.",
+      "i" = "Missing from data: {.val {missing_from_data}}."
+    ))
   }
 
   data

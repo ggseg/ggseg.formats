@@ -33,6 +33,16 @@ describe("dk atlas", {
     expect_true(!is.null(dk$data$sf))
     expect_s3_class(dk$data$sf, "sf")
   })
+
+  # TODO: reinstate once vertex data is populated
+
+  # it("has vertex data for 3D rendering", {
+  #   expect_true(!is.null(dk$data$vertices))
+  #   expect_s3_class(dk$data$vertices, "data.frame")
+  #   expect_true("vertices" %in% names(dk$data$vertices))
+  #   vertex_lengths <- vapply(dk$data$vertices$vertices, length, integer(1))
+  #   expect_true(all(vertex_lengths > 0), info = "all regions must have vertex data")
+  # })
 })
 
 

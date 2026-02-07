@@ -4,14 +4,12 @@
 \alias{brain_atlas}
 \title{Constructor for brain atlas}
 \usage{
-brain_atlas(atlas, type, palette = NULL, core, data)
+brain_atlas(atlas, type, core, data, palette = NULL)
 }
 \arguments{
 \item{atlas}{atlas short name, length one}
 
 \item{type}{atlas type: "cortical", "subcortical", or "tract"}
-
-\item{palette}{named character vector of colours keyed by label}
 
 \item{core}{data.frame with required columns hemi, region, label (one row per
 unique region). May contain additional columns for grouping or metadata
@@ -20,6 +18,8 @@ unique region). May contain additional columns for grouping or metadata
 \item{data}{a brain_atlas_data object created by one of:
 \code{\link[=cortical_data]{cortical_data()}}, \code{\link[=subcortical_data]{subcortical_data()}}, or \code{\link[=tract_data]{tract_data()}}.
 Must match the specified type.}
+
+\item{palette}{named character vector of colours keyed by label}
 }
 \value{
 an object of class 'brain_atlas'

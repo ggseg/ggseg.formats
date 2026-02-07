@@ -24,11 +24,11 @@ describe("brain_regions", {
     expect_equal(result, c("frontal", "parietal"))
   })
 
-  it("excludes NA regions", {
+  it("excludes context-only geometry (labels in sf but not in core)", {
     core <- data.frame(
-      hemi = c("left", "left"),
-      region = c("frontal", NA),
-      label = c("lh_frontal", "lh_unknown")
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal"
     )
     vertices <- data.frame(label = c("lh_frontal", "lh_unknown"))
     vertices$vertices <- list(1L:3L, 4L:6L)
@@ -307,5 +307,78 @@ describe("guess_type with brain_atlas that has sf", {
       "attempting to guess"
     )
     expect_equal(result, "subcortical")
+  })
+})
+
+
+describe("atlas_region_contextual", {
+  it("removes matching regions from core but keeps geometry", {
+    core <- data.frame(
+      hemi = c("left", "left", "right"),
+      region = c("frontal", "unknown", "frontal"),
+      label = c("lh_frontal", "lh_unknown", "rh_frontal")
+    )
+    vertices <- data.frame(label = c("lh_frontal", "lh_unknown", "rh_frontal"))
+    vertices$vertices <- list(1L:3L, 4L:6L, 7L:9L)
+    palette <- c(lh_frontal = "#FF0000", lh_unknown = "#CCCCCC", rh_frontal = "#FF0000")
+
+    atlas <- brain_atlas(
+      atlas = "test",
+      type = "cortical",
+      core = core,
+      data = cortical_data(vertices = vertices),
+      palette = palette
+    )
+
+    result <- atlas_region_contextual(atlas, "unknown")
+
+    expect_equal(nrow(result$core), 2)
+    expect_false("lh_unknown" %in% result$core$label)
+    expect_equal(brain_regions(result), "frontal")
+    expect_false("lh_unknown" %in% names(result$palette))
+    expect_equal(nrow(result$data$vertices), 3)
+  })
+
+  it("matches on label when specified", {
+    core <- data.frame(
+      hemi = c("left", "left"),
+      region = c("frontal", "parietal"),
+      label = c("lh_frontal", "lh_parietal")
+    )
+    vertices <- data.frame(label = c("lh_frontal", "lh_parietal"))
+    vertices$vertices <- list(1L:3L, 4L:6L)
+
+    atlas <- brain_atlas(
+      atlas = "test",
+      type = "cortical",
+      core = core,
+      data = cortical_data(vertices = vertices)
+    )
+
+    result <- atlas_region_contextual(atlas, "^lh_f", match_on = "label")
+
+    expect_equal(nrow(result$core), 1)
+    expect_equal(result$core$label, "lh_parietal")
+  })
+
+  it("preserves NA regions in core", {
+    core <- data.frame(
+      hemi = c("left", "left"),
+      region = c("frontal", NA),
+      label = c("lh_frontal", "lh_medialwall")
+    )
+    vertices <- data.frame(label = c("lh_frontal", "lh_medialwall"))
+    vertices$vertices <- list(1L:3L, 4L:6L)
+
+    atlas <- brain_atlas(
+      atlas = "test",
+      type = "cortical",
+      core = core,
+      data = cortical_data(vertices = vertices)
+    )
+
+    result <- atlas_region_contextual(atlas, "nonexistent")
+
+    expect_equal(nrow(result$core), 2)
   })
 })
