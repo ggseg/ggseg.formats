@@ -22,6 +22,5 @@ brain_regions(x)
 Character vector of brain region names
 }
 \description{
-Convenience function to extract names of
-brain regions from a \code{\link{brain_atlas}}
+Extract unique names of brain regions
 }

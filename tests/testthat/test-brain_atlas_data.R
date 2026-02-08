@@ -117,7 +117,7 @@ describe("subcortical_data", {
 
 
 describe("tract_data", {
-  it("creates tract_data with meshes", {
+  it("creates tract_data from meshes with centerline metadata", {
     meshes <- data.frame(label = "cst_left")
     meshes$mesh <- list(list(
       vertices = data.frame(x = 1:10, y = 1:10, z = 1:10),
@@ -133,14 +133,14 @@ describe("tract_data", {
 
     expect_s3_class(data, "tract_data")
     expect_s3_class(data, "brain_atlas_data")
-    expect_equal(nrow(data$meshes), 1)
+    expect_equal(nrow(data$centerlines), 1)
   })
 
-  it("errors when meshes is missing", {
-    expect_error(tract_data(), "meshes.*is required")
+  it("errors when no sf or centerlines provided", {
+    expect_error(tract_data(), "sf.*centerlines")
   })
 
-  it("warns about missing tract metadata", {
+  it("errors when all meshes lack centerline metadata", {
     meshes <- data.frame(label = "cst_left")
     meshes$mesh <- list(list(
       vertices = data.frame(x = 1:10, y = 1:10, z = 1:10),
@@ -148,7 +148,7 @@ describe("tract_data", {
       metadata = list(n_centerline_points = 10)
     ))
 
-    expect_warning(tract_data(meshes = meshes), "missing.*centerline")
+    expect_error(tract_data(meshes = meshes), "No valid centerlines")
   })
 
   it("creates tract_data with sf geometry", {

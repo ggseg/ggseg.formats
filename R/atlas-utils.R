@@ -1,8 +1,5 @@
 #' Extract unique names of brain regions
 #'
-#' Convenience function to extract names of
-#' brain regions from a \code{\link{brain_atlas}}
-#'
 #' @param x brain atlas
 #' @return Character vector of brain region names
 #' @export
@@ -29,7 +26,6 @@ brain_regions.data.frame <- function(x) {
 }
 
 
-#' Get unique label or region values
 #' @keywords internal
 #' @noRd
 get_uniq <- function(x, type) {
@@ -40,11 +36,6 @@ get_uniq <- function(x, type) {
 }
 
 #' Extract unique labels of brain regions
-#'
-#' Convenience function to extract names of
-#' brain labels from a \code{\link{brain_atlas}}.
-#' Brain labels are usually default naming obtained
-#' from the original atlas data.
 #'
 #' @param x brain atlas
 #' @return Character vector of atlas region labels
@@ -85,7 +76,6 @@ atlas_type.brain_atlas <- function(x) {
   guess_type(x)
 }
 
-#' guess the atlas type
 #' @keywords internal
 #' @noRd
 guess_type <- function(x) {
@@ -111,30 +101,59 @@ guess_type <- function(x) {
 }
 
 
-# Atlas region manipulation ----
+# Atlas manipulation functions ----
 
-#' Remove regions from atlas
+#' Manipulate brain atlas regions and views
 #'
-#' Completely removes regions matching a pattern from the atlas. Affected
-#' regions are removed from core, palette, sf geometry, and 3D rendering
-#' data (vertices/meshes). Use [atlas_region_contextual()] instead if you
-#' want to keep the geometry for visual context.
+#' Functions for modifying brain atlas objects. These cover three areas:
+#'
+#' **Region manipulation** modifies which regions are active in the atlas:
+#' - `atlas_region_remove()`: completely remove regions
+#' - `atlas_region_contextual()`: keep geometry but remove from core/palette
+#' - `atlas_region_rename()`: rename regions in core
+#' - `atlas_region_keep()`: keep only matching regions
+#'
+#' **View manipulation** modifies the 2D sf geometry data:
+#' - `atlas_view_remove()`: remove entire views
+#' - `atlas_view_keep()`: keep only matching views
+#' - `atlas_view_remove_region()`: remove specific region geometry from sf
+#' - `atlas_view_remove_region_small()`: remove small polygon fragments
+#' - `atlas_view_gather()`: reposition views to close gaps
+#' - `atlas_view_reorder()`: change view order
+#'
+#' **Core manipulation** modifies atlas metadata:
+#' - `atlas_core_add()`: join additional metadata columns
 #'
 #' @param atlas A `brain_atlas` object
-#' @param pattern Character pattern to match against region names or labels.
-#'   Uses `grepl(..., ignore.case = TRUE)`.
-#' @param match_on Column to match against: "region" (default) or "label"
+#' @param pattern Character pattern to match. Uses
+#'   `grepl(..., ignore.case = TRUE)`.
+#' @param match_on Column to match against: `"region"` or `"label"`.
+#' @param replacement For `atlas_region_rename()`: replacement string or
+#'   function.
+#' @param views For view functions: character vector of view names or
+#'   patterns. Multiple values collapsed with `"|"` for matching.
+#' @param order For `atlas_view_reorder()`: character vector of desired
+#'   view order. Unspecified views appended at end.
+#' @param min_area For `atlas_view_remove_region_small()`: minimum polygon
+#'   area to keep. Context geometries are never removed.
+#' @param gap Proportional gap between views (default 0.15 = 15% of max width).
+#' @param data For `atlas_core_add()`: data.frame with metadata to join.
+#' @param by For `atlas_core_add()`: column(s) to join by. Default `"region"`.
 #'
-#' @return Modified `brain_atlas` with matching regions completely removed
-#' @export
+#' @return Modified `brain_atlas` object
+#'
 #' @examples
 #' \dontrun{
-#' # Remove white matter from subcortical atlas
-#' atlas <- atlas |> atlas_region_remove("White-Matter")
-#'
-#' # Remove by label pattern
-#' atlas <- atlas |> atlas_region_remove("^lh_", match_on = "label")
+#' atlas <- atlas |>
+#'   atlas_region_remove("White-Matter") |>
+#'   atlas_region_contextual("cortex") |>
+#'   atlas_view_keep(c("axial_3", "coronal_2", "sagittal")) |>
+#'   atlas_view_remove_region_small(min_area = 50) |>
+#'   atlas_view_gather()
 #' }
+#'
+#' @name atlas_manipulation
+#' @export
 atlas_region_remove <- function(atlas, pattern, match_on = c("region", "label")) {
   match_on <- match.arg(match_on)
 
@@ -190,30 +209,10 @@ atlas_region_remove <- function(atlas, pattern, match_on = c("region", "label"))
 }
 
 
-#' Mark regions as context-only
-#'
-#' Removes matching regions from core, palette, and 3D rendering data
-#' (vertices/meshes). The 2D geometry (sf) is preserved so these regions
-#' display grey and provide visual context, but won't appear in legends.
-#'
-#' For cortical atlases, the shared brain mesh provides 3D context naturally.
-#' For subcortical/tract atlases, use glass brains for 3D context instead.
-#'
-#' @param atlas A `brain_atlas` object
-#' @param pattern Character pattern to match against region names or labels.
-#'   Uses `grepl(..., ignore.case = TRUE)`.
-#' @param match_on Column to match against: "region" (default) or "label"
-#'
-#' @return Modified `brain_atlas` with matching regions as context-only
+#' @describeIn atlas_manipulation Keep geometry for visual context but remove
+#'   from core, palette, and 3D data. Context geometries render grey and don't
+#'   appear in legends.
 #' @export
-#' @examples
-#' \dontrun{
-#' # Keep medial wall geometry for visual context but don't label it
-#' atlas <- atlas |> atlas_region_contextual("unknown")
-#'
-#' # Make cortex context-only in subcortical atlas
-#' atlas <- atlas |> atlas_region_contextual("Cortex", match_on = "label")
-#' }
 atlas_region_contextual <- function(atlas, pattern, match_on = c("region", "label")) {
   match_on <- match.arg(match_on)
 
@@ -260,27 +259,10 @@ atlas_region_contextual <- function(atlas, pattern, match_on = c("region", "labe
 }
 
 
-#' Rename regions in atlas
-#'
-#' Renames regions matching a pattern to a new name, or applies a
-#' transformation function. Only affects the `region` column (human-readable
-#' names), not the `label` column (technical identifiers).
-#'
-#' @param atlas A `brain_atlas` object
-#' @param pattern Character pattern to match against region names
-#' @param replacement Replacement string or function. If a function, it receives
-#'   the matched region names and should return new names.
-#'
-#' @return Modified `brain_atlas` with renamed regions
+#' @describeIn atlas_manipulation Rename regions matching a pattern. Only
+#'   affects the `region` column, not `label`. If `replacement` is a function,
+#'   it receives matched names and returns new names.
 #' @export
-#' @examples
-#' \dontrun{
-#' # Simple replacement
-#' atlas <- atlas |> atlas_region_rename("bankssts", "banks of STS")
-#'
-#' # Using a function
-#' atlas <- atlas |> atlas_region_rename(".*", toupper)
-#' }
 atlas_region_rename <- function(atlas, pattern, replacement) {
   new_core <- atlas$core
   match_mask <- grepl(pattern, new_core$region, ignore.case = TRUE)
@@ -307,28 +289,10 @@ atlas_region_rename <- function(atlas, pattern, replacement) {
 }
 
 
-#' Keep only specified regions
-#'
-#' Inverse of `atlas_region_remove()` - keeps only regions matching the pattern.
-#' Non-matching regions are removed from core, palette, and 3D rendering data
-#' (vertices/meshes). The 2D geometry (sf) is preserved to maintain brain
-#' surface continuity.
-#'
-#' @param atlas A `brain_atlas` object
-#' @param pattern Character pattern to match against region names or labels.
-#'   Uses `grepl(..., ignore.case = TRUE)`.
-#' @param match_on Column to match against: "region" (default) or "label"
-#'
-#' @return Modified `brain_atlas` with only matching regions kept
+#' @describeIn atlas_manipulation Keep only matching regions. Non-matching
+#'   regions are removed from core, palette, and 3D data but sf geometry
+#'   is preserved for surface continuity.
 #' @export
-#' @examples
-#' \dontrun{
-#' # Keep only basal ganglia structures
-#' atlas <- atlas |> atlas_region_keep("caudate|putamen|pallidum")
-#'
-#' # Keep only left hemisphere
-#' atlas <- atlas |> atlas_region_keep("^lh_", match_on = "label")
-#' }
 atlas_region_keep <- function(atlas, pattern, match_on = c("region", "label")) {
   match_on <- match.arg(match_on)
 
@@ -375,26 +339,9 @@ atlas_region_keep <- function(atlas, pattern, match_on = c("region", "label")) {
 }
 
 
-# Atlas core manipulation ----
-
-#' Add metadata to atlas core
-#'
-#' Joins additional metadata columns to the atlas core data frame.
-#'
-#' @param atlas A `brain_atlas` object
-#' @param data Data frame with metadata to join
-#' @param by Column(s) to join by. Default is "region".
-#'
-#' @return Modified `brain_atlas` with additional core columns
+#' @describeIn atlas_manipulation Join additional metadata columns to
+#'   atlas core.
 #' @export
-#' @examples
-#' \dontrun{
-#' lobe_data <- data.frame(
-#'   region = c("bankssts", "fusiform"),
-#'   lobe = c("temporal", "temporal")
-#' )
-#' atlas <- atlas |> atlas_core_add(lobe_data)
-#' }
 atlas_core_add <- function(atlas, data, by = "region") {
   new_core <- dplyr::left_join(atlas$core, data, by = by)
 
@@ -412,16 +359,9 @@ atlas_core_add <- function(atlas, data, by = "region") {
 
 #' Get available views in atlas
 #'
-#' Returns the unique view names from the atlas sf data.
-#'
 #' @param atlas A `brain_atlas` object
 #' @return Character vector of view names, or NULL if no sf data
 #' @export
-#' @examples
-#' \dontrun{
-#' brain_views(aseg)
-#' # [1] "axial_inferior" "axial_superior" "coronal_anterior" ...
-#' }
 brain_views <- function(atlas) {
 
   if (is.null(atlas$data$sf)) {
@@ -431,26 +371,8 @@ brain_views <- function(atlas) {
 }
 
 
-#' Remove views from atlas
-#'
-#' Removes 2D views matching the pattern from the atlas sf data.
-#' Use this to curate which views are included in the final atlas
-#' after generating many projection views.
-#'
-#' @param atlas A `brain_atlas` object
-#' @param pattern Character pattern to match against view names.
-#'   Uses `grepl(..., ignore.case = TRUE)`.
-#'
-#' @return Modified `brain_atlas` with matching views removed
+#' @describeIn atlas_manipulation Remove views matching pattern from sf data.
 #' @export
-#' @examples
-#' \dontrun{
-#' # Remove inferior views
-#' atlas <- atlas |> atlas_view_remove("inferior")
-#'
-#' # Remove multiple views
-#' atlas <- atlas |> atlas_view_remove(c("axial_1", "axial_2"))
-#' }
 atlas_view_remove <- function(atlas, views) {
   if (is.null(atlas$data$sf)) {
     cli::cli_warn("Atlas has no sf data, nothing to remove")
@@ -467,36 +389,12 @@ atlas_view_remove <- function(atlas, views) {
   }
 
   new_data <- rebuild_atlas_data(atlas, new_sf)
-
- brain_atlas(
-    atlas = atlas$atlas,
-    type = atlas$type,
-    palette = atlas$palette,
-    core = atlas$core,
-    data = new_data
-  )
+  rebuild_atlas(atlas, new_data)
 }
 
 
-#' Keep only specified views
-#'
-#' Inverse of `atlas_view_remove()` - keeps only views matching the pattern.
-#'
-#' @param atlas A `brain_atlas` object
-#' @param views Character vector of view names or patterns to keep.
-#'   Multiple values are collapsed with "|" for matching.
-#'   Uses `grepl(..., ignore.case = TRUE)`.
-#'
-#' @return Modified `brain_atlas` with only matching views kept
+#' @describeIn atlas_manipulation Keep only views matching pattern.
 #' @export
-#' @examples
-#' \dontrun{
-#' # Keep only axial views
-#' atlas <- atlas |> atlas_view_keep("axial")
-#'
-#' # Keep specific views using vector
-#' atlas <- atlas |> atlas_view_keep(c("axial_3", "coronal_2", "sagittal"))
-#' }
 atlas_view_keep <- function(atlas, views) {
   if (is.null(atlas$data$sf)) {
     cli::cli_warn("Atlas has no sf data, nothing to keep")
@@ -513,40 +411,13 @@ atlas_view_keep <- function(atlas, views) {
   }
 
   new_data <- rebuild_atlas_data(atlas, new_sf)
-
-  brain_atlas(
-    atlas = atlas$atlas,
-    type = atlas$type,
-    palette = atlas$palette,
-    core = atlas$core,
-    data = new_data
-  )
+  rebuild_atlas(atlas, new_data)
 }
 
 
-#' Remove region geometry from views
-#'
-#' Removes matching regions from the 2D sf data only. Core metadata,
-#' palette, and 3D rendering data are unchanged. Use this for fine-grained
-#' cleanup of specific regions in certain views, or before plotting to
-#' hide regions without altering the atlas definition.
-#'
-#' @param atlas A `brain_atlas` object
-#' @param pattern Character pattern to match against region names or labels.
-#'   Uses `grepl(..., ignore.case = TRUE)`.
-#' @param match_on Column to match against: "label" (default) or "region".
-#'   When "region", labels are looked up from core metadata.
-#'
-#' @return Modified `brain_atlas` with matching region geometries removed
+#' @describeIn atlas_manipulation Remove specific region geometry from sf
+#'   data only. Core, palette, and 3D data are unchanged.
 #' @export
-#' @examples
-#' \dontrun{
-#' # Remove cortex outline from tract atlas views
-#' atlas <- atlas |> atlas_view_remove_region("cortex")
-#'
-#' # Remove specific label from 2D rendering
-#' atlas <- atlas |> atlas_view_remove_region("lh_unknown", match_on = "label")
-#' }
 atlas_view_remove_region <- function(atlas, pattern, match_on = c("label", "region")) {
   match_on <- match.arg(match_on)
 
@@ -573,34 +444,45 @@ atlas_view_remove_region <- function(atlas, pattern, match_on = c("label", "regi
   }
 
   new_data <- rebuild_atlas_data(atlas, new_sf)
-
-  brain_atlas(
-    atlas = atlas$atlas,
-    type = atlas$type,
-    palette = atlas$palette,
-    core = atlas$core,
-    data = new_data
-  )
+  rebuild_atlas(atlas, new_data)
 }
 
 
-#' Gather views to remove gaps
-#'
-#' After removing views with `atlas_view_remove()`, gaps remain in the
-#' x-axis layout. This function repositions the remaining views to close
-#' those gaps while preserving view order.
-#'
-#' @param atlas A `brain_atlas` object
-#' @param gap Proportional gap between views (default 0.15 = 15% of max width)
-#'
-#' @return Modified `brain_atlas` with views repositioned
+#' @describeIn atlas_manipulation Remove region geometries below a minimum
+#'   area threshold. Context geometries (labels not in core) are never
+#'   removed. Optionally scope to specific views.
 #' @export
-#' @examples
-#' \dontrun{
-#' atlas <- atlas |>
-#'   atlas_view_remove("axial_1|axial_2") |>
-#'   atlas_view_gather()
-#' }
+atlas_view_remove_region_small <- function(atlas, min_area, views = NULL) {
+  if (is.null(atlas$data$sf)) {
+    cli::cli_warn("Atlas has no sf data, nothing to remove")
+    return(atlas)
+  }
+
+  areas <- as.numeric(sf::st_area(atlas$data$sf$geometry))
+  is_context <- is.na(atlas$data$sf$label) |
+    !atlas$data$sf$label %in% atlas$core$label
+  is_small <- areas < min_area & !is_context
+
+  if (!is.null(views)) {
+    pattern <- paste(views, collapse = "|")
+    in_view <- grepl(pattern, atlas$data$sf$view, ignore.case = TRUE)
+    is_small <- is_small & in_view
+  }
+
+  n_removed <- sum(is_small)
+  if (n_removed > 0) {
+    cli::cli_alert_info("Removed {n_removed} geometr{?y/ies} below area {min_area}")
+  }
+
+  new_sf <- atlas$data$sf[!is_small, , drop = FALSE]
+  new_data <- rebuild_atlas_data(atlas, new_sf)
+  rebuild_atlas(atlas, new_data)
+}
+
+
+#' @describeIn atlas_manipulation Reposition remaining views to close gaps
+#'   after view removal.
+#' @export
 atlas_view_gather <- function(atlas, gap = 0.15) {
   if (is.null(atlas$data$sf)) {
     cli::cli_warn("Atlas has no sf data")
@@ -609,40 +491,13 @@ atlas_view_gather <- function(atlas, gap = 0.15) {
 
   new_sf <- reposition_views(atlas$data$sf, gap = gap)
   new_data <- rebuild_atlas_data(atlas, new_sf)
-
-  brain_atlas(
-    atlas = atlas$atlas,
-    type = atlas$type,
-    palette = atlas$palette,
-    core = atlas$core,
-    data = new_data
-  )
+  rebuild_atlas(atlas, new_data)
 }
 
 
-#' Reorder views
-#'
-#' Changes the order of views in the atlas sf data and repositions them
-#' accordingly. Views not specified in the order are appended at the end
-#' in their original order.
-#'
-#' @param atlas A `brain_atlas` object
-#' @param order Character vector specifying desired view order. Can be
-#'   partial - unspecified views are appended at the end.
-#' @param gap Proportional gap between views (default 0.15 = 15% of max width)
-#'
-#' @return Modified `brain_atlas` with views reordered and repositioned
+#' @describeIn atlas_manipulation Reorder views and reposition. Views not
+#'   in `order` are appended at end.
 #' @export
-#' @examples
-#' \dontrun{
-#' # Put sagittal first, then specific axial views
-#' atlas <- atlas |>
-#'   atlas_view_reorder(c("sagittal", "axial_3", "axial_5"))
-#'
-#' # Reverse order
-#' atlas <- atlas |>
-#'   atlas_view_reorder(rev(brain_views(atlas)))
-#' }
 atlas_view_reorder <- function(atlas, order, gap = 0.15) {
   if (is.null(atlas$data$sf)) {
     cli::cli_warn("Atlas has no sf data")
@@ -669,18 +524,10 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
 
   new_sf <- reposition_views(new_sf, gap = gap)
   new_data <- rebuild_atlas_data(atlas, new_sf)
-
-  brain_atlas(
-    atlas = atlas$atlas,
-    type = atlas$type,
-    palette = atlas$palette,
-    core = atlas$core,
-    data = new_data
-  )
+  rebuild_atlas(atlas, new_data)
 }
 
 
-#' Reposition views horizontally
 #' @keywords internal
 #' @noRd
 #' @importFrom sf st_geometry st_bbox st_coordinates
@@ -725,7 +572,6 @@ reposition_views <- function(sf_obj, gap = 0.15) {
 }
 
 
-#' Rebuild atlas data with new sf
 #' @keywords internal
 #' @noRd
 rebuild_atlas_data <- function(atlas, new_sf) {
@@ -733,10 +579,24 @@ rebuild_atlas_data <- function(atlas, new_sf) {
     cortical_data(sf = new_sf, vertices = atlas$data$vertices)
   } else if (!is.null(atlas$data$meshes)) {
     subcortical_data(sf = new_sf, meshes = atlas$data$meshes)
-  } else if (!is.null(atlas$data$tangents)) {
-    tract_data(sf = new_sf, meshes = atlas$data$meshes, tangents = atlas$data$tangents)
+  } else if (!is.null(atlas$data$centerlines)) {
+    tract_data(sf = new_sf, centerlines = atlas$data$centerlines)
   } else {
     atlas$data$sf <- new_sf
     atlas$data
   }
+}
+
+
+rebuild_atlas <- function(atlas, new_data) {
+  structure(
+    list(
+      atlas = atlas$atlas,
+      type = atlas$type,
+      palette = atlas$palette,
+      core = atlas$core,
+      data = new_data
+    ),
+    class = "brain_atlas"
+  )
 }

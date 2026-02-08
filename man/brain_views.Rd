@@ -13,11 +13,5 @@ brain_views(atlas)
 Character vector of view names, or NULL if no sf data
 }
 \description{
-Returns the unique view names from the atlas sf data.
-}
-\examples{
-\dontrun{
-brain_views(aseg)
-# [1] "axial_inferior" "axial_superior" "coronal_anterior" ...
-}
+Get available views in atlas
 }

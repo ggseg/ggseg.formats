@@ -159,3 +159,48 @@
 #' # List regions
 #' brain_regions(aseg)
 "aseg"
+
+
+#' TRACULA White Matter Tract Atlas
+#'
+#' Brain atlas for FreeSurfer's TRACULA (TRActs Constrained by UnderLying
+#' Anatomy) white matter bundles in MNI space.
+#'
+#' This atlas contains major white matter tracts reconstructed from diffusion
+#' MRI using FreeSurfer's TRACULA training data. It works with both ggseg
+#' (2D slice projections) and ggseg3d (3D tube mesh visualizations).
+#'
+#' @format A `brain_atlas` object with components:
+#' \describe{
+#'   \item{atlas}{Character. Atlas name ("tracula")}
+#'   \item{type}{Character. Atlas type ("tract")}
+#'   \item{palette}{Named character vector of colours for each tract}
+#'   \item{data}{A `tract_data` object containing:
+#'     \describe{
+#'       \item{centerlines}{List of centerline matrices per tract}
+#'       \item{sf}{Simple features data frame for 2D rendering}
+#'     }
+#'   }
+#' }
+#'
+#' @references
+#' Yendiki A, Panneck P, Srinivasan P, et al. (2011).
+#' Automated probabilistic reconstruction of white-matter pathways in
+#' health and disease using an atlas of the underlying anatomy.
+#' Frontiers in Neuroinformatics, 5:23.
+#' \doi{10.3389/fninf.2011.00023}
+#'
+#' @seealso
+#' [dk] for cortical parcellation,
+#' [aseg] for subcortical structures,
+#' [brain_atlas()] for the atlas class constructor
+#'
+#' @family ggseg_atlases
+#' @docType data
+#' @name tracula
+#' @usage data(tracula)
+#' @keywords datasets
+#' @examples
+#' data(tracula)
+#' tracula
+"tracula"

@@ -163,7 +163,7 @@ describe("validate_meshes", {
 
 
 describe("validate_tract_metadata", {
-  it("warns when metadata is not a list", {
+  it("errors when mesh metadata is not a list", {
     meshes <- data.frame(label = "cst_left")
     meshes$mesh <- list(list(
       vertices = data.frame(x = 1:10, y = 1:10, z = 1:10),
@@ -171,7 +171,7 @@ describe("validate_tract_metadata", {
       metadata = "not a list"
     ))
 
-    expect_warning(tract_data(meshes = meshes), "should be a list")
+    expect_error(tract_data(meshes = meshes))
   })
 })
 

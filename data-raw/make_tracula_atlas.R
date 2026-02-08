@@ -94,11 +94,23 @@ tracula <- brain_atlas(
 cli::cli_alert_info("Cleaning up geometries")
 
 tracula <- tracula |>
-  atlas_view_keep(c("axial_2", "axial_4", "coronal_3", "coronal_4", "sagittal"))
+  atlas_view_keep(c(
+    "axial_2",
+    "axial_4",
+    "coronal_3",
+    "coronal_4",
+    "sagittal"
+  )) |>
+  atlas_region_contextual("cortex") |> 
+  atlas_view_remove_region_small(
+    min_area = 500,
+    views = c("axial", "coronal")
+  ) |>
+  atlas_view_remove_region_small(min_area = 50)
 
 ggplot2::ggplot() +
   ggseg::geom_brain(
-    atlas = tracula,
+    atlas = tracula2,
     ggplot2::aes(fill = label),
     position = ggseg::position_brain(ncol = 4),
     show.legend = FALSE,

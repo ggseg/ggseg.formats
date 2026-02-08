@@ -86,7 +86,8 @@ Cerebral Cortex, 14(1):11-22.
 \code{\link[=brain_atlas]{brain_atlas()}} for the atlas class constructor
 
 Other ggseg_atlases: 
-\code{\link{aseg}}
+\code{\link{aseg}},
+\code{\link{tracula}}
 }
 \concept{ggseg_atlases}
 \keyword{datasets}

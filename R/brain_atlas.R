@@ -220,6 +220,9 @@ as.data.frame.brain_atlas <- function(x, ...) {
     result$colour <- unname(x$palette[result$label])
   }
 
+  is_context <- !result$label %in% x$core$label | is.na(result$label)
+  result <- result[order(is_context, decreasing = TRUE), , drop = FALSE]
+
   sf::st_as_sf(result)
 }
 

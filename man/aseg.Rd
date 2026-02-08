@@ -89,7 +89,8 @@ Neuron, 33(3):341-355.
 \code{\link[=brain_atlas]{brain_atlas()}} for the atlas class constructor
 
 Other ggseg_atlases: 
-\code{\link{dk}}
+\code{\link{dk}},
+\code{\link{tracula}}
 }
 \concept{ggseg_atlases}
 \keyword{datasets}

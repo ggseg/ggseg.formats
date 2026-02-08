@@ -19,8 +19,5 @@ brain_labels(x)
 Character vector of atlas region labels
 }
 \description{
-Convenience function to extract names of
-brain labels from a \code{\link{brain_atlas}}.
-Brain labels are usually default naming obtained
-from the original atlas data.
+Extract unique labels of brain regions
 }
