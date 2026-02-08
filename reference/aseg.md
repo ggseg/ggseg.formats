@@ -101,7 +101,7 @@ Neuron, 33(3):341-355.
 [dk](dk.md) for cortical parcellation, [`brain_atlas()`](brain_atlas.md)
 for the atlas class constructor
 
-Other ggseg_atlases: [`dk`](dk.md)
+Other ggseg_atlases: [`dk`](dk.md), [`tracula`](tracula.md)
 
 ## Examples
 

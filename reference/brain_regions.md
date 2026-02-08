@@ -1,7 +1,6 @@
 # Extract unique names of brain regions
 
-Convenience function to extract names of brain regions from a
-[`brain_atlas`](brain_atlas.md)
+Extract unique names of brain regions
 
 ## Usage
 

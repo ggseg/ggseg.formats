@@ -1,8 +1,6 @@
 # Extract unique labels of brain regions
 
-Convenience function to extract names of brain labels from a
-[`brain_atlas`](brain_atlas.md). Brain labels are usually default naming
-obtained from the original atlas data.
+Extract unique labels of brain regions
 
 ## Usage
 

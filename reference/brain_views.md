@@ -1,6 +1,6 @@
 # Get available views in atlas
 
-Returns the unique view names from the atlas sf data.
+Get available views in atlas
 
 ## Usage
 
@@ -17,12 +17,3 @@ brain_views(atlas)
 ## Value
 
 Character vector of view names, or NULL if no sf data
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-brain_views(aseg)
-# [1] "axial_inferior" "axial_superior" "coronal_anterior" ...
-} # }
-```

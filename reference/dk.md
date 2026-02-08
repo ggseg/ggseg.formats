@@ -84,7 +84,7 @@ parcellating the human cerebral cortex. Cerebral Cortex, 14(1):11-22.
 [aseg](aseg.md) for subcortical structures,
 [`brain_atlas()`](brain_atlas.md) for the atlas class constructor
 
-Other ggseg_atlases: [`aseg`](aseg.md)
+Other ggseg_atlases: [`aseg`](aseg.md), [`tracula`](tracula.md)
 
 ## Examples
 
