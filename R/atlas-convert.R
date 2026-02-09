@@ -138,11 +138,11 @@ extract_3d_data <- function(
   dt <- tidyr::unnest(atlas_3d, ggseg_3d)
 
   if (is.null(core)) {
-    core <- dplyr::distinct(dt, hemi, region, label)
+    core <- dplyr::distinct(dt[!is.na(dt$label), ], hemi, region, label)
   }
   if (is.null(palette) && "colour" %in% names(dt)) {
     palette <- stats::setNames(dt$colour, dt$label)
-    palette <- palette[!duplicated(names(palette))]
+    palette <- palette[!is.na(names(palette)) & !duplicated(names(palette))]
   }
 
   meshes <- NULL

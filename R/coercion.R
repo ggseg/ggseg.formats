@@ -142,12 +142,12 @@ convert_legacy_brain_data <- function(x) {
   }
 
   core <- dplyr::distinct(
-    sf_data[, c("hemi", "region", "label"), drop = FALSE]
+    sf::st_drop_geometry(sf_data[!is.na(sf_data$label), c("hemi", "region", "label"), drop = FALSE])
   )
-  core <- sf::st_drop_geometry(core)
 
   palette <- if ("colour" %in% names(sf_data)) {
-    stats::setNames(sf_data$colour, sf_data$label)
+    pal <- stats::setNames(sf_data$colour, sf_data$label)
+    pal[!is.na(names(pal)) & !duplicated(names(pal))]
   } else {
     NULL
   }
