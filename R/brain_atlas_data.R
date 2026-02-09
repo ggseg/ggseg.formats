@@ -9,12 +9,13 @@
 #' @param vertices data.frame with columns label and vertices (list-column of
 #'   integer vectors). Each vector contains vertex indices for that region.
 #'
-#' @return An object of class c("cortical_data", "brain_atlas_data")
+#' @return An object of class c("brain_data_cortical", "brain_atlas_data")
+#' @keywords internal
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' data <- cortical_data(
+#' data <- brain_data_cortical(
 #'   sf = sf_geometry,
 #'   vertices = data.frame(
 #'     label = c("bankssts", "caudalanteriorcingulate"),
@@ -22,7 +23,7 @@
 #'   )
 #' )
 #' }
-cortical_data <- function(sf = NULL, vertices = NULL) {
+brain_data_cortical <- function(sf = NULL, vertices = NULL) {
   if (is.null(sf) && is.null(vertices)) {
     cli::cli_abort("At least one of {.arg sf} or {.arg vertices} is required.")
   }
@@ -40,7 +41,7 @@ cortical_data <- function(sf = NULL, vertices = NULL) {
       sf = sf,
       vertices = vertices
     ),
-    class = c("cortical_data", "brain_atlas_data")
+    class = c("brain_data_cortical", "brain_atlas_data")
   )
 }
 
@@ -59,12 +60,13 @@ cortical_data <- function(sf = NULL, vertices = NULL) {
 #'     \item faces: data.frame with i, j, k columns (1-based triangle indices)
 #'   }
 #'
-#' @return An object of class c("subcortical_data", "brain_atlas_data")
+#' @return An object of class c("brain_data_subcortical", "brain_atlas_data")
+#' @keywords internal
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' data <- subcortical_data(
+#' data <- brain_data_subcortical(
 #'   meshes = data.frame(
 #'     label = "hippocampus_left",
 #'     mesh = I(list(list(
@@ -74,7 +76,7 @@ cortical_data <- function(sf = NULL, vertices = NULL) {
 #'   )
 #' )
 #' }
-subcortical_data <- function(sf = NULL, meshes = NULL) {
+brain_data_subcortical <- function(sf = NULL, meshes = NULL) {
   if (is.null(sf) && is.null(meshes)) {
     cli::cli_abort("At least one of {.arg sf} or {.arg meshes} is required.")
   }
@@ -92,7 +94,7 @@ subcortical_data <- function(sf = NULL, meshes = NULL) {
       sf = sf,
       meshes = meshes
     ),
-    class = c("subcortical_data", "brain_atlas_data")
+    class = c("brain_data_subcortical", "brain_atlas_data")
   )
 }
 
@@ -115,7 +117,8 @@ subcortical_data <- function(sf = NULL, meshes = NULL) {
 #' @param meshes Deprecated. Use centerlines instead. If provided, will be
 #'   converted to centerlines format.
 #'
-#' @return An object of class c("tract_data", "brain_atlas_data")
+#' @return An object of class c("brain_data_tract", "brain_atlas_data")
+#' @keywords internal
 #' @export
 #'
 #' @examples
@@ -125,9 +128,9 @@ subcortical_data <- function(sf = NULL, meshes = NULL) {
 #'   points = I(list(matrix(rnorm(150), ncol = 3))),
 #'   tangents = I(list(matrix(rnorm(150), ncol = 3)))
 #' )
-#' data <- tract_data(centerlines = centerlines_df)
+#' data <- brain_data_tract(centerlines = centerlines_df)
 #' }
-tract_data <- function(
+brain_data_tract <- function(
   sf = NULL,
   centerlines = NULL,
   tube_radius = 5,
@@ -159,7 +162,7 @@ tract_data <- function(
       tube_radius = tube_radius,
       tube_segments = as.integer(tube_segments)
     ),
-    class = c("tract_data", "brain_atlas_data")
+    class = c("brain_data_tract", "brain_atlas_data")
   )
 }
 
@@ -254,8 +257,8 @@ compute_tangents <- function(points) {
 
 
 #' @export
-print.cortical_data <- function(x, ...) {
-  cli::cli_h2("cortical_data")
+print.brain_data_cortical <- function(x, ...) {
+  cli::cli_h2("brain_data_cortical")
 
   if (!is.null(x$sf)) {
     n_labels <- length(unique(x$sf$label)) # nolint: object_usage_linter
@@ -273,8 +276,8 @@ print.cortical_data <- function(x, ...) {
 
 
 #' @export
-print.subcortical_data <- function(x, ...) {
-  cli::cli_h2("subcortical_data")
+print.brain_data_subcortical <- function(x, ...) {
+  cli::cli_h2("brain_data_subcortical")
 
   if (!is.null(x$sf)) {
     n_labels <- length(unique(x$sf$label)) # nolint: object_usage_linter
@@ -292,8 +295,8 @@ print.subcortical_data <- function(x, ...) {
 
 
 #' @export
-print.tract_data <- function(x, ...) {
-  cli::cli_h2("tract_data")
+print.brain_data_tract <- function(x, ...) {
+  cli::cli_h2("brain_data_tract")
 
   if (!is.null(x$sf)) {
     n_labels <- length(unique(x$sf$label)) # nolint: object_usage_linter

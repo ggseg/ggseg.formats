@@ -15,8 +15,9 @@ brain_atlas(atlas, type, core, data, palette = NULL)
 unique region). May contain additional columns for grouping or metadata
 (e.g., lobe, network, Brodmann area).}
 
-\item{data}{a brain_atlas_data object created by one of:
-\code{\link[=cortical_data]{cortical_data()}}, \code{\link[=subcortical_data]{subcortical_data()}}, or \code{\link[=tract_data]{tract_data()}}.
+\item{data}{a brain_atlas_data object created by
+\code{\link[=brain_data_cortical]{brain_data_cortical()}}, \code{\link[=brain_data_subcortical]{brain_data_subcortical()}},
+or \code{\link[=brain_data_tract]{brain_data_tract()}}.
 Must match the specified type.}
 
 \item{palette}{named character vector of colours keyed by label}
@@ -35,7 +36,7 @@ atlas <- brain_atlas(
   atlas = "dk",
   type = "cortical",
   core = core_df,
-  data = cortical_data(sf = geometry, vertices = vertex_indices)
+  data = brain_data_cortical(sf = geometry, vertices = vertex_indices)
 )
 
 # Tract atlas
@@ -43,7 +44,10 @@ atlas <- brain_atlas(
   atlas = "hcp_tracts",
   type = "tract",
   core = core_df,
-  data = tract_data(meshes = tube_meshes, scalars = list(FA = fa_values))
+  data = brain_data_tract(
+    meshes = tube_meshes,
+    scalars = list(FA = fa_values)
+  )
 )
 }
 }

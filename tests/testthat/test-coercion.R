@@ -8,7 +8,7 @@ describe("as_brain_atlas", {
       atlas = "test",
       type = "cortical",
       core = core,
-      data = cortical_data(vertices = vertices)
+      data = brain_data_cortical(vertices = vertices)
     )
 
     lst <- as.list(atlas)
@@ -72,7 +72,7 @@ describe("as_brain_atlas.brain_atlas", {
       atlas = "test",
       type = "cortical",
       core = core,
-      data = cortical_data(vertices = vertices)
+      data = brain_data_cortical(vertices = vertices)
     )
 
     result <- as_brain_atlas(atlas)
@@ -122,9 +122,9 @@ describe("as_brain_atlas.list", {
 })
 
 
-describe("convert_legacy_brain_atlas", {
+describe("convert_legacy_brain_data", {
   it("errors for non-brain_atlas input", {
-    expect_error(convert_legacy_brain_atlas(list()), "must be a.*brain_atlas")
+    expect_error(convert_legacy_brain_data(list()), "must be a.*brain_atlas")
   })
 
   it("returns atlas unchanged if already has core", {
@@ -136,10 +136,10 @@ describe("convert_legacy_brain_atlas", {
       atlas = "test",
       type = "cortical",
       core = core,
-      data = cortical_data(vertices = vertices)
+      data = brain_data_cortical(vertices = vertices)
     )
 
-    result <- convert_legacy_brain_atlas(atlas)
+    result <- convert_legacy_brain_data(atlas)
     expect_equal(result, atlas)
   })
 
@@ -165,7 +165,7 @@ describe("convert_legacy_brain_atlas", {
       class = "brain_atlas"
     )
 
-    result <- convert_legacy_brain_atlas(legacy)
+    result <- convert_legacy_brain_data(legacy)
 
     expect_s3_class(result, "brain_atlas")
     expect_true(!is.null(result$core))
@@ -194,7 +194,7 @@ describe("convert_legacy_brain_atlas", {
       class = "brain_atlas"
     )
 
-    result <- convert_legacy_brain_atlas(legacy)
+    result <- convert_legacy_brain_data(legacy)
 
     expect_s3_class(result, "brain_atlas")
     expect_true("view" %in% names(result$data$sf))
@@ -220,7 +220,7 @@ describe("convert_legacy_brain_atlas", {
       class = "brain_atlas"
     )
 
-    result <- convert_legacy_brain_atlas(legacy)
+    result <- convert_legacy_brain_data(legacy)
 
     expect_s3_class(result, "brain_atlas")
     expect_null(result$palette)

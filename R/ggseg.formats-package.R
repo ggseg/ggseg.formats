@@ -8,9 +8,11 @@
 "_PACKAGE"
 
 utils::globalVariables(c(
+  "ggseg_3d",
   "hemi",
   "id",
   "label",
+  "region",
   "StructName",
   "subject",
   "value"

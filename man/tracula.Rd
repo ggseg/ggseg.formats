@@ -10,7 +10,7 @@ A \code{brain_atlas} object with components:
 \item{atlas}{Character. Atlas name ("tracula")}
 \item{type}{Character. Atlas type ("tract")}
 \item{palette}{Named character vector of colours for each tract}
-\item{data}{A \code{tract_data} object containing:
+\item{data}{A \code{brain_data_tract} object containing:
 \describe{
 \item{centerlines}{List of centerline matrices per tract}
 \item{sf}{Simple features data frame for 2D rendering}

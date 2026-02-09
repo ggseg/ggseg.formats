@@ -10,7 +10,7 @@ A \code{brain_atlas} object with components:
 \item{atlas}{Character. Atlas name ("dk")}
 \item{type}{Character. Atlas type ("cortical")}
 \item{palette}{Named character vector of colours for each region}
-\item{data}{A \code{cortical_data} object containing:
+\item{data}{A \code{brain_data_cortical} object containing:
 \describe{
 \item{vertices}{Data frame with \code{label} and \code{vertices} columns}
 \item{sf}{Simple features data frame for 2D rendering}

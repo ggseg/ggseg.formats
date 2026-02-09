@@ -17,6 +17,7 @@ Imports:
     dplyr,
     ggplot2,
     lifecycle,
+    rlang,
     sf,
     tidyr
 Suggests:

@@ -47,7 +47,7 @@ make_test_atlas <- function() {
     type = "cortical",
     core = core,
     palette = palette,
-    data = cortical_data(sf = sf_geom, vertices = vertices)
+    data = brain_data_cortical(sf = sf_geom, vertices = vertices)
   )
 }
 
@@ -139,7 +139,7 @@ make_multiview_atlas <- function() {
     type = "cortical",
     core = core,
     palette = palette,
-    data = cortical_data(sf = sf_geom)
+    data = brain_data_cortical(sf = sf_geom)
   )
 }
 
@@ -196,7 +196,7 @@ describe("atlas_labels", {
       atlas = "test",
       type = "cortical",
       core = core,
-      data = cortical_data(vertices = vertices)
+      data = brain_data_cortical(vertices = vertices)
     )
     expect_equal(atlas_labels(atlas), "lh_frontal")
   })

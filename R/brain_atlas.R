@@ -9,8 +9,9 @@
 #' @param core data.frame with required columns hemi, region, label (one row per
 #'   unique region). May contain additional columns for grouping or metadata
 #'   (e.g., lobe, network, Brodmann area).
-#' @param data a brain_atlas_data object created by one of:
-#'   [cortical_data()], [subcortical_data()], or [tract_data()].
+#' @param data a brain_atlas_data object created by
+#'   [brain_data_cortical()], [brain_data_subcortical()],
+#'   or [brain_data_tract()].
 #'   Must match the specified type.
 #'
 #' @return an object of class 'brain_atlas'
@@ -23,7 +24,7 @@
 #'   atlas = "dk",
 #'   type = "cortical",
 #'   core = core_df,
-#'   data = cortical_data(sf = geometry, vertices = vertex_indices)
+#'   data = brain_data_cortical(sf = geometry, vertices = vertex_indices)
 #' )
 #'
 #' # Tract atlas
@@ -31,7 +32,10 @@
 #'   atlas = "hcp_tracts",
 #'   type = "tract",
 #'   core = core_df,
-#'   data = tract_data(meshes = tube_meshes, scalars = list(FA = fa_values))
+#'   data = brain_data_tract(
+#'     meshes = tube_meshes,
+#'     scalars = list(FA = fa_values)
+#'   )
 #' )
 #' }
 brain_atlas <- function(atlas, type, core, data, palette = NULL) {
@@ -56,13 +60,14 @@ brain_atlas <- function(atlas, type, core, data, palette = NULL) {
   }
 
   if (!inherits(data, "brain_atlas_data")) {
-    cli::cli_abort(
-      "{.arg data} must be a {.cls brain_atlas_data} object created by ",
-      "{.fn cortical_data}, {.fn subcortical_data}, or {.fn tract_data}."
-    )
+    cli::cli_abort(c(
+      "{.arg data} must be a {.cls brain_atlas_data} object.",
+      "i" = "Use {.fn brain_data_cortical}, {.fn brain_data_subcortical},
+      or {.fn brain_data_tract}."
+    ))
   }
 
-  expected_class <- paste0(type, "_data")
+  expected_class <- paste0("brain_data_", type)
   if (!inherits(data, expected_class)) {
     cli::cli_abort(c(
       "Atlas type {.val {type}} requires {.cls {expected_class}}.",
@@ -277,31 +282,20 @@ as.data.frame.brain_atlas <- function(x, ...) {
   sf::st_as_sf(result)
 }
 
-#' Plot a brain atlas
-#'
-#' Plots a brain atlas using [geom_brain()], coloured by region label. If the
-#' atlas contains a palette, it is applied via [ggplot2::scale_fill_manual()].
-#'
-#' @param x A `brain_atlas` object.
-#' @inheritParams ggplot2::geom_sf
-#' @param ... Additional arguments passed to [ggplot2::geom_sf()].
-#'
-#' @return A [ggplot2::ggplot] object.
+# nolint start
 #' @importFrom ggplot2 aes ggplot labs scale_fill_manual geom_sf
 #' @importFrom stats setNames
 #' @export
-#' @examples
-#' plot(dk)
-#' plot(aseg)
-# nolint start
 plot.brain_atlas <- function(x, show.legend = FALSE, ...) {
   # nolint end: object_name_linter
   p <- ggplot(as.data.frame(x)) +
+    # nolint start [object_usage_linter]
     geom_sf(
-      aes(fill = label), # nolint [object_usage_linter]
-      show.legend = show.legend, # nolint [object_name_linter]
+      aes(fill = label),
+      show.legend = show.legend,
       ...
     ) +
+    # nolint end [object_name_linter]
     labs(title = paste(x$atlas, x$type, "atlas"))
 
   if ("palette" %in% names(x)) {

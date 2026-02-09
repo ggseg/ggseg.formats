@@ -207,7 +207,7 @@ atlas_region_remove <- function(
       ,
       drop = FALSE
     ]
-    new_data <- cortical_data(
+    new_data <- brain_data_cortical(
       sf = new_sf,
       vertices = new_vertices
     )
@@ -217,7 +217,7 @@ atlas_region_remove <- function(
       ,
       drop = FALSE
     ]
-    new_data <- subcortical_data(
+    new_data <- brain_data_subcortical(
       sf = new_sf,
       meshes = new_meshes
     )
@@ -264,7 +264,7 @@ atlas_region_contextual <- function(
       ,
       drop = FALSE
     ]
-    new_data <- cortical_data(
+    new_data <- brain_data_cortical(
       sf = atlas$data$sf,
       vertices = new_vertices
     )
@@ -274,7 +274,7 @@ atlas_region_contextual <- function(
       ,
       drop = FALSE
     ]
-    new_data <- subcortical_data(
+    new_data <- brain_data_subcortical(
       sf = atlas$data$sf,
       meshes = new_meshes
     )
@@ -344,7 +344,7 @@ atlas_region_keep <- function(atlas, pattern, match_on = c("region", "label")) {
       ,
       drop = FALSE
     ]
-    new_data <- cortical_data(
+    new_data <- brain_data_cortical(
       sf = atlas$data$sf,
       vertices = new_vertices
     )
@@ -354,7 +354,7 @@ atlas_region_keep <- function(atlas, pattern, match_on = c("region", "label")) {
       ,
       drop = FALSE
     ]
-    new_data <- subcortical_data(
+    new_data <- brain_data_subcortical(
       sf = atlas$data$sf,
       meshes = new_meshes
     )
@@ -633,11 +633,11 @@ reposition_views <- function(sf_obj, gap = 0.15) {
 #' @noRd
 rebuild_atlas_data <- function(atlas, new_sf) {
   if (!is.null(atlas$data$vertices)) {
-    cortical_data(sf = new_sf, vertices = atlas$data$vertices)
+    brain_data_cortical(sf = new_sf, vertices = atlas$data$vertices)
   } else if (!is.null(atlas$data$meshes)) {
-    subcortical_data(sf = new_sf, meshes = atlas$data$meshes)
+    brain_data_subcortical(sf = new_sf, meshes = atlas$data$meshes)
   } else if (!is.null(atlas$data$centerlines)) {
-    tract_data(sf = new_sf, centerlines = atlas$data$centerlines)
+    brain_data_tract(sf = new_sf, centerlines = atlas$data$centerlines)
   } else {
     atlas$data$sf <- new_sf
     atlas$data

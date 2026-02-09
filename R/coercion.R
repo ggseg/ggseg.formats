@@ -59,16 +59,15 @@ as_brain_atlas.list <- function(x) {
   )
 }
 
-
-#' Convert legacy brain_atlas to unified format
+#' Convert legacy brain_atlas data to unified format
 #'
 #' Converts an old-style brain_atlas (where `$data` contains sf directly)
 #' to the unified format with `$core` and `$data` (brain_atlas_data).
 #'
 #' @param x A legacy brain_atlas
 #' @return A brain_atlas in unified format
-#' @export
-convert_legacy_brain_atlas <- function(x) {
+#' @keywords internal
+convert_legacy_brain_data <- function(x) {
   if (!inherits(x, "brain_atlas")) {
     cli::cli_abort("{.arg x} must be a {.cls brain_atlas}.")
   }
@@ -97,10 +96,10 @@ convert_legacy_brain_atlas <- function(x) {
 
   data <- switch(
     type,
-    "cortical" = cortical_data(sf = sf_data, vertices = NULL),
-    "subcortical" = subcortical_data(sf = sf_data, meshes = NULL),
-    "tract" = tract_data(sf = sf_data, meshes = NULL),
-    cortical_data(sf = sf_data, vertices = NULL)
+    "cortical" = brain_data_cortical(sf = sf_data, vertices = NULL),
+    "subcortical" = brain_data_subcortical(sf = sf_data, meshes = NULL),
+    "tract" = brain_data_tract(sf = sf_data, meshes = NULL),
+    brain_data_cortical(sf = sf_data, vertices = NULL)
   )
 
   brain_atlas(
@@ -126,9 +125,9 @@ convert_legacy_structure <- function(x) {
 
   data <- switch(
     type,
-    "cortical" = cortical_data(sf = x$sf, vertices = x$vertices),
-    "subcortical" = subcortical_data(sf = x$sf, meshes = x$meshes),
-    "tract" = tract_data(sf = x$sf, meshes = x$meshes),
+    "cortical" = brain_data_cortical(sf = x$sf, vertices = x$vertices),
+    "subcortical" = brain_data_subcortical(sf = x$sf, meshes = x$meshes),
+    "tract" = brain_data_tract(sf = x$sf, meshes = x$meshes),
     cli::cli_abort("Unknown atlas type: {.val {type}}")
   )
 

@@ -14,7 +14,7 @@
 #'   \item{atlas}{Character. Atlas name ("dk")}
 #'   \item{type}{Character. Atlas type ("cortical")}
 #'   \item{palette}{Named character vector of colours for each region}
-#'   \item{data}{A `cortical_data` object containing:
+#'   \item{data}{A `brain_data_cortical` object containing:
 #'     \describe{
 #'       \item{vertices}{Data frame with `label` and `vertices` columns}
 #'       \item{sf}{Simple features data frame for 2D rendering}
@@ -93,7 +93,7 @@
 #'   \item{atlas}{Character. Atlas name ("aseg")}
 #'   \item{type}{Character. Atlas type ("subcortical")}
 #'   \item{palette}{Named character vector of colours for each region}
-#'   \item{data}{A `subcortical_data` object containing:
+#'   \item{data}{A `brain_data_subcortical` object containing:
 #'     \describe{
 #'       \item{meshes}{Data frame with `label` and `mesh` columns}
 #'       \item{sf}{Simple features data frame for 2D rendering}
@@ -175,7 +175,7 @@
 #'   \item{atlas}{Character. Atlas name ("tracula")}
 #'   \item{type}{Character. Atlas type ("tract")}
 #'   \item{palette}{Named character vector of colours for each tract}
-#'   \item{data}{A `tract_data` object containing:
+#'   \item{data}{A `brain_data_tract` object containing:
 #'     \describe{
 #'       \item{centerlines}{List of centerline matrices per tract}
 #'       \item{sf}{Simple features data frame for 2D rendering}
