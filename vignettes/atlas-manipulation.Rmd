@@ -30,8 +30,8 @@ ggseg.formats provides three groups of manipulation functions. **Region
 functions** (`atlas_region_*`) control which regions are active in the atlas.
 **View functions** (`atlas_view_*`) control the 2D sf geometry—which views are
 present and how they are arranged. **Core functions** (`atlas_core_*`) enrich
-the region metadata. All of them accept a `brain_atlas` as the first argument,
-return a new `brain_atlas`, and play nicely with the pipe.
+the region metadata. All of them accept a `ggseg_atlas` as the first argument,
+return a new `ggseg_atlas`, and play nicely with the pipe.
 
 ## Keeping and removing regions
 
@@ -201,6 +201,6 @@ publication_aseg <- aseg |>
 publication_aseg
 ```
 
-Each function returns a valid `brain_atlas`, so you can inspect intermediate
+Each function returns a valid `ggseg_atlas`, so you can inspect intermediate
 results, branch the pipeline, or hand the final object straight to ggseg for
 plotting.

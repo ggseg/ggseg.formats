@@ -10,7 +10,7 @@ convert_legacy_structure(x)
 \item{x}{A legacy brain_atlas}
 }
 \value{
-A brain_atlas with the new structure
+A ggseg_atlas with the new structure
 }
 \description{
 Converts a brain_atlas with separate sf/vertices/meshes fields to the

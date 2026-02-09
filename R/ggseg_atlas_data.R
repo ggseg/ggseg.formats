@@ -9,7 +9,7 @@
 #' @param vertices data.frame with columns label and vertices (list-column of
 #'   integer vectors). Each vector contains vertex indices for that region.
 #'
-#' @return An object of class c("brain_data_cortical", "brain_atlas_data")
+#' @return An object of class c("brain_data_cortical", "ggseg_atlas_data")
 #' @keywords internal
 #' @export
 #'
@@ -41,7 +41,7 @@ brain_data_cortical <- function(sf = NULL, vertices = NULL) {
       sf = sf,
       vertices = vertices
     ),
-    class = c("brain_data_cortical", "brain_atlas_data")
+    class = c("brain_data_cortical", "ggseg_atlas_data")
   )
 }
 
@@ -60,7 +60,7 @@ brain_data_cortical <- function(sf = NULL, vertices = NULL) {
 #'     \item faces: data.frame with i, j, k columns (1-based triangle indices)
 #'   }
 #'
-#' @return An object of class c("brain_data_subcortical", "brain_atlas_data")
+#' @return An object of class c("brain_data_subcortical", "ggseg_atlas_data")
 #' @keywords internal
 #' @export
 #'
@@ -94,7 +94,7 @@ brain_data_subcortical <- function(sf = NULL, meshes = NULL) {
       sf = sf,
       meshes = meshes
     ),
-    class = c("brain_data_subcortical", "brain_atlas_data")
+    class = c("brain_data_subcortical", "ggseg_atlas_data")
   )
 }
 
@@ -117,7 +117,7 @@ brain_data_subcortical <- function(sf = NULL, meshes = NULL) {
 #' @param meshes Deprecated. Use centerlines instead. If provided, will be
 #'   converted to centerlines format.
 #'
-#' @return An object of class c("brain_data_tract", "brain_atlas_data")
+#' @return An object of class c("brain_data_tract", "ggseg_atlas_data")
 #' @keywords internal
 #' @export
 #'
@@ -162,7 +162,7 @@ brain_data_tract <- function(
       tube_radius = tube_radius,
       tube_segments = as.integer(tube_segments)
     ),
-    class = c("brain_data_tract", "brain_atlas_data")
+    class = c("brain_data_tract", "ggseg_atlas_data")
   )
 }
 

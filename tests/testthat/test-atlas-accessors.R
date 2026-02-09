@@ -22,7 +22,7 @@ describe("atlas_palette", {
     expect_error(atlas_palette("nonexistent_atlas"), "not found")
   })
 
-  it("errors when object is not a brain_atlas", {
+  it("errors when object is not a ggseg_atlas", {
     my_df <- data.frame(x = 1)
     expect_error(atlas_palette("my_df"), "Could not find atlas")
   })
@@ -60,7 +60,7 @@ describe("atlas_sf", {
     )
     palette <- c(lh_frontal = "#FF0000", rh_frontal = "#00FF00")
 
-    atlas <- brain_atlas(
+    atlas <- ggseg_atlas(
       atlas = "test",
       type = "cortical",
       palette = palette,
@@ -93,7 +93,7 @@ describe("atlas_sf", {
       label = "lh_frontal"
     )
 
-    atlas <- brain_atlas(
+    atlas <- ggseg_atlas(
       atlas = "test",
       type = "cortical",
       core = core,
@@ -119,7 +119,7 @@ describe("atlas_vertices", {
     vertices$vertices <- list(1L:3L, 4L:6L)
     palette <- c(lh_frontal = "#FF0000", rh_frontal = "#00FF00")
 
-    atlas <- brain_atlas(
+    atlas <- ggseg_atlas(
       atlas = "test",
       type = "cortical",
       palette = palette,
@@ -144,7 +144,7 @@ describe("atlas_vertices", {
     ))
     core <- data.frame(hemi = NA, region = "hippocampus", label = "hippocampus")
 
-    atlas <- brain_atlas(
+    atlas <- ggseg_atlas(
       atlas = "test",
       type = "subcortical",
       core = core,
@@ -163,7 +163,7 @@ describe("atlas_vertices", {
     vertices <- data.frame(label = c("lh_frontal", "rh_frontal"))
     vertices$vertices <- list(1L:3L, 4L:6L)
 
-    atlas <- brain_atlas(
+    atlas <- ggseg_atlas(
       atlas = "test",
       type = "cortical",
       core = core,
@@ -175,8 +175,8 @@ describe("atlas_vertices", {
     expect_false("colour" %in% names(result))
   })
 
-  it("errors for non-brain_atlas input", {
-    expect_error(atlas_vertices(data.frame()), "must be a.*brain_atlas")
+  it("errors for non-ggseg_atlas input", {
+    expect_error(atlas_vertices(data.frame()), "must be a.*ggseg_atlas")
   })
 })
 
@@ -191,7 +191,7 @@ describe("atlas_meshes", {
     core <- data.frame(hemi = NA, region = "hippocampus", label = "hippocampus")
     palette <- c(hippocampus = "#FF0000")
 
-    atlas <- brain_atlas(
+    atlas <- ggseg_atlas(
       atlas = "test",
       type = "subcortical",
       palette = palette,
@@ -211,7 +211,7 @@ describe("atlas_meshes", {
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
 
-    atlas <- brain_atlas(
+    atlas <- ggseg_atlas(
       atlas = "test",
       type = "cortical",
       core = core,
@@ -229,7 +229,7 @@ describe("atlas_meshes", {
     ))
     core <- data.frame(hemi = NA, region = "hippocampus", label = "hippocampus")
 
-    atlas <- brain_atlas(
+    atlas <- ggseg_atlas(
       atlas = "test",
       type = "subcortical",
       core = core,
@@ -241,7 +241,7 @@ describe("atlas_meshes", {
     expect_false("colour" %in% names(result))
   })
 
-  it("errors for non-brain_atlas input", {
-    expect_error(atlas_meshes(data.frame()), "must be a.*brain_atlas")
+  it("errors for non-ggseg_atlas input", {
+    expect_error(atlas_meshes(data.frame()), "must be a.*ggseg_atlas")
   })
 })

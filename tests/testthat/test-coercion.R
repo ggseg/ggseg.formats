@@ -1,10 +1,10 @@
-describe("as_brain_atlas", {
-  it("converts list to brain_atlas", {
+describe("as_ggseg_atlas", {
+  it("converts list to ggseg_atlas", {
     core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
 
-    atlas <- brain_atlas(
+    atlas <- ggseg_atlas(
       atlas = "test",
       type = "cortical",
       core = core,
@@ -12,23 +12,23 @@ describe("as_brain_atlas", {
     )
 
     lst <- as.list(atlas)
-    result <- as_brain_atlas(lst)
+    result <- as_ggseg_atlas(lst)
 
-    expect_s3_class(result, "brain_atlas")
+    expect_s3_class(result, "ggseg_atlas")
     expect_equal(result$atlas, "test")
   })
 
   it("errors for unsupported object types", {
-    expect_error(as_brain_atlas(~age), "Cannot convert.*to.*brain_atlas")
+    expect_error(as_ggseg_atlas(~age), "Cannot convert.*to.*ggseg_atlas")
   })
 
   it("errors for empty list", {
-    expect_error(as_brain_atlas(list()), "Cannot convert list")
+    expect_error(as_ggseg_atlas(list()), "Cannot convert list")
   })
 })
 
 
-describe("as_brain_atlas.brain_atlas", {
+describe("as_ggseg_atlas.ggseg_atlas", {
   it("converts legacy structure with separate sf/vertices fields", {
     sf_geom <- sf::st_sf(
       label = c("lh_frontal", "rh_frontal"),
@@ -53,13 +53,13 @@ describe("as_brain_atlas.brain_atlas", {
         sf = sf_geom,
         vertices = NULL
       ),
-      class = "brain_atlas"
+      class = "ggseg_atlas"
     )
 
-    result <- as_brain_atlas(legacy)
+    result <- as_ggseg_atlas(legacy)
 
-    expect_s3_class(result, "brain_atlas")
-    expect_s3_class(result$data, "brain_atlas_data")
+    expect_s3_class(result, "ggseg_atlas")
+    expect_s3_class(result$data, "ggseg_atlas_data")
     expect_equal(result$atlas, "legacy")
   })
 
@@ -68,29 +68,87 @@ describe("as_brain_atlas.brain_atlas", {
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
 
-    atlas <- brain_atlas(
+    atlas <- ggseg_atlas(
       atlas = "test",
       type = "cortical",
       core = core,
       data = brain_data_cortical(vertices = vertices)
     )
 
-    result <- as_brain_atlas(atlas)
+    result <- as_ggseg_atlas(atlas)
     expect_identical(result, atlas)
   })
 
-  it("errors for unrecognized brain_atlas structure", {
+  it("errors for unrecognized ggseg_atlas structure", {
     bad_atlas <- structure(
       list(atlas = "bad", type = "cortical"),
-      class = "brain_atlas"
+      class = "ggseg_atlas"
     )
 
-    expect_error(as_brain_atlas(bad_atlas), "unrecognized structure")
+    expect_error(as_ggseg_atlas(bad_atlas), "unrecognized structure")
   })
 })
 
 
-describe("as_brain_atlas.list", {
+describe("as_ggseg_atlas.brain_atlas (legacy auto-conversion)", {
+  it("auto-converts old brain_atlas with proper data to ggseg_atlas", {
+    core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
+    vertices <- data.frame(label = "lh_frontal")
+    vertices$vertices <- list(1L:3L)
+
+    old_atlas <- structure(
+      list(
+        atlas = "old",
+        type = "cortical",
+        palette = NULL,
+        core = core,
+        data = brain_data_cortical(vertices = vertices)
+      ),
+      class = c("cortical_atlas", "brain_atlas", "list")
+    )
+
+    lifecycle::expect_deprecated(
+      result <- as_ggseg_atlas(old_atlas)
+    )
+
+    expect_s3_class(result, "ggseg_atlas")
+    expect_equal(result$atlas, "old")
+  })
+
+  it("auto-converts old brain_atlas with sf-in-data to ggseg_atlas", {
+    sf_geom <- sf::st_sf(
+      hemi = c("left", "right"),
+      region = c("frontal", "frontal"),
+      label = c("lh_frontal", "rh_frontal"),
+      view = c("lateral", "lateral"),
+      colour = c("#FF0000", "#00FF00"),
+      geometry = sf::st_sfc(
+        make_polygon(),
+        make_polygon2()
+      )
+    )
+
+    old_atlas <- structure(
+      list(
+        atlas = "legacy",
+        type = "cortical",
+        data = sf_geom
+      ),
+      class = "brain_atlas"
+    )
+
+    lifecycle::expect_deprecated(
+      result <- as_ggseg_atlas(old_atlas)
+    )
+
+    expect_s3_class(result, "ggseg_atlas")
+    expect_true(!is.null(result$core))
+    expect_s3_class(result$data, "ggseg_atlas_data")
+  })
+})
+
+
+describe("as_ggseg_atlas.list", {
   it("converts legacy list with separate sf field", {
     sf_geom <- sf::st_sf(
       label = c("lh_frontal"),
@@ -114,17 +172,20 @@ describe("as_brain_atlas.list", {
       vertices = NULL
     )
 
-    result <- as_brain_atlas(legacy_list)
+    result <- as_ggseg_atlas(legacy_list)
 
-    expect_s3_class(result, "brain_atlas")
-    expect_s3_class(result$data, "brain_atlas_data")
+    expect_s3_class(result, "ggseg_atlas")
+    expect_s3_class(result$data, "ggseg_atlas_data")
   })
 })
 
 
 describe("convert_legacy_brain_data", {
   it("errors for non-brain_atlas input", {
-    expect_error(convert_legacy_brain_data(list()), "must be a.*brain_atlas")
+    expect_error(
+      convert_legacy_brain_data(list()),
+      "must be a.*brain_atlas.*ggseg_atlas"
+    )
   })
 
   it("returns atlas unchanged if already has core", {
@@ -132,7 +193,7 @@ describe("convert_legacy_brain_data", {
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
 
-    atlas <- brain_atlas(
+    atlas <- ggseg_atlas(
       atlas = "test",
       type = "cortical",
       core = core,
@@ -140,7 +201,7 @@ describe("convert_legacy_brain_data", {
     )
 
     result <- convert_legacy_brain_data(atlas)
-    expect_equal(result, atlas)
+    expect_s3_class(result, "ggseg_atlas")
   })
 
   it("converts legacy atlas without core", {
@@ -167,9 +228,9 @@ describe("convert_legacy_brain_data", {
 
     result <- convert_legacy_brain_data(legacy)
 
-    expect_s3_class(result, "brain_atlas")
+    expect_s3_class(result, "ggseg_atlas")
     expect_true(!is.null(result$core))
-    expect_s3_class(result$data, "brain_atlas_data")
+    expect_s3_class(result$data, "ggseg_atlas_data")
     expect_equal(result$atlas, "legacy")
   })
 
@@ -196,7 +257,7 @@ describe("convert_legacy_brain_data", {
 
     result <- convert_legacy_brain_data(legacy)
 
-    expect_s3_class(result, "brain_atlas")
+    expect_s3_class(result, "ggseg_atlas")
     expect_true("view" %in% names(result$data$sf))
   })
 
@@ -222,7 +283,7 @@ describe("convert_legacy_brain_data", {
 
     result <- convert_legacy_brain_data(legacy)
 
-    expect_s3_class(result, "brain_atlas")
+    expect_s3_class(result, "ggseg_atlas")
     expect_null(result$palette)
   })
 })

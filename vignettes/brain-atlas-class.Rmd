@@ -1,8 +1,8 @@
 ---
-title: "The brain_atlas object"
+title: "The ggseg_atlas object"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{The brain_atlas object}
+  %\VignetteIndexEntry{The ggseg_atlas object}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,15 +18,15 @@ knitr::opts_chunk$set(
 library(ggseg.formats)
 ```
 
-Everything in the ggseg ecosystem starts from a single object: the `brain_atlas`.
+Everything in the ggseg ecosystem starts from a single object: the `ggseg_atlas`.
 Whether you are making a 2D cortical flatmap with ggseg or spinning a 3D mesh in
 ggseg3d, the atlas is the container that holds the geometry, the region metadata,
 and the colour palette together. This vignette walks through the structure so you
 know exactly what you are working with.
 
-## What is a brain_atlas?
+## What is a ggseg_atlas?
 
-A `brain_atlas` is an S3 object that bundles five pieces of information into one
+A `ggseg_atlas` is an S3 object that bundles five pieces of information into one
 handle. Let's print the bundled Desikan-Killiany atlas to see what that looks
 like:
 
@@ -64,7 +64,7 @@ head(dk$palette)
 head(dk$core)
 ```
 
-Finally, `$data` is a `brain_atlas_data` object that holds the actual geometry.
+Finally, `$data` is a `ggseg_atlas_data` object that holds the actual geometry.
 Its contents depend on the atlas type.
 
 ```{r}
@@ -204,22 +204,22 @@ names(df)
 
 ## Checking and converting
 
-`is_brain_atlas()` tests whether an object has the right class:
+`is_ggseg_atlas()` tests whether an object has the right class:
 
 ```{r}
-is_brain_atlas(dk)
-is_brain_atlas(mtcars)
+is_ggseg_atlas(dk)
+is_ggseg_atlas(mtcars)
 ```
 
-`as_brain_atlas()` coerces lists with the right structure into a proper
-`brain_atlas`:
+`as_ggseg_atlas()` coerces lists with the right structure into a proper
+`ggseg_atlas`:
 
 ```{r}
 atlas_list <- as.list(dk)
-recovered <- as_brain_atlas(atlas_list)
-is_brain_atlas(recovered)
+recovered <- as_ggseg_atlas(atlas_list)
+is_ggseg_atlas(recovered)
 ```
 
 If you have an atlas object from an older version of ggseg that stored sf data
-directly in `$data` instead of using the new `brain_atlas_data` wrapper,
+directly in `$data` instead of using the new `ggseg_atlas_data` wrapper,
 `convert_legacy_brain_atlas()` will migrate it to the unified format.

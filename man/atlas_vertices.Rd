@@ -7,7 +7,7 @@
 atlas_vertices(atlas)
 }
 \arguments{
-\item{atlas}{a brain_atlas object}
+\item{atlas}{a ggseg_atlas object}
 }
 \value{
 data.frame with vertices ready for 3D rendering

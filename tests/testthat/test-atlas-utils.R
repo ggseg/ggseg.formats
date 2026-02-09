@@ -42,7 +42,7 @@ make_test_atlas <- function() {
   )
   vertices$vertices <- list(1L:3L, 4L:6L, 7L:9L)
 
-  brain_atlas(
+  ggseg_atlas(
     atlas = "test",
     type = "cortical",
     core = core,
@@ -134,7 +134,7 @@ make_multiview_atlas <- function() {
     core_labels
   )
 
-  brain_atlas(
+  ggseg_atlas(
     atlas = "test",
     type = "cortical",
     core = core,
@@ -166,11 +166,10 @@ describe("atlas_regions", {
   })
 
   it("works with ggseg_atlas", {
-    ga <- structure(
-      data.frame(region = c("frontal", "parietal"), label = c("a", "b")),
-      class = c("ggseg_atlas", "data.frame")
-    )
-    expect_equal(atlas_regions(ga), c("frontal", "parietal"))
+    atlas <- make_test_atlas()
+    result <- atlas_regions(atlas)
+    expect_true("frontal" %in% result)
+    expect_true("parietal" %in% result)
   })
 })
 
@@ -192,7 +191,7 @@ describe("atlas_labels", {
     )
     vertices <- data.frame(label = c("lh_frontal", NA))
     vertices$vertices <- list(1L:3L, 4L:6L)
-    atlas <- brain_atlas(
+    atlas <- ggseg_atlas(
       atlas = "test",
       type = "cortical",
       core = core,
@@ -686,8 +685,8 @@ describe("subclass preservation", {
   })
 
   it("bundled atlases have correct subclasses", {
-    expect_equal(class(dk), c("cortical_atlas", "brain_atlas", "list"))
-    expect_equal(class(aseg), c("subcortical_atlas", "brain_atlas", "list"))
-    expect_equal(class(tracula), c("tract_atlas", "brain_atlas", "list"))
+    expect_equal(class(dk), c("cortical_atlas", "ggseg_atlas", "list"))
+    expect_equal(class(aseg), c("subcortical_atlas", "ggseg_atlas", "list"))
+    expect_equal(class(tracula), c("tract_atlas", "ggseg_atlas", "list"))
   })
 })

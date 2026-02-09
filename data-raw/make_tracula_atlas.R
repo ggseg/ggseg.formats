@@ -84,7 +84,7 @@ cli::cli_alert_info(
   "Tracts with group info: {n_with_group}/{n_total}"
 )
 
-tracula <- brain_atlas(
+tracula <- ggseg_atlas(
   atlas = "tracula",
   type = "tract",
   palette = tracula_raw$palette,

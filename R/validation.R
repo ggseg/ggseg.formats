@@ -190,7 +190,7 @@ validate_tract_metadata <- function(metadata, label) {
 #' context-only geometry (like medial wall) that renders grey without
 #' appearing in legends.
 #'
-#' @param data brain_atlas_data object
+#' @param data ggseg_atlas_data object
 #' @param core core data.frame
 #' @param check_sf if TRUE, validate sf label coverage against core
 #' @return data (unchanged)

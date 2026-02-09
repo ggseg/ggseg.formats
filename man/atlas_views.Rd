@@ -10,7 +10,7 @@ atlas_views(atlas)
 brain_views(atlas)
 }
 \arguments{
-\item{atlas}{A \code{brain_atlas} object}
+\item{atlas}{A \code{ggseg_atlas} object}
 }
 \value{
 Character vector of view names, or NULL if no sf data

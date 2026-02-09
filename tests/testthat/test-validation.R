@@ -183,7 +183,7 @@ describe("validate_palette", {
     vertices$vertices <- list(1L:3L)
 
     expect_error(
-      brain_atlas(
+      ggseg_atlas(
         atlas = "test",
         type = "cortical",
         palette = c("red", "blue"),
@@ -200,7 +200,7 @@ describe("validate_palette", {
     vertices$vertices <- list(1L:3L)
 
     expect_warning(
-      brain_atlas(
+      ggseg_atlas(
         atlas = "test",
         type = "cortical",
         palette = c(lh_frontal = "#FF0000", unknown = "#00FF00"),
@@ -220,7 +220,7 @@ describe("validate_data_labels", {
     vertices$vertices <- list(1L:3L, 4L:6L)
 
     expect_no_warning(
-      brain_atlas(
+      ggseg_atlas(
         atlas = "test",
         type = "cortical",
         core = core,
@@ -245,7 +245,7 @@ describe("validate_data_labels", {
     )
 
     expect_no_warning(
-      brain_atlas(
+      ggseg_atlas(
         atlas = "test",
         type = "cortical",
         core = core,
@@ -269,7 +269,7 @@ describe("validate_data_labels", {
     core <- data.frame(hemi = NA, region = "hippocampus", label = "hippocampus")
 
     expect_no_warning(
-      brain_atlas(
+      ggseg_atlas(
         atlas = "test",
         type = "subcortical",
         core = core,
@@ -288,7 +288,7 @@ describe("validate_data_labels", {
     vertices$vertices <- list(1L:3L)
 
     expect_error(
-      brain_atlas(
+      ggseg_atlas(
         atlas = "test",
         type = "cortical",
         core = core,
@@ -328,7 +328,7 @@ describe("validate_data_labels", {
     )
 
     expect_warning(
-      atlas <- brain_atlas(
+      atlas <- ggseg_atlas(
         atlas = "test",
         type = "cortical",
         core = core,
@@ -336,6 +336,6 @@ describe("validate_data_labels", {
       ),
       "sf covers only 80%"
     )
-    expect_s3_class(atlas, "brain_atlas")
+    expect_s3_class(atlas, "ggseg_atlas")
   })
 })

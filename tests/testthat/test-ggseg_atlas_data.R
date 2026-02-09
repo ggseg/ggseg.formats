@@ -6,7 +6,7 @@ describe("brain_data_cortical", {
     data <- brain_data_cortical(vertices = vertices)
 
     expect_s3_class(data, "brain_data_cortical")
-    expect_s3_class(data, "brain_atlas_data")
+    expect_s3_class(data, "ggseg_atlas_data")
     expect_equal(nrow(data$vertices), 2)
   })
 
@@ -78,7 +78,7 @@ describe("brain_data_subcortical", {
     data <- brain_data_subcortical(meshes = meshes)
 
     expect_s3_class(data, "brain_data_subcortical")
-    expect_s3_class(data, "brain_atlas_data")
+    expect_s3_class(data, "ggseg_atlas_data")
     expect_equal(nrow(data$meshes), 1)
   })
 
@@ -135,7 +135,7 @@ describe("brain_data_tract", {
     data <- brain_data_tract(meshes = meshes)
 
     expect_s3_class(data, "brain_data_tract")
-    expect_s3_class(data, "brain_atlas_data")
+    expect_s3_class(data, "ggseg_atlas_data")
     expect_equal(nrow(data$centerlines), 1)
   })
 

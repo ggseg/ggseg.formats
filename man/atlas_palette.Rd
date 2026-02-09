@@ -11,7 +11,7 @@ brain_pal(name = "dk", ...)
 }
 \arguments{
 \item{name}{Character name of atlas (e.g., "dk", "aseg") or a
-brain_atlas object}
+ggseg_atlas object}
 
 \item{...}{Additional arguments (unused)}
 }

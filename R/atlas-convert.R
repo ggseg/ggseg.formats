@@ -1,12 +1,12 @@
 # Legacy atlas conversion ----
 
-#' Convert legacy ggseg atlases to brain_atlas format
+#' Convert legacy ggseg atlases to ggseg_atlas format
 #'
 #' @description
 #' `r lifecycle::badge("superseded")`
 #'
 #' Convert old-style ggseg (2D) and ggseg3d (3D) atlases into the new
-#' `brain_atlas` format. This is a bridge function for working with existing
+#' `ggseg_atlas` format. This is a bridge function for working with existing
 #' atlases during the transition period.
 #'
 #' For new atlases, use `ggsegExtra::create_cortical_atlas()` or
@@ -22,7 +22,7 @@
 #' those are preserved. Otherwise, vertex indices are inferred from mesh
 #' coordinates using hash-based matching (no FreeSurfer needed).
 #'
-#' @param atlas_2d A legacy `brain_atlas` or `ggseg_atlas` with 2D geometry,
+#' @param atlas_2d A `ggseg_atlas` (or legacy `brain_atlas`) with 2D geometry,
 #'   or NULL.
 #' @param atlas_3d A `ggseg3d_atlas` with mesh data, or NULL.
 #' @param atlas_name Name for the output atlas. If NULL, derived from input.
@@ -33,7 +33,7 @@
 #' @param brain_meshes Optional user-supplied brain meshes for vertex
 #'   inference.
 #'
-#' @return A `brain_atlas` object.
+#' @return A `ggseg_atlas` object.
 #' @export
 #' @importFrom dplyr case_when distinct
 #' @importFrom rlang %||%
@@ -67,8 +67,9 @@ convert_legacy_brain_atlas <- function(
     )
   }
 
-  if (has_2d && !inherits(atlas_2d, "brain_atlas")) {
-    cli::cli_abort("{.arg atlas_2d} must be a {.cls brain_atlas} object.")
+  if (has_2d && !inherits(atlas_2d, "brain_atlas") &&
+      !inherits(atlas_2d, "ggseg_atlas")) {
+    cli::cli_abort("{.arg atlas_2d} must be a {.cls ggseg_atlas} object.")
   }
 
   if (has_3d && !("ggseg_3d" %in% names(atlas_3d))) {
@@ -188,7 +189,7 @@ convert_legacy_brain_atlas <- function(
     brain_data_cortical(sf = sf_data, vertices = vertices_df)
   )
 
-  brain_atlas(
+  ggseg_atlas(
     atlas = atlas_name,
     type = type,
     palette = palette,

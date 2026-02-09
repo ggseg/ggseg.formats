@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-ggseg.formats provides the `brain_atlas` S3 class that powers the
+ggseg.formats provides the `ggseg_atlas` S3 class that powers the
 [ggseg](https://ggseg.github.io/ggseg/) ecosystem for 2D and 3D brain
 visualisation. It ships three bundled atlases, a set of accessor functions for
 querying atlas contents, and a pipe-friendly manipulation API for subsetting,
@@ -74,5 +74,5 @@ devtools::install_github("ggseg/ggseg.formats")
 
 ## Learn more
 
-- [The brain_atlas object](https://ggseg.github.io/ggseg.formats/articles/brain-atlas-class.html) — understanding atlas structure and accessors
+- [The ggseg_atlas object](https://ggseg.github.io/ggseg.formats/articles/brain-atlas-class.html) — understanding atlas structure and accessors
 - [Customising brain atlases](https://ggseg.github.io/ggseg.formats/articles/atlas-manipulation.html) — region, view, and metadata manipulation

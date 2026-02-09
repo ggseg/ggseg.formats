@@ -4,7 +4,7 @@ Version: 0.0.1
 Authors@R: 
     person("Athanasia Mo", "Mowinckel", , "a.m.mowinckel@psykologi.uio.no", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5756-0223"))
-Description: Provides the 'brain_atlas' S3 class used across the 'ggseg'
+Description: Provides the 'ggseg_atlas' S3 class used across the 'ggseg'
     ecosystem for 2D and 3D brain visualisation. Ships three bundled atlases
     (Desikan-Killiany, FreeSurfer aseg, TRACULA) and functions for querying,
     subsetting, renaming, and enriching atlas objects. Also includes readers

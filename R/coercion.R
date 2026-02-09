@@ -1,24 +1,24 @@
-#' Coerce to brain atlas
+#' Coerce to ggseg atlas
 #'
-#' @param x object to make into a brain_atlas
-#' @return an object of class 'brain_atlas'
+#' @param x object to make into a ggseg_atlas
+#' @return an object of class 'ggseg_atlas'
 #' @export
-as_brain_atlas <- function(x) {
-  UseMethod("as_brain_atlas")
+as_ggseg_atlas <- function(x) {
+  UseMethod("as_ggseg_atlas")
 }
 
 
 #' @export
-as_brain_atlas.default <- function(x) {
+as_ggseg_atlas.default <- function(x) {
   cli::cli_abort(
-    "Cannot convert {.cls {class(x)[1]}} to {.cls brain_atlas}."
+    "Cannot convert {.cls {class(x)[1]}} to {.cls ggseg_atlas}."
   )
 }
 
 
 #' @export
-as_brain_atlas.brain_atlas <- function(x) {
-  if (!is.null(x$data) && inherits(x$data, "brain_atlas_data")) {
+as_ggseg_atlas.ggseg_atlas <- function(x) {
+  if (!is.null(x$data) && inherits(x$data, "ggseg_atlas_data")) {
     return(x)
   }
 
@@ -29,14 +29,56 @@ as_brain_atlas.brain_atlas <- function(x) {
     return(convert_legacy_structure(x))
   }
 
-  cli::cli_abort("Cannot convert brain_atlas: unrecognized structure.")
+  cli::cli_abort("Cannot convert ggseg_atlas: unrecognized structure.")
 }
 
 
 #' @export
-as_brain_atlas.list <- function(x) {
-  if ("data" %in% names(x) && inherits(x$data, "brain_atlas_data")) {
-    return(brain_atlas(
+as_ggseg_atlas.brain_atlas <- function(x) {
+  lifecycle::deprecate_warn(
+    "0.2.0",
+    I('Converting legacy `brain_atlas` objects'),
+    I('`ggseg_atlas()` (use `as_ggseg_atlas()`)'),
+    always = TRUE
+  )
+
+  if (!is.null(x$data) && inherits(x$data, "ggseg_atlas_data")) {
+    return(restamp_class(x))
+  }
+
+  if (!is.null(x$core)) {
+    if (!is.null(x$sf) || !is.null(x$vertices) || !is.null(x$meshes)) {
+      return(convert_legacy_structure(x))
+    }
+    if (!is.null(x$data) && is.data.frame(x$data)) {
+      return(convert_legacy_brain_data(x))
+    }
+  }
+
+  if (is.null(x$core) && !is.null(x$data) && is.data.frame(x$data)) {
+    return(convert_legacy_brain_data(x))
+  }
+
+  cli::cli_abort("Cannot convert legacy brain_atlas: unrecognized structure.")
+}
+
+
+#' @export
+as_ggseg_atlas.ggseg3d_atlas <- function(x) {
+  lifecycle::deprecate_warn(
+    "0.2.0",
+    I('Converting legacy `ggseg3d_atlas` objects'),
+    I('`ggseg_atlas()` (use `as_ggseg_atlas()`)'),
+    always = TRUE
+  )
+  convert_legacy_brain_atlas(atlas_3d = x)
+}
+
+
+#' @export
+as_ggseg_atlas.list <- function(x) {
+  if ("data" %in% names(x) && inherits(x$data, "ggseg_atlas_data")) {
+    return(ggseg_atlas(
       atlas = x$atlas,
       type = x$type,
       palette = x$palette,
@@ -50,30 +92,44 @@ as_brain_atlas.list <- function(x) {
       names(x) &&
       ("sf" %in% names(x) || "vertices" %in% names(x) || "meshes" %in% names(x))
   ) {
-    legacy <- structure(x, class = "brain_atlas")
+    legacy <- structure(x, class = "ggseg_atlas")
     return(convert_legacy_structure(legacy))
   }
 
   cli::cli_abort(
-    "Cannot convert list to {.cls brain_atlas}."
+    "Cannot convert list to {.cls ggseg_atlas}."
   )
 }
+
+
+#' @rdname as_ggseg_atlas
+#' @export
+#' @keywords internal
+as_brain_atlas <- function(x) {
+  lifecycle::deprecate_warn(
+    "0.2.0",
+    "as_brain_atlas()",
+    "as_ggseg_atlas()"
+  )
+  as_ggseg_atlas(x)
+}
+
 
 #' Convert legacy brain_atlas data to unified format
 #'
 #' Converts an old-style brain_atlas (where `$data` contains sf directly)
-#' to the unified format with `$core` and `$data` (brain_atlas_data).
+#' to the unified format with `$core` and `$data` (ggseg_atlas_data).
 #'
 #' @param x A legacy brain_atlas
-#' @return A brain_atlas in unified format
+#' @return A ggseg_atlas in unified format
 #' @keywords internal
 convert_legacy_brain_data <- function(x) {
-  if (!inherits(x, "brain_atlas")) {
-    cli::cli_abort("{.arg x} must be a {.cls brain_atlas}.")
+  if (!inherits(x, "brain_atlas") && !inherits(x, "ggseg_atlas")) {
+    cli::cli_abort("{.arg x} must be a {.cls brain_atlas} or {.cls ggseg_atlas}.")
   }
 
   if (!is.null(x$core)) {
-    return(x)
+    return(restamp_class(x))
   }
 
   sf_data <- x$data
@@ -102,7 +158,7 @@ convert_legacy_brain_data <- function(x) {
     brain_data_cortical(sf = sf_data, vertices = NULL)
   )
 
-  brain_atlas(
+  ggseg_atlas(
     atlas = x$atlas,
     type = type,
     palette = palette,
@@ -118,7 +174,7 @@ convert_legacy_brain_data <- function(x) {
 #' new structure with a single data field.
 #'
 #' @param x A legacy brain_atlas
-#' @return A brain_atlas with the new structure
+#' @return A ggseg_atlas with the new structure
 #' @keywords internal
 convert_legacy_structure <- function(x) {
   type <- x$type
@@ -131,11 +187,32 @@ convert_legacy_structure <- function(x) {
     cli::cli_abort("Unknown atlas type: {.val {type}}")
   )
 
-  brain_atlas(
+  ggseg_atlas(
     atlas = x$atlas,
     type = type,
     palette = x$palette,
     core = x$core,
     data = data
+  )
+}
+
+
+#' @keywords internal
+#' @noRd
+restamp_class <- function(x) {
+  type <- x$type %||% "cortical"
+  structure(
+    list(
+      atlas = x$atlas,
+      type = type,
+      palette = x$palette,
+      core = x$core,
+      data = x$data
+    ),
+    class = c(
+      paste0(type, "_atlas"),
+      "ggseg_atlas",
+      "list"
+    )
   )
 }

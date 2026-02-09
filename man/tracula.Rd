@@ -5,7 +5,7 @@
 \alias{tracula}
 \title{TRACULA White Matter Tract Atlas}
 \format{
-A \code{brain_atlas} object with components:
+A \code{ggseg_atlas} object with components:
 \describe{
 \item{atlas}{Character. Atlas name ("tracula")}
 \item{type}{Character. Atlas type ("tract")}
@@ -44,7 +44,7 @@ Frontiers in Neuroinformatics, 5:23.
 \seealso{
 \link{dk} for cortical parcellation,
 \link{aseg} for subcortical structures,
-\code{\link[=brain_atlas]{brain_atlas()}} for the atlas class constructor
+\code{\link[=ggseg_atlas]{ggseg_atlas()}} for the atlas class constructor
 
 Other ggseg_atlases: 
 \code{\link{aseg}},

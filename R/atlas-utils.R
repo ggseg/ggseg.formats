@@ -10,7 +10,7 @@ atlas_regions <- function(x) {
 #' @export
 #' @rdname atlas_regions
 atlas_regions.ggseg_atlas <- function(x) {
-  get_uniq(x, "region")
+  get_uniq(x$core, "region")
 }
 
 #' @export
@@ -47,7 +47,7 @@ atlas_labels <- function(x) {
 #' @export
 #' @rdname atlas_labels
 atlas_labels.ggseg_atlas <- function(x) {
-  get_uniq(x, "label")
+  get_uniq(x$core, "label")
 }
 
 #' @export
@@ -110,7 +110,7 @@ guess_type <- function(x) {
 
   cli::cli_warn("Atlas type not set, attempting to guess type.")
 
-  views <- if (is_brain_atlas(x) && !is.null(x$sf)) {
+  views <- if (is_ggseg_atlas(x) && !is.null(x$sf)) {
     x$sf$view
   } else if ("view" %in% names(x)) {
     x$view
@@ -149,7 +149,7 @@ guess_type <- function(x) {
 #' **Core manipulation** modifies atlas metadata:
 #' - `atlas_core_add()`: join additional metadata columns
 #'
-#' @param atlas A `brain_atlas` object
+#' @param atlas A `ggseg_atlas` object
 #' @param pattern Character pattern to match. Uses
 #'   `grepl(..., ignore.case = TRUE)`.
 #' @param match_on Column to match against: `"region"` or `"label"`.
@@ -165,7 +165,7 @@ guess_type <- function(x) {
 #' @param data For `atlas_core_add()`: data.frame with metadata to join.
 #' @param by For `atlas_core_add()`: column(s) to join by. Default `"region"`.
 #'
-#' @return Modified `brain_atlas` object
+#' @return Modified `ggseg_atlas` object
 #'
 #' @examples
 #' \dontrun{
@@ -228,7 +228,7 @@ atlas_region_remove <- function(
     }
   }
 
-  brain_atlas(
+  ggseg_atlas(
     atlas = atlas$atlas,
     type = atlas$type,
     palette = new_palette,
@@ -282,7 +282,7 @@ atlas_region_contextual <- function(
     new_data <- atlas$data
   }
 
-  brain_atlas(
+  ggseg_atlas(
     atlas = atlas$atlas,
     type = atlas$type,
     palette = new_palette,
@@ -312,7 +312,7 @@ atlas_region_rename <- function(atlas, pattern, replacement) {
     )
   }
 
-  brain_atlas(
+  ggseg_atlas(
     atlas = atlas$atlas,
     type = atlas$type,
     palette = atlas$palette,
@@ -362,7 +362,7 @@ atlas_region_keep <- function(atlas, pattern, match_on = c("region", "label")) {
     new_data <- atlas$data
   }
 
-  brain_atlas(
+  ggseg_atlas(
     atlas = atlas$atlas,
     type = atlas$type,
     palette = new_palette,
@@ -378,7 +378,7 @@ atlas_region_keep <- function(atlas, pattern, match_on = c("region", "label")) {
 atlas_core_add <- function(atlas, data, by = "region") {
   new_core <- dplyr::left_join(atlas$core, data, by = by)
 
-  brain_atlas(
+  ggseg_atlas(
     atlas = atlas$atlas,
     type = atlas$type,
     palette = atlas$palette,
@@ -392,7 +392,7 @@ atlas_core_add <- function(atlas, data, by = "region") {
 
 #' Get available views in atlas
 #'
-#' @param atlas A `brain_atlas` object
+#' @param atlas A `ggseg_atlas` object
 #' @return Character vector of view names, or NULL if no sf data
 #' @export
 atlas_views <- function(atlas) {
@@ -658,7 +658,7 @@ rebuild_atlas <- function(atlas, new_data) {
     ),
     class = c(
       paste0(atlas$type, "_atlas"),
-      "brain_atlas",
+      "ggseg_atlas",
       "list"
     )
   )

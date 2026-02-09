@@ -83,7 +83,7 @@ cli::cli_alert_info(
   "Regions with lobe info: {n_with_lobe}/{n_total}"
 )
 
-dk <- brain_atlas(
+dk <- ggseg_atlas(
   atlas = dk_raw$atlas,
   type = dk_raw$type,
   palette = dk_raw$palette,

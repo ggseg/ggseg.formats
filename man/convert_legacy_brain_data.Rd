@@ -10,10 +10,10 @@ convert_legacy_brain_data(x)
 \item{x}{A legacy brain_atlas}
 }
 \value{
-A brain_atlas in unified format
+A ggseg_atlas in unified format
 }
 \description{
 Converts an old-style brain_atlas (where \verb{$data} contains sf directly)
-to the unified format with \verb{$core} and \verb{$data} (brain_atlas_data).
+to the unified format with \verb{$core} and \verb{$data} (ggseg_atlas_data).
 }
 \keyword{internal}

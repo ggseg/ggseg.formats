@@ -1,6 +1,6 @@
-#' Constructor for brain atlas
+#' Constructor for ggseg atlas
 #'
-#' Creates an object of class 'brain_atlas' for plotting brain parcellations
+#' Creates an object of class 'ggseg_atlas' for plotting brain parcellations
 #' using ggseg (2D) and ggseg3d (3D).
 #'
 #' @param atlas atlas short name, length one
@@ -9,18 +9,18 @@
 #' @param core data.frame with required columns hemi, region, label (one row per
 #'   unique region). May contain additional columns for grouping or metadata
 #'   (e.g., lobe, network, Brodmann area).
-#' @param data a brain_atlas_data object created by
+#' @param data a ggseg_atlas_data object created by
 #'   [brain_data_cortical()], [brain_data_subcortical()],
 #'   or [brain_data_tract()].
 #'   Must match the specified type.
 #'
-#' @return an object of class 'brain_atlas'
+#' @return an object of class 'ggseg_atlas'
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Cortical atlas
-#' atlas <- brain_atlas(
+#' atlas <- ggseg_atlas(
 #'   atlas = "dk",
 #'   type = "cortical",
 #'   core = core_df,
@@ -28,7 +28,7 @@
 #' )
 #'
 #' # Tract atlas
-#' atlas <- brain_atlas(
+#' atlas <- ggseg_atlas(
 #'   atlas = "hcp_tracts",
 #'   type = "tract",
 #'   core = core_df,
@@ -38,7 +38,7 @@
 #'   )
 #' )
 #' }
-brain_atlas <- function(atlas, type, core, data, palette = NULL) {
+ggseg_atlas <- function(atlas, type, core, data, palette = NULL) {
   type <- match.arg(type, c("cortical", "subcortical", "tract"))
 
   if (length(atlas) != 1 || !is.character(atlas)) {
@@ -59,9 +59,9 @@ brain_atlas <- function(atlas, type, core, data, palette = NULL) {
     )
   }
 
-  if (!inherits(data, "brain_atlas_data")) {
+  if (!inherits(data, "ggseg_atlas_data") && !inherits(data, "brain_atlas_data")) {
     cli::cli_abort(c(
-      "{.arg data} must be a {.cls brain_atlas_data} object.",
+      "{.arg data} must be a {.cls ggseg_atlas_data} object.",
       "i" = "Use {.fn brain_data_cortical}, {.fn brain_data_subcortical},
       or {.fn brain_data_tract}."
     ))
@@ -91,52 +91,93 @@ brain_atlas <- function(atlas, type, core, data, palette = NULL) {
     ),
     class = c(
       paste0(type, "_atlas"),
-      "brain_atlas",
+      "ggseg_atlas",
       "list"
     )
   )
 }
 
 
-#' Check brain atlas class
+#' @rdname ggseg_atlas
+#' @export
+#' @keywords internal
+brain_atlas <- function(atlas, type, core, data, palette = NULL) {
+  lifecycle::deprecate_warn(
+    "0.2.0",
+    "brain_atlas()",
+    "ggseg_atlas()"
+  )
+  ggseg_atlas(
+    atlas = atlas,
+    type = type,
+    core = core,
+    data = data,
+    palette = palette
+  )
+}
+
+
+#' Check ggseg atlas class
 #'
 #' These functions check both the class tag and structural validity
-#' by passing the object through [brain_atlas()]. An object that
+#' by passing the object through [ggseg_atlas()]. An object that
 #' carries the right class but fails validation returns `FALSE`.
 #'
 #' @param x an object
 #' @return logical
-#' @name is_brain_atlas
+#' @name is_ggseg_atlas
 #' @export
-is_brain_atlas <- function(x) {
-  inherits(x, "brain_atlas") && validate_brain_atlas(x)
+is_ggseg_atlas <- function(x) {
+  (inherits(x, "ggseg_atlas") || inherits(x, "brain_atlas")) &&
+    validate_ggseg_atlas(x)
 }
 
-#' @rdname is_brain_atlas
+#' @rdname is_ggseg_atlas
 #' @export
 is_cortical_atlas <- function(x) {
-  inherits(x, "cortical_atlas") && validate_brain_atlas(x)
+  inherits(x, "cortical_atlas") && validate_ggseg_atlas(x)
 }
 
-#' @rdname is_brain_atlas
+#' @rdname is_ggseg_atlas
 #' @export
 is_subcortical_atlas <- function(x) {
-  inherits(x, "subcortical_atlas") && validate_brain_atlas(x)
+  inherits(x, "subcortical_atlas") && validate_ggseg_atlas(x)
 }
 
-#' @rdname is_brain_atlas
+#' @rdname is_ggseg_atlas
 #' @export
 is_tract_atlas <- function(x) {
-  inherits(x, "tract_atlas") && validate_brain_atlas(x)
+  inherits(x, "tract_atlas") && validate_ggseg_atlas(x)
+}
+
+#' @rdname is_ggseg_atlas
+#' @export
+#' @keywords internal
+is_brain_atlas <- function(x) {
+  lifecycle::deprecate_warn(
+    "0.2.0",
+    "is_brain_atlas()",
+    "is_ggseg_atlas()"
+  )
+  is_ggseg_atlas(x)
+}
+
+#' Check if object is a legacy ggseg3d atlas
+#'
+#' @param x an object
+#' @return logical
+#' @export
+is_ggseg3d_atlas <- function(x) {
+  is.data.frame(x) && "ggseg_3d" %in% names(x)
 }
 
 
 #' @keywords internal
 #' @noRd
-validate_brain_atlas <- function(x) {
+validate_ggseg_atlas <- function(x) {
   tryCatch(
     {
-      brain_atlas(
+      ggseg_atlas(
         atlas = x$atlas,
         type = x$type,
         core = x$core,
@@ -152,7 +193,7 @@ validate_brain_atlas <- function(x) {
 
 #' @export
 #' @importFrom stats na.omit
-print.brain_atlas <- function(x, ...) {
+print.ggseg_atlas <- function(x, ...) {
   data <- x$data
   has_sf <- !is.null(data$sf)
   has_3d <- !is.null(data$vertices) ||
@@ -209,7 +250,7 @@ print.brain_atlas <- function(x, ...) {
 
 
 #' @export
-as.list.brain_atlas <- function(x, ...) {
+as.list.ggseg_atlas <- function(x, ...) {
   list(
     atlas = x$atlas,
     type = x$type,
@@ -222,8 +263,8 @@ as.list.brain_atlas <- function(x, ...) {
 
 #' @export
 #' @importFrom dplyr left_join select any_of
-as.data.frame.brain_atlas <- function(x, ...) {
-  sf_data <- if (inherits(x$data, "brain_atlas_data") && !is.null(x$data$sf)) {
+as.data.frame.ggseg_atlas <- function(x, ...) {
+  sf_data <- if (inherits(x$data, "ggseg_atlas_data") && !is.null(x$data$sf)) {
     sf::st_as_sf(x$data$sf)
   } else if (inherits(x$data, "sf") || inherits(x$data, "data.frame")) {
     sf::st_as_sf(x$data)
@@ -233,7 +274,9 @@ as.data.frame.brain_atlas <- function(x, ...) {
 
   n <- if (!is.null(sf_data)) nrow(sf_data) else 0
   if (is.null(n) || n == 0) {
-    cli::cli_abort("Cannot convert brain_atlas to data.frame: no 2D geometry.")
+    cli::cli_abort(
+      "Cannot convert ggseg_atlas to data.frame: no 2D geometry."
+    )
   }
 
   if (!is.null(x$core)) {
@@ -286,7 +329,7 @@ as.data.frame.brain_atlas <- function(x, ...) {
 #' @importFrom ggplot2 aes ggplot labs scale_fill_manual geom_sf
 #' @importFrom stats setNames
 #' @export
-plot.brain_atlas <- function(x, show.legend = FALSE, ...) {
+plot.ggseg_atlas <- function(x, show.legend = FALSE, ...) {
   # nolint end: object_name_linter
   p <- ggplot(as.data.frame(x)) +
     # nolint start [object_usage_linter]

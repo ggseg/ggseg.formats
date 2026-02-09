@@ -1,6 +1,6 @@
 library(vdiffr, quietly = TRUE, warn.conflicts = FALSE)
 
-describe("plot.brain_atlas", {
+describe("plot.ggseg_atlas", {
   it("plots dk atlas", {
     set.seed(1234)
     expect_doppelganger("brain atlas dk plot", plot(dk))

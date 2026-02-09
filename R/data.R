@@ -9,7 +9,7 @@
 #' The atlas works with both ggseg (2D polygon plots) and ggseg3d (3D mesh
 #' visualizations) from a single object.
 #'
-#' @format A `brain_atlas` object with components:
+#' @format A `ggseg_atlas` object with components:
 #' \describe{
 #'   \item{atlas}{Character. Atlas name ("dk")}
 #'   \item{type}{Character. Atlas type ("cortical")}
@@ -59,7 +59,7 @@
 #'
 #' @seealso
 #' [aseg] for subcortical structures,
-#' [brain_atlas()] for the atlas class constructor
+#' [ggseg_atlas()] for the atlas class constructor
 #'
 #' @family ggseg_atlases
 #' @docType data
@@ -88,7 +88,7 @@
 #' It works with both ggseg (2D slice views) and ggseg3d (3D mesh
 #' visualizations) from a single object.
 #'
-#' @format A `brain_atlas` object with components:
+#' @format A `ggseg_atlas` object with components:
 #' \describe{
 #'   \item{atlas}{Character. Atlas name ("aseg")}
 #'   \item{type}{Character. Atlas type ("subcortical")}
@@ -145,7 +145,7 @@
 #'
 #' @seealso
 #' [dk] for cortical parcellation,
-#' [brain_atlas()] for the atlas class constructor
+#' [ggseg_atlas()] for the atlas class constructor
 #'
 #' @family ggseg_atlases
 #' @docType data
@@ -170,7 +170,7 @@
 #' MRI using FreeSurfer's TRACULA training data. It works with both ggseg
 #' (2D slice projections) and ggseg3d (3D tube mesh visualizations).
 #'
-#' @format A `brain_atlas` object with components:
+#' @format A `ggseg_atlas` object with components:
 #' \describe{
 #'   \item{atlas}{Character. Atlas name ("tracula")}
 #'   \item{type}{Character. Atlas type ("tract")}
@@ -193,7 +193,7 @@
 #' @seealso
 #' [dk] for cortical parcellation,
 #' [aseg] for subcortical structures,
-#' [brain_atlas()] for the atlas class constructor
+#' [ggseg_atlas()] for the atlas class constructor
 #'
 #' @family ggseg_atlases
 #' @docType data

@@ -1,12 +1,12 @@
-describe("brain_atlas class", {
-  it("dk is a brain_atlas", {
-    expect_true(is_brain_atlas(dk))
-    expect_s3_class(dk, "brain_atlas")
+describe("ggseg_atlas class", {
+  it("dk is a ggseg_atlas", {
+    expect_true(is_ggseg_atlas(dk))
+    expect_s3_class(dk, "ggseg_atlas")
   })
 
-  it("as_brain_atlas round-trips", {
-    result <- as_brain_atlas(dk)
-    expect_s3_class(result, "brain_atlas")
+  it("as_ggseg_atlas round-trips", {
+    result <- as_ggseg_atlas(dk)
+    expect_s3_class(result, "ggseg_atlas")
   })
 
   it("as.data.frame returns sf data", {
@@ -42,7 +42,7 @@ describe("brain_atlas class", {
   })
 
   it("aseg atlas works", {
-    expect_true(is_brain_atlas(aseg))
+    expect_true(is_ggseg_atlas(aseg))
     df <- as.data.frame(aseg)
     expect_true(inherits(df, "data.frame"))
   })
@@ -71,19 +71,19 @@ describe("is_*_atlas helpers", {
     expect_false(is_tract_atlas("string"))
   })
 
-  it("is_brain_atlas matches all subtypes", {
-    expect_true(is_brain_atlas(dk))
-    expect_true(is_brain_atlas(aseg))
-    expect_true(is_brain_atlas(tracula))
+  it("is_ggseg_atlas matches all subtypes", {
+    expect_true(is_ggseg_atlas(dk))
+    expect_true(is_ggseg_atlas(aseg))
+    expect_true(is_ggseg_atlas(tracula))
   })
 
   it("rejects objects with faked class", {
-    fake <- structure(list(x = 1), class = "brain_atlas")
-    expect_false(is_brain_atlas(fake))
+    fake <- structure(list(x = 1), class = "ggseg_atlas")
+    expect_false(is_ggseg_atlas(fake))
 
     fake_cortical <- structure(
       list(x = 1),
-      class = c("cortical_atlas", "brain_atlas")
+      class = c("cortical_atlas", "ggseg_atlas")
     )
     expect_false(is_cortical_atlas(fake_cortical))
   })

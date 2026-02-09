@@ -9,7 +9,7 @@ describe("convert_legacy_brain_atlas", {
   it("errors when atlas_2d is wrong class", {
     expect_error(
       convert_legacy_brain_atlas(atlas_2d = "not_an_atlas"),
-      "brain_atlas"
+      "ggseg_atlas"
     )
   })
 
@@ -53,7 +53,7 @@ describe("convert_legacy_brain_atlas", {
 
     result <- convert_legacy_brain_atlas(atlas_2d = mock_2d)
 
-    expect_s3_class(result, "brain_atlas")
+    expect_s3_class(result, "ggseg_atlas")
     expect_equal(result$atlas, "test")
   })
 
@@ -88,7 +88,7 @@ describe("convert_legacy_brain_atlas", {
 
     result <- convert_legacy_brain_atlas(atlas_3d = mock_3d)
 
-    expect_s3_class(result, "brain_atlas")
+    expect_s3_class(result, "ggseg_atlas")
     expect_equal(result$atlas, "test")
     expect_true("vertices" %in% names(result$data$vertices))
   })
@@ -160,7 +160,7 @@ describe("convert_legacy_brain_atlas", {
       atlas_3d = mock_3d, type = "subcortical"
     )
 
-    expect_s3_class(result, "brain_atlas")
+    expect_s3_class(result, "ggseg_atlas")
     expect_equal(result$type, "subcortical")
   })
 
@@ -196,7 +196,7 @@ describe("convert_legacy_brain_atlas", {
 
     result <- convert_legacy_brain_atlas(atlas_2d = mock_2d)
 
-    expect_s3_class(result, "brain_atlas")
+    expect_s3_class(result, "ggseg_atlas")
     expect_equal(result$atlas, "old_atlas")
   })
 
@@ -232,7 +232,7 @@ describe("convert_legacy_brain_atlas", {
 
     result <- convert_legacy_brain_atlas(atlas_2d = mock_2d)
 
-    expect_s3_class(result, "brain_atlas")
+    expect_s3_class(result, "ggseg_atlas")
     expect_false(is.null(result$data$sf))
   })
 
@@ -306,7 +306,7 @@ describe("convert_legacy_brain_atlas", {
       atlas_3d = mock_3d, type = "subcortical"
     )
 
-    expect_s3_class(result, "brain_atlas")
+    expect_s3_class(result, "ggseg_atlas")
     expect_false(is.null(result$data$meshes))
     mesh <- result$data$meshes$mesh[[1]]
     expect_equal(mesh$vertices$x, c(1, 4, 7))

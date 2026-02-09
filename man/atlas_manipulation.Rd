@@ -43,7 +43,7 @@ atlas_view_gather(atlas, gap = 0.15)
 atlas_view_reorder(atlas, order, gap = 0.15)
 }
 \arguments{
-\item{atlas}{A \code{brain_atlas} object}
+\item{atlas}{A \code{ggseg_atlas} object}
 
 \item{pattern}{Character pattern to match. Uses
 \code{grepl(..., ignore.case = TRUE)}.}
@@ -69,7 +69,7 @@ area to keep. Context geometries are never removed.}
 view order. Unspecified views appended at end.}
 }
 \value{
-Modified \code{brain_atlas} object
+Modified \code{ggseg_atlas} object
 }
 \description{
 Functions for modifying brain atlas objects. These cover three areas:

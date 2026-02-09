@@ -7,7 +7,7 @@
 validate_data_labels(data, core, check_sf = FALSE)
 }
 \arguments{
-\item{data}{brain_atlas_data object}
+\item{data}{ggseg_atlas_data object}
 
 \item{core}{core data.frame}
 

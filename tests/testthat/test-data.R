@@ -1,7 +1,7 @@
 describe("dk atlas", {
   it("is a valid brain_atlas", {
-    expect_true(is_brain_atlas(dk))
-    expect_s3_class(dk, "brain_atlas")
+    expect_true(is_ggseg_atlas(dk))
+    expect_s3_class(dk, "ggseg_atlas")
   })
 
   it("has correct atlas name and type", {
@@ -14,7 +14,7 @@ describe("dk atlas", {
   })
 
   it("has valid data structure", {
-    expect_s3_class(dk$data, "brain_atlas_data")
+    expect_s3_class(dk$data, "ggseg_atlas_data")
     expect_s3_class(dk$data, "brain_data_cortical")
   })
 
@@ -38,8 +38,8 @@ describe("dk atlas", {
 
 describe("aseg atlas", {
   it("is a valid brain_atlas", {
-    expect_true(is_brain_atlas(aseg))
-    expect_s3_class(aseg, "brain_atlas")
+    expect_true(is_ggseg_atlas(aseg))
+    expect_s3_class(aseg, "ggseg_atlas")
   })
 
   it("has correct atlas name and type", {
@@ -52,7 +52,7 @@ describe("aseg atlas", {
   })
 
   it("has valid data structure", {
-    expect_s3_class(aseg$data, "brain_atlas_data")
+    expect_s3_class(aseg$data, "ggseg_atlas_data")
     expect_s3_class(aseg$data, "brain_data_subcortical")
   })
 

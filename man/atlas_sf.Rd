@@ -7,7 +7,7 @@
 atlas_sf(atlas)
 }
 \arguments{
-\item{atlas}{a brain_atlas object}
+\item{atlas}{a ggseg_atlas object}
 }
 \value{
 sf data.frame ready for plotting

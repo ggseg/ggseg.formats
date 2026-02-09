@@ -121,7 +121,7 @@ cli::cli_alert_info(
 )
 
 # Rebuild atlas with enriched core
-aseg <- brain_atlas(
+aseg <- ggseg_atlas(
   atlas = aseg_raw$atlas,
   type = aseg_raw$type,
   palette = aseg_raw$palette,

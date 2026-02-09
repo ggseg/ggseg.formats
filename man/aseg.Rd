@@ -5,7 +5,7 @@
 \alias{aseg}
 \title{FreeSurfer Automatic Subcortical Segmentation Atlas}
 \format{
-A \code{brain_atlas} object with components:
+A \code{ggseg_atlas} object with components:
 \describe{
 \item{atlas}{Character. Atlas name ("aseg")}
 \item{type}{Character. Atlas type ("subcortical")}
@@ -86,7 +86,7 @@ Neuron, 33(3):341-355.
 }
 \seealso{
 \link{dk} for cortical parcellation,
-\code{\link[=brain_atlas]{brain_atlas()}} for the atlas class constructor
+\code{\link[=ggseg_atlas]{ggseg_atlas()}} for the atlas class constructor
 
 Other ggseg_atlases: 
 \code{\link{dk}},

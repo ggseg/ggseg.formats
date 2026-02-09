@@ -3,7 +3,7 @@
 \name{convert_legacy_brain_atlas}
 \alias{convert_legacy_brain_atlas}
 \alias{unify_legacy_atlases}
-\title{Convert legacy ggseg atlases to brain_atlas format}
+\title{Convert legacy ggseg atlases to ggseg_atlas format}
 \usage{
 convert_legacy_brain_atlas(
   atlas_2d = NULL,
@@ -24,7 +24,7 @@ unify_legacy_atlases(
 )
 }
 \arguments{
-\item{atlas_2d}{A legacy \code{brain_atlas} or \code{ggseg_atlas} with 2D geometry,
+\item{atlas_2d}{A \code{ggseg_atlas} (or legacy \code{brain_atlas}) with 2D geometry,
 or NULL.}
 
 \item{atlas_3d}{A \code{ggseg3d_atlas} with mesh data, or NULL.}
@@ -41,13 +41,13 @@ from the input atlases.}
 inference.}
 }
 \value{
-A \code{brain_atlas} object.
+A \code{ggseg_atlas} object.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
 
 Convert old-style ggseg (2D) and ggseg3d (3D) atlases into the new
-\code{brain_atlas} format. This is a bridge function for working with existing
+\code{ggseg_atlas} format. This is a bridge function for working with existing
 atlases during the transition period.
 
 For new atlases, use \code{ggsegExtra::create_cortical_atlas()} or

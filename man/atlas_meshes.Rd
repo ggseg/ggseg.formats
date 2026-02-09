@@ -7,7 +7,7 @@
 atlas_meshes(atlas)
 }
 \arguments{
-\item{atlas}{a brain_atlas object}
+\item{atlas}{a ggseg_atlas object}
 }
 \value{
 data.frame with meshes ready for 3D rendering
