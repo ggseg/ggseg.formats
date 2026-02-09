@@ -8,5 +8,10 @@
 "_PACKAGE"
 
 utils::globalVariables(c(
-  "hemi", "id", "label", "StructName", "subject", "value"
+  "hemi",
+  "id",
+  "label",
+  "StructName",
+  "subject",
+  "value"
 ))

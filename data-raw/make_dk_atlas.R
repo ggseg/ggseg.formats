@@ -37,7 +37,8 @@ if (!dir.exists(fsaverage5_dir)) {
 }
 
 annot_files <- file.path(
-  fsaverage5_dir, "label",
+  fsaverage5_dir,
+  "label",
   c("lh.aparc.annot", "rh.aparc.annot")
 )
 
@@ -76,8 +77,10 @@ core_with_meta <- dk_raw$core |>
   mutate(region = coalesce(region_pretty, region)) |>
   select(hemi, region, label, lobe)
 
+n_with_lobe <- sum(!is.na(core_with_meta$lobe))
+n_total <- nrow(core_with_meta)
 cli::cli_alert_info(
-  "Regions with lobe info: {sum(!is.na(core_with_meta$lobe))}/{nrow(core_with_meta)}"
+  "Regions with lobe info: {n_with_lobe}/{n_total}"
 )
 
 dk <- brain_atlas(

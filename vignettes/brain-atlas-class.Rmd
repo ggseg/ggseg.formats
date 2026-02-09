@@ -131,25 +131,25 @@ manipulation vignette).
 A set of accessor functions lets you pull information out without reaching into
 slots directly.
 
-`brain_regions()` returns the sorted unique region names:
+`atlas_regions()` returns the sorted unique region names:
 
 ```{r}
-brain_regions(dk)
+atlas_regions(dk)
 ```
 
-`brain_labels()` returns the unique labels (the identifiers used to join
+`atlas_labels()` returns the unique labels (the identifiers used to join
 geometry):
 
 ```{r}
-head(brain_labels(dk))
+head(atlas_labels(dk))
 ```
 
-`brain_views()` returns the available 2D views:
+`atlas_views()` returns the available 2D views:
 
 ```{r}
-brain_views(dk)
-brain_views(aseg)
-brain_views(tracula)
+atlas_views(dk)
+atlas_views(aseg)
+atlas_views(tracula)
 ```
 
 `atlas_type()` returns the type string:
@@ -160,11 +160,11 @@ atlas_type(aseg)
 atlas_type(tracula)
 ```
 
-`brain_pal()` retrieves the colour palette. You can pass the atlas object
+`atlas_palette()` retrieves the colour palette. You can pass the atlas object
 directly or its name as a string:
 
 ```{r}
-head(brain_pal(dk))
+head(atlas_palette(dk))
 ```
 
 ## Extracting render-ready data

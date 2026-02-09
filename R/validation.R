@@ -25,10 +25,9 @@ validate_sf <- function(sf) {
 
   empty_geom <- sf::st_is_empty(sf$geometry)
   if (any(empty_geom)) {
-    empty_labels <- sf$label[empty_geom]
     cli::cli_abort(c(
       "All sf entries must contain geometry.",
-      "i" = "Empty geometry for: {.val {empty_labels}}."
+      "i" = "Empty geometry for: {.val {sf$label[empty_geom]}}."
     ))
   }
 

@@ -64,10 +64,10 @@ data(dk)
 dk
 
 # List regions
-brain_regions(dk)
+atlas_regions(dk)
 
 # List labels
-brain_labels(dk)
+atlas_labels(dk)
 }
 \references{
 Desikan RS, Ségonne F, Fischl B, et al. (2006).

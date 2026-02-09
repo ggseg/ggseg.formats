@@ -128,11 +128,11 @@ subcortical_data <- function(sf = NULL, meshes = NULL) {
 #' data <- tract_data(centerlines = centerlines_df)
 #' }
 tract_data <- function(
-    sf = NULL,
-    centerlines = NULL,
-    tube_radius = 5,
-    tube_segments = 8,
-    meshes = NULL
+  sf = NULL,
+  centerlines = NULL,
+  tube_radius = 5,
+  tube_segments = 8,
+  meshes = NULL
 ) {
   if (!is.null(meshes) && is.null(centerlines)) {
     centerlines <- meshes_to_centerlines(meshes)
@@ -167,10 +167,11 @@ tract_data <- function(
 #' Convert legacy meshes to centerlines format
 #' @noRd
 meshes_to_centerlines <- function(meshes) {
-  if (is.null(meshes)) return(NULL)
+  if (is.null(meshes)) {
+    return(NULL)
+  }
 
   centerlines_list <- lapply(seq_len(nrow(meshes)), function(i) {
-
     mesh <- meshes$mesh[[i]]
     metadata <- mesh$metadata
 
@@ -194,7 +195,7 @@ meshes_to_centerlines <- function(meshes) {
     cli::cli_abort("No valid centerlines could be extracted from meshes")
   }
 
- do.call(rbind, centerlines_list)
+  do.call(rbind, centerlines_list)
 }
 
 
@@ -233,7 +234,7 @@ validate_centerlines <- function(centerlines) {
 #' Compute tangent vectors from centerline points
 #' @noRd
 compute_tangents <- function(points) {
- n <- nrow(points)
+  n <- nrow(points)
   tangents <- matrix(0, nrow = n, ncol = 3)
 
   for (i in seq_len(n)) {
@@ -257,8 +258,8 @@ print.cortical_data <- function(x, ...) {
   cli::cli_h2("cortical_data")
 
   if (!is.null(x$sf)) {
-    n_labels <- length(unique(x$sf$label))
-    views <- paste0(unique(x$sf$view), collapse = ", ")
+    n_labels <- length(unique(x$sf$label)) # nolint: object_usage_linter
+    views <- paste0(unique(x$sf$view), collapse = ", ") # nolint
     cli::cli_text("{.strong 2D (ggseg):} {n_labels} labels, views: {views}")
   }
 
@@ -276,8 +277,8 @@ print.subcortical_data <- function(x, ...) {
   cli::cli_h2("subcortical_data")
 
   if (!is.null(x$sf)) {
-    n_labels <- length(unique(x$sf$label))
-    views <- paste0(unique(x$sf$view), collapse = ", ")
+    n_labels <- length(unique(x$sf$label)) # nolint: object_usage_linter
+    views <- paste0(unique(x$sf$view), collapse = ", ") # nolint
     cli::cli_text("{.strong 2D (ggseg):} {n_labels} labels, views: {views}")
   }
 
@@ -292,17 +293,17 @@ print.subcortical_data <- function(x, ...) {
 
 #' @export
 print.tract_data <- function(x, ...) {
- cli::cli_h2("tract_data")
+  cli::cli_h2("tract_data")
 
   if (!is.null(x$sf)) {
-    n_labels <- length(unique(x$sf$label))
-    views <- paste0(unique(x$sf$view), collapse = ", ")
+    n_labels <- length(unique(x$sf$label)) # nolint: object_usage_linter
+    views <- paste0(unique(x$sf$view), collapse = ", ") # nolint
     cli::cli_text("{.strong 2D (ggseg):} {n_labels} labels, views: {views}")
   }
 
   if (!is.null(x$centerlines)) {
-    n_tracts <- nrow(x$centerlines)
-    total_points <- sum(sapply(x$centerlines$points, nrow))
+    n_tracts <- nrow(x$centerlines) # nolint: object_usage_linter
+    total_points <- sum(sapply(x$centerlines$points, nrow)) # nolint
     cli::cli_text(
       "{.strong 3D (ggseg3d):} {n_tracts} centerlines ({total_points} points)"
     )
@@ -318,12 +319,20 @@ print.tract_data <- function(x, ...) {
 print_mesh_summary <- function(meshes) {
   summary_df <- dplyr::tibble(
     label = meshes$label,
-    vertices = vapply(meshes$mesh, function(m) {
-      if (is.null(m)) 0L else nrow(m$vertices)
-    }, integer(1)),
-    faces = vapply(meshes$mesh, function(m) {
-      if (is.null(m)) 0L else nrow(m$faces)
-    }, integer(1))
+    vertices = vapply(
+      meshes$mesh,
+      function(m) {
+        if (is.null(m)) 0L else nrow(m$vertices)
+      },
+      integer(1)
+    ),
+    faces = vapply(
+      meshes$mesh,
+      function(m) {
+        if (is.null(m)) 0L else nrow(m$faces)
+      },
+      integer(1)
+    )
   )
   print(summary_df)
 }

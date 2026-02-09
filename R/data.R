@@ -71,10 +71,10 @@
 #' dk
 #'
 #' # List regions
-#' brain_regions(dk)
+#' atlas_regions(dk)
 #'
 #' # List labels
-#' brain_labels(dk)
+#' atlas_labels(dk)
 "dk"
 
 
@@ -157,7 +157,7 @@
 #' aseg
 #'
 #' # List regions
-#' brain_regions(aseg)
+#' atlas_regions(aseg)
 "aseg"
 
 

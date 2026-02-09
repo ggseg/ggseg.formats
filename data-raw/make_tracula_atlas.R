@@ -78,8 +78,10 @@ core_with_meta <- tracula_raw$core |>
   mutate(region = coalesce(region_pretty, region)) |>
   select(hemi, region, label, group)
 
+n_with_group <- sum(!is.na(core_with_meta$group))
+n_total <- nrow(core_with_meta)
 cli::cli_alert_info(
-  "Tracts with group info: {sum(!is.na(core_with_meta$group))}/{nrow(core_with_meta)}"
+  "Tracts with group info: {n_with_group}/{n_total}"
 )
 
 tracula <- brain_atlas(
@@ -107,8 +109,14 @@ tracula <- tracula |>
   atlas_view_remove_small(min_area = 500, views = "sagittal_midline") |>
   atlas_view_remove_region("lh.af", views = "axial_2") |>
   atlas_view_remove_region("cc.bodyc", views = "axial_4") |>
-  atlas_view_remove_region("rh.atr|rh.ar|cc.splenium", views = "sagittal_left") |>
-  atlas_view_remove_region("cc.bodyt|lh.cst", views = c("sagittal_left", "sagittal_right")) |>
+  atlas_view_remove_region(
+    "rh.atr|rh.ar|cc.splenium",
+    views = "sagittal_left"
+  ) |>
+  atlas_view_remove_region(
+    "cc.bodyt|lh.cst",
+    views = c("sagittal_left", "sagittal_right")
+  ) |>
   atlas_view_remove_region("rh.fx", views = "sagittal_right")
 
 ggplot2::ggplot() +

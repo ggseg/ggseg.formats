@@ -9,9 +9,21 @@ make_test_atlas <- function() {
     view = c("lateral", "lateral", "medial", "lateral"),
     geometry = sf::st_sfc(
       make_polygon(),
-      sf::st_polygon(list(matrix(c(2, 2, 4, 2, 4, 4, 2, 2), ncol = 2, byrow = TRUE))),
-      sf::st_polygon(list(matrix(c(5, 5, 8, 5, 8, 8, 5, 5), ncol = 2, byrow = TRUE))),
-      sf::st_polygon(list(matrix(c(0, 0, 10, 0, 10, 10, 0, 0), ncol = 2, byrow = TRUE)))
+      sf::st_polygon(list(matrix(
+        c(2, 2, 4, 2, 4, 4, 2, 2),
+        ncol = 2,
+        byrow = TRUE
+      ))),
+      sf::st_polygon(list(matrix(
+        c(5, 5, 8, 5, 8, 8, 5, 5),
+        ncol = 2,
+        byrow = TRUE
+      ))),
+      sf::st_polygon(list(matrix(
+        c(0, 0, 10, 0, 10, 10, 0, 0),
+        ncol = 2,
+        byrow = TRUE
+      )))
     )
   )
   core <- data.frame(
@@ -41,17 +53,33 @@ make_test_atlas <- function() {
 
 make_multiview_atlas <- function() {
   make_view_poly <- function(x_off, y_off, size = 1) {
-    sf::st_polygon(list(matrix(c(
-      x_off, y_off,
-      x_off + size, y_off,
-      x_off + size, y_off + size,
-      x_off, y_off
-    ), ncol = 2, byrow = TRUE)))
+    sf::st_polygon(list(matrix(
+      c(
+        x_off,
+        y_off,
+        x_off + size,
+        y_off,
+        x_off + size,
+        y_off + size,
+        x_off,
+        y_off
+      ),
+      ncol = 2,
+      byrow = TRUE
+    )))
   }
 
   core_labels <- c(
-    "lh_frontal", "lh_parietal", "lh_temporal", "lh_occipital", "lh_insula",
-    "rh_frontal", "rh_parietal", "rh_temporal", "rh_occipital", "rh_insula"
+    "lh_frontal",
+    "lh_parietal",
+    "lh_temporal",
+    "lh_occipital",
+    "lh_insula",
+    "rh_frontal",
+    "rh_parietal",
+    "rh_temporal",
+    "rh_occipital",
+    "rh_insula"
   )
   small_labels <- c("lh_insula", "rh_insula")
   ctx <- c("ctx_left", "ctx_left", "ctx_right")
@@ -82,14 +110,27 @@ make_multiview_atlas <- function() {
 
   core <- data.frame(
     hemi = c(rep("left", 5), rep("right", 5)),
-    region = rep(c("frontal", "parietal", "temporal", "occipital", "insula"), 2),
+    region = rep(
+      c("frontal", "parietal", "temporal", "occipital", "insula"),
+      2
+    ),
     label = core_labels,
     stringsAsFactors = FALSE
   )
 
   palette <- setNames(
-    c("#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF",
-      "#00FFFF", "#800000", "#008000", "#000080", "#808000"),
+    c(
+      "#FF0000",
+      "#00FF00",
+      "#0000FF",
+      "#FFFF00",
+      "#FF00FF",
+      "#00FFFF",
+      "#800000",
+      "#008000",
+      "#000080",
+      "#808000"
+    ),
     core_labels
   )
 
@@ -103,24 +144,24 @@ make_multiview_atlas <- function() {
 }
 
 
-# brain_regions ----
+# atlas_regions ----
 
-describe("brain_regions", {
+describe("atlas_regions", {
   it("extracts sorted unique regions from brain_atlas", {
     atlas <- make_test_atlas()
-    result <- brain_regions(atlas)
+    result <- atlas_regions(atlas)
     expect_equal(result, c("frontal", "parietal"))
   })
 
   it("excludes context-only geometry (labels in sf but not in core)", {
     atlas <- make_test_atlas()
-    result <- brain_regions(atlas)
+    result <- atlas_regions(atlas)
     expect_false("unknown" %in% result)
   })
 
   it("works with data.frame", {
     df <- data.frame(region = c("frontal", "parietal", "frontal"))
-    result <- brain_regions(df)
+    result <- atlas_regions(df)
     expect_equal(result, c("frontal", "parietal"))
   })
 
@@ -129,17 +170,17 @@ describe("brain_regions", {
       data.frame(region = c("frontal", "parietal"), label = c("a", "b")),
       class = c("ggseg_atlas", "data.frame")
     )
-    expect_equal(brain_regions(ga), c("frontal", "parietal"))
+    expect_equal(atlas_regions(ga), c("frontal", "parietal"))
   })
 })
 
 
-# brain_labels ----
+# atlas_labels ----
 
-describe("brain_labels", {
+describe("atlas_labels", {
   it("extracts sorted unique labels from brain_atlas", {
     atlas <- make_test_atlas()
-    result <- brain_labels(atlas)
+    result <- atlas_labels(atlas)
     expect_equal(result, c("lh_frontal", "lh_parietal", "rh_frontal"))
   })
 
@@ -152,27 +193,29 @@ describe("brain_labels", {
     vertices <- data.frame(label = c("lh_frontal", NA))
     vertices$vertices <- list(1L:3L, 4L:6L)
     atlas <- brain_atlas(
-      atlas = "test", type = "cortical",
-      core = core, data = cortical_data(vertices = vertices)
+      atlas = "test",
+      type = "cortical",
+      core = core,
+      data = cortical_data(vertices = vertices)
     )
-    expect_equal(brain_labels(atlas), "lh_frontal")
+    expect_equal(atlas_labels(atlas), "lh_frontal")
   })
 })
 
 
-# brain_views ----
+# atlas_views ----
 
-describe("brain_views", {
+describe("atlas_views", {
   it("returns unique view names", {
     atlas <- make_multiview_atlas()
-    result <- brain_views(atlas)
+    result <- atlas_views(atlas)
     expect_equal(result, c("axial_1", "axial_2", "sagittal"))
   })
 
   it("returns NULL when no sf data", {
     atlas <- make_test_atlas()
     atlas$data$sf <- NULL
-    expect_null(brain_views(atlas))
+    expect_null(atlas_views(atlas))
   })
 })
 
@@ -206,13 +249,19 @@ describe("get_uniq", {
 describe("guess_type", {
   it("guesses cortical from medial/lateral views", {
     df <- data.frame(type = NA, view = c("medial", "lateral"))
-    expect_warning(result <- ggseg.formats:::guess_type(df), "attempting to guess")
+    expect_warning(
+      result <- ggseg.formats:::guess_type(df),
+      "attempting to guess"
+    )
     expect_equal(result, "cortical")
   })
 
   it("guesses subcortical when no medial/lateral views", {
     df <- data.frame(type = NA, view = c("axial", "sagittal"))
-    expect_warning(result <- ggseg.formats:::guess_type(df), "attempting to guess")
+    expect_warning(
+      result <- ggseg.formats:::guess_type(df),
+      "attempting to guess"
+    )
     expect_equal(result, "subcortical")
   })
 })
@@ -281,7 +330,8 @@ describe("atlas_region_rename", {
   it("renames matching regions with string replacement", {
     atlas <- make_test_atlas()
     result <- atlas_region_rename(atlas, "frontal", "prefrontal")
-    expect_true(all(result$core$region[result$core$region != "parietal"] == "prefrontal"))
+    non_parietal <- result$core$region != "parietal"
+    expect_true(all(result$core$region[non_parietal] == "prefrontal"))
   })
 
   it("renames matching regions with function", {
@@ -478,7 +528,9 @@ describe("atlas_view_remove_small", {
     atlas <- make_multiview_atlas()
     result_all <- atlas_view_remove_small(atlas, min_area = 2)
     result_axial <- atlas_view_remove_small(
-      atlas, min_area = 2, views = "axial"
+      atlas,
+      min_area = 2,
+      views = "axial"
     )
 
     expect_true(nrow(result_axial$data$sf) >= nrow(result_all$data$sf))
@@ -511,8 +563,10 @@ describe("atlas_view_gather", {
     result <- atlas_view_gather(trimmed)
 
     expect_s3_class(result$data$sf, "sf")
-    expect_equal(sort(unique(result$data$sf$view)),
-                 sort(unique(trimmed$data$sf$view)))
+    expect_equal(
+      sort(unique(result$data$sf$view)),
+      sort(unique(trimmed$data$sf$view))
+    )
   })
 
   it("warns when no sf data", {
@@ -582,23 +636,53 @@ describe("subclass preservation", {
     atlas <- make_test_atlas()
     expect_s3_class(atlas, "cortical_atlas")
 
-    expect_s3_class(atlas_region_remove(atlas, "parietal"), "cortical_atlas")
-    expect_s3_class(atlas_region_keep(atlas, "frontal"), "cortical_atlas")
-    expect_s3_class(atlas_region_contextual(atlas, "parietal"), "cortical_atlas")
-    expect_s3_class(atlas_region_rename(atlas, "frontal", "front"), "cortical_atlas")
-    expect_s3_class(atlas_core_add(atlas, data.frame(region = "frontal", x = 1)), "cortical_atlas")
+    expect_s3_class(
+      atlas_region_remove(atlas, "parietal"),
+      "cortical_atlas"
+    )
+    expect_s3_class(
+      atlas_region_keep(atlas, "frontal"),
+      "cortical_atlas"
+    )
+    expect_s3_class(
+      atlas_region_contextual(atlas, "parietal"),
+      "cortical_atlas"
+    )
+    expect_s3_class(
+      atlas_region_rename(atlas, "frontal", "front"),
+      "cortical_atlas"
+    )
+    expect_s3_class(
+      atlas_core_add(atlas, data.frame(region = "frontal", x = 1)),
+      "cortical_atlas"
+    )
   })
 
   it("view functions preserve cortical_atlas subclass", {
     atlas <- make_multiview_atlas()
     expect_s3_class(atlas, "cortical_atlas")
 
-    expect_s3_class(atlas_view_remove(atlas, "sagittal"), "cortical_atlas")
-    expect_s3_class(atlas_view_keep(atlas, "axial"), "cortical_atlas")
-    expect_s3_class(atlas_view_remove_region(atlas, "lh_frontal"), "cortical_atlas")
-    expect_s3_class(atlas_view_remove_small(atlas, min_area = 2), "cortical_atlas")
+    expect_s3_class(
+      atlas_view_remove(atlas, "sagittal"),
+      "cortical_atlas"
+    )
+    expect_s3_class(
+      atlas_view_keep(atlas, "axial"),
+      "cortical_atlas"
+    )
+    expect_s3_class(
+      atlas_view_remove_region(atlas, "lh_frontal"),
+      "cortical_atlas"
+    )
+    expect_s3_class(
+      atlas_view_remove_small(atlas, min_area = 2),
+      "cortical_atlas"
+    )
     expect_s3_class(atlas_view_gather(atlas), "cortical_atlas")
-    expect_s3_class(atlas_view_reorder(atlas, c("sagittal", "axial_1", "coronal_2")), "cortical_atlas")
+    expect_s3_class(
+      atlas_view_reorder(atlas, c("sagittal", "axial_1", "coronal_2")),
+      "cortical_atlas"
+    )
   })
 
   it("bundled atlases have correct subclasses", {

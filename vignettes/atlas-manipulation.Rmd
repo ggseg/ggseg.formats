@@ -41,7 +41,7 @@ and 3D data. The `pattern` argument is passed to `grepl()` with
 
 ```{r}
 no_cc <- atlas_region_remove(dk, "corpus callosum")
-"corpus callosum" %in% brain_regions(no_cc)
+"corpus callosum" %in% atlas_regions(no_cc)
 ```
 
 `atlas_region_keep()` is the inverse: it keeps only the regions that match and
@@ -50,7 +50,7 @@ continuity, but non-matching regions leave core and palette):
 
 ```{r}
 frontal <- atlas_region_keep(dk, "frontal")
-brain_regions(frontal)
+atlas_regions(frontal)
 ```
 
 Both functions accept a `match_on` argument to choose whether the pattern matches
@@ -59,7 +59,7 @@ identifier):
 
 ```{r}
 lh_only <- atlas_region_keep(dk, "^lh_", match_on = "label")
-head(brain_labels(lh_only))
+head(atlas_labels(lh_only))
 ```
 
 ## Context regions
@@ -71,7 +71,7 @@ appear in the legend or carry data. This is what
 
 ```{r}
 ctx <- atlas_region_contextual(aseg, "ventricle")
-"lateral ventricle" %in% brain_regions(ctx)
+"lateral ventricle" %in% atlas_regions(ctx)
 ```
 
 Compare that to `atlas_region_remove()`, which would delete the ventricle
@@ -83,23 +83,25 @@ polygons entirely, leaving gaps in the 2D slices.
 (so geometry links stay intact). Pass a fixed string:
 
 ```{r}
-renamed <- atlas_region_rename(dk, "banks of superior temporal sulcus", "STS banks")
-"STS banks" %in% brain_regions(renamed)
+renamed <- atlas_region_rename(
+  dk, "banks of superior temporal sulcus", "STS banks"
+)
+"STS banks" %in% atlas_regions(renamed)
 ```
 
 Or pass a function for programmatic renaming:
 
 ```{r}
 upper <- atlas_region_rename(dk, ".*", toupper)
-head(brain_regions(upper))
+head(atlas_regions(upper))
 ```
 
 ## Managing views
 
-`brain_views()` tells you what 2D views an atlas has:
+`atlas_views()` tells you what 2D views an atlas has:
 
 ```{r}
-brain_views(aseg)
+atlas_views(aseg)
 ```
 
 `atlas_view_keep()` and `atlas_view_remove()` filter views by pattern. If you
@@ -107,14 +109,14 @@ only want the sagittal slice:
 
 ```{r}
 sag <- atlas_view_keep(aseg, "sagittal")
-brain_views(sag)
+atlas_views(sag)
 ```
 
 Or remove several views at once by passing a vector:
 
 ```{r}
 fewer <- atlas_view_remove(aseg, c("axial_3", "coronal_2"))
-brain_views(fewer)
+atlas_views(fewer)
 ```
 
 ## Cleaning up geometry
@@ -151,7 +153,7 @@ side-by-side with a configurable gap:
 trimmed <- aseg |>
   atlas_view_keep(c("sagittal", "coronal_3", "axial_3")) |>
   atlas_view_gather()
-brain_views(trimmed)
+atlas_views(trimmed)
 ```
 
 `atlas_view_reorder()` lets you choose the left-to-right order and repositions
@@ -161,7 +163,7 @@ at the same time. Views not mentioned in `order` are appended at the end:
 reordered <- aseg |>
   atlas_view_keep(c("sagittal", "coronal_3", "axial_3")) |>
   atlas_view_reorder(c("axial_3", "sagittal", "coronal_3"))
-brain_views(reordered)
+atlas_views(reordered)
 ```
 
 ## Adding metadata
@@ -172,7 +174,10 @@ information. Here we add a custom network column to a handful of regions:
 
 ```{r}
 network_info <- data.frame(
-  region = c("superior frontal", "precuneus", "inferior parietal", "posterior cingulate"),
+  region = c(
+    "superior frontal", "precuneus",
+    "inferior parietal", "posterior cingulate"
+  ),
   network = "default mode"
 )
 enriched <- atlas_core_add(dk, network_info)

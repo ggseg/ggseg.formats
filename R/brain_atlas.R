@@ -93,11 +93,56 @@ brain_atlas <- function(atlas, type, core, data, palette = NULL) {
 }
 
 
-#' Validate brain atlas
+#' Check brain atlas class
+#'
+#' These functions check both the class tag and structural validity
+#' by passing the object through [brain_atlas()]. An object that
+#' carries the right class but fails validation returns `FALSE`.
+#'
 #' @param x an object
-#' @return logical if object is of class 'brain_atlas'
+#' @return logical
+#' @name is_brain_atlas
 #' @export
-is_brain_atlas <- function(x) inherits(x, "brain_atlas")
+is_brain_atlas <- function(x) {
+  inherits(x, "brain_atlas") && validate_brain_atlas(x)
+}
+
+#' @rdname is_brain_atlas
+#' @export
+is_cortical_atlas <- function(x) {
+  inherits(x, "cortical_atlas") && validate_brain_atlas(x)
+}
+
+#' @rdname is_brain_atlas
+#' @export
+is_subcortical_atlas <- function(x) {
+  inherits(x, "subcortical_atlas") && validate_brain_atlas(x)
+}
+
+#' @rdname is_brain_atlas
+#' @export
+is_tract_atlas <- function(x) {
+  inherits(x, "tract_atlas") && validate_brain_atlas(x)
+}
+
+
+#' @keywords internal
+#' @noRd
+validate_brain_atlas <- function(x) {
+  tryCatch(
+    {
+      brain_atlas(
+        atlas = x$atlas,
+        type = x$type,
+        core = x$core,
+        data = x$data,
+        palette = x$palette
+      )
+      TRUE
+    },
+    error = function(e) FALSE
+  )
+}
 
 
 #' @export
@@ -134,7 +179,9 @@ print.brain_atlas <- function(x, ...) {
 
   cli::cli_text("{.strong Palette:} {check(has_palette)}")
 
+  # nolint start: object_usage_linter
   render_3d <- if (!is.null(data$centerlines)) {
+    # nolint end
     "centerlines"
   } else if (!is.null(data$meshes)) {
     "meshes"
@@ -246,11 +293,13 @@ as.data.frame.brain_atlas <- function(x, ...) {
 #' @examples
 #' plot(dk)
 #' plot(aseg)
+# nolint start
 plot.brain_atlas <- function(x, show.legend = FALSE, ...) {
+  # nolint end: object_name_linter
   p <- ggplot(as.data.frame(x)) +
     geom_sf(
       aes(fill = label), # nolint [object_usage_linter]
-      show.legend = show.legend,
+      show.legend = show.legend, # nolint [object_name_linter]
       ...
     ) +
     labs(title = paste(x$atlas, x$type, "atlas"))

@@ -95,7 +95,8 @@ convert_legacy_brain_atlas <- function(x) {
     NULL
   }
 
-  data <- switch(type,
+  data <- switch(
+    type,
     "cortical" = cortical_data(sf = sf_data, vertices = NULL),
     "subcortical" = subcortical_data(sf = sf_data, meshes = NULL),
     "tract" = tract_data(sf = sf_data, meshes = NULL),
@@ -123,7 +124,8 @@ convert_legacy_brain_atlas <- function(x) {
 convert_legacy_structure <- function(x) {
   type <- x$type
 
-  data <- switch(type,
+  data <- switch(
+    type,
     "cortical" = cortical_data(sf = x$sf, vertices = x$vertices),
     "subcortical" = subcortical_data(sf = x$sf, meshes = x$meshes),
     "tract" = tract_data(sf = x$sf, meshes = x$meshes),

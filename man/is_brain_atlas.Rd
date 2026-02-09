@@ -2,16 +2,27 @@
 % Please edit documentation in R/brain_atlas.R
 \name{is_brain_atlas}
 \alias{is_brain_atlas}
-\title{Validate brain atlas}
+\alias{is_cortical_atlas}
+\alias{is_subcortical_atlas}
+\alias{is_tract_atlas}
+\title{Check brain atlas class}
 \usage{
 is_brain_atlas(x)
+
+is_cortical_atlas(x)
+
+is_subcortical_atlas(x)
+
+is_tract_atlas(x)
 }
 \arguments{
 \item{x}{an object}
 }
 \value{
-logical if object is of class 'brain_atlas'
+logical
 }
 \description{
-Validate brain atlas
+These functions check both the class tag and structural validity
+by passing the object through \code{\link[=brain_atlas]{brain_atlas()}}. An object that
+carries the right class but fails validation returns \code{FALSE}.
 }

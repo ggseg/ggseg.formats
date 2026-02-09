@@ -75,7 +75,7 @@ data(aseg)
 aseg
 
 # List regions
-brain_regions(aseg)
+atlas_regions(aseg)
 }
 \references{
 Fischl B, Salat DH, Busa E, et al. (2002).

@@ -1,27 +1,27 @@
-#' Extract unique names of brain regions
+#' Extract unique region names from an atlas
 #'
 #' @param x brain atlas
-#' @return Character vector of brain region names
+#' @return Character vector of region names
 #' @export
-brain_regions <- function(x) {
-  UseMethod("brain_regions")
+atlas_regions <- function(x) {
+  UseMethod("atlas_regions")
 }
 
 #' @export
-#' @rdname brain_regions
-brain_regions.ggseg_atlas <- function(x) {
+#' @rdname atlas_regions
+atlas_regions.ggseg_atlas <- function(x) {
   get_uniq(x, "region")
 }
 
 #' @export
-#' @rdname brain_regions
-brain_regions.brain_atlas <- function(x) {
+#' @rdname atlas_regions
+atlas_regions.brain_atlas <- function(x) {
   get_uniq(x$core, "region")
 }
 
 #' @export
-#' @rdname brain_regions
-brain_regions.data.frame <- function(x) {
+#' @rdname atlas_regions
+atlas_regions.data.frame <- function(x) {
   get_uniq(x, "region")
 }
 
@@ -35,25 +35,50 @@ get_uniq <- function(x, type) {
   x[order(x)]
 }
 
-#' Extract unique labels of brain regions
+#' Extract unique labels from an atlas
 #'
 #' @param x brain atlas
 #' @return Character vector of atlas region labels
 #' @export
-brain_labels <- function(x) {
-  UseMethod("brain_labels")
+atlas_labels <- function(x) {
+  UseMethod("atlas_labels")
 }
 
 #' @export
-#' @rdname brain_labels
-brain_labels.ggseg_atlas <- function(x) {
+#' @rdname atlas_labels
+atlas_labels.ggseg_atlas <- function(x) {
   get_uniq(x, "label")
 }
 
 #' @export
-#' @rdname brain_labels
-brain_labels.brain_atlas <- function(x) {
+#' @rdname atlas_labels
+atlas_labels.brain_atlas <- function(x) {
   get_uniq(x$core, "label")
+}
+
+
+#' @rdname atlas_regions
+#' @export
+#' @keywords internal
+brain_regions <- function(x) {
+  lifecycle::deprecate_warn(
+    "0.1.0",
+    "brain_regions()",
+    "atlas_regions()"
+  )
+  atlas_regions(x)
+}
+
+#' @rdname atlas_labels
+#' @export
+#' @keywords internal
+brain_labels <- function(x) {
+  lifecycle::deprecate_warn(
+    "0.1.0",
+    "brain_labels()",
+    "atlas_labels()"
+  )
+  atlas_labels(x)
 }
 
 
@@ -154,7 +179,11 @@ guess_type <- function(x) {
 #'
 #' @name atlas_manipulation
 #' @export
-atlas_region_remove <- function(atlas, pattern, match_on = c("region", "label")) {
+atlas_region_remove <- function(
+  atlas,
+  pattern,
+  match_on = c("region", "label")
+) {
   match_on <- match.arg(match_on)
 
   match_col <- atlas$core[[match_on]]
@@ -213,7 +242,11 @@ atlas_region_remove <- function(atlas, pattern, match_on = c("region", "label"))
 #'   from core, palette, and 3D data. Context geometries render grey and don't
 #'   appear in legends.
 #' @export
-atlas_region_contextual <- function(atlas, pattern, match_on = c("region", "label")) {
+atlas_region_contextual <- function(
+  atlas,
+  pattern,
+  match_on = c("region", "label")
+) {
   match_on <- match.arg(match_on)
 
   match_col <- atlas$core[[match_on]]
@@ -362,12 +395,23 @@ atlas_core_add <- function(atlas, data, by = "region") {
 #' @param atlas A `brain_atlas` object
 #' @return Character vector of view names, or NULL if no sf data
 #' @export
-brain_views <- function(atlas) {
-
+atlas_views <- function(atlas) {
   if (is.null(atlas$data$sf)) {
     return(NULL)
   }
   unique(atlas$data$sf$view)
+}
+
+#' @rdname atlas_views
+#' @export
+#' @keywords internal
+brain_views <- function(atlas) {
+  lifecycle::deprecate_warn(
+    "0.1.0",
+    "brain_views()",
+    "atlas_views()"
+  )
+  atlas_views(atlas)
 }
 
 
@@ -418,9 +462,12 @@ atlas_view_keep <- function(atlas, views) {
 #' @describeIn atlas_manipulation Remove specific region geometry from sf
 #'   data only. Core, palette, and 3D data are unchanged.
 #' @export
-atlas_view_remove_region <- function(atlas, pattern,
-                                    match_on = c("label", "region"),
-                                    views = NULL) {
+atlas_view_remove_region <- function(
+  atlas,
+  pattern,
+  match_on = c("label", "region"),
+  views = NULL
+) {
   match_on <- match.arg(match_on)
 
   if (is.null(atlas$data$sf)) {
@@ -479,7 +526,9 @@ atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
 
   n_removed <- sum(is_small)
   if (n_removed > 0) {
-    cli::cli_alert_info("Removed {n_removed} geometr{?y/ies} below area {min_area}")
+    cli::cli_alert_info(
+      "Removed {n_removed} geometr{?y/ies} below area {min_area}"
+    )
   }
 
   new_sf <- atlas$data$sf[!is_small, , drop = FALSE]

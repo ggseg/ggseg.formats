@@ -1,30 +1,30 @@
-describe("brain_pal", {
+describe("atlas_palette", {
   it("returns palette from dk atlas by name", {
-    pal <- brain_pal("dk")
+    pal <- atlas_palette("dk")
     expect_type(pal, "character")
     expect_true(length(pal) > 0)
     expect_true(all(grepl("^#", pal)))
   })
 
   it("returns palette from aseg atlas by name", {
-    pal <- brain_pal("aseg")
+    pal <- atlas_palette("aseg")
     expect_type(pal, "character")
     expect_true(length(pal) > 0)
   })
 
   it("returns palette from atlas object directly", {
-    pal <- brain_pal(dk)
+    pal <- atlas_palette(dk)
     expect_type(pal, "character")
     expect_true(length(pal) > 0)
   })
 
   it("errors when atlas not found", {
-    expect_error(brain_pal("nonexistent_atlas"), "not found")
+    expect_error(atlas_palette("nonexistent_atlas"), "not found")
   })
 
   it("errors when object is not a brain_atlas", {
     my_df <- data.frame(x = 1)
-    expect_error(brain_pal("my_df"), "Could not find atlas")
+    expect_error(atlas_palette("my_df"), "Could not find atlas")
   })
 })
 

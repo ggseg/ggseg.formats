@@ -148,7 +148,10 @@ describe("tract_data", {
       metadata = list(n_centerline_points = 10)
     ))
 
-    expect_error(tract_data(meshes = meshes), "No valid centerlines")
+    expect_warning(
+      expect_error(tract_data(meshes = meshes), "No valid centerlines"),
+      "missing centerline metadata"
+    )
   })
 
   it("creates tract_data with sf geometry", {

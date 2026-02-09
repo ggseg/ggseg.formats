@@ -299,8 +299,16 @@ describe("validate_data_labels", {
   })
 
   it("accepts partial sf coverage when vertices are complete", {
-    labels <- paste0("lh_", c("frontal", "parietal", "temporal",
-                               "occipital", "insula"))
+    labels <- paste0(
+      "lh_",
+      c(
+        "frontal",
+        "parietal",
+        "temporal",
+        "occipital",
+        "insula"
+      )
+    )
     sf_geom <- sf::st_sf(
       label = labels[1:4],
       view = rep("lateral", 4),

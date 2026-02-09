@@ -114,8 +114,10 @@ core_with_meta <- aseg_raw$core |>
   ) |>
   select(hemi, region, label, structure)
 
+n_with_structure <- sum(!is.na(core_with_meta$structure))
+n_total <- nrow(core_with_meta)
 cli::cli_alert_info(
-  "Regions with structure info: {sum(!is.na(core_with_meta$structure))}/{nrow(core_with_meta)}"
+  "Regions with structure info: {n_with_structure}/{n_total}"
 )
 
 # Rebuild atlas with enriched core
@@ -132,7 +134,7 @@ cli::cli_alert_success("ASEG atlas created with {nrow(aseg$core)} regions")
 print(aseg)
 
 # Preview
-brain_labels(aseg)
+atlas_labels(aseg)
 
 ggplot2::ggplot() +
   geom_brain(

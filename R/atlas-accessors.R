@@ -1,4 +1,4 @@
-#' Get brain atlas palette
+#' Get atlas palette
 #'
 #' Retrieves the colour palette from a brain atlas.
 #'
@@ -9,10 +9,10 @@
 #' @return Named character vector of colours
 #' @export
 #' @examples
-#' brain_pal("dk")
-#' brain_pal("aseg")
-#' brain_pal(dk)
-brain_pal <- function(name = "dk", ...) {
+#' atlas_palette("dk")
+#' atlas_palette("aseg")
+#' atlas_palette(dk)
+atlas_palette <- function(name = "dk", ...) {
   atlas <- if (is.character(name)) {
     get(name, envir = parent.frame())
   } else {
@@ -22,6 +22,18 @@ brain_pal <- function(name = "dk", ...) {
     cli::cli_abort("Could not find atlas {.val {name}}.")
   }
   atlas$palette
+}
+
+#' @rdname atlas_palette
+#' @export
+#' @keywords internal
+brain_pal <- function(name = "dk", ...) {
+  lifecycle::deprecate_warn(
+    "0.1.0",
+    "brain_pal()",
+    "atlas_palette()"
+  )
+  atlas_palette(name, ...)
 }
 
 

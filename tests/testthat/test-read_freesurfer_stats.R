@@ -6,8 +6,16 @@ describe("read_freesurfer_stats()", {
     expect_equal(
       names(aseg_stats),
       c(
-        "Index", "SegId", "NVoxels", "Volume_mm3", "label", "normMean",
-        "normStdDev", "normMin", "normMax", "normRange"
+        "Index",
+        "SegId",
+        "NVoxels",
+        "Volume_mm3",
+        "label",
+        "normMean",
+        "normStdDev",
+        "normMin",
+        "normMax",
+        "normRange"
       )
     )
     expect_equal(nrow(aseg_stats), 45)
@@ -18,8 +26,16 @@ describe("read_freesurfer_stats()", {
     expect_equal(
       names(read_freesurfer_stats(aseg_file, FALSE)),
       c(
-        "Index", "SegId", "NVoxels", "Volume_mm3", "StructName", "normMean",
-        "normStdDev", "normMin", "normMax", "normRange"
+        "Index",
+        "SegId",
+        "NVoxels",
+        "Volume_mm3",
+        "StructName",
+        "normMean",
+        "normStdDev",
+        "normMin",
+        "normMax",
+        "normRange"
       )
     )
   })
@@ -31,8 +47,16 @@ describe("read_freesurfer_stats()", {
     expect_equal(
       names(dkt_stats),
       c(
-        "label", "NumVert", "SurfArea", "GrayVol", "ThickAvg", "ThickStd",
-        "MeanCurv", "GausCurv", "FoldInd", "CurvInd"
+        "label",
+        "NumVert",
+        "SurfArea",
+        "GrayVol",
+        "ThickAvg",
+        "ThickStd",
+        "MeanCurv",
+        "GausCurv",
+        "FoldInd",
+        "CurvInd"
       )
     )
     expect_equal(nrow(dkt_stats), 34)
@@ -43,8 +67,16 @@ describe("read_freesurfer_stats()", {
     expect_equal(
       names(read_freesurfer_stats(dkt_file, FALSE)),
       c(
-        "StructName", "NumVert", "SurfArea", "GrayVol", "ThickAvg", "ThickStd",
-        "MeanCurv", "GausCurv", "FoldInd", "CurvInd"
+        "StructName",
+        "NumVert",
+        "SurfArea",
+        "GrayVol",
+        "ThickAvg",
+        "ThickStd",
+        "MeanCurv",
+        "GausCurv",
+        "FoldInd",
+        "CurvInd"
       )
     )
   })
@@ -57,8 +89,17 @@ describe("read_atlas_files()", {
     expect_equal(
       names(dat),
       c(
-        "subject", "label", "NumVert", "SurfArea", "GrayVol", "ThickAvg",
-        "ThickStd", "MeanCurv", "GausCurv", "FoldInd", "CurvInd"
+        "subject",
+        "label",
+        "NumVert",
+        "SurfArea",
+        "GrayVol",
+        "ThickAvg",
+        "ThickStd",
+        "MeanCurv",
+        "GausCurv",
+        "FoldInd",
+        "CurvInd"
       )
     )
     expect_equal(nrow(dat), 68)
@@ -69,9 +110,16 @@ describe("read_atlas_files()", {
     expect_equal(
       unique(dat$label)[1:10],
       c(
-        "lh_bankssts", "lh_caudalanteriorcingulate", "lh_caudalmiddlefrontal",
-        "lh_cuneus", "lh_entorhinal", "lh_fusiform", "lh_inferiorparietal",
-        "lh_inferiortemporal", "lh_isthmuscingulate", "lh_lateraloccipital"
+        "lh_bankssts",
+        "lh_caudalanteriorcingulate",
+        "lh_caudalmiddlefrontal",
+        "lh_cuneus",
+        "lh_entorhinal",
+        "lh_fusiform",
+        "lh_inferiorparietal",
+        "lh_inferiortemporal",
+        "lh_isthmuscingulate",
+        "lh_lateraloccipital"
       )
     )
   })
@@ -97,10 +145,13 @@ describe("read_freesurfer_table()", {
 
   it("replaces dots with hyphens in labels", {
     tmp <- tempfile(fileext = ".table")
-    writeLines(c(
-      "subject\troi.one\troi.two",
-      "bert\t1.5\t2.5"
-    ), tmp)
+    writeLines(
+      c(
+        "subject\troi.one\troi.two",
+        "bert\t1.5\t2.5"
+      ),
+      tmp
+    )
 
     dat <- read_freesurfer_table(tmp)
 
