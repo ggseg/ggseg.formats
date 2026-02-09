@@ -33,6 +33,12 @@ MRI using FreeSurfer's TRACULA training data. It works with both ggseg
 \examples{
 data(tracula)
 tracula
+
+# List regions
+atlas_regions(tracula)
+
+data(tracula)
+tracula
 }
 \references{
 Yendiki A, Panneck P, Srinivasan P, et al. (2011).

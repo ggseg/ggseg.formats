@@ -81,6 +81,8 @@ dk <- ggseg_atlas(
 cli::cli_alert_success("DK atlas created with {nrow(dk$core)} regions")
 print(dk)
 
+plot(dk)
+
 cat("\nRegions:\n")
 print(sort(unique(dk$core$region)))
 

@@ -15,7 +15,6 @@
 
 library(dplyr)
 library(ggsegExtra)
-library(ggseg)
 devtools::load_all()
 options(freesurfer.verbose = FALSE)
 future::plan(future::multisession(workers = 4))
@@ -136,15 +135,7 @@ print(aseg)
 # Preview
 atlas_labels(aseg)
 
-ggplot2::ggplot() +
-  geom_brain(
-    atlas = aseg,
-    ggplot2::aes(fill = label),
-    position = position_brain(ncol = 3),
-    show.legend = FALSE,
-    alpha = .7
-  ) +
-  ggplot2::scale_fill_manual(values = aseg$palette)
+plot(aseg)
 
 # Save
 usethis::use_data(aseg, overwrite = TRUE, compress = "xz")

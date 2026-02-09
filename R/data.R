@@ -36,8 +36,6 @@
 #'
 #' @section Usage:
 #' ```
-#' # 2D plot with ggseg
-#' library(ggseg)
 #' plot(dk)
 #'
 #' # 3D plot with ggseg3d
@@ -126,8 +124,6 @@
 #'
 #' @section Usage:
 #' ```
-#' # 2D plot with ggseg
-#' library(ggseg)
 #' plot(aseg)
 #'
 #' # 3D plot with ggseg3d
@@ -194,6 +190,13 @@
 #' [dk] for cortical parcellation,
 #' [aseg] for subcortical structures,
 #' [ggseg_atlas()] for the atlas class constructor
+#'
+#' @examples
+#' data(tracula)
+#' tracula
+#'
+#' # List regions
+#' atlas_regions(tracula)
 #'
 #' @family ggseg_atlases
 #' @docType data

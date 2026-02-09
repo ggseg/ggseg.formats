@@ -11,7 +11,6 @@
 
 library(dplyr)
 library(ggsegExtra)
-library(ggseg)
 devtools::load_all()
 
 source("data-raw/tracula_metadata.R")
@@ -119,15 +118,7 @@ tracula <- tracula |>
   ) |>
   atlas_view_remove_region("rh.fx", views = "sagittal_right")
 
-ggplot2::ggplot() +
-  ggseg::geom_brain(
-    atlas = tracula2,
-    ggplot2::aes(fill = label),
-    position = ggseg::position_brain(ncol = 4),
-    show.legend = FALSE,
-    alpha = .7
-  ) +
-  ggplot2::scale_fill_manual(values = tracula$palette)
+plot(tracula)
 
 
 cli::cli_alert_success("TRACULA atlas created with {nrow(tracula$core)} tracts")

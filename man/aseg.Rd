@@ -59,9 +59,7 @@ Plus midline and ventricular structures:
 \section{Usage}{
 
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{# 2D plot with ggseg
-library(ggseg)
-plot(aseg)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{plot(aseg)
 
 # 3D plot with ggseg3d
 library(ggseg3d)

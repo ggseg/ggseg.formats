@@ -49,9 +49,7 @@ frontal pole, temporal pole, transverse temporal, and insula.
 \section{Usage}{
 
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{# 2D plot with ggseg
-library(ggseg)
-plot(dk)
+\if{html}{\out{<div class="sourceCode">}}\preformatted{plot(dk)
 
 # 3D plot with ggseg3d
 library(ggseg3d)
