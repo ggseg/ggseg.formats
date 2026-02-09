@@ -9,13 +9,13 @@
 #' @param vertices data.frame with columns label and vertices (list-column of
 #'   integer vectors). Each vector contains vertex indices for that region.
 #'
-#' @return An object of class c("brain_data_cortical", "ggseg_atlas_data")
+#' @return An object of class c("ggseg_data_cortical", "ggseg_atlas_data")
 #' @keywords internal
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' data <- brain_data_cortical(
+#' data <- ggseg_data_cortical(
 #'   sf = sf_geometry,
 #'   vertices = data.frame(
 #'     label = c("bankssts", "caudalanteriorcingulate"),
@@ -23,7 +23,7 @@
 #'   )
 #' )
 #' }
-brain_data_cortical <- function(sf = NULL, vertices = NULL) {
+ggseg_data_cortical <- function(sf = NULL, vertices = NULL) {
   if (is.null(sf) && is.null(vertices)) {
     cli::cli_abort("At least one of {.arg sf} or {.arg vertices} is required.")
   }
@@ -41,7 +41,7 @@ brain_data_cortical <- function(sf = NULL, vertices = NULL) {
       sf = sf,
       vertices = vertices
     ),
-    class = c("brain_data_cortical", "ggseg_atlas_data")
+    class = c("ggseg_data_cortical", "ggseg_atlas_data")
   )
 }
 
@@ -60,13 +60,13 @@ brain_data_cortical <- function(sf = NULL, vertices = NULL) {
 #'     \item faces: data.frame with i, j, k columns (1-based triangle indices)
 #'   }
 #'
-#' @return An object of class c("brain_data_subcortical", "ggseg_atlas_data")
+#' @return An object of class c("ggseg_data_subcortical", "ggseg_atlas_data")
 #' @keywords internal
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' data <- brain_data_subcortical(
+#' data <- ggseg_data_subcortical(
 #'   meshes = data.frame(
 #'     label = "hippocampus_left",
 #'     mesh = I(list(list(
@@ -76,7 +76,7 @@ brain_data_cortical <- function(sf = NULL, vertices = NULL) {
 #'   )
 #' )
 #' }
-brain_data_subcortical <- function(sf = NULL, meshes = NULL) {
+ggseg_data_subcortical <- function(sf = NULL, meshes = NULL) {
   if (is.null(sf) && is.null(meshes)) {
     cli::cli_abort("At least one of {.arg sf} or {.arg meshes} is required.")
   }
@@ -94,7 +94,7 @@ brain_data_subcortical <- function(sf = NULL, meshes = NULL) {
       sf = sf,
       meshes = meshes
     ),
-    class = c("brain_data_subcortical", "ggseg_atlas_data")
+    class = c("ggseg_data_subcortical", "ggseg_atlas_data")
   )
 }
 
@@ -117,7 +117,7 @@ brain_data_subcortical <- function(sf = NULL, meshes = NULL) {
 #' @param meshes Deprecated. Use centerlines instead. If provided, will be
 #'   converted to centerlines format.
 #'
-#' @return An object of class c("brain_data_tract", "ggseg_atlas_data")
+#' @return An object of class c("ggseg_data_tract", "ggseg_atlas_data")
 #' @keywords internal
 #' @export
 #'
@@ -128,9 +128,9 @@ brain_data_subcortical <- function(sf = NULL, meshes = NULL) {
 #'   points = I(list(matrix(rnorm(150), ncol = 3))),
 #'   tangents = I(list(matrix(rnorm(150), ncol = 3)))
 #' )
-#' data <- brain_data_tract(centerlines = centerlines_df)
+#' data <- ggseg_data_tract(centerlines = centerlines_df)
 #' }
-brain_data_tract <- function(
+ggseg_data_tract <- function(
   sf = NULL,
   centerlines = NULL,
   tube_radius = 5,
@@ -162,7 +162,7 @@ brain_data_tract <- function(
       tube_radius = tube_radius,
       tube_segments = as.integer(tube_segments)
     ),
-    class = c("brain_data_tract", "ggseg_atlas_data")
+    class = c("ggseg_data_tract", "ggseg_atlas_data")
   )
 }
 
@@ -193,7 +193,9 @@ meshes_to_centerlines <- function(meshes) {
     )
   })
 
-  centerlines_list <- centerlines_list[!sapply(centerlines_list, is.null)]
+  centerlines_list <- centerlines_list[
+    !vapply(centerlines_list, is.null, logical(1))
+  ]
   if (length(centerlines_list) == 0) {
     cli::cli_abort("No valid centerlines could be extracted from meshes")
   }
@@ -257,8 +259,8 @@ compute_tangents <- function(points) {
 
 
 #' @export
-print.brain_data_cortical <- function(x, ...) {
-  cli::cli_h2("brain_data_cortical")
+print.ggseg_data_cortical <- function(x, ...) {
+  cli::cli_h2("ggseg_data_cortical")
 
   if (!is.null(x$sf)) {
     n_labels <- length(unique(x$sf$label)) # nolint: object_usage_linter
@@ -276,8 +278,8 @@ print.brain_data_cortical <- function(x, ...) {
 
 
 #' @export
-print.brain_data_subcortical <- function(x, ...) {
-  cli::cli_h2("brain_data_subcortical")
+print.ggseg_data_subcortical <- function(x, ...) {
+  cli::cli_h2("ggseg_data_subcortical")
 
   if (!is.null(x$sf)) {
     n_labels <- length(unique(x$sf$label)) # nolint: object_usage_linter
@@ -295,8 +297,8 @@ print.brain_data_subcortical <- function(x, ...) {
 
 
 #' @export
-print.brain_data_tract <- function(x, ...) {
-  cli::cli_h2("brain_data_tract")
+print.ggseg_data_tract <- function(x, ...) {
+  cli::cli_h2("ggseg_data_tract")
 
   if (!is.null(x$sf)) {
     n_labels <- length(unique(x$sf$label)) # nolint: object_usage_linter
@@ -306,7 +308,7 @@ print.brain_data_tract <- function(x, ...) {
 
   if (!is.null(x$centerlines)) {
     n_tracts <- nrow(x$centerlines) # nolint: object_usage_linter
-    total_points <- sum(sapply(x$centerlines$points, nrow)) # nolint
+    total_points <- sum(vapply(x$centerlines$points, nrow, integer(1))) # nolint
     cli::cli_text(
       "{.strong 3D (ggseg3d):} {n_tracts} centerlines ({total_points} points)"
     )
@@ -338,4 +340,51 @@ print_mesh_summary <- function(meshes) {
     )
   )
   print(summary_df)
+}
+
+
+# Deprecated wrappers ----
+
+#' @rdname ggseg_data_cortical
+#' @export
+#' @keywords internal
+brain_data_cortical <- function(sf = NULL, vertices = NULL) {
+  lifecycle::deprecate_warn(
+    "0.1.0", "brain_data_cortical()", "ggseg_data_cortical()"
+  )
+  ggseg_data_cortical(sf = sf, vertices = vertices)
+}
+
+
+#' @rdname ggseg_data_subcortical
+#' @export
+#' @keywords internal
+brain_data_subcortical <- function(sf = NULL, meshes = NULL) {
+  lifecycle::deprecate_warn(
+    "0.1.0", "brain_data_subcortical()", "ggseg_data_subcortical()"
+  )
+  ggseg_data_subcortical(sf = sf, meshes = meshes)
+}
+
+
+#' @rdname ggseg_data_tract
+#' @export
+#' @keywords internal
+brain_data_tract <- function(
+  sf = NULL,
+  centerlines = NULL,
+  tube_radius = 5,
+  tube_segments = 8,
+  meshes = NULL
+) {
+  lifecycle::deprecate_warn(
+    "0.1.0", "brain_data_tract()", "ggseg_data_tract()"
+  )
+  ggseg_data_tract(
+    sf = sf,
+    centerlines = centerlines,
+    tube_radius = tube_radius,
+    tube_segments = tube_segments,
+    meshes = meshes
+  )
 }

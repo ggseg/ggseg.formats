@@ -76,7 +76,7 @@ class(dk$data)
 ggseg.formats ships three atlases that illustrate the three types.
 
 **Cortical** atlases like `dk` parcellate the cortical surface. Their data object
-is a `brain_data_cortical` containing sf polygons for 2D rendering and vertex indices
+is a `ggseg_data_cortical` containing sf polygons for 2D rendering and vertex indices
 for 3D:
 
 ```{r}
@@ -85,7 +85,7 @@ names(dk$data)
 ```
 
 **Subcortical** atlases like `aseg` represent deep brain structures. Their data
-is a `brain_data_subcortical` with sf polygons and individual 3D meshes:
+is a `ggseg_data_subcortical` with sf polygons and individual 3D meshes:
 
 ```{r}
 aseg$type
@@ -93,7 +93,7 @@ names(aseg$data)
 ```
 
 **Tract** atlases like `tracula` represent white matter bundles. Their data is a
-`brain_data_tract` with sf polygons and centerlines that generate tube meshes for 3D:
+`ggseg_data_tract` with sf polygons and centerlines that generate tube meshes for 3D:
 
 ```{r}
 tracula$type

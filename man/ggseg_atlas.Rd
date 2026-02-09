@@ -19,8 +19,8 @@ unique region). May contain additional columns for grouping or metadata
 (e.g., lobe, network, Brodmann area).}
 
 \item{data}{a ggseg_atlas_data object created by
-\code{\link[=brain_data_cortical]{brain_data_cortical()}}, \code{\link[=brain_data_subcortical]{brain_data_subcortical()}},
-or \code{\link[=brain_data_tract]{brain_data_tract()}}.
+\code{\link[=ggseg_data_cortical]{ggseg_data_cortical()}}, \code{\link[=ggseg_data_subcortical]{ggseg_data_subcortical()}},
+or \code{\link[=ggseg_data_tract]{ggseg_data_tract()}}.
 Must match the specified type.}
 
 \item{palette}{named character vector of colours keyed by label}
@@ -39,7 +39,7 @@ atlas <- ggseg_atlas(
   atlas = "dk",
   type = "cortical",
   core = core_df,
-  data = brain_data_cortical(sf = geometry, vertices = vertex_indices)
+  data = ggseg_data_cortical(sf = geometry, vertices = vertex_indices)
 )
 
 # Tract atlas
@@ -47,7 +47,7 @@ atlas <- ggseg_atlas(
   atlas = "hcp_tracts",
   type = "tract",
   core = core_df,
-  data = brain_data_tract(
+  data = ggseg_data_tract(
     meshes = tube_meshes,
     scalars = list(FA = fa_values)
   )

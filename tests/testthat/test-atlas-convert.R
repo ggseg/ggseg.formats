@@ -397,6 +397,94 @@ describe("remap_palette_to_labels", {
 })
 
 
+describe("convert_legacy_brain_atlas 2D-only path", {
+  it("creates atlas from 2D sf without vertex data", {
+    sf_geom <- sf::st_sf(
+      label = "lh_frontal", view = "lateral",
+      geometry = sf::st_sfc(make_polygon())
+    )
+    core <- data.frame(
+      hemi = "left", region = "frontal", label = "lh_frontal",
+      stringsAsFactors = FALSE
+    )
+    mock_2d <- structure(
+      list(
+        atlas = "test", type = "cortical",
+        palette = c(lh_frontal = "#FF0000"),
+        core = core,
+        data = ggseg_data_cortical(sf = sf_geom)
+      ),
+      class = "brain_atlas"
+    )
+
+    local_mocked_bindings(
+      signal_stage = function(...) invisible(NULL),
+      .package = "lifecycle"
+    )
+
+    result <- convert_legacy_brain_atlas(atlas_2d = mock_2d)
+    expect_s3_class(result, "ggseg_atlas")
+    expect_null(result$data$vertices)
+  })
+
+  it("extracts meshes with non-rgl format", {
+    mock_3d <- data.frame(
+      atlas = "test_3d", hemi = "subcort", surf = "LCBC",
+      stringsAsFactors = FALSE
+    )
+    mesh_data <- list(
+      vertices = data.frame(x = 1:5, y = 1:5, z = 1:5),
+      faces = data.frame(i = 1:2, j = 2:3, k = 3:4)
+    )
+    mock_3d$ggseg_3d <- list(data.frame(
+      region = "thalamus", label = "Left-Thalamus",
+      colour = "#FF0000", stringsAsFactors = FALSE
+    ))
+    mock_3d$ggseg_3d[[1]]$mesh <- list(mesh_data)
+
+    local_mocked_bindings(
+      signal_stage = function(...) invisible(NULL),
+      .package = "lifecycle"
+    )
+
+    result <- convert_legacy_brain_atlas(
+      atlas_3d = mock_3d, type = "subcortical"
+    )
+    mesh <- result$data$meshes$mesh[[1]]
+    expect_equal(mesh$vertices$x, 1:5)
+    expect_equal(mesh$faces$i, 1:2)
+  })
+})
+
+
+describe("unify_legacy_atlases (deprecated)", {
+  it("warns and delegates to convert_legacy_brain_atlas", {
+    sf_geom <- sf::st_sf(
+      label = "lh_frontal", view = "lateral",
+      geometry = sf::st_sfc(make_polygon())
+    )
+    core <- data.frame(
+      hemi = "left", region = "frontal", label = "lh_frontal",
+      stringsAsFactors = FALSE
+    )
+    mock_2d <- structure(
+      list(
+        atlas = "test", type = "cortical",
+        palette = c(lh_frontal = "#FF0000"),
+        core = core,
+        data = ggseg_data_cortical(sf = sf_geom)
+      ),
+      class = "brain_atlas"
+    )
+
+    lifecycle::expect_deprecated(
+      result <- unify_legacy_atlases(atlas_2d = mock_2d)
+    )
+    expect_s3_class(result, "ggseg_atlas")
+  })
+})
+
+
 describe("infer_vertices_from_meshes", {
   it("returns correct 0-based indices with matching coordinates", {
     brain_verts <- data.frame(

@@ -8,7 +8,7 @@ describe("as_ggseg_atlas", {
       atlas = "test",
       type = "cortical",
       core = core,
-      data = brain_data_cortical(vertices = vertices)
+      data = ggseg_data_cortical(vertices = vertices)
     )
 
     lst <- as.list(atlas)
@@ -72,7 +72,7 @@ describe("as_ggseg_atlas.ggseg_atlas", {
       atlas = "test",
       type = "cortical",
       core = core,
-      data = brain_data_cortical(vertices = vertices)
+      data = ggseg_data_cortical(vertices = vertices)
     )
 
     result <- as_ggseg_atlas(atlas)
@@ -102,7 +102,7 @@ describe("as_ggseg_atlas.brain_atlas (legacy auto-conversion)", {
         type = "cortical",
         palette = NULL,
         core = core,
-        data = brain_data_cortical(vertices = vertices)
+        data = ggseg_data_cortical(vertices = vertices)
       ),
       class = c("cortical_atlas", "brain_atlas", "list")
     )
@@ -197,7 +197,7 @@ describe("convert_legacy_brain_data", {
       atlas = "test",
       type = "cortical",
       core = core,
-      data = brain_data_cortical(vertices = vertices)
+      data = ggseg_data_cortical(vertices = vertices)
     )
 
     result <- convert_legacy_brain_data(atlas)
@@ -285,5 +285,75 @@ describe("convert_legacy_brain_data", {
 
     expect_s3_class(result, "ggseg_atlas")
     expect_null(result$palette)
+  })
+})
+
+
+describe("as_brain_atlas (deprecated)", {
+  it("warns and delegates to as_ggseg_atlas", {
+    core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
+    vertices <- data.frame(label = "lh_frontal")
+    vertices$vertices <- list(1L:3L)
+    atlas <- ggseg_atlas(
+      atlas = "test", type = "cortical",
+      core = core, data = ggseg_data_cortical(vertices = vertices)
+    )
+    lifecycle::expect_deprecated(
+      result <- as_brain_atlas(atlas)
+    )
+    expect_s3_class(result, "ggseg_atlas")
+  })
+})
+
+
+describe("as_ggseg_atlas.brain_atlas legacy paths", {
+  it("converts brain_atlas with core and data.frame data", {
+    sf_geom <- sf::st_sf(
+      hemi = "left", region = "frontal",
+      label = "lh_frontal", view = "lateral",
+      geometry = sf::st_sfc(make_polygon())
+    )
+    old_atlas <- structure(
+      list(atlas = "old", type = "cortical", core = data.frame(
+        hemi = "left", region = "frontal", label = "lh_frontal"
+      ), data = sf_geom),
+      class = "brain_atlas"
+    )
+    lifecycle::expect_deprecated(
+      result <- as_ggseg_atlas(old_atlas)
+    )
+    expect_s3_class(result, "ggseg_atlas")
+  })
+
+  it("converts brain_atlas with separate sf field", {
+    sf_geom <- sf::st_sf(
+      label = "lh_frontal", view = "lateral",
+      geometry = sf::st_sfc(make_polygon())
+    )
+    old_atlas <- structure(
+      list(
+        atlas = "old", type = "cortical",
+        core = data.frame(
+          hemi = "left", region = "frontal", label = "lh_frontal"
+        ),
+        sf = sf_geom, vertices = NULL, meshes = NULL
+      ),
+      class = "brain_atlas"
+    )
+    lifecycle::expect_deprecated(
+      result <- as_ggseg_atlas(old_atlas)
+    )
+    expect_s3_class(result, "ggseg_atlas")
+    expect_s3_class(result$data, "ggseg_atlas_data")
+  })
+
+  it("errors for unrecognized brain_atlas structure", {
+    old_atlas <- structure(
+      list(atlas = "bad", type = "cortical"),
+      class = "brain_atlas"
+    )
+    lifecycle::expect_deprecated(
+      expect_error(as_ggseg_atlas(old_atlas), "unrecognized structure")
+    )
   })
 })

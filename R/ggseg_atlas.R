@@ -10,8 +10,8 @@
 #'   unique region). May contain additional columns for grouping or metadata
 #'   (e.g., lobe, network, Brodmann area).
 #' @param data a ggseg_atlas_data object created by
-#'   [brain_data_cortical()], [brain_data_subcortical()],
-#'   or [brain_data_tract()].
+#'   [ggseg_data_cortical()], [ggseg_data_subcortical()],
+#'   or [ggseg_data_tract()].
 #'   Must match the specified type.
 #'
 #' @return an object of class 'ggseg_atlas'
@@ -24,7 +24,7 @@
 #'   atlas = "dk",
 #'   type = "cortical",
 #'   core = core_df,
-#'   data = brain_data_cortical(sf = geometry, vertices = vertex_indices)
+#'   data = ggseg_data_cortical(sf = geometry, vertices = vertex_indices)
 #' )
 #'
 #' # Tract atlas
@@ -32,7 +32,7 @@
 #'   atlas = "hcp_tracts",
 #'   type = "tract",
 #'   core = core_df,
-#'   data = brain_data_tract(
+#'   data = ggseg_data_tract(
 #'     meshes = tube_meshes,
 #'     scalars = list(FA = fa_values)
 #'   )
@@ -59,18 +59,22 @@ ggseg_atlas <- function(atlas, type, core, data, palette = NULL) {
     )
   }
 
-  if (!inherits(data, "ggseg_atlas_data") && !inherits(data, "brain_atlas_data")) {
+  if (
+    !inherits(data, "ggseg_atlas_data") &&
+      !inherits(data, "brain_atlas_data")
+  ) {
     cli::cli_abort(c(
       "{.arg data} must be a {.cls ggseg_atlas_data} object.",
-      "i" = "Use {.fn brain_data_cortical}, {.fn brain_data_subcortical},
-      or {.fn brain_data_tract}."
+      "i" = "Use {.fn ggseg_data_cortical}, {.fn ggseg_data_subcortical},
+      or {.fn ggseg_data_tract}."
     ))
   }
 
-  expected_class <- paste0("brain_data_", type)
-  if (!inherits(data, expected_class)) {
+  expected_new <- paste0("ggseg_data_", type)
+  expected_old <- paste0("brain_data_", type)
+  if (!inherits(data, expected_new) && !inherits(data, expected_old)) {
     cli::cli_abort(c(
-      "Atlas type {.val {type}} requires {.cls {expected_class}}.",
+      "Atlas type {.val {type}} requires {.cls {expected_new}}.",
       "x" = "Got {.cls {class(data)[1]}}."
     ))
   }

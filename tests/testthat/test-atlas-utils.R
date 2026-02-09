@@ -47,7 +47,7 @@ make_test_atlas <- function() {
     type = "cortical",
     core = core,
     palette = palette,
-    data = brain_data_cortical(sf = sf_geom, vertices = vertices)
+    data = ggseg_data_cortical(sf = sf_geom, vertices = vertices)
   )
 }
 
@@ -139,7 +139,7 @@ make_multiview_atlas <- function() {
     type = "cortical",
     core = core,
     palette = palette,
-    data = brain_data_cortical(sf = sf_geom)
+    data = ggseg_data_cortical(sf = sf_geom)
   )
 }
 
@@ -195,7 +195,7 @@ describe("atlas_labels", {
       atlas = "test",
       type = "cortical",
       core = core,
-      data = brain_data_cortical(vertices = vertices)
+      data = ggseg_data_cortical(vertices = vertices)
     )
     expect_equal(atlas_labels(atlas), "lh_frontal")
   })
@@ -688,5 +688,162 @@ describe("subclass preservation", {
     expect_equal(class(dk), c("cortical_atlas", "ggseg_atlas", "list"))
     expect_equal(class(aseg), c("subcortical_atlas", "ggseg_atlas", "list"))
     expect_equal(class(tracula), c("tract_atlas", "ggseg_atlas", "list"))
+  })
+})
+
+
+describe("deprecated wrappers", {
+  it("brain_regions() warns and returns regions", {
+    lifecycle::expect_deprecated(
+      result <- brain_regions(dk)
+    )
+    expect_type(result, "character")
+    expect_true(length(result) > 0)
+  })
+
+  it("brain_labels() warns and returns labels", {
+    lifecycle::expect_deprecated(
+      result <- brain_labels(dk)
+    )
+    expect_type(result, "character")
+    expect_true(length(result) > 0)
+  })
+
+  it("brain_views() warns and returns views", {
+    lifecycle::expect_deprecated(
+      result <- brain_views(dk)
+    )
+    expect_type(result, "character")
+  })
+})
+
+
+describe("atlas_region_remove", {
+  it("removes region from cortical atlas with vertices", {
+    atlas <- make_test_atlas()
+    result <- atlas_region_remove(atlas, "frontal")
+    expect_false("frontal" %in% atlas_regions(result))
+    expect_true("parietal" %in% atlas_regions(result))
+  })
+
+  it("removes region by label pattern", {
+    atlas <- make_test_atlas()
+    result <- atlas_region_remove(atlas, "lh_frontal", match_on = "label")
+    labels <- atlas_labels(result)
+    expect_false("lh_frontal" %in% labels)
+    expect_true("rh_frontal" %in% labels)
+  })
+})
+
+
+describe("atlas_region_contextual", {
+  it("removes from core but keeps sf geometry", {
+    atlas <- make_test_atlas()
+    result <- atlas_region_contextual(atlas, "parietal")
+    expect_false("parietal" %in% atlas_regions(result))
+    sf_labels <- atlas_sf(result)$label
+    expect_true("lh_parietal" %in% sf_labels)
+  })
+})
+
+
+describe("atlas_view_remove_region", {
+  it("removes region geometry from specific views", {
+    atlas <- make_multiview_atlas()
+    result <- atlas_view_remove_region(
+      atlas,
+      "frontal",
+      match_on = "region",
+      views = "axial_1"
+    )
+    sf_data <- atlas_sf(result)
+    axial1 <- sf_data[sf_data$view == "axial_1", ]
+    expect_false(any(grepl("frontal", axial1$region, ignore.case = TRUE)))
+  })
+
+  it("removes by label pattern", {
+    atlas <- make_multiview_atlas()
+    result <- atlas_view_remove_region(atlas, "lh_frontal", match_on = "label")
+    sf_data <- atlas_sf(result)
+    expect_false("lh_frontal" %in% sf_data$label)
+  })
+
+  it("warns when atlas has no sf data", {
+    core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
+    vertices <- data.frame(label = "lh_frontal")
+    vertices$vertices <- list(1L:3L)
+    atlas <- ggseg_atlas(
+      atlas = "test",
+      type = "cortical",
+      core = core,
+      data = ggseg_data_cortical(vertices = vertices)
+    )
+    expect_warning(
+      atlas_view_remove_region(atlas, "frontal"),
+      "no sf data"
+    )
+  })
+})
+
+
+describe("atlas_view_keep", {
+  it("keeps only specified views", {
+    atlas <- make_multiview_atlas()
+    result <- atlas_view_keep(atlas, "axial_1")
+    views <- atlas_views(result)
+    expect_equal(views, "axial_1")
+  })
+
+  it("warns when no views match", {
+    atlas <- make_multiview_atlas()
+    expect_warning(
+      result <- atlas_view_keep(atlas, "nonexistent"),
+      "No views matched"
+    )
+  })
+
+  it("warns when atlas has no sf data", {
+    core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
+    vertices <- data.frame(label = "lh_frontal")
+    vertices$vertices <- list(1L:3L)
+    atlas <- ggseg_atlas(
+      atlas = "test",
+      type = "cortical",
+      core = core,
+      data = ggseg_data_cortical(vertices = vertices)
+    )
+    expect_warning(atlas_view_keep(atlas, "lateral"), "no sf data")
+  })
+})
+
+
+describe("atlas_view_reorder", {
+  it("warns when atlas has no sf data", {
+    core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
+    vertices <- data.frame(label = "lh_frontal")
+    vertices$vertices <- list(1L:3L)
+    atlas <- ggseg_atlas(
+      atlas = "test",
+      type = "cortical",
+      core = core,
+      data = ggseg_data_cortical(vertices = vertices)
+    )
+    expect_warning(atlas_view_reorder(atlas, "lateral"), "no sf data")
+  })
+
+  it("appends unmentioned views to end of order", {
+    atlas <- make_multiview_atlas()
+    result <- atlas_view_reorder(atlas, c("sagittal"))
+    views <- atlas_views(result)
+    expect_equal(views[1], "sagittal")
+  })
+})
+
+
+describe("rebuild_atlas_data", {
+  it("works with subcortical atlas sf", {
+    result <- atlas_view_keep(aseg, "axial")
+    expect_s3_class(result, "ggseg_atlas")
+    expect_s3_class(result$data, "ggseg_data_subcortical")
   })
 })

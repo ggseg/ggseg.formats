@@ -65,7 +65,7 @@ describe("atlas_sf", {
       type = "cortical",
       palette = palette,
       core = core,
-      data = brain_data_cortical(sf = sf_geom)
+      data = ggseg_data_cortical(sf = sf_geom)
     )
 
     result <- atlas_sf(atlas)
@@ -97,7 +97,7 @@ describe("atlas_sf", {
       atlas = "test",
       type = "cortical",
       core = core,
-      data = brain_data_cortical(sf = sf_geom)
+      data = ggseg_data_cortical(sf = sf_geom)
     )
 
     result <- atlas_sf(atlas)
@@ -124,7 +124,7 @@ describe("atlas_vertices", {
       type = "cortical",
       palette = palette,
       core = core,
-      data = brain_data_cortical(vertices = vertices)
+      data = ggseg_data_cortical(vertices = vertices)
     )
 
     result <- atlas_vertices(atlas)
@@ -148,7 +148,7 @@ describe("atlas_vertices", {
       atlas = "test",
       type = "subcortical",
       core = core,
-      data = brain_data_subcortical(meshes = meshes)
+      data = ggseg_data_subcortical(meshes = meshes)
     )
 
     expect_error(atlas_vertices(atlas), "does not contain vertices")
@@ -167,7 +167,7 @@ describe("atlas_vertices", {
       atlas = "test",
       type = "cortical",
       core = core,
-      data = brain_data_cortical(vertices = vertices)
+      data = ggseg_data_cortical(vertices = vertices)
     )
 
     result <- atlas_vertices(atlas)
@@ -196,7 +196,7 @@ describe("atlas_meshes", {
       type = "subcortical",
       palette = palette,
       core = core,
-      data = brain_data_subcortical(meshes = meshes)
+      data = ggseg_data_subcortical(meshes = meshes)
     )
 
     result <- atlas_meshes(atlas)
@@ -215,7 +215,7 @@ describe("atlas_meshes", {
       atlas = "test",
       type = "cortical",
       core = core,
-      data = brain_data_cortical(vertices = vertices)
+      data = ggseg_data_cortical(vertices = vertices)
     )
 
     expect_error(atlas_meshes(atlas), "does not contain meshes")
@@ -233,7 +233,7 @@ describe("atlas_meshes", {
       atlas = "test",
       type = "subcortical",
       core = core,
-      data = brain_data_subcortical(meshes = meshes)
+      data = ggseg_data_subcortical(meshes = meshes)
     )
 
     result <- atlas_meshes(atlas)
@@ -243,5 +243,16 @@ describe("atlas_meshes", {
 
   it("errors for non-ggseg_atlas input", {
     expect_error(atlas_meshes(data.frame()), "must be a.*ggseg_atlas")
+  })
+})
+
+
+describe("brain_pal (deprecated)", {
+  it("warns and returns palette", {
+    lifecycle::expect_deprecated(
+      result <- brain_pal("dk")
+    )
+    expect_type(result, "character")
+    expect_true(length(result) > 0)
   })
 })

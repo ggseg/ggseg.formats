@@ -1,7 +1,7 @@
 describe("validate_sf", {
   it("errors when sf is not a data.frame", {
     expect_error(
-      brain_data_cortical(sf = "not a dataframe"),
+      ggseg_data_cortical(sf = "not a dataframe"),
       "must be a data.frame"
     )
   })
@@ -9,7 +9,7 @@ describe("validate_sf", {
   it("errors when sf is missing required columns", {
     sf_bad <- data.frame(label = "test", view = "lateral")
     expect_error(
-      brain_data_cortical(sf = sf_bad),
+      ggseg_data_cortical(sf = sf_bad),
       "must contain columns.*geometry"
     )
   })
@@ -17,7 +17,7 @@ describe("validate_sf", {
   it("errors when geometry is not sfc", {
     sf_bad <- data.frame(label = "test", view = "lateral", geometry = "not sfc")
     expect_error(
-      brain_data_cortical(sf = sf_bad),
+      ggseg_data_cortical(sf = sf_bad),
       "must be an sf geometry column"
     )
   })
@@ -29,7 +29,7 @@ describe("validate_sf", {
     df <- data.frame(label = "test", view = "lateral")
     df$geometry <- geom
 
-    data <- brain_data_cortical(sf = df)
+    data <- ggseg_data_cortical(sf = df)
 
     expect_s3_class(data$sf, "sf")
   })
@@ -45,7 +45,7 @@ describe("validate_sf", {
     )
 
     expect_error(
-      brain_data_cortical(sf = sf_bad),
+      ggseg_data_cortical(sf = sf_bad),
       "Empty geometry for.*region1"
     )
   })
@@ -58,7 +58,7 @@ describe("validate_vertices", {
     vertices$vertices <- list(1L:3L)
 
     expect_error(
-      brain_data_cortical(vertices = vertices),
+      ggseg_data_cortical(vertices = vertices),
       "must contain columns.*label"
     )
   })
@@ -68,7 +68,7 @@ describe("validate_vertices", {
 describe("validate_meshes", {
   it("errors when meshes is not a data.frame", {
     expect_error(
-      brain_data_subcortical(meshes = "not a dataframe"),
+      ggseg_data_subcortical(meshes = "not a dataframe"),
       "must be a data.frame"
     )
   })
@@ -78,7 +78,7 @@ describe("validate_meshes", {
     meshes$mesh <- list(NULL)
 
     expect_error(
-      brain_data_subcortical(meshes = meshes),
+      ggseg_data_subcortical(meshes = meshes),
       "must contain columns.*label"
     )
   })
@@ -87,7 +87,7 @@ describe("validate_meshes", {
     meshes <- data.frame(label = "test", mesh = "not a list")
 
     expect_error(
-      brain_data_subcortical(meshes = meshes),
+      ggseg_data_subcortical(meshes = meshes),
       "must be a list-column"
     )
   })
@@ -100,7 +100,7 @@ describe("validate_meshes", {
     ))
 
     expect_error(
-      brain_data_subcortical(meshes = meshes),
+      ggseg_data_subcortical(meshes = meshes),
       "Mesh vertices.*must be a data.frame"
     )
   })
@@ -113,7 +113,7 @@ describe("validate_meshes", {
     ))
 
     expect_error(
-      brain_data_subcortical(meshes = meshes),
+      ggseg_data_subcortical(meshes = meshes),
       "Mesh faces.*must be a data.frame"
     )
   })
@@ -129,7 +129,7 @@ describe("validate_meshes", {
     )
 
     expect_error(
-      brain_data_subcortical(meshes = meshes),
+      ggseg_data_subcortical(meshes = meshes),
       "Empty mesh for.*region1"
     )
   })
@@ -142,7 +142,7 @@ describe("validate_meshes", {
     ))
 
     expect_error(
-      brain_data_subcortical(meshes = meshes),
+      ggseg_data_subcortical(meshes = meshes),
       "Empty mesh for.*region1"
     )
   })
@@ -155,7 +155,7 @@ describe("validate_meshes", {
     ))
 
     expect_error(
-      brain_data_subcortical(meshes = meshes),
+      ggseg_data_subcortical(meshes = meshes),
       "Empty mesh for.*region1"
     )
   })
@@ -171,7 +171,7 @@ describe("validate_tract_metadata", {
       metadata = "not a list"
     ))
 
-    expect_error(brain_data_tract(meshes = meshes))
+    expect_error(ggseg_data_tract(meshes = meshes))
   })
 })
 
@@ -188,7 +188,7 @@ describe("validate_palette", {
         type = "cortical",
         palette = c("red", "blue"),
         core = core,
-        data = brain_data_cortical(vertices = vertices)
+        data = ggseg_data_cortical(vertices = vertices)
       ),
       "must be a named character vector"
     )
@@ -205,7 +205,7 @@ describe("validate_palette", {
         type = "cortical",
         palette = c(lh_frontal = "#FF0000", unknown = "#00FF00"),
         core = core,
-        data = brain_data_cortical(vertices = vertices)
+        data = ggseg_data_cortical(vertices = vertices)
       ),
       "not found in.*core"
     )
@@ -224,7 +224,7 @@ describe("validate_data_labels", {
         atlas = "test",
         type = "cortical",
         core = core,
-        data = brain_data_cortical(vertices = vertices)
+        data = ggseg_data_cortical(vertices = vertices)
       )
     )
   })
@@ -249,7 +249,7 @@ describe("validate_data_labels", {
         atlas = "test",
         type = "cortical",
         core = core,
-        data = brain_data_cortical(sf = sf_geom)
+        data = ggseg_data_cortical(sf = sf_geom)
       )
     )
   })
@@ -273,7 +273,7 @@ describe("validate_data_labels", {
         atlas = "test",
         type = "subcortical",
         core = core,
-        data = brain_data_subcortical(meshes = meshes)
+        data = ggseg_data_subcortical(meshes = meshes)
       )
     )
   })
@@ -292,7 +292,7 @@ describe("validate_data_labels", {
         atlas = "test",
         type = "cortical",
         core = core,
-        data = brain_data_cortical(vertices = vertices)
+        data = ggseg_data_cortical(vertices = vertices)
       ),
       "Missing from vertices.*rh_frontal"
     )
@@ -332,10 +332,61 @@ describe("validate_data_labels", {
         atlas = "test",
         type = "cortical",
         core = core,
-        data = brain_data_cortical(sf = sf_geom, vertices = vertices)
+        data = ggseg_data_cortical(sf = sf_geom, vertices = vertices)
       ),
       "sf covers only 80%"
     )
     expect_s3_class(atlas, "ggseg_atlas")
+  })
+
+  it("errors when sf coverage is below 80%", {
+    labels <- paste0("lh_", c(
+      "frontal", "parietal", "temporal", "occipital", "insula",
+      "cingulate", "precuneus", "cuneus", "lingual", "fusiform"
+    ))
+    sf_geom <- sf::st_sf(
+      label = labels[1],
+      view = "lateral",
+      geometry = sf::st_sfc(make_polygon())
+    )
+    vertices <- data.frame(label = labels)
+    vertices$vertices <- lapply(seq_along(labels), function(i) {
+      as.integer((i * 3 - 2):(i * 3))
+    })
+    core <- data.frame(
+      hemi = rep("left", 10),
+      region = gsub("lh_", "", labels),
+      label = labels
+    )
+
+    expect_error(
+      ggseg_atlas(
+        atlas = "test", type = "cortical",
+        core = core,
+        data = ggseg_data_cortical(sf = sf_geom, vertices = vertices)
+      ),
+      "minimum 80%"
+    )
+  })
+})
+
+
+describe("validate_tract_metadata", {
+  it("warns when metadata has partial fields", {
+    metadata <- list(
+      n_centerline_points = 10,
+      centerline = matrix(1:30, ncol = 3)
+    )
+    expect_warning(
+      ggseg.formats:::validate_tract_metadata(metadata, "cst_left"),
+      "missing"
+    )
+  })
+
+  it("warns when metadata is not a list", {
+    expect_warning(
+      ggseg.formats:::validate_tract_metadata("not a list", "bad_tract"),
+      "should be a list"
+    )
   })
 })

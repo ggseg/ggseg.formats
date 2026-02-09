@@ -15,7 +15,7 @@ describe("dk atlas", {
 
   it("has valid data structure", {
     expect_s3_class(dk$data, "ggseg_atlas_data")
-    expect_s3_class(dk$data, "brain_data_cortical")
+    expect_s3_class(dk$data, "ggseg_data_cortical")
   })
 
   it("has both hemispheres", {
@@ -53,7 +53,7 @@ describe("aseg atlas", {
 
   it("has valid data structure", {
     expect_s3_class(aseg$data, "ggseg_atlas_data")
-    expect_s3_class(aseg$data, "brain_data_subcortical")
+    expect_s3_class(aseg$data, "ggseg_data_subcortical")
   })
 
   it("has expected subcortical regions", {

@@ -37,8 +37,8 @@ as_ggseg_atlas.ggseg_atlas <- function(x) {
 as_ggseg_atlas.brain_atlas <- function(x) {
   lifecycle::deprecate_warn(
     "0.2.0",
-    I('Converting legacy `brain_atlas` objects'),
-    I('`ggseg_atlas()` (use `as_ggseg_atlas()`)'),
+    I("Converting legacy `brain_atlas` objects"),
+    I("`ggseg_atlas()` (use `as_ggseg_atlas()`)"),
     always = TRUE
   )
 
@@ -67,8 +67,8 @@ as_ggseg_atlas.brain_atlas <- function(x) {
 as_ggseg_atlas.ggseg3d_atlas <- function(x) {
   lifecycle::deprecate_warn(
     "0.2.0",
-    I('Converting legacy `ggseg3d_atlas` objects'),
-    I('`ggseg_atlas()` (use `as_ggseg_atlas()`)'),
+    I("Converting legacy `ggseg3d_atlas` objects"),
+    I("`ggseg_atlas()` (use `as_ggseg_atlas()`)"),
     always = TRUE
   )
   convert_legacy_brain_atlas(atlas_3d = x)
@@ -125,7 +125,9 @@ as_brain_atlas <- function(x) {
 #' @keywords internal
 convert_legacy_brain_data <- function(x) {
   if (!inherits(x, "brain_atlas") && !inherits(x, "ggseg_atlas")) {
-    cli::cli_abort("{.arg x} must be a {.cls brain_atlas} or {.cls ggseg_atlas}.")
+    cli::cli_abort(
+      "{.arg x} must be a {.cls brain_atlas} or {.cls ggseg_atlas}."
+    )
   }
 
   if (!is.null(x$core)) {
@@ -152,10 +154,10 @@ convert_legacy_brain_data <- function(x) {
 
   data <- switch(
     type,
-    "cortical" = brain_data_cortical(sf = sf_data, vertices = NULL),
-    "subcortical" = brain_data_subcortical(sf = sf_data, meshes = NULL),
-    "tract" = brain_data_tract(sf = sf_data, meshes = NULL),
-    brain_data_cortical(sf = sf_data, vertices = NULL)
+    "cortical" = ggseg_data_cortical(sf = sf_data, vertices = NULL),
+    "subcortical" = ggseg_data_subcortical(sf = sf_data, meshes = NULL),
+    "tract" = ggseg_data_tract(sf = sf_data, meshes = NULL),
+    ggseg_data_cortical(sf = sf_data, vertices = NULL)
   )
 
   ggseg_atlas(
@@ -181,9 +183,9 @@ convert_legacy_structure <- function(x) {
 
   data <- switch(
     type,
-    "cortical" = brain_data_cortical(sf = x$sf, vertices = x$vertices),
-    "subcortical" = brain_data_subcortical(sf = x$sf, meshes = x$meshes),
-    "tract" = brain_data_tract(sf = x$sf, meshes = x$meshes),
+    "cortical" = ggseg_data_cortical(sf = x$sf, vertices = x$vertices),
+    "subcortical" = ggseg_data_subcortical(sf = x$sf, meshes = x$meshes),
+    "tract" = ggseg_data_tract(sf = x$sf, meshes = x$meshes),
     cli::cli_abort("Unknown atlas type: {.val {type}}")
   )
 
