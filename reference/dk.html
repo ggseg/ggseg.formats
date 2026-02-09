@@ -47,7 +47,7 @@ per hemisphere (68 total) on the cortical surface.</p>
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>A <code>brain_atlas</code> object with components:</p><dl><dt>atlas</dt>
+    <p>A <code>ggseg_atlas</code> object with components:</p><dl><dt>atlas</dt>
 <dd><p>Character. Atlas name ("dk")</p></dd>
 
 <dt>type</dt>
@@ -57,7 +57,7 @@ per hemisphere (68 total) on the cortical surface.</p>
 <dd><p>Named character vector of colours for each region</p></dd>
 
 <dt>data</dt>
-<dd><p>A <code>cortical_data</code> object containing:</p><dl><dt>vertices</dt>
+<dd><p>A <code>brain_data_cortical</code> object containing:</p><dl><dt>vertices</dt>
 <dd><p>Data frame with <code>label</code> and <code>vertices</code> columns</p></dd>
 
 <dt>sf</dt>
@@ -118,7 +118,7 @@ Cerebral Cortex, 14(1):11-22.
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><a href="aseg.html">aseg</a> for subcortical structures,
-<code><a href="brain_atlas.html">brain_atlas()</a></code> for the atlas class constructor</p>
+<code><a href="ggseg_atlas.html">ggseg_atlas()</a></code> for the atlas class constructor</p>
 <p>Other ggseg_atlases:
 <code><a href="aseg.html">aseg</a></code>,
 <code><a href="tracula.html">tracula</a></code></p></div>
@@ -154,7 +154,7 @@ Cerebral Cortex, 14(1):11-22.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 60 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># List regions</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="brain_regions.html">brain_regions</a></span><span class="op">(</span><span class="va">dk</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="atlas_regions.html">atlas_regions</a></span><span class="op">(</span><span class="va">dk</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "banks of superior temporal sulcus" "caudal anterior cingulate"        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "caudal middle frontal"             "corpus callosum"                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "cuneus"                            "entorhinal"                       </span>
@@ -175,7 +175,7 @@ Cerebral Cortex, 14(1):11-22.
 <span class="r-out co"><span class="r-pr">#&gt;</span> [35] "transverse temporal"              </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># List labels</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="brain_labels.html">brain_labels</a></span><span class="op">(</span><span class="va">dk</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="atlas_labels.html">atlas_labels</a></span><span class="op">(</span><span class="va">dk</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "lh_bankssts"                 "lh_caudalanteriorcingulate" </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "lh_caudalmiddlefrontal"      "lh_corpuscallosum"          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "lh_cuneus"                   "lh_entorhinal"              </span>

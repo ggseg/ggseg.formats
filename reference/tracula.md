@@ -11,7 +11,7 @@ data(tracula)
 
 ## Format
 
-A `brain_atlas` object with components:
+A `ggseg_atlas` object with components:
 
 - atlas:
 
@@ -27,7 +27,7 @@ A `brain_atlas` object with components:
 
 - data:
 
-  A `tract_data` object containing:
+  A `brain_data_tract` object containing:
 
   centerlines
 
@@ -54,11 +54,16 @@ Neuroinformatics, 5:23.
 
 ## See also
 
-[dk](dk.md) for cortical parcellation, [aseg](aseg.md) for subcortical
-structures, [`brain_atlas()`](brain_atlas.md) for the atlas class
-constructor
+[dk](https://ggseg.github.io/ggseg.formats/reference/dk.md) for cortical
+parcellation,
+[aseg](https://ggseg.github.io/ggseg.formats/reference/aseg.md) for
+subcortical structures,
+[`ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.md)
+for the atlas class constructor
 
-Other ggseg_atlases: [`aseg`](aseg.md), [`dk`](dk.md)
+Other ggseg_atlases:
+[`aseg`](https://ggseg.github.io/ggseg.formats/reference/aseg.md),
+[`dk`](https://ggseg.github.io/ggseg.formats/reference/dk.md)
 
 ## Examples
 

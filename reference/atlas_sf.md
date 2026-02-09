@@ -12,7 +12,7 @@ atlas_sf(atlas)
 
 - atlas:
 
-  a brain_atlas object
+  a ggseg_atlas object
 
 ## Value
 

@@ -37,7 +37,7 @@ atlas_view_reorder(atlas, order, gap = 0.15)
 
 - atlas:
 
-  A `brain_atlas` object
+  A `ggseg_atlas` object
 
 - pattern:
 
@@ -80,7 +80,7 @@ atlas_view_reorder(atlas, order, gap = 0.15)
 
 ## Value
 
-Modified `brain_atlas` object
+Modified `ggseg_atlas` object
 
 ## Details
 

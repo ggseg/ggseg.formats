@@ -32,9 +32,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="ggseg-atlas">ggseg atlas<a class="anchor" aria-label="anchor" href="#ggseg-atlas"></a></h2>
 
-
+      <div class="section-desc"><p>Create and inspect ggseg atlas objects.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -43,19 +43,37 @@
 
       <dl><dt>
 
-          <code><a href="as_brain_atlas.html">as_brain_atlas()</a></code>
+          <code><a href="is_ggseg3d_atlas.html">is_ggseg3d_atlas()</a></code>
 
         </dt>
-        <dd>Coerce to brain atlas</dd>
+        <dd>Check if object is a legacy ggseg3d atlas</dd>
+      </dl></div><div class="section level2">
+      <h2 id="legacy-conversion">Legacy conversion<a class="anchor" aria-label="anchor" href="#legacy-conversion"></a></h2>
 
-        <dt>
+      <div class="section-desc"><p>Convert old ggseg/ggseg3d atlases to the unified ggseg_atlas format.</p></div>
 
-          <code><a href="aseg.html">aseg</a></code>
+      <dl></dl></div><div class="section level2">
 
+
+
+
+      <dl><dt>
+
+          <code><a href="convert_legacy_brain_atlas.html">convert_legacy_brain_atlas()</a></code> <code><a href="convert_legacy_brain_atlas.html">unify_legacy_atlases()</a></code>
+          <span class="badge lifecycle lifecycle-superseded">superseded</span>
         </dt>
-        <dd>FreeSurfer Automatic Subcortical Segmentation Atlas</dd>
+        <dd>Convert legacy ggseg atlases to ggseg_atlas format</dd>
+      </dl></div><div class="section level2">
+      <h2 id="accessors">Accessors<a class="anchor" aria-label="anchor" href="#accessors"></a></h2>
 
-        <dt>
+      <div class="section-desc"><p>Query atlas contents without reaching into slots directly.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="atlas_manipulation.html">atlas_region_remove()</a></code> <code><a href="atlas_manipulation.html">atlas_region_contextual()</a></code> <code><a href="atlas_manipulation.html">atlas_region_rename()</a></code> <code><a href="atlas_manipulation.html">atlas_region_keep()</a></code> <code><a href="atlas_manipulation.html">atlas_core_add()</a></code> <code><a href="atlas_manipulation.html">atlas_view_remove()</a></code> <code><a href="atlas_manipulation.html">atlas_view_keep()</a></code> <code><a href="atlas_manipulation.html">atlas_view_remove_region()</a></code> <code><a href="atlas_manipulation.html">atlas_view_remove_small()</a></code> <code><a href="atlas_manipulation.html">atlas_view_gather()</a></code> <code><a href="atlas_manipulation.html">atlas_view_reorder()</a></code>
 
@@ -82,57 +100,33 @@
 
         </dt>
         <dd>Get atlas vertices for 3D rendering</dd>
+      </dl></div><div class="section level2">
+      <h2 id="atlas-manipulation">Atlas manipulation<a class="anchor" aria-label="anchor" href="#atlas-manipulation"></a></h2>
 
-        <dt>
+      <div class="section-desc"><p>Pipe-friendly functions for subsetting regions, managing views, and enriching metadata. All return a new <code>ggseg_atlas</code>.</p></div>
 
-          <code><a href="brain_atlas.html">brain_atlas()</a></code>
+      <dl></dl></div><div class="section level2">
 
-        </dt>
-        <dd>Constructor for brain atlas</dd>
 
-        <dt>
 
-          <code><a href="brain_labels.html">brain_labels()</a></code>
 
-        </dt>
-        <dd>Extract unique labels of brain regions</dd>
+      <dl><dt>
 
-        <dt>
-
-          <code><a href="brain_pal.html">brain_pal()</a></code>
+          <code><a href="atlas_manipulation.html">atlas_region_remove()</a></code> <code><a href="atlas_manipulation.html">atlas_region_contextual()</a></code> <code><a href="atlas_manipulation.html">atlas_region_rename()</a></code> <code><a href="atlas_manipulation.html">atlas_region_keep()</a></code> <code><a href="atlas_manipulation.html">atlas_core_add()</a></code> <code><a href="atlas_manipulation.html">atlas_view_remove()</a></code> <code><a href="atlas_manipulation.html">atlas_view_keep()</a></code> <code><a href="atlas_manipulation.html">atlas_view_remove_region()</a></code> <code><a href="atlas_manipulation.html">atlas_view_remove_small()</a></code> <code><a href="atlas_manipulation.html">atlas_view_gather()</a></code> <code><a href="atlas_manipulation.html">atlas_view_reorder()</a></code>
 
         </dt>
-        <dd>Get brain atlas palette</dd>
+        <dd>Manipulate brain atlas regions and views</dd>
+      </dl></div><div class="section level2">
+      <h2 id="bundled-atlases">Bundled atlases<a class="anchor" aria-label="anchor" href="#bundled-atlases"></a></h2>
 
-        <dt>
+      <div class="section-desc"><p>Ready-to-use atlases shipped with the package.</p></div>
 
-          <code><a href="brain_regions.html">brain_regions()</a></code>
+      <dl></dl></div><div class="section level2">
 
-        </dt>
-        <dd>Extract unique names of brain regions</dd>
 
-        <dt>
 
-          <code><a href="brain_views.html">brain_views()</a></code>
 
-        </dt>
-        <dd>Get available views in atlas</dd>
-
-        <dt>
-
-          <code><a href="convert_legacy_brain_atlas.html">convert_legacy_brain_atlas()</a></code>
-
-        </dt>
-        <dd>Convert legacy brain_atlas to unified format</dd>
-
-        <dt>
-
-          <code><a href="cortical_data.html">cortical_data()</a></code>
-
-        </dt>
-        <dd>Create cortical atlas data</dd>
-
-        <dt>
+      <dl><dt>
 
           <code><a href="dk.html">dk</a></code>
 
@@ -141,12 +135,28 @@
 
         <dt>
 
-          <code><a href="is_brain_atlas.html">is_brain_atlas()</a></code>
+          <code><a href="aseg.html">aseg</a></code>
 
         </dt>
-        <dd>Validate brain atlas</dd>
+        <dd>FreeSurfer Automatic Subcortical Segmentation Atlas</dd>
 
         <dt>
+
+          <code><a href="tracula.html">tracula</a></code>
+
+        </dt>
+        <dd>TRACULA White Matter Tract Atlas</dd>
+      </dl></div><div class="section level2">
+      <h2 id="freesurfer-i-o">FreeSurfer I/O<a class="anchor" aria-label="anchor" href="#freesurfer-i-o"></a></h2>
+
+      <div class="section-desc"><p>Read FreeSurfer statistics files into R.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="read_atlas_files.html">read_atlas_files()</a></code>
 
@@ -166,29 +176,9 @@
 
         </dt>
         <dd>Read in stats table from FreeSurfer</dd>
-
-        <dt>
-
-          <code><a href="subcortical_data.html">subcortical_data()</a></code>
-
-        </dt>
-        <dd>Create subcortical atlas data</dd>
-
-        <dt>
-
-          <code><a href="tract_data.html">tract_data()</a></code>
-
-        </dt>
-        <dd>Create tract atlas data</dd>
-
-        <dt>
-
-          <code><a href="tracula.html">tracula</a></code>
-
-        </dt>
-        <dd>TRACULA White Matter Tract Atlas</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

@@ -17,4 +17,4 @@ convert_legacy_structure(x)
 
 ## Value
 
-A brain_atlas with the new structure
+A ggseg_atlas with the new structure

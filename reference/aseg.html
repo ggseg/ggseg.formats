@@ -50,7 +50,7 @@ pallidum, hippocampus, amygdala, accumbens, and ventricles.</p>
 
     <div class="section level2">
     <h2 id="format">Format<a class="anchor" aria-label="anchor" href="#format"></a></h2>
-    <p>A <code>brain_atlas</code> object with components:</p><dl><dt>atlas</dt>
+    <p>A <code>ggseg_atlas</code> object with components:</p><dl><dt>atlas</dt>
 <dd><p>Character. Atlas name ("aseg")</p></dd>
 
 <dt>type</dt>
@@ -60,7 +60,7 @@ pallidum, hippocampus, amygdala, accumbens, and ventricles.</p>
 <dd><p>Named character vector of colours for each region</p></dd>
 
 <dt>data</dt>
-<dd><p>A <code>subcortical_data</code> object containing:</p><dl><dt>meshes</dt>
+<dd><p>A <code>brain_data_subcortical</code> object containing:</p><dl><dt>meshes</dt>
 <dd><p>Data frame with <code>label</code> and <code>mesh</code> columns</p></dd>
 
 <dt>sf</dt>
@@ -121,7 +121,7 @@ Neuron, 33(3):341-355.
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><a href="dk.html">dk</a> for cortical parcellation,
-<code><a href="brain_atlas.html">brain_atlas()</a></code> for the atlas class constructor</p>
+<code><a href="ggseg_atlas.html">ggseg_atlas()</a></code> for the atlas class constructor</p>
 <p>Other ggseg_atlases:
 <code><a href="dk.html">dk</a></code>,
 <code><a href="tracula.html">tracula</a></code></p></div>
@@ -157,7 +157,7 @@ Neuron, 33(3):341-355.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 17 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># List regions</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="brain_regions.html">brain_regions</a></span><span class="op">(</span><span class="va">aseg</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="atlas_regions.html">atlas_regions</a></span><span class="op">(</span><span class="va">aseg</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "amygdala"                      "brain stem"                   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "caudate"                       "choroid plexus"               </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "corpus callosum anterior"      "corpus callosum central"      </span>

@@ -12,7 +12,7 @@ data(aseg)
 
 ## Format
 
-A `brain_atlas` object with components:
+A `ggseg_atlas` object with components:
 
 - atlas:
 
@@ -28,7 +28,7 @@ A `brain_atlas` object with components:
 
 - data:
 
-  A `subcortical_data` object containing:
+  A `brain_data_subcortical` object containing:
 
   meshes
 
@@ -98,10 +98,14 @@ Neuron, 33(3):341-355.
 
 ## See also
 
-[dk](dk.md) for cortical parcellation, [`brain_atlas()`](brain_atlas.md)
+[dk](https://ggseg.github.io/ggseg.formats/reference/dk.md) for cortical
+parcellation,
+[`ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.md)
 for the atlas class constructor
 
-Other ggseg_atlases: [`dk`](dk.md), [`tracula`](tracula.md)
+Other ggseg_atlases:
+[`dk`](https://ggseg.github.io/ggseg.formats/reference/dk.md),
+[`tracula`](https://ggseg.github.io/ggseg.formats/reference/tracula.md)
 
 ## Examples
 
@@ -134,7 +138,7 @@ aseg
 #> # ℹ 17 more rows
 
 # List regions
-brain_regions(aseg)
+atlas_regions(aseg)
 #>  [1] "amygdala"                      "brain stem"                   
 #>  [3] "caudate"                       "choroid plexus"               
 #>  [5] "corpus callosum anterior"      "corpus callosum central"      

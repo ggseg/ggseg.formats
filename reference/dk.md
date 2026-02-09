@@ -11,7 +11,7 @@ data(dk)
 
 ## Format
 
-A `brain_atlas` object with components:
+A `ggseg_atlas` object with components:
 
 - atlas:
 
@@ -27,7 +27,7 @@ A `brain_atlas` object with components:
 
 - data:
 
-  A `cortical_data` object containing:
+  A `brain_data_cortical` object containing:
 
   vertices
 
@@ -81,10 +81,14 @@ parcellating the human cerebral cortex. Cerebral Cortex, 14(1):11-22.
 
 ## See also
 
-[aseg](aseg.md) for subcortical structures,
-[`brain_atlas()`](brain_atlas.md) for the atlas class constructor
+[aseg](https://ggseg.github.io/ggseg.formats/reference/aseg.md) for
+subcortical structures,
+[`ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.md)
+for the atlas class constructor
 
-Other ggseg_atlases: [`aseg`](aseg.md), [`tracula`](tracula.md)
+Other ggseg_atlases:
+[`aseg`](https://ggseg.github.io/ggseg.formats/reference/aseg.md),
+[`tracula`](https://ggseg.github.io/ggseg.formats/reference/tracula.md)
 
 ## Examples
 
@@ -117,7 +121,7 @@ dk
 #> # ℹ 60 more rows
 
 # List regions
-brain_regions(dk)
+atlas_regions(dk)
 #>  [1] "banks of superior temporal sulcus" "caudal anterior cingulate"        
 #>  [3] "caudal middle frontal"             "corpus callosum"                  
 #>  [5] "cuneus"                            "entorhinal"                       
@@ -138,7 +142,7 @@ brain_regions(dk)
 #> [35] "transverse temporal"              
 
 # List labels
-brain_labels(dk)
+atlas_labels(dk)
 #>  [1] "lh_bankssts"                 "lh_caudalanteriorcingulate" 
 #>  [3] "lh_caudalmiddlefrontal"      "lh_corpuscallosum"          
 #>  [5] "lh_cuneus"                   "lh_entorhinal"              
