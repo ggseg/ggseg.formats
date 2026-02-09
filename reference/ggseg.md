@@ -6,6 +6,8 @@ background utility package for ggseg, ggseg3d and ggsegExtra
 
 Useful links:
 
+- <https://ggseg.github.io/ggseg.formats/>
+
 - <https://github.com/ggseg/ggseg.formats>
 
 - Report bugs at <https://github.com/ggseg/ggseg.formats/issues>

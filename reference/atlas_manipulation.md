@@ -19,9 +19,14 @@ atlas_view_remove(atlas, views)
 
 atlas_view_keep(atlas, views)
 
-atlas_view_remove_region(atlas, pattern, match_on = c("label", "region"))
+atlas_view_remove_region(
+  atlas,
+  pattern,
+  match_on = c("label", "region"),
+  views = NULL
+)
 
-atlas_view_remove_region_small(atlas, min_area, views = NULL)
+atlas_view_remove_small(atlas, min_area, views = NULL)
 
 atlas_view_gather(atlas, gap = 0.15)
 
@@ -61,8 +66,8 @@ atlas_view_reorder(atlas, order, gap = 0.15)
 
 - min_area:
 
-  For `atlas_view_remove_region_small()`: minimum polygon area to keep.
-  Context geometries are never removed.
+  For `atlas_view_remove_small()`: minimum polygon area to keep. Context
+  geometries are never removed.
 
 - gap:
 
@@ -98,7 +103,7 @@ Modified `brain_atlas` object
 
 - `atlas_view_remove_region()`: remove specific region geometry from sf
 
-- `atlas_view_remove_region_small()`: remove small polygon fragments
+- `atlas_view_remove_small()`: remove small polygon fragments
 
 - `atlas_view_gather()`: reposition views to close gaps
 
@@ -131,9 +136,9 @@ Modified `brain_atlas` object
 - `atlas_view_remove_region()`: Remove specific region geometry from sf
   data only. Core, palette, and 3D data are unchanged.
 
-- `atlas_view_remove_region_small()`: Remove region geometries below a
-  minimum area threshold. Context geometries (labels not in core) are
-  never removed. Optionally scope to specific views.
+- `atlas_view_remove_small()`: Remove region geometries below a minimum
+  area threshold. Context geometries (labels not in core) are never
+  removed. Optionally scope to specific views.
 
 - `atlas_view_gather()`: Reposition remaining views to close gaps after
   view removal.
@@ -149,7 +154,7 @@ atlas <- atlas |>
   atlas_region_remove("White-Matter") |>
   atlas_region_contextual("cortex") |>
   atlas_view_keep(c("axial_3", "coronal_2", "sagittal")) |>
-  atlas_view_remove_region_small(min_area = 50) |>
+  atlas_view_remove_small(min_area = 50) |>
   atlas_view_gather()
 } # }
 ```

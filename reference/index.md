@@ -13,7 +13,7 @@
   [`atlas_view_remove()`](atlas_manipulation.md)
   [`atlas_view_keep()`](atlas_manipulation.md)
   [`atlas_view_remove_region()`](atlas_manipulation.md)
-  [`atlas_view_remove_region_small()`](atlas_manipulation.md)
+  [`atlas_view_remove_small()`](atlas_manipulation.md)
   [`atlas_view_gather()`](atlas_manipulation.md)
   [`atlas_view_reorder()`](atlas_manipulation.md) : Manipulate brain
   atlas regions and views

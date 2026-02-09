@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Utility package for the ggseg-packages • ggseg.formats</title>
+<title>Brain Atlas Data Structures for the ggseg Ecosystem • ggseg.formats</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Utility package for the ggseg-packages">
-<meta name="description" content="The ggseg, ggseg3d and ggsegExtra packages rely on common base formats, which are contained in this package. It serves as the main base dependency for the other packages in this suite.">
-<meta property="og:description" content="The ggseg, ggseg3d and ggsegExtra packages rely on common base formats, which are contained in this package. It serves as the main base dependency for the other packages in this suite.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Brain Atlas Data Structures for the ggseg Ecosystem">
+<meta name="description" content="Provides the brain_atlas S3 class used across the ggseg ecosystem for 2D and 3D brain visualisation. Ships three bundled atlases (Desikan-Killiany, FreeSurfer aseg, TRACULA) and functions for querying, subsetting, renaming, and enriching atlas objects. Also includes readers for FreeSurfer statistics files.">
+<meta property="og:description" content="Provides the brain_atlas S3 class used across the ggseg ecosystem for 2D and 3D brain visualisation. Ships three bundled atlases (Desikan-Killiany, FreeSurfer aseg, TRACULA) and functions for querying, subsetting, renaming, and enriching atlas objects. Also includes readers for FreeSurfer statistics files.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -32,6 +32,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/index.html">Articles</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -50,23 +51,100 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of ggseg.formats is to provide S3 methods etc to the ggseg-universe. Most users will not have to deal with this package directly in any way.</p>
+<p>ggseg.formats provides the <code>brain_atlas</code> S3 class that powers the <a href="https://ggseg.github.io/ggseg/" class="external-link">ggseg</a> ecosystem for 2D and 3D brain visualisation. It ships three bundled atlases, a set of accessor functions for querying atlas contents, and a pipe-friendly manipulation API for subsetting, renaming, and enriching atlas objects.</p>
+<div class="section level2">
+<h2 id="bundled-atlases">Bundled atlases<a class="anchor" aria-label="anchor" href="#bundled-atlases"></a>
+</h2>
+<p>The package includes three atlases covering the main atlas types:</p>
+<ul>
+<li>
+<strong>dk</strong> — Desikan-Killiany cortical parcellation (68 regions)</li>
+<li>
+<strong>aseg</strong> — FreeSurfer automatic subcortical segmentation</li>
+<li>
+<strong>tracula</strong> — TRACULA white matter tract atlas</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggseg.github.io/ggseg.formats/" class="external-link">ggseg.formats</a></span><span class="op">)</span></span>
+<span><span class="va">dk</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── dk ggseg atlas ──────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; Type: cortical</span></span>
+<span><span class="co">#&gt; Regions: 35</span></span>
+<span><span class="co">#&gt; Hemispheres: left, right</span></span>
+<span><span class="co">#&gt; Views: inferior, lateral, medial, superior</span></span>
+<span><span class="co">#&gt; Palette: ✔</span></span>
+<span><span class="co">#&gt; Rendering: ✔ ggseg</span></span>
+<span><span class="co">#&gt; ✔ ggseg3d (vertices)</span></span>
+<span><span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; # A tibble: 70 × 4</span></span>
+<span><span class="co">#&gt;    hemi  region                            label                      lobe      </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt;                             &lt;chr&gt;                      &lt;chr&gt;     </span></span>
+<span><span class="co">#&gt;  1 left  banks of superior temporal sulcus lh_bankssts                temporal  </span></span>
+<span><span class="co">#&gt;  2 left  caudal anterior cingulate         lh_caudalanteriorcingulate cingulate </span></span>
+<span><span class="co">#&gt;  3 left  caudal middle frontal             lh_caudalmiddlefrontal     frontal   </span></span>
+<span><span class="co">#&gt;  4 left  corpus callosum                   lh_corpuscallosum          white mat…</span></span>
+<span><span class="co">#&gt;  5 left  cuneus                            lh_cuneus                  occipital </span></span>
+<span><span class="co">#&gt;  6 left  entorhinal                        lh_entorhinal              temporal  </span></span>
+<span><span class="co">#&gt;  7 left  fusiform                          lh_fusiform                temporal  </span></span>
+<span><span class="co">#&gt;  8 left  inferior parietal                 lh_inferiorparietal        parietal  </span></span>
+<span><span class="co">#&gt;  9 left  inferior temporal                 lh_inferiortemporal        temporal  </span></span>
+<span><span class="co">#&gt; 10 left  isthmus cingulate                 lh_isthmuscingulate        cingulate </span></span>
+<span><span class="co">#&gt; # ℹ 60 more rows</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="quick-example">Quick example<a class="anchor" aria-label="anchor" href="#quick-example"></a>
+</h2>
+<p>Atlas objects are designed for exploration and customisation. You can query regions, filter views, and pipe operations together:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">aseg</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/atlas_manipulation.html">atlas_region_keep</a></span><span class="op">(</span><span class="st">"hippocampus|amygdala|thalamus"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/atlas_manipulation.html">atlas_view_keep</a></span><span class="op">(</span><span class="st">"sagittal"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/atlas_manipulation.html">atlas_view_gather</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── aseg ggseg atlas ────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; Type: subcortical</span></span>
+<span><span class="co">#&gt; Regions: 3</span></span>
+<span><span class="co">#&gt; Hemispheres: left, right</span></span>
+<span><span class="co">#&gt; Views: sagittal</span></span>
+<span><span class="co">#&gt; Palette: ✔</span></span>
+<span><span class="co">#&gt; Rendering: ✔ ggseg</span></span>
+<span><span class="co">#&gt; ✔ ggseg3d (meshes)</span></span>
+<span><span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 4</span></span>
+<span><span class="co">#&gt;   hemi  region      label             structure</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;             &lt;chr&gt;    </span></span>
+<span><span class="co">#&gt; 1 left  thalamus    Left-Thalamus     thalamus </span></span>
+<span><span class="co">#&gt; 2 left  hippocampus Left-Hippocampus  limbic   </span></span>
+<span><span class="co">#&gt; 3 left  amygdala    Left-Amygdala     limbic   </span></span>
+<span><span class="co">#&gt; 4 right thalamus    Right-Thalamus    thalamus </span></span>
+<span><span class="co">#&gt; 5 right hippocampus Right-Hippocampus limbic   </span></span>
+<span><span class="co">#&gt; 6 right amygdala    Right-Amygdala    limbic</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>We recommend installing development version of {ggseg.formats} through the ggseg r-universe.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Enable this universe</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<p>Install from the ggseg r-universe:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    ggseg <span class="op">=</span> <span class="st">'https://ggseg.r-universe.dev'</span>,</span>
 <span>    CRAN <span class="op">=</span> <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Install some packages</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'ggseg.formats'</span><span class="op">)</span></span></code></pre></div>
-<p>But you can also install the development version of ggseg.formats from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>Or install the development version from GitHub:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ggseg/ggseg.formats"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
+</h2>
+<ul>
+<li>
+<a href="https://ggseg.github.io/ggseg.formats/articles/brain-atlas-class.html" class="external-link">The brain_atlas object</a> — understanding atlas structure and accessors</li>
+<li>
+<a href="https://ggseg.github.io/ggseg.formats/articles/atlas-manipulation.html" class="external-link">Customising brain atlases</a> — region, view, and metadata manipulation</li>
+</ul>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
