@@ -196,8 +196,7 @@ geometry so you get a single, ready-to-use table.
 ```{r}
 #| label: atlas-sf
 sf_data <- atlas_sf(dk)
-dim(sf_data)
-head(sf::st_drop_geometry(sf_data))
+sf_data
 ```
 
 `atlas_vertices()` returns the vertex data for cortical 3D rendering:
@@ -205,8 +204,7 @@ head(sf::st_drop_geometry(sf_data))
 ```{r}
 #| label: atlas-vertices
 vert_data <- atlas_vertices(dk)
-dim(vert_data)
-head(vert_data[, 1:min(6, ncol(vert_data))])
+vert_data
 ```
 
 `atlas_meshes()` returns mesh data for subcortical or tract 3D rendering:
@@ -214,8 +212,7 @@ head(vert_data[, 1:min(6, ncol(vert_data))])
 ```{r}
 #| label: atlas-meshes
 mesh_data <- atlas_meshes(aseg)
-dim(mesh_data)
-names(mesh_data)
+mesh_data
 ```
 
 `as.data.frame()` is a convenience method that produces a merged sf data frame

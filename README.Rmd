@@ -41,6 +41,18 @@ library(ggseg.formats)
 dk
 ```
 
+```{r plot-dk}
+plot(dk)
+```
+
+```{r plot-aseg}
+plot(aseg)
+```
+
+```{r plot-tracula}
+plot(tracula)
+```
+
 ## Quick example
 
 Atlas objects are designed for exploration and customisation. You can query

@@ -1,5 +1,4 @@
 
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # ggseg.formats
@@ -13,7 +12,7 @@ status](https://www.r-pkg.org/badges/version/ggseg.formats)](https://CRAN.R-proj
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-ggseg.formats provides the `brain_atlas` S3 class that powers the
+ggseg.formats provides the `ggseg_atlas` S3 class that powers the
 [ggseg](https://ggseg.github.io/ggseg/) ecosystem for 2D and 3D brain
 visualisation. It ships three bundled atlases, a set of accessor
 functions for querying atlas contents, and a pipe-friendly manipulation
@@ -33,14 +32,14 @@ dk
 #> 
 #> ── dk ggseg atlas ──────────────────────────────────────────────────────────────
 #> Type: cortical
-#> Regions: 35
+#> Regions: 36
 #> Hemispheres: left, right
 #> Views: inferior, lateral, medial, superior
 #> Palette: ✔
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (vertices)
 #> ────────────────────────────────────────────────────────────────────────────────
-#> # A tibble: 70 × 4
+#> # A tibble: 72 × 4
 #>    hemi  region                            label                      lobe      
 #>    <chr> <chr>                             <chr>                      <chr>     
 #>  1 left  banks of superior temporal sulcus lh_bankssts                temporal  
@@ -53,8 +52,26 @@ dk
 #>  8 left  inferior parietal                 lh_inferiorparietal        parietal  
 #>  9 left  inferior temporal                 lh_inferiortemporal        temporal  
 #> 10 left  isthmus cingulate                 lh_isthmuscingulate        cingulate 
-#> # ℹ 60 more rows
+#> # ℹ 62 more rows
 ```
+
+``` r
+plot(dk)
+```
+
+<img src="man/figures/README-plot-dk-1.png" alt="" width="100%" />
+
+``` r
+plot(aseg)
+```
+
+<img src="man/figures/README-plot-aseg-1.png" alt="" width="100%" />
+
+``` r
+plot(tracula)
+```
+
+<img src="man/figures/README-plot-tracula-1.png" alt="" width="100%" />
 
 ## Quick example
 
@@ -108,7 +125,7 @@ devtools::install_github("ggseg/ggseg.formats")
 
 ## Learn more
 
-- [The brain_atlas
+- [The ggseg_atlas
   object](https://ggseg.github.io/ggseg.formats/articles/brain-atlas-class.html)
   — understanding atlas structure and accessors
 - [Customising brain

@@ -65,6 +65,7 @@ atlas_sf <- function(atlas) {
     result$colour <- unname(atlas$palette[result$label])
   }
 
+  class(result) <- c("ggseg_sf", class(result))
   result
 }
 
@@ -92,6 +93,7 @@ atlas_vertices <- function(atlas) {
     result$colour <- unname(atlas$palette[result$label])
   }
 
+  class(result) <- c("ggseg_vertices", class(result))
   result
 }
 
@@ -119,5 +121,46 @@ atlas_meshes <- function(atlas) {
     result$colour <- unname(atlas$palette[result$label])
   }
 
+  class(result) <- c("ggseg_meshes", class(result))
   result
+}
+
+
+#' @export
+print.ggseg_sf <- function(x, ...) {
+  dims <- paste(nrow(x), "\u00d7", ncol(x)) # nolint [object_usage_linter]
+  views <- if ("view" %in% names(x)) {
+    paste(unique(x$view), collapse = ", ")
+  }
+  cli::cli_rule("{.cls ggseg_sf} data: {dims}")
+  if (!is.null(views)) {
+    cli::cli_text("Views: {views}")
+  }
+  NextMethod()
+}
+
+#' @export
+print.ggseg_vertices <- function(x, ...) {
+  dims <- paste(nrow(x), "\u00d7", ncol(x)) # nolint [object_usage_linter]
+  vert_lengths <- if ("vertices" %in% names(x)) {
+    vapply(x$vertices, length, integer(1))
+  }
+  cli::cli_rule("{.cls ggseg_vertices} data: {dims}")
+  if (!is.null(vert_lengths) && length(vert_lengths) > 0) {
+    cli::cli_text(
+      "Vertices per region: {format(min(vert_lengths), big.mark = ',')}
+\u2013{format(max(vert_lengths), big.mark = ',')}"
+    )
+  }
+  NextMethod()
+}
+
+#' @export
+print.ggseg_meshes <- function(x, ...) {
+  dims <- paste(nrow(x), "\u00d7", ncol(x)) # nolint [object_usage_linter]
+  cli::cli_rule("{.cls ggseg_meshes} data: {dims}")
+  if ("mesh" %in% names(x)) {
+    print_mesh_summary(x)
+  }
+  invisible(x)
 }

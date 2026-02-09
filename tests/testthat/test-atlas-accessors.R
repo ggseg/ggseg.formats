@@ -34,6 +34,17 @@ describe("atlas_sf", {
     expect_s3_class(sf_data, "sf")
   })
 
+  it("has ggseg_sf as first class", {
+    sf_data <- atlas_sf(dk)
+    expect_equal(class(sf_data)[1], "ggseg_sf")
+    expect_s3_class(sf_data, "sf")
+  })
+
+  it("prints a compact summary", {
+    sf_data <- atlas_sf(dk)
+    expect_snapshot(print(sf_data))
+  })
+
   it("errors when atlas is not brain_atlas", {
     expect_error(atlas_sf(list()), "must be a")
   })
@@ -109,6 +120,17 @@ describe("atlas_sf", {
 
 
 describe("atlas_vertices", {
+  it("has ggseg_vertices as first class", {
+    result <- atlas_vertices(dk)
+    expect_equal(class(result)[1], "ggseg_vertices")
+    expect_s3_class(result, "tbl_df")
+  })
+
+  it("prints a compact summary", {
+    result <- atlas_vertices(dk)
+    expect_snapshot(print(result))
+  })
+
   it("returns vertices joined with core and palette", {
     core <- data.frame(
       hemi = c("left", "right"),
@@ -182,6 +204,17 @@ describe("atlas_vertices", {
 
 
 describe("atlas_meshes", {
+  it("has ggseg_meshes as first class", {
+    result <- atlas_meshes(aseg)
+    expect_equal(class(result)[1], "ggseg_meshes")
+    expect_s3_class(result, "data.frame")
+  })
+
+  it("prints a compact summary", {
+    result <- atlas_meshes(aseg)
+    expect_snapshot(print(result))
+  })
+
   it("returns meshes joined with core and palette", {
     meshes <- data.frame(label = "hippocampus")
     meshes$mesh <- list(list(

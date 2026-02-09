@@ -38,11 +38,7 @@ navbar:
       icon: fa-github
       href: https://github.com/ggseg/ggseg.formats
       aria-label: GitHub
-articles:
-  - title: Getting started
-    contents:
-      - brain-atlas-class
-      - atlas-manipulation
+
 reference:
   - title: ggseg atlas
     desc: Create and inspect ggseg atlas objects.
