@@ -444,13 +444,13 @@ describe("atlas_view_remove_region", {
 })
 
 
-# atlas_view_remove_region_small ----
+# atlas_view_remove_small ----
 
-describe("atlas_view_remove_region_small", {
+describe("atlas_view_remove_small", {
   it("removes small polygons below threshold", {
     atlas <- make_multiview_atlas()
     n_before <- nrow(atlas$data$sf)
-    result <- atlas_view_remove_region_small(atlas, min_area = 2)
+    result <- atlas_view_remove_small(atlas, min_area = 2)
     n_after <- nrow(result$data$sf)
     expect_true(n_after < n_before)
   })
@@ -458,22 +458,22 @@ describe("atlas_view_remove_region_small", {
   it("never removes context geometries", {
     atlas <- make_multiview_atlas()
     ctx_labels <- setdiff(atlas$data$sf$label, atlas$core$label)
-    result <- atlas_view_remove_region_small(atlas, min_area = 999999)
+    result <- atlas_view_remove_small(atlas, min_area = 999999)
     remaining_labels <- unique(result$data$sf$label)
     expect_true(all(ctx_labels %in% remaining_labels))
   })
 
   it("scopes to specific views", {
     atlas <- make_multiview_atlas()
-    result_all <- atlas_view_remove_region_small(atlas, min_area = 2)
-    result_axial <- atlas_view_remove_region_small(atlas, min_area = 2, views = "axial")
+    result_all <- atlas_view_remove_small(atlas, min_area = 2)
+    result_axial <- atlas_view_remove_small(atlas, min_area = 2, views = "axial")
 
     expect_true(nrow(result_axial$data$sf) >= nrow(result_all$data$sf))
   })
 
   it("preserves core and palette", {
     atlas <- make_multiview_atlas()
-    result <- atlas_view_remove_region_small(atlas, min_area = 2)
+    result <- atlas_view_remove_small(atlas, min_area = 2)
     expect_equal(result$core, atlas$core)
     expect_equal(result$palette, atlas$palette)
   })
@@ -482,7 +482,7 @@ describe("atlas_view_remove_region_small", {
     atlas <- make_test_atlas()
     atlas$data$sf <- NULL
     expect_warning(
-      atlas_view_remove_region_small(atlas, min_area = 1),
+      atlas_view_remove_small(atlas, min_area = 1),
       "no sf data"
     )
   })

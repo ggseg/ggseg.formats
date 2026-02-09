@@ -10,3 +10,6 @@
 .claude/
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+^vignettes/.*_cache$
+^doc$
+^Meta$

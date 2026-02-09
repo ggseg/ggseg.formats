@@ -101,12 +101,15 @@ tracula <- tracula |>
     "coronal_4",
     "sagittal"
   )) |>
-  atlas_region_contextual("cortex") |> 
-  atlas_view_remove_region_small(
-    min_area = 500,
-    views = c("axial", "coronal")
-  ) |>
-  atlas_view_remove_region_small(min_area = 50)
+  atlas_region_contextual("cortex") |>
+  atlas_view_remove_small(min_area = 500, views = c("axial", "coronal")) |>
+  atlas_view_remove_small(min_area = 50) |>
+  atlas_view_remove_small(min_area = 500, views = "sagittal_midline") |>
+  atlas_view_remove_region("lh.af", views = "axial_2") |>
+  atlas_view_remove_region("cc.bodyc", views = "axial_4") |>
+  atlas_view_remove_region("rh.atr|rh.ar|cc.splenium", views = "sagittal_left") |>
+  atlas_view_remove_region("cc.bodyt|lh.cst", views = c("sagittal_left", "sagittal_right")) |>
+  atlas_view_remove_region("rh.fx", views = "sagittal_right")
 
 ggplot2::ggplot() +
   ggseg::geom_brain(

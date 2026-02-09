@@ -36,12 +36,15 @@ if (!dir.exists(fsaverage5_dir)) {
   ))
 }
 
+annot_files <- file.path(
+  fsaverage5_dir, "label",
+  c("lh.aparc.annot", "rh.aparc.annot")
+)
+
 cli::cli_h1("Creating DK cortical atlas")
 
 dk_raw <- create_cortical_atlas(
-  annot = "aparc",
-  subject = "fsaverage5",
-  subjects_dir = subjects_dir,
+  input_annot = annot_files,
   atlas_name = "dk",
   output_dir = "data-raw",
   tolerance = 1,

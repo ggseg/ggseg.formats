@@ -10,7 +10,7 @@
 \alias{atlas_view_remove}
 \alias{atlas_view_keep}
 \alias{atlas_view_remove_region}
-\alias{atlas_view_remove_region_small}
+\alias{atlas_view_remove_small}
 \alias{atlas_view_gather}
 \alias{atlas_view_reorder}
 \title{Manipulate brain atlas regions and views}
@@ -29,9 +29,14 @@ atlas_view_remove(atlas, views)
 
 atlas_view_keep(atlas, views)
 
-atlas_view_remove_region(atlas, pattern, match_on = c("label", "region"))
+atlas_view_remove_region(
+  atlas,
+  pattern,
+  match_on = c("label", "region"),
+  views = NULL
+)
 
-atlas_view_remove_region_small(atlas, min_area, views = NULL)
+atlas_view_remove_small(atlas, min_area, views = NULL)
 
 atlas_view_gather(atlas, gap = 0.15)
 
@@ -55,7 +60,7 @@ function.}
 \item{views}{For view functions: character vector of view names or
 patterns. Multiple values collapsed with \code{"|"} for matching.}
 
-\item{min_area}{For \code{atlas_view_remove_region_small()}: minimum polygon
+\item{min_area}{For \code{atlas_view_remove_small()}: minimum polygon
 area to keep. Context geometries are never removed.}
 
 \item{gap}{Proportional gap between views (default 0.15 = 15\% of max width).}
@@ -83,7 +88,7 @@ Functions for modifying brain atlas objects. These cover three areas:
 \item \code{atlas_view_remove()}: remove entire views
 \item \code{atlas_view_keep()}: keep only matching views
 \item \code{atlas_view_remove_region()}: remove specific region geometry from sf
-\item \code{atlas_view_remove_region_small()}: remove small polygon fragments
+\item \code{atlas_view_remove_small()}: remove small polygon fragments
 \item \code{atlas_view_gather()}: reposition views to close gaps
 \item \code{atlas_view_reorder()}: change view order
 }
@@ -117,7 +122,7 @@ atlas core.
 \item \code{atlas_view_remove_region()}: Remove specific region geometry from sf
 data only. Core, palette, and 3D data are unchanged.
 
-\item \code{atlas_view_remove_region_small()}: Remove region geometries below a minimum
+\item \code{atlas_view_remove_small()}: Remove region geometries below a minimum
 area threshold. Context geometries (labels not in core) are never
 removed. Optionally scope to specific views.
 
@@ -134,7 +139,7 @@ atlas <- atlas |>
   atlas_region_remove("White-Matter") |>
   atlas_region_contextual("cortex") |>
   atlas_view_keep(c("axial_3", "coronal_2", "sagittal")) |>
-  atlas_view_remove_region_small(min_area = 50) |>
+  atlas_view_remove_small(min_area = 50) |>
   atlas_view_gather()
 }
 

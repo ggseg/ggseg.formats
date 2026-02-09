@@ -6,3 +6,7 @@
 #' @docType package
 #' @keywords internal
 "_PACKAGE"
+
+utils::globalVariables(c(
+  "hemi", "id", "label", "StructName", "subject", "value"
+))

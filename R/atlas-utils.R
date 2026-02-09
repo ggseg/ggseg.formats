@@ -117,7 +117,7 @@ guess_type <- function(x) {
 #' - `atlas_view_remove()`: remove entire views
 #' - `atlas_view_keep()`: keep only matching views
 #' - `atlas_view_remove_region()`: remove specific region geometry from sf
-#' - `atlas_view_remove_region_small()`: remove small polygon fragments
+#' - `atlas_view_remove_small()`: remove small polygon fragments
 #' - `atlas_view_gather()`: reposition views to close gaps
 #' - `atlas_view_reorder()`: change view order
 #'
@@ -134,7 +134,7 @@ guess_type <- function(x) {
 #'   patterns. Multiple values collapsed with `"|"` for matching.
 #' @param order For `atlas_view_reorder()`: character vector of desired
 #'   view order. Unspecified views appended at end.
-#' @param min_area For `atlas_view_remove_region_small()`: minimum polygon
+#' @param min_area For `atlas_view_remove_small()`: minimum polygon
 #'   area to keep. Context geometries are never removed.
 #' @param gap Proportional gap between views (default 0.15 = 15% of max width).
 #' @param data For `atlas_core_add()`: data.frame with metadata to join.
@@ -148,7 +148,7 @@ guess_type <- function(x) {
 #'   atlas_region_remove("White-Matter") |>
 #'   atlas_region_contextual("cortex") |>
 #'   atlas_view_keep(c("axial_3", "coronal_2", "sagittal")) |>
-#'   atlas_view_remove_region_small(min_area = 50) |>
+#'   atlas_view_remove_small(min_area = 50) |>
 #'   atlas_view_gather()
 #' }
 #'
@@ -418,7 +418,9 @@ atlas_view_keep <- function(atlas, views) {
 #' @describeIn atlas_manipulation Remove specific region geometry from sf
 #'   data only. Core, palette, and 3D data are unchanged.
 #' @export
-atlas_view_remove_region <- function(atlas, pattern, match_on = c("label", "region")) {
+atlas_view_remove_region <- function(atlas, pattern,
+                                    match_on = c("label", "region"),
+                                    views = NULL) {
   match_on <- match.arg(match_on)
 
   if (is.null(atlas$data$sf)) {
@@ -430,13 +432,19 @@ atlas_view_remove_region <- function(atlas, pattern, match_on = c("label", "regi
     match_col <- atlas$core$region
     hit <- grepl(pattern, match_col, ignore.case = TRUE) & !is.na(match_col)
     labels_to_remove <- atlas$core$label[hit]
-    keep_mask <- !atlas$data$sf$label %in% labels_to_remove
+    is_match <- atlas$data$sf$label %in% labels_to_remove
   } else {
-    keep_mask <- !grepl(pattern, atlas$data$sf$label, ignore.case = TRUE)
+    is_match <- grepl(pattern, atlas$data$sf$label, ignore.case = TRUE)
   }
 
-  keep_mask[is.na(atlas$data$sf$label)] <- TRUE
-  new_sf <- atlas$data$sf[keep_mask, , drop = FALSE]
+  if (!is.null(views)) {
+    view_pattern <- paste(views, collapse = "|")
+    in_view <- grepl(view_pattern, atlas$data$sf$view, ignore.case = TRUE)
+    is_match <- is_match & in_view
+  }
+
+  is_match[is.na(atlas$data$sf$label)] <- FALSE
+  new_sf <- atlas$data$sf[!is_match, , drop = FALSE]
 
   if (nrow(new_sf) == 0) {
     cli::cli_warn("All region geometries removed, sf data will be NULL")
@@ -452,7 +460,7 @@ atlas_view_remove_region <- function(atlas, pattern, match_on = c("label", "regi
 #'   area threshold. Context geometries (labels not in core) are never
 #'   removed. Optionally scope to specific views.
 #' @export
-atlas_view_remove_region_small <- function(atlas, min_area, views = NULL) {
+atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
   if (is.null(atlas$data$sf)) {
     cli::cli_warn("Atlas has no sf data, nothing to remove")
     return(atlas)

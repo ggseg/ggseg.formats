@@ -141,9 +141,3 @@ find_subject_fromdir <- function(path) {
 find_hemi_fromfile <- function(path) {
   strsplit(basename(path), "\\.")[[1]][1]
 }
-
-
-## quiets concerns of R CMD check
-if (getRversion() >= "2.15.1") {
-  globalVariables(c("id", "label", "StructName", "subject", "value"))
-}

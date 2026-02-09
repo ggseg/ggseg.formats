@@ -2,3 +2,8 @@ url: ~
 template:
   bootstrap: 5
 
+articles:
+  - title: Getting started
+    contents:
+      - brain-atlas-class
+      - atlas-manipulation

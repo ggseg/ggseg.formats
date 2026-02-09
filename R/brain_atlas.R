@@ -225,7 +225,3 @@ as.data.frame.brain_atlas <- function(x, ...) {
 
   sf::st_as_sf(result)
 }
-
-
-## quiets concerns of R CMD checks
-utils::globalVariables(c("region", "label"))
