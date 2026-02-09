@@ -1,9 +1,62 @@
-url: ~
+url: https://ggseg.github.io/ggseg.formats/
 template:
   bootstrap: 5
-
+  bslib:
+    primary: '#0d6efd'
+navbar:
+  structure:
+    left:
+    - intro
+    - reference
+    - articles
+    right:
+    - search
+    - github
 articles:
-  - title: Getting started
-    contents:
-      - brain-atlas-class
-      - atlas-manipulation
+- title: Getting started
+  contents:
+  - brain-atlas-class
+  - atlas-manipulation
+reference:
+- title: Brain atlas
+  desc: Create and inspect brain atlas objects.
+  contents:
+  - brain_atlas
+  - is_brain_atlas
+  - as_brain_atlas
+  - convert_legacy_brain_atlas
+- title: Atlas data types
+  desc: |
+    Constructors for the geometry containers that live inside a brain atlas. Each type pairs 2D sf polygons with a type-specific 3D component.
+  contents:
+  - cortical_data
+  - subcortical_data
+  - tract_data
+- title: Accessors
+  desc: Query atlas contents without reaching into slots directly.
+  contents:
+  - brain_regions
+  - brain_labels
+  - brain_views
+  - brain_pal
+  - atlas_type
+  - atlas_sf
+  - atlas_vertices
+  - atlas_meshes
+- title: Atlas manipulation
+  desc: |
+    Pipe-friendly functions for subsetting regions, managing views, and enriching metadata. All return a new `brain_atlas`.
+  contents: atlas_manipulation
+- title: Bundled atlases
+  desc: Ready-to-use atlases shipped with the package.
+  contents:
+  - dk
+  - aseg
+  - tracula
+- title: FreeSurfer I/O
+  desc: Read FreeSurfer statistics files into R.
+  contents:
+  - read_freesurfer_stats
+  - read_freesurfer_table
+  - read_atlas_files
+

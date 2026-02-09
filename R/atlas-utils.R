@@ -597,6 +597,8 @@ rebuild_atlas_data <- function(atlas, new_sf) {
 
 
 rebuild_atlas <- function(atlas, new_data) {
+  validate_data_labels(new_data, atlas$core, check_sf = FALSE)
+
   structure(
     list(
       atlas = atlas$atlas,
@@ -605,6 +607,10 @@ rebuild_atlas <- function(atlas, new_data) {
       core = atlas$core,
       data = new_data
     ),
-    class = "brain_atlas"
+    class = c(
+      paste0(atlas$type, "_atlas"),
+      "brain_atlas",
+      "list"
+    )
   )
 }

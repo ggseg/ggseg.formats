@@ -70,7 +70,7 @@ brain_atlas <- function(atlas, type, core, data, palette = NULL) {
     ))
   }
 
-  data <- validate_data_labels(data, core)
+  data <- validate_data_labels(data, core, check_sf = TRUE)
 
   if (!is.null(palette)) {
     palette <- validate_palette(palette, core)
@@ -84,7 +84,11 @@ brain_atlas <- function(atlas, type, core, data, palette = NULL) {
       core = core,
       data = data
     ),
-    class = "brain_atlas"
+    class = c(
+      paste0(type, "_atlas"),
+      "brain_atlas",
+      "list"
+    )
   )
 }
 
@@ -224,4 +228,38 @@ as.data.frame.brain_atlas <- function(x, ...) {
   result <- result[order(is_context, decreasing = TRUE), , drop = FALSE]
 
   sf::st_as_sf(result)
+}
+
+#' Plot a brain atlas
+#'
+#' Plots a brain atlas using [geom_brain()], coloured by region label. If the
+#' atlas contains a palette, it is applied via [ggplot2::scale_fill_manual()].
+#'
+#' @param x A `brain_atlas` object.
+#' @inheritParams ggplot2::geom_sf
+#' @param ... Additional arguments passed to [ggplot2::geom_sf()].
+#'
+#' @return A [ggplot2::ggplot] object.
+#' @importFrom ggplot2 aes ggplot labs scale_fill_manual geom_sf
+#' @importFrom stats setNames
+#' @export
+#' @examples
+#' plot(dk)
+#' plot(aseg)
+plot.brain_atlas <- function(x, show.legend = FALSE, ...) {
+  p <- ggplot(as.data.frame(x)) +
+    geom_sf(
+      aes(fill = label), # nolint [object_usage_linter]
+      show.legend = show.legend,
+      ...
+    ) +
+    labs(title = paste(x$atlas, x$type, "atlas"))
+
+  if ("palette" %in% names(x)) {
+    p <- p +
+      scale_fill_manual(
+        values = x$palette
+      )
+  }
+  p
 }

@@ -278,7 +278,7 @@ describe("validate_data_labels", {
     )
   })
 
-  it("errors when core labels are missing from data", {
+  it("errors when core labels are missing from 3D data", {
     core <- data.frame(
       hemi = c("left", "right"),
       region = c("frontal", "frontal"),
@@ -294,31 +294,40 @@ describe("validate_data_labels", {
         core = core,
         data = cortical_data(vertices = vertices)
       ),
-      "Missing from data.*rh_frontal"
+      "Missing from vertices.*rh_frontal"
     )
   })
 
-  it("accepts core labels present in either sf or vertices", {
+  it("accepts partial sf coverage when vertices are complete", {
+    labels <- paste0("lh_", c("frontal", "parietal", "temporal",
+                               "occipital", "insula"))
     sf_geom <- sf::st_sf(
-      label = "lh_frontal",
-      view = "lateral",
-      geometry = sf::st_sfc(make_polygon())
+      label = labels[1:4],
+      view = rep("lateral", 4),
+      geometry = sf::st_sfc(
+        make_polygon(),
+        make_polygon(c(1, 0, 2, 0, 2, 1, 1, 0)),
+        make_polygon(c(2, 0, 3, 0, 3, 1, 2, 0)),
+        make_polygon(c(3, 0, 4, 0, 4, 1, 3, 0))
+      )
     )
-    vertices <- data.frame(label = "rh_frontal")
-    vertices$vertices <- list(1L:3L)
+    vertices <- data.frame(label = labels)
+    vertices$vertices <- list(1:3, 4:6, 7:9, 10:12, 13:15)
     core <- data.frame(
-      hemi = c("left", "right"),
-      region = c("frontal", "frontal"),
-      label = c("lh_frontal", "rh_frontal")
+      hemi = rep("left", 5),
+      region = c("frontal", "parietal", "temporal", "occipital", "insula"),
+      label = labels
     )
 
-    atlas <- brain_atlas(
-      atlas = "test",
-      type = "cortical",
-      core = core,
-      data = cortical_data(sf = sf_geom, vertices = vertices)
+    expect_warning(
+      atlas <- brain_atlas(
+        atlas = "test",
+        type = "cortical",
+        core = core,
+        data = cortical_data(sf = sf_geom, vertices = vertices)
+      ),
+      "sf covers only 80%"
     )
-
     expect_s3_class(atlas, "brain_atlas")
   })
 })

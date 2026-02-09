@@ -1,0 +1,225 @@
+---
+title: "The brain_atlas object"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The brain_atlas object}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ggseg.formats)
+```
+
+Everything in the ggseg ecosystem starts from a single object: the `brain_atlas`.
+Whether you are making a 2D cortical flatmap with ggseg or spinning a 3D mesh in
+ggseg3d, the atlas is the container that holds the geometry, the region metadata,
+and the colour palette together. This vignette walks through the structure so you
+know exactly what you are working with.
+
+## What is a brain_atlas?
+
+A `brain_atlas` is an S3 object that bundles five pieces of information into one
+handle. Let's print the bundled Desikan-Killiany atlas to see what that looks
+like:
+
+```{r}
+dk
+```
+The print method gives you a quick overview: the atlas name, type, how many
+regions it has, which hemispheres are present, what views the 2D geometry
+provides, and whether palette and rendering data are available. Below the summary
+you see the core table, the single source of truth for region identity.
+
+## Anatomy of an atlas
+
+The five slots are accessed with `$`:
+
+```{r}
+dk$atlas
+dk$type
+```
+
+`$atlas` is a short name (used to look up atlases by string) and `$type` is one
+of `"cortical"`, `"subcortical"`, or `"tract"`.
+
+The `$palette` is a named character vector mapping labels to hex colours:
+
+```{r}
+head(dk$palette)
+```
+
+`$core` is a data frame with one row per region. It always has `region` and
+`label` columns, and will often include `hemi` and additional metadata like
+`lobe` or `structure`:
+
+```{r}
+head(dk$core)
+```
+
+Finally, `$data` is a `brain_atlas_data` object that holds the actual geometry.
+Its contents depend on the atlas type.
+
+```{r}
+class(dk$data)
+```
+
+## Three atlas types
+
+ggseg.formats ships three atlases that illustrate the three types.
+
+**Cortical** atlases like `dk` parcellate the cortical surface. Their data object
+is a `cortical_data` containing sf polygons for 2D rendering and vertex indices
+for 3D:
+
+```{r}
+dk$type
+names(dk$data)
+```
+
+**Subcortical** atlases like `aseg` represent deep brain structures. Their data
+is a `subcortical_data` with sf polygons and individual 3D meshes:
+
+```{r}
+aseg$type
+names(aseg$data)
+```
+
+**Tract** atlases like `tracula` represent white matter bundles. Their data is a
+`tract_data` with sf polygons and centerlines that generate tube meshes for 3D:
+
+```{r}
+tracula$type
+names(tracula$data)
+```
+
+In every case the sf component drives 2D plotting and the type-specific component
+(vertices, meshes, or centerlines) drives 3D.
+
+## Core: the region table
+
+The `$core` data frame is the single source of truth for what regions an atlas
+contains. Every manipulation function updates core first and then propagates
+changes to geometry and palette.
+
+The required columns are `region` (a human-readable name) and `label` (a unique
+identifier that links core to geometry). Most atlases also carry `hemi`:
+
+```{r}
+str(dk$core)
+```
+
+Some atlases include additional metadata columns. The `dk` atlas, for instance,
+has `lobe`:
+
+```{r}
+unique(dk$core$lobe)
+```
+
+You can add your own metadata with `atlas_core_add()` (covered in the
+manipulation vignette).
+
+## Querying an atlas
+
+A set of accessor functions lets you pull information out without reaching into
+slots directly.
+
+`brain_regions()` returns the sorted unique region names:
+
+```{r}
+brain_regions(dk)
+```
+
+`brain_labels()` returns the unique labels (the identifiers used to join
+geometry):
+
+```{r}
+head(brain_labels(dk))
+```
+
+`brain_views()` returns the available 2D views:
+
+```{r}
+brain_views(dk)
+brain_views(aseg)
+brain_views(tracula)
+```
+
+`atlas_type()` returns the type string:
+
+```{r}
+atlas_type(dk)
+atlas_type(aseg)
+atlas_type(tracula)
+```
+
+`brain_pal()` retrieves the colour palette. You can pass the atlas object
+directly or its name as a string:
+
+```{r}
+head(brain_pal(dk))
+```
+
+## Extracting render-ready data
+
+When you need the actual data frames that ggseg and ggseg3d consume, use the
+`atlas_*()` extractors. These join core metadata and palette colours onto the raw
+geometry so you get a single, ready-to-use table.
+
+`atlas_sf()` returns an sf data frame for 2D rendering:
+
+```{r}
+sf_data <- atlas_sf(dk)
+head(sf_data)
+```
+
+`atlas_vertices()` returns the vertex data for cortical 3D rendering:
+
+```{r}
+vert_data <- atlas_vertices(dk)
+head(vert_data)
+```
+
+`atlas_meshes()` returns mesh data for subcortical or tract 3D rendering:
+
+```{r}
+mesh_data <- atlas_meshes(aseg)
+head(mesh_data)
+```
+
+`as.data.frame()` is a convenience method that produces a merged sf data frame
+similar to `atlas_sf()` but with atlas-level columns (`atlas`, `type`) attached:
+
+```{r}
+df <- as.data.frame(dk)
+names(df)
+```
+
+## Checking and converting
+
+`is_brain_atlas()` tests whether an object has the right class:
+
+```{r}
+is_brain_atlas(dk)
+is_brain_atlas(mtcars)
+```
+
+`as_brain_atlas()` coerces lists with the right structure into a proper
+`brain_atlas`:
+
+```{r}
+atlas_list <- as.list(dk)
+recovered <- as_brain_atlas(atlas_list)
+is_brain_atlas(recovered)
+```
+
+If you have an atlas object from an older version of ggseg that stored sf data
+directly in `$data` instead of using the new `brain_atlas_data` wrapper,
+`convert_legacy_brain_atlas()` will migrate it to the unified format.

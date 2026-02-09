@@ -175,52 +175,77 @@ validate_tract_metadata <- function(metadata, label) {
 
 #' Validate data labels against core
 #'
-#' Ensures all core labels have corresponding data. Labels in data that are
-#' not in core are allowed - these represent context-only geometry (like
-#' medial wall) that will display grey without appearing in legends.
+#' 3D sources (vertices, meshes, centerlines) are validated strictly: every
+#' core label must have a corresponding entry. This check always runs.
+#'
+#' When `check_sf = TRUE` (the default at construction time), sf coverage
+#' is also checked: an error is raised when fewer than 80 percent of core
+#' labels appear in sf, and a warning when fewer than 90 percent. This
+#' threshold is relaxed because 2D projections cannot always capture every
+#' region (too small, occluded, etc.).
+#'
+#' During manipulation (view removal, region cleanup) sf coverage naturally
+#' drops, so `rebuild_atlas` calls with `check_sf = FALSE`.
+#'
+#' Labels in data that are not in core are always allowed — these represent
+#' context-only geometry (like medial wall) that renders grey without
+#' appearing in legends.
 #'
 #' @param data brain_atlas_data object
 #' @param core core data.frame
+#' @param check_sf if TRUE, validate sf label coverage against core
 #' @return data (unchanged)
 #' @keywords internal
-validate_data_labels <- function(data, core) {
+validate_data_labels <- function(data, core, check_sf = FALSE) {
   core_labels <- core$label[!is.na(core$label)]
-
-  data_labels <- character(0)
-  if (!is.null(data$sf)) {
-    data_labels <- union(data_labels, data$sf$label[!is.na(data$sf$label)])
-  }
+  n_core <- length(core_labels)
 
   if (!is.null(data$vertices)) {
-    data_labels <- union(
-      data_labels,
-      data$vertices$label[!is.na(data$vertices$label)]
-    )
+    validate_3d_labels(data$vertices$label, core_labels, "vertices")
   }
 
   if (!is.null(data$meshes)) {
-    data_labels <- union(
-      data_labels,
-      data$meshes$label[!is.na(data$meshes$label)]
-    )
+    validate_3d_labels(data$meshes$label, core_labels, "meshes")
   }
 
   if (!is.null(data$centerlines)) {
-    data_labels <- union(
-      data_labels,
-      data$centerlines$label[!is.na(data$centerlines$label)]
-    )
+    validate_3d_labels(data$centerlines$label, core_labels, "centerlines")
   }
 
-  missing_from_data <- setdiff(core_labels, data_labels)
-  if (length(missing_from_data) > 0) {
-    cli::cli_abort(c(
-      "All core labels must have corresponding data.",
-      "i" = "Missing from data: {.val {missing_from_data}}."
-    ))
+  if (isTRUE(check_sf) && !is.null(data$sf) && n_core > 0) {
+    sf_labels <- unique(data$sf$label[!is.na(data$sf$label)])
+    missing <- setdiff(core_labels, sf_labels)
+    coverage <- 1 - length(missing) / n_core
+
+    if (coverage < 0.8) {
+      cli::cli_abort(c(
+        "sf covers only {.strong {round(coverage * 100)}%} of core labels
+        (minimum 80%).",
+        "i" = "Missing from sf: {.val {missing}}."
+      ))
+    } else if (coverage < 0.9) {
+      cli::cli_warn(c(
+        "sf covers only {.strong {round(coverage * 100)}%} of core labels.",
+        "i" = "Missing from sf: {.val {missing}}."
+      ))
+    }
   }
 
   data
+}
+
+
+#' @keywords internal
+#' @noRd
+validate_3d_labels <- function(labels, core_labels, source) {
+  source_labels <- labels[!is.na(labels)]
+  missing <- setdiff(core_labels, source_labels)
+  if (length(missing) > 0) {
+    cli::cli_abort(c(
+      "All core labels must have corresponding {.field {source}} data.",
+      "i" = "Missing from {source}: {.val {missing}}."
+    ))
+  }
 }
 
 
