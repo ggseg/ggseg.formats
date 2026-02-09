@@ -7,14 +7,17 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r}
+#| label: setup-opts
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-```{r setup}
+```{r}
+#| label: setup
 library(ggseg.formats)
 ```
 
@@ -40,6 +43,7 @@ and 3D data. The `pattern` argument is passed to `grepl()` with
 `ignore.case = TRUE`, so partial matches work:
 
 ```{r}
+#| label: region-remove
 no_cc <- atlas_region_remove(dk, "corpus callosum")
 "corpus callosum" %in% atlas_regions(no_cc)
 ```
@@ -49,6 +53,7 @@ turns everything else into context geometry (sf is preserved for surface
 continuity, but non-matching regions leave core and palette):
 
 ```{r}
+#| label: region-keep
 frontal <- atlas_region_keep(dk, "frontal")
 atlas_regions(frontal)
 ```
@@ -58,6 +63,7 @@ against `"region"` (the default, human-readable name) or `"label"` (the unique
 identifier):
 
 ```{r}
+#| label: region-keep-label
 lh_only <- atlas_region_keep(dk, "^lh_", match_on = "label")
 head(atlas_labels(lh_only))
 ```
@@ -70,6 +76,7 @@ appear in the legend or carry data. This is what
 3D data but leaves the sf geometry in place:
 
 ```{r}
+#| label: region-contextual
 ctx <- atlas_region_contextual(aseg, "ventricle")
 "lateral ventricle" %in% atlas_regions(ctx)
 ```
@@ -83,6 +90,7 @@ polygons entirely, leaving gaps in the 2D slices.
 (so geometry links stay intact). Pass a fixed string:
 
 ```{r}
+#| label: region-rename
 renamed <- atlas_region_rename(
   dk, "banks of superior temporal sulcus", "STS banks"
 )
@@ -92,6 +100,7 @@ renamed <- atlas_region_rename(
 Or pass a function for programmatic renaming:
 
 ```{r}
+#| label: region-rename-func
 upper <- atlas_region_rename(dk, ".*", toupper)
 head(atlas_regions(upper))
 ```
@@ -101,6 +110,7 @@ head(atlas_regions(upper))
 `atlas_views()` tells you what 2D views an atlas has:
 
 ```{r}
+#| label: atlas-views
 atlas_views(aseg)
 ```
 
@@ -108,6 +118,7 @@ atlas_views(aseg)
 only want the sagittal slice:
 
 ```{r}
+#| label: view-keep
 sag <- atlas_view_keep(aseg, "sagittal")
 atlas_views(sag)
 ```
@@ -115,6 +126,7 @@ atlas_views(sag)
 Or remove several views at once by passing a vector:
 
 ```{r}
+#| label: view-remove
 fewer <- atlas_view_remove(aseg, c("axial_3", "coronal_2"))
 atlas_views(fewer)
 ```
@@ -126,12 +138,14 @@ slivers where a region just barely crossed a slice plane.
 `atlas_view_remove_small()` removes region polygons below a minimum area
 threshold. Context polygons (those not in core) are never removed:
 ```{r}
+#| label: view-remove-small
 cleaned <- atlas_view_remove_small(aseg, min_area = 50)
 ```
 
 You can scope the removal to specific views:
 
 ```{r}
+#| label: view-remove-small-scoped
 cleaned_sag <- atlas_view_remove_small(aseg, min_area = 50, views = "sagittal")
 ```
 
@@ -140,6 +154,7 @@ touching core, palette, or 3D data. This is useful when a region's 2D projection
 is misleading but you still want it in 3D:
 
 ```{r}
+#| label: view-remove-region
 no_stem_sf <- atlas_view_remove_region(aseg, "brain stem", match_on = "region")
 ```
 
@@ -150,6 +165,7 @@ which can leave awkward gaps. `atlas_view_gather()` repositions views
 side-by-side with a configurable gap:
 
 ```{r}
+#| label: view-gather
 trimmed <- aseg |>
   atlas_view_keep(c("sagittal", "coronal_3", "axial_3")) |>
   atlas_view_gather()
@@ -160,6 +176,7 @@ atlas_views(trimmed)
 at the same time. Views not mentioned in `order` are appended at the end:
 
 ```{r}
+#| label: view-reorder
 reordered <- aseg |>
   atlas_view_keep(c("sagittal", "coronal_3", "axial_3")) |>
   atlas_view_reorder(c("axial_3", "sagittal", "coronal_3"))
@@ -173,6 +190,7 @@ for attaching grouping variables, statistical results, or any other per-region
 information. Here we add a custom network column to a handful of regions:
 
 ```{r}
+#| label: core-add
 network_info <- data.frame(
   region = c(
     "superior frontal", "precuneus",
@@ -192,6 +210,7 @@ Here is a realistic pipeline that prepares the `aseg` atlas for a compact
 two-view figure of deep grey matter structures:
 
 ```{r}
+#| label: full-pipeline
 publication_aseg <- aseg |>
   atlas_view_keep(c("sagittal", "coronal_3")) |>
   atlas_region_contextual("ventricle|choroid|white|cc") |>

@@ -54,18 +54,6 @@ dk_raw <- create_cortical_atlas(
   cleanup = FALSE
 )
 
-cli::cli_h2("Post-processing atlas")
-
-cli::cli_alert_info("Setting cortex as context")
-dk_raw <- dk_raw |>
-  atlas_region_contextual("cortex", match_on = "label") |>
-  atlas_region_contextual("unknown", match_on = "label") |>
-  atlas_region_contextual("corpuscallosum", match_on = "label")
-
-cli::cli_alert_info("Gathering views")
-dk_raw <- dk_raw |>
-  atlas_view_gather()
-
 cli::cli_h2("Merging metadata")
 
 core_with_meta <- dk_raw$core |>

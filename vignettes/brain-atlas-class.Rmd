@@ -7,14 +7,17 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r}
+#| label: setup-opts
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-```{r setup}
+```{r}
+#| label: setup
 library(ggseg.formats)
 ```
 
@@ -31,6 +34,7 @@ handle. Let's print the bundled Desikan-Killiany atlas to see what that looks
 like:
 
 ```{r}
+#| label: print-dk
 dk
 ```
 The print method gives you a quick overview: the atlas name, type, how many
@@ -43,6 +47,7 @@ you see the core table, the single source of truth for region identity.
 The five slots are accessed with `$`:
 
 ```{r}
+#| label: atlas-slots
 dk$atlas
 dk$type
 ```
@@ -53,6 +58,7 @@ of `"cortical"`, `"subcortical"`, or `"tract"`.
 The `$palette` is a named character vector mapping labels to hex colours:
 
 ```{r}
+#| label: palette
 head(dk$palette)
 ```
 
@@ -61,6 +67,7 @@ head(dk$palette)
 `lobe` or `structure`:
 
 ```{r}
+#| label: core
 head(dk$core)
 ```
 
@@ -68,6 +75,7 @@ Finally, `$data` is a `ggseg_atlas_data` object that holds the actual geometry.
 Its contents depend on the atlas type.
 
 ```{r}
+#| label: data-class
 class(dk$data)
 ```
 
@@ -80,6 +88,7 @@ is a `ggseg_data_cortical` containing sf polygons for 2D rendering and vertex in
 for 3D:
 
 ```{r}
+#| label: cortical-type
 dk$type
 names(dk$data)
 ```
@@ -88,6 +97,7 @@ names(dk$data)
 is a `ggseg_data_subcortical` with sf polygons and individual 3D meshes:
 
 ```{r}
+#| label: subcortical-type
 aseg$type
 names(aseg$data)
 ```
@@ -96,6 +106,7 @@ names(aseg$data)
 `ggseg_data_tract` with sf polygons and centerlines that generate tube meshes for 3D:
 
 ```{r}
+#| label: tract-type
 tracula$type
 names(tracula$data)
 ```
@@ -113,6 +124,7 @@ The required columns are `region` (a human-readable name) and `label` (a unique
 identifier that links core to geometry). Most atlases also carry `hemi`:
 
 ```{r}
+#| label: core-structure
 str(dk$core)
 ```
 
@@ -120,6 +132,7 @@ Some atlases include additional metadata columns. The `dk` atlas, for instance,
 has `lobe`:
 
 ```{r}
+#| label: core-lobe
 unique(dk$core$lobe)
 ```
 
@@ -134,6 +147,7 @@ slots directly.
 `atlas_regions()` returns the sorted unique region names:
 
 ```{r}
+#| label: atlas-regions
 atlas_regions(dk)
 ```
 
@@ -141,12 +155,14 @@ atlas_regions(dk)
 geometry):
 
 ```{r}
+#| label: atlas-labels
 head(atlas_labels(dk))
 ```
 
 `atlas_views()` returns the available 2D views:
 
 ```{r}
+#| label: atlas-views
 atlas_views(dk)
 atlas_views(aseg)
 atlas_views(tracula)
@@ -155,6 +171,7 @@ atlas_views(tracula)
 `atlas_type()` returns the type string:
 
 ```{r}
+#| label: atlas-type
 atlas_type(dk)
 atlas_type(aseg)
 atlas_type(tracula)
@@ -164,6 +181,7 @@ atlas_type(tracula)
 directly or its name as a string:
 
 ```{r}
+#| label: atlas-palette
 head(atlas_palette(dk))
 ```
 
@@ -176,28 +194,35 @@ geometry so you get a single, ready-to-use table.
 `atlas_sf()` returns an sf data frame for 2D rendering:
 
 ```{r}
+#| label: atlas-sf
 sf_data <- atlas_sf(dk)
-head(sf_data)
+dim(sf_data)
+head(sf::st_drop_geometry(sf_data))
 ```
 
 `atlas_vertices()` returns the vertex data for cortical 3D rendering:
 
 ```{r}
+#| label: atlas-vertices
 vert_data <- atlas_vertices(dk)
-head(vert_data)
+dim(vert_data)
+head(vert_data[, 1:min(6, ncol(vert_data))])
 ```
 
 `atlas_meshes()` returns mesh data for subcortical or tract 3D rendering:
 
 ```{r}
+#| label: atlas-meshes
 mesh_data <- atlas_meshes(aseg)
-head(mesh_data)
+dim(mesh_data)
+names(mesh_data)
 ```
 
 `as.data.frame()` is a convenience method that produces a merged sf data frame
 similar to `atlas_sf()` but with atlas-level columns (`atlas`, `type`) attached:
 
 ```{r}
+#| label: as-dataframe
 df <- as.data.frame(dk)
 names(df)
 ```
@@ -207,6 +232,7 @@ names(df)
 `is_ggseg_atlas()` tests whether an object has the right class:
 
 ```{r}
+#| label: is-ggseg-atlas
 is_ggseg_atlas(dk)
 is_ggseg_atlas(mtcars)
 ```
@@ -215,6 +241,7 @@ is_ggseg_atlas(mtcars)
 `ggseg_atlas`:
 
 ```{r}
+#| label: as-ggseg-atlas
 atlas_list <- as.list(dk)
 recovered <- as_ggseg_atlas(atlas_list)
 is_ggseg_atlas(recovered)
