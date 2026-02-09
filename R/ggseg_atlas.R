@@ -284,12 +284,23 @@ as.data.frame.ggseg_atlas <- function(x, ...) {
   }
 
   if (!is.null(x$core)) {
+    has_sf_hemi <- "hemi" %in% names(sf_data)
+    if (has_sf_hemi) {
+      sf_data$.sf_hemi <- sf_data$hemi
+    }
     core_cols <- c("hemi", "region")
     sf_has_core <- any(core_cols %in% names(sf_data))
     if (sf_has_core) {
       sf_data[core_cols] <- NULL
     }
     result <- merge(sf_data, x$core, by = "label", all.x = TRUE)
+    if (has_sf_hemi) {
+      missing <- is.na(result$hemi) & !is.na(result$.sf_hemi)
+      if (any(missing)) {
+        result$hemi[missing] <- result$.sf_hemi[missing]
+      }
+      result$.sf_hemi <- NULL
+    }
   } else {
     result <- sf_data
   }
