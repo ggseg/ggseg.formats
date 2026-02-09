@@ -50,9 +50,8 @@ dk_raw <- create_cortical_atlas(
   output_dir = "data-raw",
   tolerance = 1,
   smoothness = 2,
-  skip_existing = TRUE,
-  cleanup = FALSE,
-  verbose = TRUE
+  skip_existing = FALSE,
+  cleanup = FALSE
 )
 
 cli::cli_h2("Post-processing atlas")
