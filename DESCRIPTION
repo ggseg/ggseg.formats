@@ -23,7 +23,6 @@ Imports:
 Suggests:
     covr,
     devtools,
-    ggseg,
     ggseg3d,
     here,
     knitr,

@@ -50,9 +50,13 @@ dk_raw <- create_cortical_atlas(
   output_dir = "data-raw",
   tolerance = 1,
   smoothness = 2,
-  skip_existing = FALSE,
+  skip_existing = TRUE,
   cleanup = FALSE
 )
+
+cli::cli_h2("Post-processing atlas data")
+dk_raw <- dk_raw |>
+  atlas_region_contextual("unknown", "label")
 
 cli::cli_h2("Merging metadata")
 
