@@ -121,19 +121,35 @@ aseg
 #> ✔ ggseg3d (meshes)
 #> ────────────────────────────────────────────────────────────────────────────────
 #> # A tibble: 27 × 4
-#>    hemi  region               label               structure    
-#>    <chr> <chr>                <chr>               <chr>        
-#>  1 left  thalamus             Left-Thalamus       thalamus     
-#>  2 left  caudate              Left-Caudate        basal ganglia
-#>  3 left  putamen              Left-Putamen        basal ganglia
-#>  4 left  pallidum             Left-Pallidum       basal ganglia
-#>  5 NA    brain stem           Brain-Stem          brain stem   
-#>  6 left  hippocampus          Left-Hippocampus    limbic       
-#>  7 left  amygdala             Left-Amygdala       limbic       
-#>  8 left  nucleus accumbens    Left-Accumbens-area basal ganglia
-#>  9 left  ventral diencephalon Left-VentralDC      diencephalon 
-#> 10 left  vessel               Left-vessel         NA           
-#> # ℹ 17 more rows
+#>    hemi  region                        label                structure      
+#>    <chr> <chr>                         <chr>                <chr>          
+#>  1 left  thalamus                      Left-Thalamus        thalamus       
+#>  2 left  caudate                       Left-Caudate         basal ganglia  
+#>  3 left  putamen                       Left-Putamen         basal ganglia  
+#>  4 left  pallidum                      Left-Pallidum        basal ganglia  
+#>  5 NA    brain stem                    Brain-Stem           brain stem     
+#>  6 left  hippocampus                   Left-Hippocampus     limbic         
+#>  7 left  amygdala                      Left-Amygdala        limbic         
+#>  8 left  nucleus accumbens             Left-Accumbens-area  basal ganglia  
+#>  9 left  ventral diencephalon          Left-VentralDC       diencephalon   
+#> 10 left  vessel                        Left-vessel          NA             
+#> 11 left  choroid plexus                Left-choroid-plexus  NA             
+#> 12 right thalamus                      Right-Thalamus       thalamus       
+#> 13 right caudate                       Right-Caudate        basal ganglia  
+#> 14 right putamen                       Right-Putamen        basal ganglia  
+#> 15 right pallidum                      Right-Pallidum       basal ganglia  
+#> 16 right hippocampus                   Right-Hippocampus    limbic         
+#> 17 right amygdala                      Right-Amygdala       limbic         
+#> 18 right nucleus accumbens             Right-Accumbens-area basal ganglia  
+#> 19 right ventral diencephalon          Right-VentralDC      diencephalon   
+#> 20 right vessel                        Right-vessel         NA             
+#> 21 right choroid plexus                Right-choroid-plexus NA             
+#> 22 NA    optic chiasm                  Optic-Chiasm         NA             
+#> 23 NA    corpus callosum posterior     CC_Posterior         corpus callosum
+#> 24 NA    corpus callosum mid-posterior CC_Mid_Posterior     corpus callosum
+#> 25 NA    corpus callosum central       CC_Central           corpus callosum
+#> 26 NA    corpus callosum mid-anterior  CC_Mid_Anterior      corpus callosum
+#> 27 NA    corpus callosum anterior      CC_Anterior          corpus callosum
 
 # List regions
 atlas_regions(aseg)

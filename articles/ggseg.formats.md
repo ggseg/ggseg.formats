@@ -30,19 +30,78 @@ dk
 #> ✔ ggseg3d (vertices)
 #> ────────────────────────────────────────────────────────────────────────────────
 #> # A tibble: 70 × 4
-#>    hemi  region                            label                      lobe      
-#>    <chr> <chr>                             <chr>                      <chr>     
-#>  1 left  banks of superior temporal sulcus lh_bankssts                temporal  
-#>  2 left  caudal anterior cingulate         lh_caudalanteriorcingulate cingulate 
-#>  3 left  caudal middle frontal             lh_caudalmiddlefrontal     frontal   
-#>  4 left  corpus callosum                   lh_corpuscallosum          white mat…
-#>  5 left  cuneus                            lh_cuneus                  occipital 
-#>  6 left  entorhinal                        lh_entorhinal              temporal  
-#>  7 left  fusiform                          lh_fusiform                temporal  
-#>  8 left  inferior parietal                 lh_inferiorparietal        parietal  
-#>  9 left  inferior temporal                 lh_inferiortemporal        temporal  
-#> 10 left  isthmus cingulate                 lh_isthmuscingulate        cingulate 
-#> # ℹ 60 more rows
+#>    hemi  region                            label                       lobe     
+#>    <chr> <chr>                             <chr>                       <chr>    
+#>  1 left  banks of superior temporal sulcus lh_bankssts                 temporal 
+#>  2 left  caudal anterior cingulate         lh_caudalanteriorcingulate  cingulate
+#>  3 left  caudal middle frontal             lh_caudalmiddlefrontal      frontal  
+#>  4 left  corpus callosum                   lh_corpuscallosum           white ma…
+#>  5 left  cuneus                            lh_cuneus                   occipital
+#>  6 left  entorhinal                        lh_entorhinal               temporal 
+#>  7 left  fusiform                          lh_fusiform                 temporal 
+#>  8 left  inferior parietal                 lh_inferiorparietal         parietal 
+#>  9 left  inferior temporal                 lh_inferiortemporal         temporal 
+#> 10 left  isthmus cingulate                 lh_isthmuscingulate         cingulate
+#> 11 left  lateral occipital                 lh_lateraloccipital         occipital
+#> 12 left  lateral orbitofrontal             lh_lateralorbitofrontal     frontal  
+#> 13 left  lingual                           lh_lingual                  occipital
+#> 14 left  medial orbitofrontal              lh_medialorbitofrontal      frontal  
+#> 15 left  middle temporal                   lh_middletemporal           temporal 
+#> 16 left  parahippocampal                   lh_parahippocampal          temporal 
+#> 17 left  paracentral                       lh_paracentral              frontal  
+#> 18 left  pars opercularis                  lh_parsopercularis          frontal  
+#> 19 left  pars orbitalis                    lh_parsorbitalis            frontal  
+#> 20 left  pars triangularis                 lh_parstriangularis         frontal  
+#> 21 left  pericalcarine                     lh_pericalcarine            occipital
+#> 22 left  postcentral                       lh_postcentral              parietal 
+#> 23 left  posterior cingulate               lh_posteriorcingulate       cingulate
+#> 24 left  precentral                        lh_precentral               frontal  
+#> 25 left  precuneus                         lh_precuneus                parietal 
+#> 26 left  rostral anterior cingulate        lh_rostralanteriorcingulate cingulate
+#> 27 left  rostral middle frontal            lh_rostralmiddlefrontal     frontal  
+#> 28 left  superior frontal                  lh_superiorfrontal          frontal  
+#> 29 left  superior parietal                 lh_superiorparietal         parietal 
+#> 30 left  superior temporal                 lh_superiortemporal         temporal 
+#> 31 left  supramarginal                     lh_supramarginal            parietal 
+#> 32 left  frontal pole                      lh_frontalpole              frontal  
+#> 33 left  temporal pole                     lh_temporalpole             temporal 
+#> 34 left  transverse temporal               lh_transversetemporal       temporal 
+#> 35 left  insula                            lh_insula                   insula   
+#> 36 right banks of superior temporal sulcus rh_bankssts                 temporal 
+#> 37 right caudal anterior cingulate         rh_caudalanteriorcingulate  cingulate
+#> 38 right caudal middle frontal             rh_caudalmiddlefrontal      frontal  
+#> 39 right corpus callosum                   rh_corpuscallosum           white ma…
+#> 40 right cuneus                            rh_cuneus                   occipital
+#> 41 right entorhinal                        rh_entorhinal               temporal 
+#> 42 right fusiform                          rh_fusiform                 temporal 
+#> 43 right inferior parietal                 rh_inferiorparietal         parietal 
+#> 44 right inferior temporal                 rh_inferiortemporal         temporal 
+#> 45 right isthmus cingulate                 rh_isthmuscingulate         cingulate
+#> 46 right lateral occipital                 rh_lateraloccipital         occipital
+#> 47 right lateral orbitofrontal             rh_lateralorbitofrontal     frontal  
+#> 48 right lingual                           rh_lingual                  occipital
+#> 49 right medial orbitofrontal              rh_medialorbitofrontal      frontal  
+#> 50 right middle temporal                   rh_middletemporal           temporal 
+#> 51 right parahippocampal                   rh_parahippocampal          temporal 
+#> 52 right paracentral                       rh_paracentral              frontal  
+#> 53 right pars opercularis                  rh_parsopercularis          frontal  
+#> 54 right pars orbitalis                    rh_parsorbitalis            frontal  
+#> 55 right pars triangularis                 rh_parstriangularis         frontal  
+#> 56 right pericalcarine                     rh_pericalcarine            occipital
+#> 57 right postcentral                       rh_postcentral              parietal 
+#> 58 right posterior cingulate               rh_posteriorcingulate       cingulate
+#> 59 right precentral                        rh_precentral               frontal  
+#> 60 right precuneus                         rh_precuneus                parietal 
+#> 61 right rostral anterior cingulate        rh_rostralanteriorcingulate cingulate
+#> 62 right rostral middle frontal            rh_rostralmiddlefrontal     frontal  
+#> 63 right superior frontal                  rh_superiorfrontal          frontal  
+#> 64 right superior parietal                 rh_superiorparietal         parietal 
+#> 65 right superior temporal                 rh_superiortemporal         temporal 
+#> 66 right supramarginal                     rh_supramarginal            parietal 
+#> 67 right frontal pole                      rh_frontalpole              frontal  
+#> 68 right temporal pole                     rh_temporalpole             temporal 
+#> 69 right transverse temporal               rh_transversetemporal       temporal 
+#> 70 right insula                            rh_insula                   insula
 ```
 
 The print method gives you a quick overview: the atlas name, type, how
@@ -266,36 +325,36 @@ returns an sf data frame for 2D rendering:
 ``` r
 sf_data <- atlas_sf(dk)
 sf_data
-#> ── <ggseg_sf> data: 183 × 7 ────────────────────────────────────────────────────
-#> Views: superior, lateral, inferior, medial
-#> Simple feature collection with 183 features and 6 fields
+#> ── <ggseg_sf> data: 191 × 7 ────────────────────────────────────────────────────
+#> Views: inferior, lateral, superior, medial
+#> Simple feature collection with 191 features and 6 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
-#> Bounding box:  xmin: 27.18247 ymin: 0 xmax: 1712.035 ymax: 137.8149
+#> Bounding box:  xmin: 84.2049 ymin: 0 xmax: 5359.689 ymax: 429.9372
 #> CRS:           NA
 #> First 10 features:
 #>                         label     view hemi                            region
-#> 1                 lh_bankssts superior left banks of superior temporal sulcus
+#> 1                 lh_bankssts inferior left banks of superior temporal sulcus
 #> 2                 lh_bankssts  lateral left banks of superior temporal sulcus
-#> 3                 lh_bankssts inferior left banks of superior temporal sulcus
+#> 3                 lh_bankssts superior left banks of superior temporal sulcus
 #> 4  lh_caudalanteriorcingulate   medial left         caudal anterior cingulate
-#> 5      lh_caudalmiddlefrontal  lateral left             caudal middle frontal
-#> 6      lh_caudalmiddlefrontal superior left             caudal middle frontal
-#> 7      lh_caudalmiddlefrontal inferior left             caudal middle frontal
+#> 5      lh_caudalmiddlefrontal inferior left             caudal middle frontal
+#> 6      lh_caudalmiddlefrontal  lateral left             caudal middle frontal
+#> 7      lh_caudalmiddlefrontal superior left             caudal middle frontal
 #> 8           lh_corpuscallosum   medial left                   corpus callosum
-#> 9                   lh_cuneus superior left                            cuneus
+#> 9           lh_corpuscallosum inferior left                   corpus callosum
 #> 10                  lh_cuneus   medial left                            cuneus
 #>            lobe                       geometry  colour
-#> 1      temporal MULTIPOLYGON (((808.4086 13... #196428
-#> 2      temporal MULTIPOLYGON (((358.0961 41... #196428
-#> 3      temporal MULTIPOLYGON (((171.1363 68... #196428
-#> 4     cingulate MULTIPOLYGON (((614.028 65.... #7D64A0
-#> 5       frontal MULTIPOLYGON (((292.9792 78... #641900
-#> 6       frontal MULTIPOLYGON (((724.0058 33... #641900
-#> 7       frontal MULTIPOLYGON (((87.29372 71... #641900
-#> 8  white matter MULTIPOLYGON (((598.9115 40... #784632
-#> 9     occipital MULTIPOLYGON (((847.2415 78... #DC1464
-#> 10    occipital MULTIPOLYGON (((454.3746 53... #DC1464
+#> 1      temporal MULTIPOLYGON (((534.4782 21... #196428
+#> 2      temporal MULTIPOLYGON (((1121.478 12... #196428
+#> 3      temporal MULTIPOLYGON (((2448.464 20... #196428
+#> 4     cingulate MULTIPOLYGON (((1921.971 20... #7D64A0
+#> 5       frontal MULTIPOLYGON (((272.7879 22... #641900
+#> 6       frontal MULTIPOLYGON (((911.758 248... #641900
+#> 7       frontal MULTIPOLYGON (((2266.635 10... #641900
+#> 8  white matter MULTIPOLYGON (((1873.925 12... #784632
+#> 9  white matter MULTIPOLYGON (((486.2937 40... #784632
+#> 10    occipital MULTIPOLYGON (((1422.294 16... #DC1464
 ```
 
 [`atlas_vertices()`](https://ggseg.github.io/ggseg.formats/reference/atlas_vertices.md)

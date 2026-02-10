@@ -118,19 +118,50 @@ Frontiers in Neuroinformatics, 5:23.
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> ggseg3d (centerlines)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────────────────────────</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 42 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    hemi    region              label                group          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> midline anterior commissure acomm.bbr.prep       commissure     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> midline CC body central     cc.bodyc.bbr.prep    corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> midline CC body parietal    cc.bodyp.bbr.prep    corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> midline CC body prefrontal  cc.bodypf.bbr.prep   corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> midline CC body premotor    cc.bodypm.bbr.prep   corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> midline CC body temporal    cc.bodyt.bbr.prep    corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> midline CC genu             cc.genu.bbr.prep     corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> midline CC rostrum          cc.rostrum.bbr.prep  corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> midline CC splenium         cc.splenium.bbr.prep corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> left    arcuate fasciculus  lh.af.bbr.prep       association    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 32 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    hemi    region                           label                group          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> midline anterior commissure              acomm.bbr.prep       commissure     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> midline CC body central                  cc.bodyc.bbr.prep    corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> midline CC body parietal                 cc.bodyp.bbr.prep    corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> midline CC body prefrontal               cc.bodypf.bbr.prep   corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> midline CC body premotor                 cc.bodypm.bbr.prep   corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> midline CC body temporal                 cc.bodyt.bbr.prep    corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> midline CC genu                          cc.genu.bbr.prep     corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> midline CC rostrum                       cc.rostrum.bbr.prep  corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> midline CC splenium                      cc.splenium.bbr.prep corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> left    arcuate fasciculus               lh.af.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> left    acoustic radiation               lh.ar.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> left    anterior thalamic radiation      lh.atr.bbr.prep      association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> left    cingulum dorsal                  lh.cbd.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> left    cingulum ventral                 lh.cbv.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> left    corticospinal tract              lh.cst.bbr.prep      projection     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> left    extreme capsule                  lh.emc.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> left    frontal aslant tract             lh.fat.bbr.prep      association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> left    fornix                           lh.fx.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span> left    inferior longitudinal fasciculus lh.ilf.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span> left    middle longitudinal fasciculus   lh.mlf.bbr.prep      association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">21</span> left    optic radiation                  lh.or.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">22</span> left    SLF I                            lh.slf1.bbr.prep     association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">23</span> left    SLF II                           lh.slf2.bbr.prep     association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">24</span> left    SLF III                          lh.slf3.bbr.prep     association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">25</span> left    uncinate fasciculus              lh.uf.bbr.prep       limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">26</span> midline middle cerebellar peduncle       mcp.bbr.prep         cerebellar     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">27</span> right   arcuate fasciculus               rh.af.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">28</span> right   acoustic radiation               rh.ar.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">29</span> right   anterior thalamic radiation      rh.atr.bbr.prep      association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">30</span> right   cingulum dorsal                  rh.cbd.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">31</span> right   cingulum ventral                 rh.cbv.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">32</span> right   corticospinal tract              rh.cst.bbr.prep      projection     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">33</span> right   extreme capsule                  rh.emc.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">34</span> right   frontal aslant tract             rh.fat.bbr.prep      association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">35</span> right   fornix                           rh.fx.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">36</span> right   inferior longitudinal fasciculus rh.ilf.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">37</span> right   middle longitudinal fasciculus   rh.mlf.bbr.prep      association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">38</span> right   optic radiation                  rh.or.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">39</span> right   SLF I                            rh.slf1.bbr.prep     association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">40</span> right   SLF II                           rh.slf2.bbr.prep     association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">41</span> right   SLF III                          rh.slf3.bbr.prep     association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">42</span> right   uncinate fasciculus              rh.uf.bbr.prep       limbic         </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># List regions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="atlas_regions.html">atlas_regions</a></span><span class="op">(</span><span class="va">tracula</span><span class="op">)</span></span></span>
@@ -162,19 +193,50 @@ Frontiers in Neuroinformatics, 5:23.
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> ggseg3d (centerlines)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────────────────────────</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 42 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    hemi    region              label                group          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> midline anterior commissure acomm.bbr.prep       commissure     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> midline CC body central     cc.bodyc.bbr.prep    corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> midline CC body parietal    cc.bodyp.bbr.prep    corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> midline CC body prefrontal  cc.bodypf.bbr.prep   corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> midline CC body premotor    cc.bodypm.bbr.prep   corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> midline CC body temporal    cc.bodyt.bbr.prep    corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> midline CC genu             cc.genu.bbr.prep     corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> midline CC rostrum          cc.rostrum.bbr.prep  corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> midline CC splenium         cc.splenium.bbr.prep corpus callosum</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> left    arcuate fasciculus  lh.af.bbr.prep       association    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 32 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    hemi    region                           label                group          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> midline anterior commissure              acomm.bbr.prep       commissure     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> midline CC body central                  cc.bodyc.bbr.prep    corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> midline CC body parietal                 cc.bodyp.bbr.prep    corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> midline CC body prefrontal               cc.bodypf.bbr.prep   corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> midline CC body premotor                 cc.bodypm.bbr.prep   corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> midline CC body temporal                 cc.bodyt.bbr.prep    corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> midline CC genu                          cc.genu.bbr.prep     corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> midline CC rostrum                       cc.rostrum.bbr.prep  corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> midline CC splenium                      cc.splenium.bbr.prep corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> left    arcuate fasciculus               lh.af.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> left    acoustic radiation               lh.ar.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> left    anterior thalamic radiation      lh.atr.bbr.prep      association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> left    cingulum dorsal                  lh.cbd.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> left    cingulum ventral                 lh.cbv.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> left    corticospinal tract              lh.cst.bbr.prep      projection     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> left    extreme capsule                  lh.emc.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> left    frontal aslant tract             lh.fat.bbr.prep      association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> left    fornix                           lh.fx.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span> left    inferior longitudinal fasciculus lh.ilf.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span> left    middle longitudinal fasciculus   lh.mlf.bbr.prep      association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">21</span> left    optic radiation                  lh.or.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">22</span> left    SLF I                            lh.slf1.bbr.prep     association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">23</span> left    SLF II                           lh.slf2.bbr.prep     association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">24</span> left    SLF III                          lh.slf3.bbr.prep     association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">25</span> left    uncinate fasciculus              lh.uf.bbr.prep       limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">26</span> midline middle cerebellar peduncle       mcp.bbr.prep         cerebellar     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">27</span> right   arcuate fasciculus               rh.af.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">28</span> right   acoustic radiation               rh.ar.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">29</span> right   anterior thalamic radiation      rh.atr.bbr.prep      association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">30</span> right   cingulum dorsal                  rh.cbd.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">31</span> right   cingulum ventral                 rh.cbv.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">32</span> right   corticospinal tract              rh.cst.bbr.prep      projection     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">33</span> right   extreme capsule                  rh.emc.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">34</span> right   frontal aslant tract             rh.fat.bbr.prep      association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">35</span> right   fornix                           rh.fx.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">36</span> right   inferior longitudinal fasciculus rh.ilf.bbr.prep      limbic         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">37</span> right   middle longitudinal fasciculus   rh.mlf.bbr.prep      association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">38</span> right   optic radiation                  rh.or.bbr.prep       association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">39</span> right   SLF I                            rh.slf1.bbr.prep     association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">40</span> right   SLF II                           rh.slf2.bbr.prep     association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">41</span> right   SLF III                          rh.slf3.bbr.prep     association    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">42</span> right   uncinate fasciculus              rh.uf.bbr.prep       limbic         </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

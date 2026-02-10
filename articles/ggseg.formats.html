@@ -102,19 +102,78 @@ atlas to see what that looks like:</p>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> ggseg3d (vertices)</span></span>
 <span><span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 70 × 4</span></span></span>
-<span><span class="co">#&gt;    hemi  region                            label                      lobe      </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> left  banks of superior temporal sulcus lh_bankssts                temporal  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> left  caudal anterior cingulate         lh_caudalanteriorcingulate cingulate </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> left  caudal middle frontal             lh_caudalmiddlefrontal     frontal   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> left  corpus callosum                   lh_corpuscallosum          white mat…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> left  cuneus                            lh_cuneus                  occipital </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> left  entorhinal                        lh_entorhinal              temporal  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> left  fusiform                          lh_fusiform                temporal  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> left  inferior parietal                 lh_inferiorparietal        parietal  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> left  inferior temporal                 lh_inferiortemporal        temporal  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> left  isthmus cingulate                 lh_isthmuscingulate        cingulate </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 60 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt;    hemi  region                            label                       lobe     </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> left  banks of superior temporal sulcus lh_bankssts                 temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> left  caudal anterior cingulate         lh_caudalanteriorcingulate  cingulate</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> left  caudal middle frontal             lh_caudalmiddlefrontal      frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> left  corpus callosum                   lh_corpuscallosum           white ma…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> left  cuneus                            lh_cuneus                   occipital</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> left  entorhinal                        lh_entorhinal               temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> left  fusiform                          lh_fusiform                 temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> left  inferior parietal                 lh_inferiorparietal         parietal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> left  inferior temporal                 lh_inferiortemporal         temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> left  isthmus cingulate                 lh_isthmuscingulate         cingulate</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> left  lateral occipital                 lh_lateraloccipital         occipital</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> left  lateral orbitofrontal             lh_lateralorbitofrontal     frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> left  lingual                           lh_lingual                  occipital</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> left  medial orbitofrontal              lh_medialorbitofrontal      frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> left  middle temporal                   lh_middletemporal           temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> left  parahippocampal                   lh_parahippocampal          temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> left  paracentral                       lh_paracentral              frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> left  pars opercularis                  lh_parsopercularis          frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> left  pars orbitalis                    lh_parsorbitalis            frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> left  pars triangularis                 lh_parstriangularis         frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">21</span> left  pericalcarine                     lh_pericalcarine            occipital</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">22</span> left  postcentral                       lh_postcentral              parietal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">23</span> left  posterior cingulate               lh_posteriorcingulate       cingulate</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">24</span> left  precentral                        lh_precentral               frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">25</span> left  precuneus                         lh_precuneus                parietal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">26</span> left  rostral anterior cingulate        lh_rostralanteriorcingulate cingulate</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">27</span> left  rostral middle frontal            lh_rostralmiddlefrontal     frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">28</span> left  superior frontal                  lh_superiorfrontal          frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">29</span> left  superior parietal                 lh_superiorparietal         parietal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">30</span> left  superior temporal                 lh_superiortemporal         temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">31</span> left  supramarginal                     lh_supramarginal            parietal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">32</span> left  frontal pole                      lh_frontalpole              frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">33</span> left  temporal pole                     lh_temporalpole             temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">34</span> left  transverse temporal               lh_transversetemporal       temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">35</span> left  insula                            lh_insula                   insula   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">36</span> right banks of superior temporal sulcus rh_bankssts                 temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">37</span> right caudal anterior cingulate         rh_caudalanteriorcingulate  cingulate</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">38</span> right caudal middle frontal             rh_caudalmiddlefrontal      frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">39</span> right corpus callosum                   rh_corpuscallosum           white ma…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">40</span> right cuneus                            rh_cuneus                   occipital</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">41</span> right entorhinal                        rh_entorhinal               temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">42</span> right fusiform                          rh_fusiform                 temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">43</span> right inferior parietal                 rh_inferiorparietal         parietal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">44</span> right inferior temporal                 rh_inferiortemporal         temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">45</span> right isthmus cingulate                 rh_isthmuscingulate         cingulate</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">46</span> right lateral occipital                 rh_lateraloccipital         occipital</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">47</span> right lateral orbitofrontal             rh_lateralorbitofrontal     frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">48</span> right lingual                           rh_lingual                  occipital</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">49</span> right medial orbitofrontal              rh_medialorbitofrontal      frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">50</span> right middle temporal                   rh_middletemporal           temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">51</span> right parahippocampal                   rh_parahippocampal          temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">52</span> right paracentral                       rh_paracentral              frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">53</span> right pars opercularis                  rh_parsopercularis          frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">54</span> right pars orbitalis                    rh_parsorbitalis            frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">55</span> right pars triangularis                 rh_parstriangularis         frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">56</span> right pericalcarine                     rh_pericalcarine            occipital</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">57</span> right postcentral                       rh_postcentral              parietal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">58</span> right posterior cingulate               rh_posteriorcingulate       cingulate</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">59</span> right precentral                        rh_precentral               frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">60</span> right precuneus                         rh_precuneus                parietal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">61</span> right rostral anterior cingulate        rh_rostralanteriorcingulate cingulate</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">62</span> right rostral middle frontal            rh_rostralmiddlefrontal     frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">63</span> right superior frontal                  rh_superiorfrontal          frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">64</span> right superior parietal                 rh_superiorparietal         parietal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">65</span> right superior temporal                 rh_superiortemporal         temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">66</span> right supramarginal                     rh_supramarginal            parietal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">67</span> right frontal pole                      rh_frontalpole              frontal  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">68</span> right temporal pole                     rh_temporalpole             temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">69</span> right transverse temporal               rh_transversetemporal       temporal </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">70</span> right insula                            rh_insula                   insula</span></span></code></pre></div>
 <p>The print method gives you a quick overview: the atlas name, type,
 how many regions it has, which hemispheres are present, what views the
 2D geometry provides, and whether palette and rendering data are
@@ -299,36 +358,36 @@ rendering:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sf_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/atlas_sf.html">atlas_sf</a></span><span class="op">(</span><span class="va">dk</span><span class="op">)</span></span>
 <span><span class="va">sf_data</span></span>
-<span><span class="co">#&gt; ── <span style="color: #0000BB;">&lt;ggseg_sf&gt;</span> data: 183 × 7 ────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; Views: superior, lateral, inferior, medial</span></span>
-<span><span class="co">#&gt; Simple feature collection with 183 features and 6 fields</span></span>
+<span><span class="co">#&gt; ── <span style="color: #0000BB;">&lt;ggseg_sf&gt;</span> data: 191 × 7 ────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; Views: inferior, lateral, superior, medial</span></span>
+<span><span class="co">#&gt; Simple feature collection with 191 features and 6 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
-<span><span class="co">#&gt; Bounding box:  xmin: 27.18247 ymin: 0 xmax: 1712.035 ymax: 137.8149</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: 84.2049 ymin: 0 xmax: 5359.689 ymax: 429.9372</span></span>
 <span><span class="co">#&gt; CRS:           NA</span></span>
 <span><span class="co">#&gt; First 10 features:</span></span>
 <span><span class="co">#&gt;                         label     view hemi                            region</span></span>
-<span><span class="co">#&gt; 1                 lh_bankssts superior left banks of superior temporal sulcus</span></span>
+<span><span class="co">#&gt; 1                 lh_bankssts inferior left banks of superior temporal sulcus</span></span>
 <span><span class="co">#&gt; 2                 lh_bankssts  lateral left banks of superior temporal sulcus</span></span>
-<span><span class="co">#&gt; 3                 lh_bankssts inferior left banks of superior temporal sulcus</span></span>
+<span><span class="co">#&gt; 3                 lh_bankssts superior left banks of superior temporal sulcus</span></span>
 <span><span class="co">#&gt; 4  lh_caudalanteriorcingulate   medial left         caudal anterior cingulate</span></span>
-<span><span class="co">#&gt; 5      lh_caudalmiddlefrontal  lateral left             caudal middle frontal</span></span>
-<span><span class="co">#&gt; 6      lh_caudalmiddlefrontal superior left             caudal middle frontal</span></span>
-<span><span class="co">#&gt; 7      lh_caudalmiddlefrontal inferior left             caudal middle frontal</span></span>
+<span><span class="co">#&gt; 5      lh_caudalmiddlefrontal inferior left             caudal middle frontal</span></span>
+<span><span class="co">#&gt; 6      lh_caudalmiddlefrontal  lateral left             caudal middle frontal</span></span>
+<span><span class="co">#&gt; 7      lh_caudalmiddlefrontal superior left             caudal middle frontal</span></span>
 <span><span class="co">#&gt; 8           lh_corpuscallosum   medial left                   corpus callosum</span></span>
-<span><span class="co">#&gt; 9                   lh_cuneus superior left                            cuneus</span></span>
+<span><span class="co">#&gt; 9           lh_corpuscallosum inferior left                   corpus callosum</span></span>
 <span><span class="co">#&gt; 10                  lh_cuneus   medial left                            cuneus</span></span>
 <span><span class="co">#&gt;            lobe                       geometry  colour</span></span>
-<span><span class="co">#&gt; 1      temporal MULTIPOLYGON (((808.4086 13... #196428</span></span>
-<span><span class="co">#&gt; 2      temporal MULTIPOLYGON (((358.0961 41... #196428</span></span>
-<span><span class="co">#&gt; 3      temporal MULTIPOLYGON (((171.1363 68... #196428</span></span>
-<span><span class="co">#&gt; 4     cingulate MULTIPOLYGON (((614.028 65.... #7D64A0</span></span>
-<span><span class="co">#&gt; 5       frontal MULTIPOLYGON (((292.9792 78... #641900</span></span>
-<span><span class="co">#&gt; 6       frontal MULTIPOLYGON (((724.0058 33... #641900</span></span>
-<span><span class="co">#&gt; 7       frontal MULTIPOLYGON (((87.29372 71... #641900</span></span>
-<span><span class="co">#&gt; 8  white matter MULTIPOLYGON (((598.9115 40... #784632</span></span>
-<span><span class="co">#&gt; 9     occipital MULTIPOLYGON (((847.2415 78... #DC1464</span></span>
-<span><span class="co">#&gt; 10    occipital MULTIPOLYGON (((454.3746 53... #DC1464</span></span></code></pre></div>
+<span><span class="co">#&gt; 1      temporal MULTIPOLYGON (((534.4782 21... #196428</span></span>
+<span><span class="co">#&gt; 2      temporal MULTIPOLYGON (((1121.478 12... #196428</span></span>
+<span><span class="co">#&gt; 3      temporal MULTIPOLYGON (((2448.464 20... #196428</span></span>
+<span><span class="co">#&gt; 4     cingulate MULTIPOLYGON (((1921.971 20... #7D64A0</span></span>
+<span><span class="co">#&gt; 5       frontal MULTIPOLYGON (((272.7879 22... #641900</span></span>
+<span><span class="co">#&gt; 6       frontal MULTIPOLYGON (((911.758 248... #641900</span></span>
+<span><span class="co">#&gt; 7       frontal MULTIPOLYGON (((2266.635 10... #641900</span></span>
+<span><span class="co">#&gt; 8  white matter MULTIPOLYGON (((1873.925 12... #784632</span></span>
+<span><span class="co">#&gt; 9  white matter MULTIPOLYGON (((486.2937 40... #784632</span></span>
+<span><span class="co">#&gt; 10    occipital MULTIPOLYGON (((1422.294 16... #DC1464</span></span></code></pre></div>
 <p><code><a href="../reference/atlas_vertices.html">atlas_vertices()</a></code> returns the vertex data for cortical 3D
 rendering:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">

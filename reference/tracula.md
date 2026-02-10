@@ -82,19 +82,50 @@ tracula
 #> ✔ ggseg3d (centerlines)
 #> ────────────────────────────────────────────────────────────────────────────────
 #> # A tibble: 42 × 4
-#>    hemi    region              label                group          
-#>    <chr>   <chr>               <chr>                <chr>          
-#>  1 midline anterior commissure acomm.bbr.prep       commissure     
-#>  2 midline CC body central     cc.bodyc.bbr.prep    corpus callosum
-#>  3 midline CC body parietal    cc.bodyp.bbr.prep    corpus callosum
-#>  4 midline CC body prefrontal  cc.bodypf.bbr.prep   corpus callosum
-#>  5 midline CC body premotor    cc.bodypm.bbr.prep   corpus callosum
-#>  6 midline CC body temporal    cc.bodyt.bbr.prep    corpus callosum
-#>  7 midline CC genu             cc.genu.bbr.prep     corpus callosum
-#>  8 midline CC rostrum          cc.rostrum.bbr.prep  corpus callosum
-#>  9 midline CC splenium         cc.splenium.bbr.prep corpus callosum
-#> 10 left    arcuate fasciculus  lh.af.bbr.prep       association    
-#> # ℹ 32 more rows
+#>    hemi    region                           label                group          
+#>    <chr>   <chr>                            <chr>                <chr>          
+#>  1 midline anterior commissure              acomm.bbr.prep       commissure     
+#>  2 midline CC body central                  cc.bodyc.bbr.prep    corpus callosum
+#>  3 midline CC body parietal                 cc.bodyp.bbr.prep    corpus callosum
+#>  4 midline CC body prefrontal               cc.bodypf.bbr.prep   corpus callosum
+#>  5 midline CC body premotor                 cc.bodypm.bbr.prep   corpus callosum
+#>  6 midline CC body temporal                 cc.bodyt.bbr.prep    corpus callosum
+#>  7 midline CC genu                          cc.genu.bbr.prep     corpus callosum
+#>  8 midline CC rostrum                       cc.rostrum.bbr.prep  corpus callosum
+#>  9 midline CC splenium                      cc.splenium.bbr.prep corpus callosum
+#> 10 left    arcuate fasciculus               lh.af.bbr.prep       association    
+#> 11 left    acoustic radiation               lh.ar.bbr.prep       association    
+#> 12 left    anterior thalamic radiation      lh.atr.bbr.prep      association    
+#> 13 left    cingulum dorsal                  lh.cbd.bbr.prep      limbic         
+#> 14 left    cingulum ventral                 lh.cbv.bbr.prep      limbic         
+#> 15 left    corticospinal tract              lh.cst.bbr.prep      projection     
+#> 16 left    extreme capsule                  lh.emc.bbr.prep      limbic         
+#> 17 left    frontal aslant tract             lh.fat.bbr.prep      association    
+#> 18 left    fornix                           lh.fx.bbr.prep       association    
+#> 19 left    inferior longitudinal fasciculus lh.ilf.bbr.prep      limbic         
+#> 20 left    middle longitudinal fasciculus   lh.mlf.bbr.prep      association    
+#> 21 left    optic radiation                  lh.or.bbr.prep       association    
+#> 22 left    SLF I                            lh.slf1.bbr.prep     association    
+#> 23 left    SLF II                           lh.slf2.bbr.prep     association    
+#> 24 left    SLF III                          lh.slf3.bbr.prep     association    
+#> 25 left    uncinate fasciculus              lh.uf.bbr.prep       limbic         
+#> 26 midline middle cerebellar peduncle       mcp.bbr.prep         cerebellar     
+#> 27 right   arcuate fasciculus               rh.af.bbr.prep       association    
+#> 28 right   acoustic radiation               rh.ar.bbr.prep       association    
+#> 29 right   anterior thalamic radiation      rh.atr.bbr.prep      association    
+#> 30 right   cingulum dorsal                  rh.cbd.bbr.prep      limbic         
+#> 31 right   cingulum ventral                 rh.cbv.bbr.prep      limbic         
+#> 32 right   corticospinal tract              rh.cst.bbr.prep      projection     
+#> 33 right   extreme capsule                  rh.emc.bbr.prep      limbic         
+#> 34 right   frontal aslant tract             rh.fat.bbr.prep      association    
+#> 35 right   fornix                           rh.fx.bbr.prep       association    
+#> 36 right   inferior longitudinal fasciculus rh.ilf.bbr.prep      limbic         
+#> 37 right   middle longitudinal fasciculus   rh.mlf.bbr.prep      association    
+#> 38 right   optic radiation                  rh.or.bbr.prep       association    
+#> 39 right   SLF I                            rh.slf1.bbr.prep     association    
+#> 40 right   SLF II                           rh.slf2.bbr.prep     association    
+#> 41 right   SLF III                          rh.slf3.bbr.prep     association    
+#> 42 right   uncinate fasciculus              rh.uf.bbr.prep       limbic         
 
 # List regions
 atlas_regions(tracula)
@@ -126,17 +157,48 @@ tracula
 #> ✔ ggseg3d (centerlines)
 #> ────────────────────────────────────────────────────────────────────────────────
 #> # A tibble: 42 × 4
-#>    hemi    region              label                group          
-#>    <chr>   <chr>               <chr>                <chr>          
-#>  1 midline anterior commissure acomm.bbr.prep       commissure     
-#>  2 midline CC body central     cc.bodyc.bbr.prep    corpus callosum
-#>  3 midline CC body parietal    cc.bodyp.bbr.prep    corpus callosum
-#>  4 midline CC body prefrontal  cc.bodypf.bbr.prep   corpus callosum
-#>  5 midline CC body premotor    cc.bodypm.bbr.prep   corpus callosum
-#>  6 midline CC body temporal    cc.bodyt.bbr.prep    corpus callosum
-#>  7 midline CC genu             cc.genu.bbr.prep     corpus callosum
-#>  8 midline CC rostrum          cc.rostrum.bbr.prep  corpus callosum
-#>  9 midline CC splenium         cc.splenium.bbr.prep corpus callosum
-#> 10 left    arcuate fasciculus  lh.af.bbr.prep       association    
-#> # ℹ 32 more rows
+#>    hemi    region                           label                group          
+#>    <chr>   <chr>                            <chr>                <chr>          
+#>  1 midline anterior commissure              acomm.bbr.prep       commissure     
+#>  2 midline CC body central                  cc.bodyc.bbr.prep    corpus callosum
+#>  3 midline CC body parietal                 cc.bodyp.bbr.prep    corpus callosum
+#>  4 midline CC body prefrontal               cc.bodypf.bbr.prep   corpus callosum
+#>  5 midline CC body premotor                 cc.bodypm.bbr.prep   corpus callosum
+#>  6 midline CC body temporal                 cc.bodyt.bbr.prep    corpus callosum
+#>  7 midline CC genu                          cc.genu.bbr.prep     corpus callosum
+#>  8 midline CC rostrum                       cc.rostrum.bbr.prep  corpus callosum
+#>  9 midline CC splenium                      cc.splenium.bbr.prep corpus callosum
+#> 10 left    arcuate fasciculus               lh.af.bbr.prep       association    
+#> 11 left    acoustic radiation               lh.ar.bbr.prep       association    
+#> 12 left    anterior thalamic radiation      lh.atr.bbr.prep      association    
+#> 13 left    cingulum dorsal                  lh.cbd.bbr.prep      limbic         
+#> 14 left    cingulum ventral                 lh.cbv.bbr.prep      limbic         
+#> 15 left    corticospinal tract              lh.cst.bbr.prep      projection     
+#> 16 left    extreme capsule                  lh.emc.bbr.prep      limbic         
+#> 17 left    frontal aslant tract             lh.fat.bbr.prep      association    
+#> 18 left    fornix                           lh.fx.bbr.prep       association    
+#> 19 left    inferior longitudinal fasciculus lh.ilf.bbr.prep      limbic         
+#> 20 left    middle longitudinal fasciculus   lh.mlf.bbr.prep      association    
+#> 21 left    optic radiation                  lh.or.bbr.prep       association    
+#> 22 left    SLF I                            lh.slf1.bbr.prep     association    
+#> 23 left    SLF II                           lh.slf2.bbr.prep     association    
+#> 24 left    SLF III                          lh.slf3.bbr.prep     association    
+#> 25 left    uncinate fasciculus              lh.uf.bbr.prep       limbic         
+#> 26 midline middle cerebellar peduncle       mcp.bbr.prep         cerebellar     
+#> 27 right   arcuate fasciculus               rh.af.bbr.prep       association    
+#> 28 right   acoustic radiation               rh.ar.bbr.prep       association    
+#> 29 right   anterior thalamic radiation      rh.atr.bbr.prep      association    
+#> 30 right   cingulum dorsal                  rh.cbd.bbr.prep      limbic         
+#> 31 right   cingulum ventral                 rh.cbv.bbr.prep      limbic         
+#> 32 right   corticospinal tract              rh.cst.bbr.prep      projection     
+#> 33 right   extreme capsule                  rh.emc.bbr.prep      limbic         
+#> 34 right   frontal aslant tract             rh.fat.bbr.prep      association    
+#> 35 right   fornix                           rh.fx.bbr.prep       association    
+#> 36 right   inferior longitudinal fasciculus rh.ilf.bbr.prep      limbic         
+#> 37 right   middle longitudinal fasciculus   rh.mlf.bbr.prep      association    
+#> 38 right   optic radiation                  rh.or.bbr.prep       association    
+#> 39 right   SLF I                            rh.slf1.bbr.prep     association    
+#> 40 right   SLF II                           rh.slf2.bbr.prep     association    
+#> 41 right   SLF III                          rh.slf3.bbr.prep     association    
+#> 42 right   uncinate fasciculus              rh.uf.bbr.prep       limbic         
 ```

@@ -281,19 +281,31 @@ atlas for a compact two-view figure of deep grey matter structures:</p>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> ggseg3d (meshes)</span></span>
 <span><span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 23 × 4</span></span></span>
-<span><span class="co">#&gt;    hemi  region               label            structure    </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> left  thalamus             Left-Thalamus    thalamus     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> left  caudate              Left-Caudate     basal ganglia</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> left  putamen              Left-Putamen     basal ganglia</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> left  pallidum             Left-Pallidum    basal ganglia</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> <span style="color: #BB0000;">NA</span>    brain stem           Brain-Stem       brain stem   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> left  hippocampus          Left-Hippocampus limbic       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> left  amygdala             Left-Amygdala    limbic       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> left  ventral diencephalon Left-VentralDC   diencephalon </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> left  vessel               Left-vessel      <span style="color: #BB0000;">NA</span>           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> right thalamus             Right-Thalamus   thalamus     </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 13 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt;    hemi  region                        label             structure      </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> left  thalamus                      Left-Thalamus     thalamus       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> left  caudate                       Left-Caudate      basal ganglia  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> left  putamen                       Left-Putamen      basal ganglia  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> left  pallidum                      Left-Pallidum     basal ganglia  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> <span style="color: #BB0000;">NA</span>    brain stem                    Brain-Stem        brain stem     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> left  hippocampus                   Left-Hippocampus  limbic         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> left  amygdala                      Left-Amygdala     limbic         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> left  ventral diencephalon          Left-VentralDC    diencephalon   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> left  vessel                        Left-vessel       <span style="color: #BB0000;">NA</span>             </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> right thalamus                      Right-Thalamus    thalamus       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> right caudate                       Right-Caudate     basal ganglia  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> right putamen                       Right-Putamen     basal ganglia  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> right pallidum                      Right-Pallidum    basal ganglia  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> right hippocampus                   Right-Hippocampus limbic         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> right amygdala                      Right-Amygdala    limbic         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> right ventral diencephalon          Right-VentralDC   diencephalon   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> right vessel                        Right-vessel      <span style="color: #BB0000;">NA</span>             </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> <span style="color: #BB0000;">NA</span>    optic chiasm                  Optic-Chiasm      <span style="color: #BB0000;">NA</span>             </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> <span style="color: #BB0000;">NA</span>    corpus callosum posterior     CC_Posterior      corpus callosum</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> <span style="color: #BB0000;">NA</span>    corpus callosum mid-posterior CC_Mid_Posterior  corpus callosum</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">21</span> <span style="color: #BB0000;">NA</span>    corpus callosum central       CC_Central        corpus callosum</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">22</span> <span style="color: #BB0000;">NA</span>    corpus callosum mid-anterior  CC_Mid_Anterior   corpus callosum</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">23</span> <span style="color: #BB0000;">NA</span>    corpus callosum anterior      CC_Anterior       corpus callosum</span></span></code></pre></div>
 <p>Each function returns a valid <code>ggseg_atlas</code>, so you can
 inspect intermediate results, branch the pipeline, or hand the final
 object straight to ggseg for plotting.</p>
