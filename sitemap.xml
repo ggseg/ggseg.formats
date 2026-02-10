@@ -18,9 +18,6 @@
 <url><loc>https://ggseg.github.io/ggseg.formats/reference/atlas_type.html</loc></url>
 <url><loc>https://ggseg.github.io/ggseg.formats/reference/atlas_vertices.html</loc></url>
 <url><loc>https://ggseg.github.io/ggseg.formats/reference/atlas_views.html</loc></url>
-<url><loc>https://ggseg.github.io/ggseg.formats/reference/brain_data_cortical.html</loc></url>
-<url><loc>https://ggseg.github.io/ggseg.formats/reference/brain_data_subcortical.html</loc></url>
-<url><loc>https://ggseg.github.io/ggseg.formats/reference/brain_data_tract.html</loc></url>
 <url><loc>https://ggseg.github.io/ggseg.formats/reference/convert_legacy_brain_atlas.html</loc></url>
 <url><loc>https://ggseg.github.io/ggseg.formats/reference/convert_legacy_brain_data.html</loc></url>
 <url><loc>https://ggseg.github.io/ggseg.formats/reference/convert_legacy_structure.html</loc></url>
@@ -28,6 +25,9 @@
 <url><loc>https://ggseg.github.io/ggseg.formats/reference/get_brain_mesh.html</loc></url>
 <url><loc>https://ggseg.github.io/ggseg.formats/reference/ggseg.html</loc></url>
 <url><loc>https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.html</loc></url>
+<url><loc>https://ggseg.github.io/ggseg.formats/reference/ggseg_data_cortical.html</loc></url>
+<url><loc>https://ggseg.github.io/ggseg.formats/reference/ggseg_data_subcortical.html</loc></url>
+<url><loc>https://ggseg.github.io/ggseg.formats/reference/ggseg_data_tract.html</loc></url>
 <url><loc>https://ggseg.github.io/ggseg.formats/reference/index.html</loc></url>
 <url><loc>https://ggseg.github.io/ggseg.formats/reference/infer_vertices_from_meshes.html</loc></url>
 <url><loc>https://ggseg.github.io/ggseg.formats/reference/is_ggseg3d_atlas.html</loc></url>

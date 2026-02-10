@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   atlas-manipulation: atlas-manipulation.html
   brain-atlas-class: brain-atlas-class.html
-last_built: 2026-02-09T17:53Z
+last_built: 2026-02-09T21:48Z
 urls:
   reference: https://ggseg.github.io/ggseg.formats/reference
   article: https://ggseg.github.io/ggseg.formats/articles

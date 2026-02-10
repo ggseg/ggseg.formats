@@ -57,7 +57,7 @@ per hemisphere (68 total) on the cortical surface.</p>
 <dd><p>Named character vector of colours for each region</p></dd>
 
 <dt>data</dt>
-<dd><p>A <code>brain_data_cortical</code> object containing:</p><dl><dt>vertices</dt>
+<dd><p>A <code>ggseg_data_cortical</code> object containing:</p><dl><dt>vertices</dt>
 <dd><p>Data frame with <code>label</code> and <code>vertices</code> columns</p></dd>
 
 <dt>sf</dt>
@@ -131,14 +131,14 @@ Cerebral Cortex, 14(1):11-22.
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">dk ggseg atlas</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Type: cortical</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Regions:</span> 35</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Regions:</span> 36</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Hemispheres:</span> left, right</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Views:</span> inferior, lateral, medial, superior</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Palette:</span> <span style="color: #00BB00;">✔</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Rendering:</span> <span style="color: #00BB00;">✔</span> ggseg</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> ggseg3d (vertices)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ────────────────────────────────────────────────────────────────────────────────</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 70 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 72 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    hemi  region                            label                      lobe      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> left  banks of superior temporal sulcus lh_bankssts                temporal  </span>
@@ -151,7 +151,7 @@ Cerebral Cortex, 14(1):11-22.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> left  inferior parietal                 lh_inferiorparietal        parietal  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> left  inferior temporal                 lh_inferiortemporal        temporal  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> left  isthmus cingulate                 lh_isthmuscingulate        cingulate </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 60 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 62 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># List regions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="atlas_regions.html">atlas_regions</a></span><span class="op">(</span><span class="va">dk</span><span class="op">)</span></span></span>
@@ -172,7 +172,7 @@ Cerebral Cortex, 14(1):11-22.
 <span class="r-out co"><span class="r-pr">#&gt;</span> [29] "rostral middle frontal"            "superior frontal"                 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [31] "superior parietal"                 "superior temporal"                </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [33] "supramarginal"                     "temporal pole"                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "transverse temporal"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "transverse temporal"               "unknown"                          </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># List labels</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="atlas_labels.html">atlas_labels</a></span><span class="op">(</span><span class="va">dk</span><span class="op">)</span></span></span>
@@ -193,24 +193,25 @@ Cerebral Cortex, 14(1):11-22.
 <span class="r-out co"><span class="r-pr">#&gt;</span> [29] "lh_rostralmiddlefrontal"     "lh_superiorfrontal"         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [31] "lh_superiorparietal"         "lh_superiortemporal"        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [33] "lh_supramarginal"            "lh_temporalpole"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "lh_transversetemporal"       "rh_bankssts"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "rh_caudalanteriorcingulate"  "rh_caudalmiddlefrontal"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [39] "rh_corpuscallosum"           "rh_cuneus"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [41] "rh_entorhinal"               "rh_frontalpole"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [43] "rh_fusiform"                 "rh_inferiorparietal"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [45] "rh_inferiortemporal"         "rh_insula"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [47] "rh_isthmuscingulate"         "rh_lateraloccipital"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [49] "rh_lateralorbitofrontal"     "rh_lingual"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [51] "rh_medialorbitofrontal"      "rh_middletemporal"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [53] "rh_paracentral"              "rh_parahippocampal"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [55] "rh_parsopercularis"          "rh_parsorbitalis"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [57] "rh_parstriangularis"         "rh_pericalcarine"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [59] "rh_postcentral"              "rh_posteriorcingulate"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [61] "rh_precentral"               "rh_precuneus"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [63] "rh_rostralanteriorcingulate" "rh_rostralmiddlefrontal"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [65] "rh_superiorfrontal"          "rh_superiorparietal"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [67] "rh_superiortemporal"         "rh_supramarginal"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [69] "rh_temporalpole"             "rh_transversetemporal"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "lh_transversetemporal"       "lh_unknown"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "rh_bankssts"                 "rh_caudalanteriorcingulate" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [39] "rh_caudalmiddlefrontal"      "rh_corpuscallosum"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [41] "rh_cuneus"                   "rh_entorhinal"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [43] "rh_frontalpole"              "rh_fusiform"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [45] "rh_inferiorparietal"         "rh_inferiortemporal"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [47] "rh_insula"                   "rh_isthmuscingulate"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [49] "rh_lateraloccipital"         "rh_lateralorbitofrontal"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [51] "rh_lingual"                  "rh_medialorbitofrontal"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [53] "rh_middletemporal"           "rh_paracentral"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [55] "rh_parahippocampal"          "rh_parsopercularis"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [57] "rh_parsorbitalis"            "rh_parstriangularis"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [59] "rh_pericalcarine"            "rh_postcentral"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [61] "rh_posteriorcingulate"       "rh_precentral"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [63] "rh_precuneus"                "rh_rostralanteriorcingulate"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [65] "rh_rostralmiddlefrontal"     "rh_superiorfrontal"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [67] "rh_superiorparietal"         "rh_superiortemporal"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [69] "rh_supramarginal"            "rh_temporalpole"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [71] "rh_transversetemporal"       "rh_unknown"                 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

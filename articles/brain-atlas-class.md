@@ -22,14 +22,14 @@ dk
 #> 
 #> ── dk ggseg atlas ──────────────────────────────────────────────────────────────
 #> Type: cortical
-#> Regions: 35
+#> Regions: 36
 #> Hemispheres: left, right
 #> Views: inferior, lateral, medial, superior
 #> Palette: ✔
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (vertices)
 #> ────────────────────────────────────────────────────────────────────────────────
-#> # A tibble: 70 × 4
+#> # A tibble: 72 × 4
 #>    hemi  region                            label                      lobe      
 #>    <chr> <chr>                             <chr>                      <chr>     
 #>  1 left  banks of superior temporal sulcus lh_bankssts                temporal  
@@ -42,7 +42,7 @@ dk
 #>  8 left  inferior parietal                 lh_inferiorparietal        parietal  
 #>  9 left  inferior temporal                 lh_inferiortemporal        temporal  
 #> 10 left  isthmus cingulate                 lh_isthmuscingulate        cingulate 
-#> # ℹ 60 more rows
+#> # ℹ 62 more rows
 ```
 
 The print method gives you a quick overview: the atlas name, type, how
@@ -100,7 +100,7 @@ geometry. Its contents depend on the atlas type.
 
 ``` r
 class(dk$data)
-#> [1] "brain_data_cortical" "ggseg_atlas_data"
+#> [1] "ggseg_data_cortical" "ggseg_atlas_data"
 ```
 
 ## Three atlas types
@@ -108,7 +108,7 @@ class(dk$data)
 ggseg.formats ships three atlases that illustrate the three types.
 
 **Cortical** atlases like `dk` parcellate the cortical surface. Their
-data object is a `brain_data_cortical` containing sf polygons for 2D
+data object is a `ggseg_data_cortical` containing sf polygons for 2D
 rendering and vertex indices for 3D:
 
 ``` r
@@ -119,7 +119,7 @@ names(dk$data)
 ```
 
 **Subcortical** atlases like `aseg` represent deep brain structures.
-Their data is a `brain_data_subcortical` with sf polygons and individual
+Their data is a `ggseg_data_subcortical` with sf polygons and individual
 3D meshes:
 
 ``` r
@@ -130,7 +130,7 @@ names(aseg$data)
 ```
 
 **Tract** atlases like `tracula` represent white matter bundles. Their
-data is a `brain_data_tract` with sf polygons and centerlines that
+data is a `ggseg_data_tract` with sf polygons and centerlines that
 generate tube meshes for 3D:
 
 ``` r
@@ -155,11 +155,11 @@ unique identifier that links core to geometry). Most atlases also carry
 
 ``` r
 str(dk$core)
-#> tibble [70 × 4] (S3: tbl_df/tbl/data.frame)
-#>  $ hemi  : chr [1:70] "left" "left" "left" "left" ...
-#>  $ region: chr [1:70] "banks of superior temporal sulcus" "caudal anterior cingulate" "caudal middle frontal" "corpus callosum" ...
-#>  $ label : chr [1:70] "lh_bankssts" "lh_caudalanteriorcingulate" "lh_caudalmiddlefrontal" "lh_corpuscallosum" ...
-#>  $ lobe  : chr [1:70] "temporal" "cingulate" "frontal" "white matter" ...
+#> tibble [72 × 4] (S3: tbl_df/tbl/data.frame)
+#>  $ hemi  : chr [1:72] "left" "left" "left" "left" ...
+#>  $ region: chr [1:72] "banks of superior temporal sulcus" "caudal anterior cingulate" "caudal middle frontal" "corpus callosum" ...
+#>  $ label : chr [1:72] "lh_bankssts" "lh_caudalanteriorcingulate" "lh_caudalmiddlefrontal" "lh_corpuscallosum" ...
+#>  $ lobe  : chr [1:72] "temporal" "cingulate" "frontal" "white matter" ...
 ```
 
 Some atlases include additional metadata columns. The `dk` atlas, for
@@ -168,7 +168,7 @@ instance, has `lobe`:
 ``` r
 unique(dk$core$lobe)
 #> [1] "temporal"     "cingulate"    "frontal"      "white matter" "occipital"   
-#> [6] "parietal"     "insula"
+#> [6] "parietal"     "insula"       NA
 ```
 
 You can add your own metadata with
@@ -202,7 +202,7 @@ atlas_regions(dk)
 #> [29] "rostral middle frontal"            "superior frontal"                 
 #> [31] "superior parietal"                 "superior temporal"                
 #> [33] "supramarginal"                     "temporal pole"                    
-#> [35] "transverse temporal"
+#> [35] "transverse temporal"               "unknown"
 ```
 
 [`atlas_labels()`](https://ggseg.github.io/ggseg.formats/reference/atlas_labels.md)
@@ -267,24 +267,24 @@ returns an sf data frame for 2D rendering:
 sf_data <- atlas_sf(dk)
 head(sf_data)
 #> Simple feature collection with 6 features and 6 fields
-#> Geometry type: POLYGON
+#> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
-#> Bounding box:  xmin: 700.0929 ymin: 31.87893 xmax: 3944.944 ymax: 582.8559
+#> Bounding box:  xmin: 148.4566 ymin: 6.040941 xmax: 815.2458 ymax: 119.6403
 #> CRS:           NA
 #>                        label     view hemi                            region
-#> 1                lh_bankssts  lateral left banks of superior temporal sulcus
-#> 2                lh_bankssts superior left banks of superior temporal sulcus
-#> 3                lh_bankssts inferior left banks of superior temporal sulcus
+#> 1                lh_bankssts inferior left banks of superior temporal sulcus
+#> 2                lh_bankssts  lateral left banks of superior temporal sulcus
+#> 3                lh_bankssts superior left banks of superior temporal sulcus
 #> 4 lh_caudalanteriorcingulate   medial left         caudal anterior cingulate
 #> 5     lh_caudalmiddlefrontal  lateral left             caudal middle frontal
 #> 6     lh_caudalmiddlefrontal superior left             caudal middle frontal
 #>        lobe                       geometry  colour
-#> 1  temporal POLYGON ((1725.479 203.6203... #196428
-#> 2  temporal POLYGON ((3790.858 32.77955... #196428
-#> 3  temporal POLYGON ((843.2621 332.5692... #196428
-#> 4 cingulate POLYGON ((2968.881 321.723,... #7D64A0
-#> 5   frontal POLYGON ((1412.103 382.5062... #641900
-#> 6   frontal POLYGON ((3478.287 166.2393... #641900
+#> 1  temporal MULTIPOLYGON (((171.1363 68... #196428
+#> 2  temporal MULTIPOLYGON (((358.0961 41... #196428
+#> 3  temporal MULTIPOLYGON (((808.4086 13... #196428
+#> 4 cingulate MULTIPOLYGON (((614.028 65.... #7D64A0
+#> 5   frontal MULTIPOLYGON (((292.9792 78... #641900
+#> 6   frontal MULTIPOLYGON (((724.0058 33... #641900
 ```
 
 [`atlas_vertices()`](https://ggseg.github.io/ggseg.formats/reference/atlas_vertices.md)

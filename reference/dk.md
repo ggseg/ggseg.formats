@@ -27,7 +27,7 @@ A `ggseg_atlas` object with components:
 
 - data:
 
-  A `brain_data_cortical` object containing:
+  A `ggseg_data_cortical` object containing:
 
   vertices
 
@@ -98,14 +98,14 @@ dk
 #> 
 #> ── dk ggseg atlas ──────────────────────────────────────────────────────────────
 #> Type: cortical
-#> Regions: 35
+#> Regions: 36
 #> Hemispheres: left, right
 #> Views: inferior, lateral, medial, superior
 #> Palette: ✔
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (vertices)
 #> ────────────────────────────────────────────────────────────────────────────────
-#> # A tibble: 70 × 4
+#> # A tibble: 72 × 4
 #>    hemi  region                            label                      lobe      
 #>    <chr> <chr>                             <chr>                      <chr>     
 #>  1 left  banks of superior temporal sulcus lh_bankssts                temporal  
@@ -118,7 +118,7 @@ dk
 #>  8 left  inferior parietal                 lh_inferiorparietal        parietal  
 #>  9 left  inferior temporal                 lh_inferiortemporal        temporal  
 #> 10 left  isthmus cingulate                 lh_isthmuscingulate        cingulate 
-#> # ℹ 60 more rows
+#> # ℹ 62 more rows
 
 # List regions
 atlas_regions(dk)
@@ -139,7 +139,7 @@ atlas_regions(dk)
 #> [29] "rostral middle frontal"            "superior frontal"                 
 #> [31] "superior parietal"                 "superior temporal"                
 #> [33] "supramarginal"                     "temporal pole"                    
-#> [35] "transverse temporal"              
+#> [35] "transverse temporal"               "unknown"                          
 
 # List labels
 atlas_labels(dk)
@@ -160,22 +160,23 @@ atlas_labels(dk)
 #> [29] "lh_rostralmiddlefrontal"     "lh_superiorfrontal"         
 #> [31] "lh_superiorparietal"         "lh_superiortemporal"        
 #> [33] "lh_supramarginal"            "lh_temporalpole"            
-#> [35] "lh_transversetemporal"       "rh_bankssts"                
-#> [37] "rh_caudalanteriorcingulate"  "rh_caudalmiddlefrontal"     
-#> [39] "rh_corpuscallosum"           "rh_cuneus"                  
-#> [41] "rh_entorhinal"               "rh_frontalpole"             
-#> [43] "rh_fusiform"                 "rh_inferiorparietal"        
-#> [45] "rh_inferiortemporal"         "rh_insula"                  
-#> [47] "rh_isthmuscingulate"         "rh_lateraloccipital"        
-#> [49] "rh_lateralorbitofrontal"     "rh_lingual"                 
-#> [51] "rh_medialorbitofrontal"      "rh_middletemporal"          
-#> [53] "rh_paracentral"              "rh_parahippocampal"         
-#> [55] "rh_parsopercularis"          "rh_parsorbitalis"           
-#> [57] "rh_parstriangularis"         "rh_pericalcarine"           
-#> [59] "rh_postcentral"              "rh_posteriorcingulate"      
-#> [61] "rh_precentral"               "rh_precuneus"               
-#> [63] "rh_rostralanteriorcingulate" "rh_rostralmiddlefrontal"    
-#> [65] "rh_superiorfrontal"          "rh_superiorparietal"        
-#> [67] "rh_superiortemporal"         "rh_supramarginal"           
-#> [69] "rh_temporalpole"             "rh_transversetemporal"      
+#> [35] "lh_transversetemporal"       "lh_unknown"                 
+#> [37] "rh_bankssts"                 "rh_caudalanteriorcingulate" 
+#> [39] "rh_caudalmiddlefrontal"      "rh_corpuscallosum"          
+#> [41] "rh_cuneus"                   "rh_entorhinal"              
+#> [43] "rh_frontalpole"              "rh_fusiform"                
+#> [45] "rh_inferiorparietal"         "rh_inferiortemporal"        
+#> [47] "rh_insula"                   "rh_isthmuscingulate"        
+#> [49] "rh_lateraloccipital"         "rh_lateralorbitofrontal"    
+#> [51] "rh_lingual"                  "rh_medialorbitofrontal"     
+#> [53] "rh_middletemporal"           "rh_paracentral"             
+#> [55] "rh_parahippocampal"          "rh_parsopercularis"         
+#> [57] "rh_parsorbitalis"            "rh_parstriangularis"        
+#> [59] "rh_pericalcarine"            "rh_postcentral"             
+#> [61] "rh_posteriorcingulate"       "rh_precentral"              
+#> [63] "rh_precuneus"                "rh_rostralanteriorcingulate"
+#> [65] "rh_rostralmiddlefrontal"     "rh_superiorfrontal"         
+#> [67] "rh_superiorparietal"         "rh_superiortemporal"        
+#> [69] "rh_supramarginal"            "rh_temporalpole"            
+#> [71] "rh_transversetemporal"       "rh_unknown"                 
 ```

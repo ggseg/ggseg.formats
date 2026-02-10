@@ -27,7 +27,7 @@ A `ggseg_atlas` object with components:
 
 - data:
 
-  A `brain_data_tract` object containing:
+  A `ggseg_data_tract` object containing:
 
   centerlines
 

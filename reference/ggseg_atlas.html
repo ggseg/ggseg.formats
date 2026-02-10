@@ -67,8 +67,8 @@ unique region). May contain additional columns for grouping or metadata
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>a ggseg_atlas_data object created by
-<code><a href="brain_data_cortical.html">brain_data_cortical()</a></code>, <code><a href="brain_data_subcortical.html">brain_data_subcortical()</a></code>,
-or <code><a href="brain_data_tract.html">brain_data_tract()</a></code>.
+<code><a href="ggseg_data_cortical.html">ggseg_data_cortical()</a></code>, <code><a href="ggseg_data_subcortical.html">ggseg_data_subcortical()</a></code>,
+or <code><a href="ggseg_data_tract.html">ggseg_data_tract()</a></code>.
 Must match the specified type.</p></dd>
 
 
@@ -89,7 +89,7 @@ Must match the specified type.</p></dd>
 <span class="r-in"><span>  atlas <span class="op">=</span> <span class="st">"dk"</span>,</span></span>
 <span class="r-in"><span>  type <span class="op">=</span> <span class="st">"cortical"</span>,</span></span>
 <span class="r-in"><span>  core <span class="op">=</span> <span class="va">core_df</span>,</span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="brain_data_cortical.html">brain_data_cortical</a></span><span class="op">(</span>sf <span class="op">=</span> <span class="va">geometry</span>, vertices <span class="op">=</span> <span class="va">vertex_indices</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="ggseg_data_cortical.html">ggseg_data_cortical</a></span><span class="op">(</span>sf <span class="op">=</span> <span class="va">geometry</span>, vertices <span class="op">=</span> <span class="va">vertex_indices</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Tract atlas</span></span></span>
@@ -97,7 +97,7 @@ Must match the specified type.</p></dd>
 <span class="r-in"><span>  atlas <span class="op">=</span> <span class="st">"hcp_tracts"</span>,</span></span>
 <span class="r-in"><span>  type <span class="op">=</span> <span class="st">"tract"</span>,</span></span>
 <span class="r-in"><span>  core <span class="op">=</span> <span class="va">core_df</span>,</span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="brain_data_tract.html">brain_data_tract</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="ggseg_data_tract.html">ggseg_data_tract</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    meshes <span class="op">=</span> <span class="va">tube_meshes</span>,</span></span>
 <span class="r-in"><span>    scalars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>FA <span class="op">=</span> <span class="va">fa_values</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>

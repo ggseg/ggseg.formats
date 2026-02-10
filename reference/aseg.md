@@ -28,7 +28,7 @@ A `ggseg_atlas` object with components:
 
 - data:
 
-  A `brain_data_subcortical` object containing:
+  A `ggseg_data_subcortical` object containing:
 
   meshes
 

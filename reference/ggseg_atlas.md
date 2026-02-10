@@ -30,10 +30,10 @@ brain_atlas(atlas, type, core, data, palette = NULL)
 - data:
 
   a ggseg_atlas_data object created by
-  [`brain_data_cortical()`](https://ggseg.github.io/ggseg.formats/reference/brain_data_cortical.md),
-  [`brain_data_subcortical()`](https://ggseg.github.io/ggseg.formats/reference/brain_data_subcortical.md),
+  [`ggseg_data_cortical()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_cortical.md),
+  [`ggseg_data_subcortical()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_subcortical.md),
   or
-  [`brain_data_tract()`](https://ggseg.github.io/ggseg.formats/reference/brain_data_tract.md).
+  [`ggseg_data_tract()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_tract.md).
   Must match the specified type.
 
 - palette:
@@ -53,7 +53,7 @@ atlas <- ggseg_atlas(
   atlas = "dk",
   type = "cortical",
   core = core_df,
-  data = brain_data_cortical(sf = geometry, vertices = vertex_indices)
+  data = ggseg_data_cortical(sf = geometry, vertices = vertex_indices)
 )
 
 # Tract atlas
@@ -61,7 +61,7 @@ atlas <- ggseg_atlas(
   atlas = "hcp_tracts",
   type = "tract",
   core = core_df,
-  data = brain_data_tract(
+  data = ggseg_data_tract(
     meshes = tube_meshes,
     scalars = list(FA = fa_values)
   )

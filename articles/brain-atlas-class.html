@@ -78,14 +78,14 @@ atlas to see what that looks like:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">dk ggseg atlas</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Type: cortical</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Regions:</span> 35</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Regions:</span> 36</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Hemispheres:</span> left, right</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Views:</span> inferior, lateral, medial, superior</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Palette:</span> <span style="color: #00BB00;">✔</span></span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Rendering:</span> <span style="color: #00BB00;">✔</span> ggseg</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> ggseg3d (vertices)</span></span>
 <span><span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 70 × 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 72 × 4</span></span></span>
 <span><span class="co">#&gt;    hemi  region                            label                      lobe      </span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> left  banks of superior temporal sulcus lh_bankssts                temporal  </span></span>
@@ -98,7 +98,7 @@ atlas to see what that looks like:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> left  inferior parietal                 lh_inferiorparietal        parietal  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> left  inferior temporal                 lh_inferiortemporal        temporal  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> left  isthmus cingulate                 lh_isthmuscingulate        cingulate </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 60 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 62 more rows</span></span></span></code></pre></div>
 <p>The print method gives you a quick overview: the atlas name, type,
 how many regions it has, which hemispheres are present, what views the
 2D geometry provides, and whether palette and rendering data are
@@ -147,7 +147,7 @@ that holds the actual geometry. Its contents depend on the atlas
 type.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">dk</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "brain_data_cortical" "ggseg_atlas_data"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "ggseg_data_cortical" "ggseg_atlas_data"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="three-atlas-types">Three atlas types<a class="anchor" aria-label="anchor" href="#three-atlas-types"></a>
@@ -156,7 +156,7 @@ type.</p>
 types.</p>
 <p><strong>Cortical</strong> atlases like <code>dk</code> parcellate the
 cortical surface. Their data object is a
-<code>brain_data_cortical</code> containing sf polygons for 2D rendering
+<code>ggseg_data_cortical</code> containing sf polygons for 2D rendering
 and vertex indices for 3D:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dk</span><span class="op">$</span><span class="va">type</span></span>
@@ -165,7 +165,7 @@ and vertex indices for 3D:</p>
 <span><span class="co">#&gt; [1] "sf"       "vertices"</span></span></code></pre></div>
 <p><strong>Subcortical</strong> atlases like <code>aseg</code> represent
 deep brain structures. Their data is a
-<code>brain_data_subcortical</code> with sf polygons and individual 3D
+<code>ggseg_data_subcortical</code> with sf polygons and individual 3D
 meshes:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aseg</span><span class="op">$</span><span class="va">type</span></span>
@@ -173,7 +173,7 @@ meshes:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">aseg</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "sf"     "meshes"</span></span></code></pre></div>
 <p><strong>Tract</strong> atlases like <code>tracula</code> represent
-white matter bundles. Their data is a <code>brain_data_tract</code> with
+white matter bundles. Their data is a <code>ggseg_data_tract</code> with
 sf polygons and centerlines that generate tube meshes for 3D:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tracula</span><span class="op">$</span><span class="va">type</span></span>
@@ -195,17 +195,17 @@ and <code>label</code> (a unique identifier that links core to
 geometry). Most atlases also carry <code>hemi</code>:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">dk</span><span class="op">$</span><span class="va">core</span><span class="op">)</span></span>
-<span><span class="co">#&gt; tibble [70 × 4] (S3: tbl_df/tbl/data.frame)</span></span>
-<span><span class="co">#&gt;  $ hemi  : chr [1:70] "left" "left" "left" "left" ...</span></span>
-<span><span class="co">#&gt;  $ region: chr [1:70] "banks of superior temporal sulcus" "caudal anterior cingulate" "caudal middle frontal" "corpus callosum" ...</span></span>
-<span><span class="co">#&gt;  $ label : chr [1:70] "lh_bankssts" "lh_caudalanteriorcingulate" "lh_caudalmiddlefrontal" "lh_corpuscallosum" ...</span></span>
-<span><span class="co">#&gt;  $ lobe  : chr [1:70] "temporal" "cingulate" "frontal" "white matter" ...</span></span></code></pre></div>
+<span><span class="co">#&gt; tibble [72 × 4] (S3: tbl_df/tbl/data.frame)</span></span>
+<span><span class="co">#&gt;  $ hemi  : chr [1:72] "left" "left" "left" "left" ...</span></span>
+<span><span class="co">#&gt;  $ region: chr [1:72] "banks of superior temporal sulcus" "caudal anterior cingulate" "caudal middle frontal" "corpus callosum" ...</span></span>
+<span><span class="co">#&gt;  $ label : chr [1:72] "lh_bankssts" "lh_caudalanteriorcingulate" "lh_caudalmiddlefrontal" "lh_corpuscallosum" ...</span></span>
+<span><span class="co">#&gt;  $ lobe  : chr [1:72] "temporal" "cingulate" "frontal" "white matter" ...</span></span></code></pre></div>
 <p>Some atlases include additional metadata columns. The <code>dk</code>
 atlas, for instance, has <code>lobe</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">dk</span><span class="op">$</span><span class="va">core</span><span class="op">$</span><span class="va">lobe</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "temporal"     "cingulate"    "frontal"      "white matter" "occipital"   </span></span>
-<span><span class="co">#&gt; [6] "parietal"     "insula"</span></span></code></pre></div>
+<span><span class="co">#&gt; [6] "parietal"     "insula"       NA</span></span></code></pre></div>
 <p>You can add your own metadata with <code><a href="../reference/atlas_manipulation.html">atlas_core_add()</a></code>
 (covered in the manipulation vignette).</p>
 </div>
@@ -235,7 +235,7 @@ names:</p>
 <span><span class="co">#&gt; [29] "rostral middle frontal"            "superior frontal"                 </span></span>
 <span><span class="co">#&gt; [31] "superior parietal"                 "superior temporal"                </span></span>
 <span><span class="co">#&gt; [33] "supramarginal"                     "temporal pole"                    </span></span>
-<span><span class="co">#&gt; [35] "transverse temporal"</span></span></code></pre></div>
+<span><span class="co">#&gt; [35] "transverse temporal"               "unknown"</span></span></code></pre></div>
 <p><code><a href="../reference/atlas_labels.html">atlas_labels()</a></code> returns the unique labels (the
 identifiers used to join geometry):</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -284,24 +284,24 @@ rendering:</p>
 <code class="sourceCode R"><span><span class="va">sf_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/atlas_sf.html">atlas_sf</a></span><span class="op">(</span><span class="va">dk</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sf_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Simple feature collection with 6 features and 6 fields</span></span>
-<span><span class="co">#&gt; Geometry type: POLYGON</span></span>
+<span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
-<span><span class="co">#&gt; Bounding box:  xmin: 700.0929 ymin: 31.87893 xmax: 3944.944 ymax: 582.8559</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: 148.4566 ymin: 6.040941 xmax: 815.2458 ymax: 119.6403</span></span>
 <span><span class="co">#&gt; CRS:           NA</span></span>
 <span><span class="co">#&gt;                        label     view hemi                            region</span></span>
-<span><span class="co">#&gt; 1                lh_bankssts  lateral left banks of superior temporal sulcus</span></span>
-<span><span class="co">#&gt; 2                lh_bankssts superior left banks of superior temporal sulcus</span></span>
-<span><span class="co">#&gt; 3                lh_bankssts inferior left banks of superior temporal sulcus</span></span>
+<span><span class="co">#&gt; 1                lh_bankssts inferior left banks of superior temporal sulcus</span></span>
+<span><span class="co">#&gt; 2                lh_bankssts  lateral left banks of superior temporal sulcus</span></span>
+<span><span class="co">#&gt; 3                lh_bankssts superior left banks of superior temporal sulcus</span></span>
 <span><span class="co">#&gt; 4 lh_caudalanteriorcingulate   medial left         caudal anterior cingulate</span></span>
 <span><span class="co">#&gt; 5     lh_caudalmiddlefrontal  lateral left             caudal middle frontal</span></span>
 <span><span class="co">#&gt; 6     lh_caudalmiddlefrontal superior left             caudal middle frontal</span></span>
 <span><span class="co">#&gt;        lobe                       geometry  colour</span></span>
-<span><span class="co">#&gt; 1  temporal POLYGON ((1725.479 203.6203... #196428</span></span>
-<span><span class="co">#&gt; 2  temporal POLYGON ((3790.858 32.77955... #196428</span></span>
-<span><span class="co">#&gt; 3  temporal POLYGON ((843.2621 332.5692... #196428</span></span>
-<span><span class="co">#&gt; 4 cingulate POLYGON ((2968.881 321.723,... #7D64A0</span></span>
-<span><span class="co">#&gt; 5   frontal POLYGON ((1412.103 382.5062... #641900</span></span>
-<span><span class="co">#&gt; 6   frontal POLYGON ((3478.287 166.2393... #641900</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  temporal MULTIPOLYGON (((171.1363 68... #196428</span></span>
+<span><span class="co">#&gt; 2  temporal MULTIPOLYGON (((358.0961 41... #196428</span></span>
+<span><span class="co">#&gt; 3  temporal MULTIPOLYGON (((808.4086 13... #196428</span></span>
+<span><span class="co">#&gt; 4 cingulate MULTIPOLYGON (((614.028 65.... #7D64A0</span></span>
+<span><span class="co">#&gt; 5   frontal MULTIPOLYGON (((292.9792 78... #641900</span></span>
+<span><span class="co">#&gt; 6   frontal MULTIPOLYGON (((724.0058 33... #641900</span></span></code></pre></div>
 <p><code><a href="../reference/atlas_vertices.html">atlas_vertices()</a></code> returns the vertex data for cortical 3D
 rendering:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
