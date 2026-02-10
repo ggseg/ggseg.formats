@@ -116,7 +116,8 @@ tracula <- tracula |>
     "cc.bodyt|lh.cst",
     views = c("sagittal_left", "sagittal_right")
   ) |>
-  atlas_view_remove_region("rh.fx", views = "sagittal_right")
+  atlas_view_remove_region("rh.fx", views = "sagittal_right") |>
+  atlas_view_gather()
 
 plot(tracula)
 
