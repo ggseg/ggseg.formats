@@ -10,7 +10,7 @@
 # Run with: source("data-raw/make_tracula_atlas.R")
 
 library(dplyr)
-library(ggsegExtra)
+library(ggsegExtra) #nolint
 devtools::load_all()
 
 source("data-raw/tracula_metadata.R")

@@ -14,7 +14,7 @@
 # Run with: source("data-raw/make_dk_atlas.R")
 
 library(dplyr)
-library(ggsegExtra)
+library(ggsegExtra) #nolint
 devtools::load_all()
 
 source("data-raw/dk_metadata.R")
