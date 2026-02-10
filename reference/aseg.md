@@ -80,8 +80,6 @@ Plus midline and ventricular structures:
 
 ## Usage
 
-    # 2D plot with ggseg
-    library(ggseg)
     plot(aseg)
 
     # 3D plot with ggseg3d
