@@ -135,6 +135,10 @@ convert_legacy_brain_data <- function(x) {
   }
 
   sf_data <- x$data
+  class(sf_data) <- setdiff(
+    class(sf_data),
+    c("brain_data", "ggseg_atlas", "brain_atlas")
+  )
   type <- x$type %||% "cortical"
 
   if ("side" %in% names(sf_data) && !"view" %in% names(sf_data)) {
