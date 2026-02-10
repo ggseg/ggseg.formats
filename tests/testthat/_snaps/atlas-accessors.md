@@ -1,41 +1,41 @@
-# atlas_sf: prints a compact summary
+# atlas_sf / prints a compact summary
 
     Code
       print(sf_data)
     Message
-      -- <ggseg_sf> data: 183 × 7 ----------------------------------------------------
-      Views: superior, lateral, inferior, medial
+      -- <ggseg_sf> data: 191 × 7 ----------------------------------------------------
+      Views: inferior, lateral, superior, medial
     Output
-      Simple feature collection with 183 features and 6 fields
+      Simple feature collection with 191 features and 6 fields
       Geometry type: MULTIPOLYGON
       Dimension:     XY
-      Bounding box:  xmin: 27.18247 ymin: 0 xmax: 1712.035 ymax: 137.8149
+      Bounding box:  xmin: 84.2049 ymin: 0 xmax: 5359.689 ymax: 429.9372
       CRS:           NA
       First 10 features:
                               label     view hemi                            region
-      1                 lh_bankssts superior left banks of superior temporal sulcus
+      1                 lh_bankssts inferior left banks of superior temporal sulcus
       2                 lh_bankssts  lateral left banks of superior temporal sulcus
-      3                 lh_bankssts inferior left banks of superior temporal sulcus
+      3                 lh_bankssts superior left banks of superior temporal sulcus
       4  lh_caudalanteriorcingulate   medial left         caudal anterior cingulate
-      5      lh_caudalmiddlefrontal  lateral left             caudal middle frontal
-      6      lh_caudalmiddlefrontal superior left             caudal middle frontal
-      7      lh_caudalmiddlefrontal inferior left             caudal middle frontal
+      5      lh_caudalmiddlefrontal inferior left             caudal middle frontal
+      6      lh_caudalmiddlefrontal  lateral left             caudal middle frontal
+      7      lh_caudalmiddlefrontal superior left             caudal middle frontal
       8           lh_corpuscallosum   medial left                   corpus callosum
-      9                   lh_cuneus superior left                            cuneus
+      9           lh_corpuscallosum inferior left                   corpus callosum
       10                  lh_cuneus   medial left                            cuneus
                  lobe                       geometry  colour
-      1      temporal MULTIPOLYGON (((808.4086 13... #196428
-      2      temporal MULTIPOLYGON (((358.0961 41... #196428
-      3      temporal MULTIPOLYGON (((171.1363 68... #196428
-      4     cingulate MULTIPOLYGON (((614.028 65.... #7D64A0
-      5       frontal MULTIPOLYGON (((292.9792 78... #641900
-      6       frontal MULTIPOLYGON (((724.0058 33... #641900
-      7       frontal MULTIPOLYGON (((87.29372 71... #641900
-      8  white matter MULTIPOLYGON (((598.9115 40... #784632
-      9     occipital MULTIPOLYGON (((847.2415 78... #DC1464
-      10    occipital MULTIPOLYGON (((454.3746 53... #DC1464
+      1      temporal MULTIPOLYGON (((534.4782 21... #196428
+      2      temporal MULTIPOLYGON (((1121.478 12... #196428
+      3      temporal MULTIPOLYGON (((2448.464 20... #196428
+      4     cingulate MULTIPOLYGON (((1921.971 20... #7D64A0
+      5       frontal MULTIPOLYGON (((272.7879 22... #641900
+      6       frontal MULTIPOLYGON (((911.758 248... #641900
+      7       frontal MULTIPOLYGON (((2266.635 10... #641900
+      8  white matter MULTIPOLYGON (((1873.925 12... #784632
+      9  white matter MULTIPOLYGON (((486.2937 40... #784632
+      10    occipital MULTIPOLYGON (((1422.294 16... #DC1464
 
-# atlas_vertices: prints a compact summary
+# atlas_vertices / prints a compact summary
 
     Code
       print(result)
@@ -58,7 +58,7 @@
       10 lh_isthmuscingulate        <int [123]> left  isthmus cingulate   cing~ #8C14~
       # i 60 more rows
 
-# atlas_meshes: prints a compact summary
+# atlas_meshes / prints a compact summary
 
     Code
       print(result)

@@ -247,7 +247,7 @@ print.ggseg_atlas <- function(x, ...) {
 
   cli::cli_rule()
 
-  print(dplyr::as_tibble(x$core), ...)
+  print(dplyr::as_tibble(x$core), n = nrow(x$core), ...)
 
   invisible(x)
 }

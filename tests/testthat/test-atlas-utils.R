@@ -510,7 +510,10 @@ describe("atlas_view_remove_small", {
   it("removes small polygons below threshold", {
     atlas <- make_multiview_atlas()
     n_before <- nrow(atlas$data$sf)
-    result <- atlas_view_remove_small(atlas, min_area = 2)
+    expect_message(
+      result <- atlas_view_remove_small(atlas, min_area = 2),
+      "Removed"
+    )
     n_after <- nrow(result$data$sf)
     expect_true(n_after < n_before)
   })
@@ -518,18 +521,27 @@ describe("atlas_view_remove_small", {
   it("never removes context geometries", {
     atlas <- make_multiview_atlas()
     ctx_labels <- setdiff(atlas$data$sf$label, c(atlas$core$label, NA))
-    result <- atlas_view_remove_small(atlas, min_area = 2)
+    expect_message(
+      result <- atlas_view_remove_small(atlas, min_area = 2),
+      "Removed"
+    )
     remaining_labels <- unique(result$data$sf$label)
     expect_true(all(ctx_labels %in% remaining_labels))
   })
 
   it("scopes to specific views", {
     atlas <- make_multiview_atlas()
-    result_all <- atlas_view_remove_small(atlas, min_area = 2)
-    result_axial <- atlas_view_remove_small(
-      atlas,
-      min_area = 2,
-      views = "axial"
+    expect_message(
+      result_all <- atlas_view_remove_small(atlas, min_area = 2),
+      "Removed"
+    )
+    expect_message(
+      result_axial <- atlas_view_remove_small(
+        atlas,
+        min_area = 2,
+        views = "axial"
+      ),
+      "Removed"
     )
 
     expect_true(nrow(result_axial$data$sf) >= nrow(result_all$data$sf))
@@ -537,7 +549,10 @@ describe("atlas_view_remove_small", {
 
   it("preserves core and palette", {
     atlas <- make_multiview_atlas()
-    result <- atlas_view_remove_small(atlas, min_area = 2)
+    expect_message(
+      result <- atlas_view_remove_small(atlas, min_area = 2),
+      "Removed"
+    )
     expect_equal(result$core, atlas$core)
     expect_equal(result$palette, atlas$palette)
   })
@@ -674,7 +689,7 @@ describe("subclass preservation", {
       "cortical_atlas"
     )
     expect_s3_class(
-      atlas_view_remove_small(atlas, min_area = 2),
+      suppressMessages(atlas_view_remove_small(atlas, min_area = 2)),
       "cortical_atlas"
     )
     expect_s3_class(atlas_view_gather(atlas), "cortical_atlas")

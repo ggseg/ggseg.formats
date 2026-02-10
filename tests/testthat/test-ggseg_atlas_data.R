@@ -265,8 +265,7 @@ describe("print methods", {
     vertices$vertices <- list(1L:3L)
 
     data <- ggseg_data_cortical(sf = sf_geom, vertices = vertices)
-    output <- capture.output(print(data))
-    expect_true(length(output) > 0)
+    expect_snapshot(print(data))
   })
 
   it("prints ggseg_data_subcortical with sf and meshes", {
@@ -282,8 +281,7 @@ describe("print methods", {
     ))
 
     data <- ggseg_data_subcortical(sf = sf_geom, meshes = meshes)
-    output <- capture.output(print(data))
-    expect_true(length(output) > 0)
+    expect_snapshot(print(data))
   })
 
   it("prints ggseg_data_tract with centerlines", {
@@ -294,8 +292,7 @@ describe("print methods", {
     centerlines$tangents <- list(tangents)
 
     data <- ggseg_data_tract(centerlines = centerlines)
-    msg <- capture.output(print(data), type = "message")
-    expect_true(any(grepl("centerlines", msg)))
+    expect_snapshot(print(data))
   })
 
   it("prints ggseg_data_cortical without sf", {
@@ -303,8 +300,7 @@ describe("print methods", {
     vertices$vertices <- list(1L:3L)
 
     data <- ggseg_data_cortical(vertices = vertices)
-    output <- capture.output(print(data))
-    expect_true(length(output) > 0)
+    expect_snapshot(print(data))
   })
 
   it("prints ggseg_data_subcortical without sf", {
@@ -315,7 +311,6 @@ describe("print methods", {
     ))
 
     data <- ggseg_data_subcortical(meshes = meshes)
-    output <- capture.output(print(data))
-    expect_true(length(output) > 0)
+    expect_snapshot(print(data))
   })
 })

@@ -19,8 +19,7 @@ describe("ggseg_atlas class", {
   })
 
   it("print method works", {
-    output <- capture.output(print(dk))
-    expect_true(length(output) > 0)
+    expect_snapshot(print(dk))
   })
 
   it("atlas_regions returns character vector", {
@@ -232,15 +231,10 @@ describe("as.data.frame.ggseg_atlas", {
 
 describe("print.ggseg_atlas", {
   it("prints subcortical atlas with meshes", {
-    msg <- capture.output(print(aseg), type = "message")
-    expect_true(any(grepl("aseg", msg)))
-    expect_true(any(grepl("subcortical", msg)))
-    expect_true(any(grepl("meshes", msg)))
+    expect_snapshot(print(aseg))
   })
 
   it("prints tract atlas with centerlines", {
-    msg <- capture.output(print(tracula), type = "message")
-    expect_true(any(grepl("tracula", msg)))
-    expect_true(any(grepl("tract", msg)))
+    expect_snapshot(print(tracula))
   })
 })

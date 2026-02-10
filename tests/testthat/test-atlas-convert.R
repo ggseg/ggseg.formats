@@ -51,7 +51,10 @@ describe("convert_legacy_brain_atlas", {
       .package = "lifecycle"
     )
 
-    result <- convert_legacy_brain_atlas(atlas_2d = mock_2d)
+    expect_message(
+      result <- convert_legacy_brain_atlas(atlas_2d = mock_2d),
+      "Using existing vertex data"
+    )
 
     expect_s3_class(result, "ggseg_atlas")
     expect_equal(result$atlas, "test")
@@ -86,7 +89,10 @@ describe("convert_legacy_brain_atlas", {
       .package = "lifecycle"
     )
 
-    result <- convert_legacy_brain_atlas(atlas_3d = mock_3d)
+    expect_message(
+      result <- convert_legacy_brain_atlas(atlas_3d = mock_3d),
+      "Using existing vertex indices"
+    )
 
     expect_s3_class(result, "ggseg_atlas")
     expect_equal(result$atlas, "test")
@@ -116,8 +122,11 @@ describe("convert_legacy_brain_atlas", {
       .package = "lifecycle"
     )
 
-    result <- convert_legacy_brain_atlas(
-      atlas_2d = mock_2d, atlas_name = "custom_name"
+    expect_message(
+      result <- convert_legacy_brain_atlas(
+        atlas_2d = mock_2d, atlas_name = "custom_name"
+      ),
+      "Using existing vertex data"
     )
 
     expect_equal(result$atlas, "custom_name")
@@ -156,8 +165,11 @@ describe("convert_legacy_brain_atlas", {
       .package = "lifecycle"
     )
 
-    result <- convert_legacy_brain_atlas(
-      atlas_3d = mock_3d, type = "subcortical"
+    expect_message(
+      result <- convert_legacy_brain_atlas(
+        atlas_3d = mock_3d, type = "subcortical"
+      ),
+      "Extracted meshes"
     )
 
     expect_s3_class(result, "ggseg_atlas")
@@ -194,7 +206,10 @@ describe("convert_legacy_brain_atlas", {
       }
     )
 
-    result <- convert_legacy_brain_atlas(atlas_2d = mock_2d)
+    expect_message(
+      result <- convert_legacy_brain_atlas(atlas_2d = mock_2d),
+      "Using existing vertex data"
+    )
 
     expect_s3_class(result, "ggseg_atlas")
     expect_equal(result$atlas, "old_atlas")
@@ -230,7 +245,10 @@ describe("convert_legacy_brain_atlas", {
       .package = "lifecycle"
     )
 
-    result <- convert_legacy_brain_atlas(atlas_2d = mock_2d)
+    expect_message(
+      result <- convert_legacy_brain_atlas(atlas_2d = mock_2d),
+      "Using existing vertex data"
+    )
 
     expect_s3_class(result, "ggseg_atlas")
     expect_false(is.null(result$data$sf))
@@ -302,8 +320,11 @@ describe("convert_legacy_brain_atlas", {
       .package = "lifecycle"
     )
 
-    result <- convert_legacy_brain_atlas(
-      atlas_3d = mock_3d, type = "subcortical"
+    expect_message(
+      result <- convert_legacy_brain_atlas(
+        atlas_3d = mock_3d, type = "subcortical"
+      ),
+      "Extracted meshes"
     )
 
     expect_s3_class(result, "ggseg_atlas")
@@ -422,7 +443,10 @@ describe("convert_legacy_brain_atlas 2D-only path", {
       .package = "lifecycle"
     )
 
-    result <- convert_legacy_brain_atlas(atlas_2d = mock_2d)
+    expect_message(
+      result <- convert_legacy_brain_atlas(atlas_2d = mock_2d),
+      "Created atlas from 2D only"
+    )
     expect_s3_class(result, "ggseg_atlas")
     expect_null(result$data$vertices)
   })
@@ -447,8 +471,11 @@ describe("convert_legacy_brain_atlas 2D-only path", {
       .package = "lifecycle"
     )
 
-    result <- convert_legacy_brain_atlas(
-      atlas_3d = mock_3d, type = "subcortical"
+    expect_message(
+      result <- convert_legacy_brain_atlas(
+        atlas_3d = mock_3d, type = "subcortical"
+      ),
+      "Extracted meshes"
     )
     mesh <- result$data$meshes$mesh[[1]]
     expect_equal(mesh$vertices$x, 1:5)
@@ -477,8 +504,11 @@ describe("unify_legacy_atlases (deprecated)", {
       class = "brain_atlas"
     )
 
-    lifecycle::expect_deprecated(
-      result <- unify_legacy_atlases(atlas_2d = mock_2d)
+    expect_message(
+      lifecycle::expect_deprecated(
+        result <- unify_legacy_atlases(atlas_2d = mock_2d)
+      ),
+      "Created atlas from 2D only"
     )
     expect_s3_class(result, "ggseg_atlas")
   })
