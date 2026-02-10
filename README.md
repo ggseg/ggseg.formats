@@ -1,5 +1,4 @@
 
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # ggseg.formats
@@ -119,19 +118,19 @@ dk
 plot(dk)
 ```
 
-<img src="man/figures/README-plot-dk-1.png" style="width:100.0%" />
+<img src="man/figures/README-plot-dk-1.png" alt="" width="100%" />
 
 ``` r
 plot(aseg)
 ```
 
-<img src="man/figures/README-plot-aseg-1.png" style="width:100.0%" />
+<img src="man/figures/README-plot-aseg-1.png" alt="" width="100%" />
 
 ``` r
 plot(tracula)
 ```
 
-<img src="man/figures/README-plot-tracula-1.png" style="width:100.0%" />
+<img src="man/figures/README-plot-tracula-1.png" alt="" width="100%" />
 
 ## Quick example
 
@@ -185,9 +184,7 @@ devtools::install_github("ggseg/ggseg.formats")
 
 ## Learn more
 
-- [The ggseg_atlas
-  object](https://ggseg.github.io/ggseg.formats/articles/brain-atlas-class.html)
-  — understanding atlas structure and accessors
-- [Customising brain
-  atlases](https://ggseg.github.io/ggseg.formats/articles/atlas-manipulation.html)
-  — region, view, and metadata manipulation
+- `vignette("ggseg.formats")` — understanding atlas structure and
+  accessors
+- `vignette("atlas-manipulation")` — region, view, and metadata
+  manipulation

@@ -12,8 +12,8 @@ background utility package for ggseg, ggseg3d and ggsegExtra
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://ggseg.github.io/ggseg.formats/}
   \item \url{https://github.com/ggseg/ggseg.formats}
+  \item \url{https://ggseg.github.io/ggseg.formats/}
   \item Report bugs at \url{https://github.com/ggseg/ggseg.formats/issues}
 }
 

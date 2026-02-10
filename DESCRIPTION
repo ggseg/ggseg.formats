@@ -6,9 +6,9 @@ Authors@R:
            comment = c(ORCID = "0000-0002-5756-0223"))
 Description: Provides the 'ggseg_atlas' S3 class used across the 'ggseg'
     ecosystem for 2D and 3D brain visualisation. Ships three bundled atlases
-    (Desikan-Killiany, FreeSurfer aseg, TRACULA) and functions for querying,
-    subsetting, renaming, and enriching atlas objects. Also includes readers
-    for FreeSurfer statistics files.
+    ('Desikan-Killiany', 'FreeSurfer' 'aseg', 'TRACULA') and functions for
+    querying, subsetting, renaming, and enriching atlas objects. Also includes
+    readers for 'FreeSurfer' statistics files.
 License: MIT + file LICENSE
 Depends: 
     R (>= 3.5)
@@ -36,6 +36,5 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-URL: https://ggseg.github.io/ggseg.formats/,
-    https://github.com/ggseg/ggseg.formats
+URL: https://github.com/ggseg/ggseg.formats, https://ggseg.github.io/ggseg.formats/
 BugReports: https://github.com/ggseg/ggseg.formats/issues

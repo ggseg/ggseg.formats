@@ -86,5 +86,5 @@ devtools::install_github("ggseg/ggseg.formats")
 
 ## Learn more
 
-- [The ggseg_atlas object](https://ggseg.github.io/ggseg.formats/articles/brain-atlas-class.html) — understanding atlas structure and accessors
-- [Customising brain atlases](https://ggseg.github.io/ggseg.formats/articles/atlas-manipulation.html) — region, view, and metadata manipulation
+- `vignette("ggseg.formats")` — understanding atlas structure and accessors
+- `vignette("atlas-manipulation")` — region, view, and metadata manipulation
