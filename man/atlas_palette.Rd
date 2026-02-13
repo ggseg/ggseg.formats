@@ -2,12 +2,9 @@
 % Please edit documentation in R/atlas-accessors.R
 \name{atlas_palette}
 \alias{atlas_palette}
-\alias{brain_pal}
 \title{Get atlas palette}
 \usage{
 atlas_palette(name = "dk", ...)
-
-brain_pal(name = "dk", ...)
 }
 \arguments{
 \item{name}{Character name of atlas (e.g., "dk", "aseg") or a
@@ -24,5 +21,5 @@ Retrieves the colour palette from a brain atlas.
 \examples{
 atlas_palette("dk")
 atlas_palette("aseg")
-atlas_palette(dk)
+atlas_palette(dk())
 }

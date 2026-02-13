@@ -700,9 +700,9 @@ describe("subclass preservation", {
   })
 
   it("bundled atlases have correct subclasses", {
-    expect_equal(class(dk), c("cortical_atlas", "ggseg_atlas", "list"))
-    expect_equal(class(aseg), c("subcortical_atlas", "ggseg_atlas", "list"))
-    expect_equal(class(tracula), c("tract_atlas", "ggseg_atlas", "list"))
+    expect_equal(class(dk()), c("cortical_atlas", "ggseg_atlas", "list"))
+    expect_equal(class(aseg()), c("subcortical_atlas", "ggseg_atlas", "list"))
+    expect_equal(class(tracula()), c("tract_atlas", "ggseg_atlas", "list"))
   })
 })
 
@@ -710,7 +710,7 @@ describe("subclass preservation", {
 describe("deprecated wrappers", {
   it("brain_regions() warns and returns regions", {
     lifecycle::expect_deprecated(
-      result <- brain_regions(dk)
+      result <- brain_regions(dk())
     )
     expect_type(result, "character")
     expect_true(length(result) > 0)
@@ -718,7 +718,7 @@ describe("deprecated wrappers", {
 
   it("brain_labels() warns and returns labels", {
     lifecycle::expect_deprecated(
-      result <- brain_labels(dk)
+      result <- brain_labels(dk())
     )
     expect_type(result, "character")
     expect_true(length(result) > 0)
@@ -726,7 +726,7 @@ describe("deprecated wrappers", {
 
   it("brain_views() warns and returns views", {
     lifecycle::expect_deprecated(
-      result <- brain_views(dk)
+      result <- brain_views(dk())
     )
     expect_type(result, "character")
   })
@@ -866,13 +866,13 @@ describe("atlas_view_reorder", {
 
 describe("rebuild_atlas_data", {
   it("works with subcortical atlas sf", {
-    result <- atlas_view_keep(aseg, "axial")
+    result <- atlas_view_keep(aseg(), "axial")
     expect_s3_class(result, "ggseg_atlas")
     expect_s3_class(result$data, "ggseg_data_subcortical")
   })
 
   it("works with tract atlas sf", {
-    result <- atlas_view_keep(tracula, "sagittal")
+    result <- atlas_view_keep(tracula(), "sagittal")
     expect_s3_class(result, "ggseg_atlas")
     expect_s3_class(result$data, "ggseg_data_tract")
   })
@@ -881,7 +881,7 @@ describe("rebuild_atlas_data", {
 
 describe("atlas_region_remove with subcortical atlas", {
   it("removes matching regions from subcortical core, palette, and meshes", {
-    result <- atlas_region_remove(aseg, "Thalamus")
+    result <- atlas_region_remove(aseg(), "Thalamus")
     expect_false(any(grepl("Thalamus", result$core$region, ignore.case = TRUE)))
     expect_false(any(grepl(
       "Thalamus", names(result$palette), ignore.case = TRUE
@@ -896,7 +896,7 @@ describe("atlas_region_remove with subcortical atlas", {
 
 describe("atlas_region_contextual with subcortical atlas", {
   it("removes region from core/palette but keeps sf geometry", {
-    result <- atlas_region_contextual(aseg, "Thalamus")
+    result <- atlas_region_contextual(aseg(), "Thalamus")
     expect_false(any(grepl(
       "Thalamus", result$core$region, ignore.case = TRUE
     )))
@@ -910,7 +910,7 @@ describe("atlas_region_contextual with subcortical atlas", {
 
 describe("atlas_region_keep with subcortical atlas", {
   it("keeps only matching regions", {
-    result <- atlas_region_keep(aseg, "hippocampus")
+    result <- atlas_region_keep(aseg(), "hippocampus")
     expect_true(all(grepl(
       "hippocampus", result$core$region, ignore.case = TRUE
     )))
@@ -950,7 +950,7 @@ describe("atlas_view_reorder with nonexistent views", {
 
 describe("atlas_region_remove with tract atlas", {
   it("removes matching regions from tract core and palette", {
-    result <- atlas_region_remove(tracula, "corticospinal")
+    result <- atlas_region_remove(tracula(), "corticospinal")
     expect_false(any(grepl(
       "corticospinal", result$core$region,
       ignore.case = TRUE
@@ -959,7 +959,7 @@ describe("atlas_region_remove with tract atlas", {
   })
 
   it("removes sf labels matching the pattern directly", {
-    result <- atlas_region_remove(tracula, "cst")
+    result <- atlas_region_remove(tracula(), "cst")
     remaining_sf <- result$data$sf$label
     expect_false(any(grepl(
       "cst", remaining_sf, ignore.case = TRUE
@@ -970,7 +970,7 @@ describe("atlas_region_remove with tract atlas", {
 
 describe("atlas_region_contextual with tract atlas", {
   it("keeps sf but removes from core/palette", {
-    result <- atlas_region_contextual(tracula, "corticospinal")
+    result <- atlas_region_contextual(tracula(), "corticospinal")
     expect_false(any(grepl(
       "corticospinal", result$core$region,
       ignore.case = TRUE
@@ -982,7 +982,7 @@ describe("atlas_region_contextual with tract atlas", {
 
 describe("atlas_region_keep with tract atlas", {
   it("keeps only matching regions", {
-    result <- atlas_region_keep(tracula, "corticospinal")
+    result <- atlas_region_keep(tracula(), "corticospinal")
     expect_true(all(grepl(
       "corticospinal", result$core$region,
       ignore.case = TRUE
@@ -1037,7 +1037,7 @@ describe("guess_type edge cases", {
 
 describe("brain_atlas S3 method dispatch", {
   it("atlas_regions works on brain_atlas class", {
-    atlas <- dk
+    atlas <- dk()
     class(atlas) <- c("brain_atlas", "list")
     result <- atlas_regions(atlas)
     expect_type(result, "character")
@@ -1045,7 +1045,7 @@ describe("brain_atlas S3 method dispatch", {
   })
 
   it("atlas_labels works on brain_atlas class", {
-    atlas <- dk
+    atlas <- dk()
     class(atlas) <- c("brain_atlas", "list")
     result <- atlas_labels(atlas)
     expect_type(result, "character")
@@ -1053,7 +1053,7 @@ describe("brain_atlas S3 method dispatch", {
   })
 
   it("atlas_type works on brain_atlas class", {
-    atlas <- dk
+    atlas <- dk()
     class(atlas) <- c("brain_atlas", "list")
     result <- atlas_type(atlas)
     expect_equal(result, "cortical")

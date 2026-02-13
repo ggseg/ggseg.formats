@@ -4,7 +4,7 @@
 #' @return an object of class 'ggseg_atlas'
 #' @export
 #' @examples
-#' atlas <- as_ggseg_atlas(dk)
+#' atlas <- as_ggseg_atlas(dk())
 #' is_ggseg_atlas(atlas)
 as_ggseg_atlas <- function(x) {
   UseMethod("as_ggseg_atlas")

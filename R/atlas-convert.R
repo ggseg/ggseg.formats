@@ -41,7 +41,7 @@
 #'
 #' @examples
 #' \donttest{
-#' new_atlas <- convert_legacy_brain_atlas(atlas_2d = dk)
+#' new_atlas <- convert_legacy_brain_atlas(atlas_2d = dk())
 #' }
 convert_legacy_brain_atlas <- function(
   atlas_2d = NULL,

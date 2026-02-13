@@ -126,10 +126,10 @@ brain_atlas <- function(atlas, type, core, data, palette = NULL) {
 #' @name is_ggseg_atlas
 #' @export
 #' @examples
-#' is_ggseg_atlas(dk)
-#' is_cortical_atlas(dk)
-#' is_subcortical_atlas(aseg)
-#' is_tract_atlas(tracula)
+#' is_ggseg_atlas(dk())
+#' is_cortical_atlas(dk())
+#' is_subcortical_atlas(aseg())
+#' is_tract_atlas(tracula())
 is_ggseg_atlas <- function(x) {
   (inherits(x, "ggseg_atlas") || inherits(x, "brain_atlas")) &&
     validate_ggseg_atlas(x)
@@ -170,7 +170,7 @@ is_brain_atlas <- function(x) {
 #' @return logical
 #' @export
 #' @examples
-#' is_ggseg3d_atlas(dk)
+#' is_ggseg3d_atlas(dk())
 is_ggseg3d_atlas <- function(x) {
   is.data.frame(x) && "ggseg_3d" %in% names(x)
 }

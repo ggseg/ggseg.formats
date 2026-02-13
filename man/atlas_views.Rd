@@ -19,7 +19,7 @@ Character vector of view names, or NULL if no sf data
 Get available views in atlas
 }
 \examples{
-atlas_views(aseg)
-atlas_views(tracula)
+atlas_views(aseg())
+atlas_views(tracula())
 
 }

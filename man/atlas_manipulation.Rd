@@ -134,7 +134,7 @@ in \code{order} are appended at end.
 
 }}
 \examples{
-dk |>
+dk() |>
   atlas_region_remove("bankssts") |>
   atlas_region_keep("frontal", match_on = "region")
 

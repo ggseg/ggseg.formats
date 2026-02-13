@@ -3,8 +3,8 @@
 #' @param x brain atlas
 #' @return Character vector of region names
 #' @examples
-#' atlas_regions(dk)
-#' atlas_regions(aseg)
+#' atlas_regions(dk())
+#' atlas_regions(aseg())
 #'
 #' @export
 atlas_regions <- function(x) {
@@ -41,8 +41,8 @@ get_uniq <- function(x, type) {
 #' @param x brain atlas
 #' @return Character vector of atlas region labels
 #' @examples
-#' atlas_labels(dk)
-#' atlas_labels(aseg)
+#' atlas_labels(dk())
+#' atlas_labels(aseg())
 #'
 #' @export
 atlas_labels <- function(x) {
@@ -87,9 +87,9 @@ brain_labels <- function(x) {
 #' @param x brain atlas object
 #' @return Character string: "cortical", "subcortical", or "tract"
 #' @examples
-#' atlas_type(dk)
-#' atlas_type(aseg)
-#' atlas_type(tracula)
+#' atlas_type(dk())
+#' atlas_type(aseg())
+#' atlas_type(tracula())
 #'
 #' @export
 atlas_type <- function(x) {
@@ -173,7 +173,7 @@ guess_type <- function(x) {
 #' @return Modified `ggseg_atlas` object
 #'
 #' @examples
-#' dk |>
+#' dk() |>
 #'   atlas_region_remove("bankssts") |>
 #'   atlas_region_keep("frontal", match_on = "region")
 #'
@@ -395,8 +395,8 @@ atlas_core_add <- function(atlas, data, by = "region") {
 #' @param atlas A `ggseg_atlas` object
 #' @return Character vector of view names, or NULL if no sf data
 #' @examples
-#' atlas_views(aseg)
-#' atlas_views(tracula)
+#' atlas_views(aseg())
+#' atlas_views(tracula())
 #'
 #' @export
 atlas_views <- function(atlas) {

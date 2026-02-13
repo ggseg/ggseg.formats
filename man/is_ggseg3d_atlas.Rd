@@ -16,5 +16,5 @@ logical
 Check if object is a legacy ggseg3d atlas
 }
 \examples{
-is_ggseg3d_atlas(dk)
+is_ggseg3d_atlas(dk())
 }

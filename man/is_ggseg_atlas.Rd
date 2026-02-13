@@ -30,8 +30,8 @@ by passing the object through \code{\link[=ggseg_atlas]{ggseg_atlas()}}. An obje
 carries the right class but fails validation returns \code{FALSE}.
 }
 \examples{
-is_ggseg_atlas(dk)
-is_cortical_atlas(dk)
-is_subcortical_atlas(aseg)
-is_tract_atlas(tracula)
+is_ggseg_atlas(dk())
+is_cortical_atlas(dk())
+is_subcortical_atlas(aseg())
+is_tract_atlas(tracula())
 }

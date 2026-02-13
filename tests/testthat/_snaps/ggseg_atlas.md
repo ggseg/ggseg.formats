@@ -1,7 +1,7 @@
 # ggseg_atlas class / print method works
 
     Code
-      print(dk)
+      print(dk())
     Message
       
       -- dk ggseg atlas --------------------------------------------------------------
@@ -91,7 +91,7 @@
 # print.ggseg_atlas / prints subcortical atlas with meshes
 
     Code
-      print(aseg)
+      print(aseg())
     Message
       
       -- aseg ggseg atlas ------------------------------------------------------------
@@ -138,7 +138,7 @@
 # print.ggseg_atlas / prints tract atlas with centerlines
 
     Code
-      print(tracula)
+      print(tracula())
     Message
       
       -- tracula ggseg atlas ---------------------------------------------------------

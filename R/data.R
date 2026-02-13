@@ -1,6 +1,6 @@
 #' Desikan-Killiany Cortical Atlas
 #'
-#' Brain atlas for the Desikan-Killiany cortical parcellation with 34 regions
+#' Returns the Desikan-Killiany cortical parcellation atlas with 34 regions
 #' per hemisphere (68 total) on the cortical surface.
 #'
 #' This atlas is based on the FreeSurfer `aparc` annotation and is one of the
@@ -9,7 +9,7 @@
 #' The atlas works with both ggseg (2D polygon plots) and ggseg3d (3D mesh
 #' visualizations) from a single object.
 #'
-#' @format A `ggseg_atlas` object with components:
+#' @return A `ggseg_atlas` object with components:
 #' \describe{
 #'   \item{atlas}{Character. Atlas name ("dk")}
 #'   \item{type}{Character. Atlas type ("cortical")}
@@ -34,17 +34,8 @@
 #' superior frontal, superior parietal, superior temporal, supramarginal,
 #' frontal pole, temporal pole, transverse temporal, and insula.
 #'
-#' @section Usage:
-#' ```
-#' plot(dk)
-#'
-#' # 3D plot with ggseg3d
-#' library(ggseg3d)
-#' ggseg3d(atlas = dk)
-#' ```
-#'
 #' @references
-#' Desikan RS, Ségonne F, Fischl B, et al. (2006).
+#' Desikan RS, Segonne F, Fischl B, et al. (2006).
 #' An automated labeling system for subdividing the human cerebral cortex
 #' on MRI scans into gyral based regions of interest.
 #' NeuroImage, 31(3):968-980.
@@ -56,29 +47,22 @@
 #' \doi{10.1093/cercor/bhg087}
 #'
 #' @seealso
-#' [aseg] for subcortical structures,
+#' [aseg()] for subcortical structures,
 #' [ggseg_atlas()] for the atlas class constructor
 #'
 #' @family ggseg_atlases
-#' @docType data
-#' @name dk
-#' @usage data(dk)
-#' @keywords datasets
+#' @export
 #' @examples
-#' data(dk)
-#' dk
+#' dk()
 #'
-#' # List regions
-#' atlas_regions(dk)
-#'
-#' # List labels
-#' atlas_labels(dk)
-"dk"
+#' atlas_regions(dk())
+#' atlas_labels(dk())
+dk <- function() .dk_atlas # nolint [object_usage_linter]
 
 
 #' FreeSurfer Automatic Subcortical Segmentation Atlas
 #'
-#' Brain atlas for FreeSurfer's automatic subcortical segmentation (aseg),
+#' Returns the FreeSurfer automatic subcortical segmentation (aseg) atlas
 #' containing deep brain structures including the thalamus, caudate, putamen,
 #' pallidum, hippocampus, amygdala, accumbens, and ventricles.
 #'
@@ -86,7 +70,7 @@
 #' It works with both ggseg (2D slice views) and ggseg3d (3D mesh
 #' visualizations) from a single object.
 #'
-#' @format A `ggseg_atlas` object with components:
+#' @return A `ggseg_atlas` object with components:
 #' \describe{
 #'   \item{atlas}{Character. Atlas name ("aseg")}
 #'   \item{type}{Character. Atlas type ("subcortical")}
@@ -122,16 +106,6 @@
 #'   \item Cerebellar white matter
 #' }
 #'
-#' @section Usage:
-#' ```
-#' plot(aseg)
-#'
-#' # 3D plot with ggseg3d
-#' library(ggseg3d)
-#' ggseg3d(atlas = aseg, hemisphere = "subcort") |>
-#'   add_glassbrain()
-#' ```
-#'
 #' @references
 #' Fischl B, Salat DH, Busa E, et al. (2002).
 #' Whole brain segmentation: automated labeling of neuroanatomical
@@ -140,33 +114,28 @@
 #' \doi{10.1016/S0896-6273(02)00569-X}
 #'
 #' @seealso
-#' [dk] for cortical parcellation,
+#' [dk()] for cortical parcellation,
 #' [ggseg_atlas()] for the atlas class constructor
 #'
 #' @family ggseg_atlases
-#' @docType data
-#' @name aseg
-#' @usage data(aseg)
-#' @keywords datasets
+#' @export
 #' @examples
-#' data(aseg)
-#' aseg
+#' aseg()
 #'
-#' # List regions
-#' atlas_regions(aseg)
-"aseg"
+#' atlas_regions(aseg())
+aseg <- function() .aseg_atlas # nolint [object_usage_linter]
 
 
 #' TRACULA White Matter Tract Atlas
 #'
-#' Brain atlas for FreeSurfer's TRACULA (TRActs Constrained by UnderLying
-#' Anatomy) white matter bundles in MNI space.
+#' Returns the TRACULA (TRActs Constrained by UnderLying Anatomy) white matter
+#' bundle atlas in MNI space.
 #'
 #' This atlas contains major white matter tracts reconstructed from diffusion
 #' MRI using FreeSurfer's TRACULA training data. It works with both ggseg
 #' (2D slice projections) and ggseg3d (3D tube mesh visualizations).
 #'
-#' @format A `ggseg_atlas` object with components:
+#' @return A `ggseg_atlas` object with components:
 #' \describe{
 #'   \item{atlas}{Character. Atlas name ("tracula")}
 #'   \item{type}{Character. Atlas type ("tract")}
@@ -187,23 +156,14 @@
 #' \doi{10.3389/fninf.2011.00023}
 #'
 #' @seealso
-#' [dk] for cortical parcellation,
-#' [aseg] for subcortical structures,
+#' [dk()] for cortical parcellation,
+#' [aseg()] for subcortical structures,
 #' [ggseg_atlas()] for the atlas class constructor
 #'
-#' @examples
-#' data(tracula)
-#' tracula
-#'
-#' # List regions
-#' atlas_regions(tracula)
-#'
 #' @family ggseg_atlases
-#' @docType data
-#' @name tracula
-#' @usage data(tracula)
-#' @keywords datasets
+#' @export
 #' @examples
-#' data(tracula)
-#' tracula
-"tracula"
+#' tracula()
+#'
+#' atlas_regions(tracula())
+tracula <- function() .tracula_atlas # nolint [object_usage_linter]

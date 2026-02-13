@@ -19,7 +19,7 @@ Character vector of region names
 Extract unique region names from an atlas
 }
 \examples{
-atlas_regions(dk)
-atlas_regions(aseg)
+atlas_regions(dk())
+atlas_regions(aseg())
 
 }

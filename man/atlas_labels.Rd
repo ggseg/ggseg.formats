@@ -19,7 +19,7 @@ Character vector of atlas region labels
 Extract unique labels from an atlas
 }
 \examples{
-atlas_labels(dk)
-atlas_labels(aseg)
+atlas_labels(dk())
+atlas_labels(aseg())
 
 }

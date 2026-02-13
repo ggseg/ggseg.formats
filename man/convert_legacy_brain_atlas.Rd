@@ -67,6 +67,6 @@ coordinates using hash-based matching (no FreeSurfer needed).
 }
 \examples{
 \donttest{
-new_atlas <- convert_legacy_brain_atlas(atlas_2d = dk)
+new_atlas <- convert_legacy_brain_atlas(atlas_2d = dk())
 }
 }

@@ -1,16 +1,16 @@
 describe("ggseg_atlas class", {
   it("dk is a ggseg_atlas", {
-    expect_true(is_ggseg_atlas(dk))
-    expect_s3_class(dk, "ggseg_atlas")
+    expect_true(is_ggseg_atlas(dk()))
+    expect_s3_class(dk(), "ggseg_atlas")
   })
 
   it("as_ggseg_atlas round-trips", {
-    result <- as_ggseg_atlas(dk)
+    result <- as_ggseg_atlas(dk())
     expect_s3_class(result, "ggseg_atlas")
   })
 
   it("as.data.frame returns sf data", {
-    df <- as.data.frame(dk)
+    df <- as.data.frame(dk())
     expect_true(inherits(df, "data.frame"))
     expect_true("geometry" %in% names(df))
     expect_true("region" %in% names(df))
@@ -19,30 +19,30 @@ describe("ggseg_atlas class", {
   })
 
   it("print method works", {
-    expect_snapshot(print(dk))
+    expect_snapshot(print(dk()))
   })
 
   it("atlas_regions returns character vector", {
-    regions <- atlas_regions(dk)
+    regions <- atlas_regions(dk())
     expect_type(regions, "character")
     expect_true(length(regions) > 0)
   })
 
   it("atlas_labels returns character vector", {
-    labels <- atlas_labels(dk)
+    labels <- atlas_labels(dk())
     expect_type(labels, "character")
     expect_true(length(labels) > 0)
   })
 
   it("atlas_views returns character vector", {
-    views <- atlas_views(dk)
+    views <- atlas_views(dk())
     expect_type(views, "character")
     expect_true(all(c("lateral", "medial") %in% views))
   })
 
   it("aseg atlas works", {
-    expect_true(is_ggseg_atlas(aseg))
-    df <- as.data.frame(aseg)
+    expect_true(is_ggseg_atlas(aseg()))
+    df <- as.data.frame(aseg())
     expect_true(inherits(df, "data.frame"))
   })
 })
@@ -50,30 +50,30 @@ describe("ggseg_atlas class", {
 
 describe("is_*_atlas helpers", {
   it("is_cortical_atlas identifies cortical atlases", {
-    expect_true(is_cortical_atlas(dk))
-    expect_false(is_cortical_atlas(aseg))
-    expect_false(is_cortical_atlas(tracula))
+    expect_true(is_cortical_atlas(dk()))
+    expect_false(is_cortical_atlas(aseg()))
+    expect_false(is_cortical_atlas(tracula()))
     expect_false(is_cortical_atlas(list()))
   })
 
   it("is_subcortical_atlas identifies subcortical atlases", {
-    expect_true(is_subcortical_atlas(aseg))
-    expect_false(is_subcortical_atlas(dk))
-    expect_false(is_subcortical_atlas(tracula))
+    expect_true(is_subcortical_atlas(aseg()))
+    expect_false(is_subcortical_atlas(dk()))
+    expect_false(is_subcortical_atlas(tracula()))
     expect_false(is_subcortical_atlas(NULL))
   })
 
   it("is_tract_atlas identifies tract atlases", {
-    expect_true(is_tract_atlas(tracula))
-    expect_false(is_tract_atlas(dk))
-    expect_false(is_tract_atlas(aseg))
+    expect_true(is_tract_atlas(tracula()))
+    expect_false(is_tract_atlas(dk()))
+    expect_false(is_tract_atlas(aseg()))
     expect_false(is_tract_atlas("string"))
   })
 
   it("is_ggseg_atlas matches all subtypes", {
-    expect_true(is_ggseg_atlas(dk))
-    expect_true(is_ggseg_atlas(aseg))
-    expect_true(is_ggseg_atlas(tracula))
+    expect_true(is_ggseg_atlas(dk()))
+    expect_true(is_ggseg_atlas(aseg()))
+    expect_true(is_ggseg_atlas(tracula()))
   })
 
   it("rejects objects with faked class", {
@@ -162,7 +162,7 @@ describe("deprecated wrappers", {
   })
 
   it("is_brain_atlas() warns about deprecation", {
-    lifecycle::expect_deprecated(is_brain_atlas(dk))
+    lifecycle::expect_deprecated(is_brain_atlas(dk()))
   })
 })
 
@@ -231,11 +231,11 @@ describe("as.data.frame.ggseg_atlas", {
 
 describe("print.ggseg_atlas", {
   it("prints subcortical atlas with meshes", {
-    expect_snapshot(print(aseg))
+    expect_snapshot(print(aseg()))
   })
 
   it("prints tract atlas with centerlines", {
-    expect_snapshot(print(tracula))
+    expect_snapshot(print(tracula()))
   })
 
   it("prints atlas without palette or 3D data (render_3d = none)", {
@@ -293,7 +293,7 @@ describe("ggseg_atlas constructor validation", {
 
 describe("as.data.frame.ggseg_atlas edge cases", {
   it("maps palette colours to result", {
-    df <- as.data.frame(dk)
+    df <- as.data.frame(dk())
     expect_true("colour" %in% names(df))
     expect_true(any(!is.na(df$colour)))
   })

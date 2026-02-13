@@ -11,10 +11,12 @@
 #' @examples
 #' atlas_palette("dk")
 #' atlas_palette("aseg")
-#' atlas_palette(dk)
+#' atlas_palette(dk())
 atlas_palette <- function(name = "dk", ...) {
   atlas <- if (is.character(name)) {
-    get(name, envir = parent.frame())
+    tryCatch(match.fun(name)(), error = function(e) {
+      cli::cli_abort("Could not find atlas {.val {name}}.")
+    })
   } else {
     name
   }
@@ -22,17 +24,6 @@ atlas_palette <- function(name = "dk", ...) {
     cli::cli_abort("Could not find atlas {.val {name}}.")
   }
   atlas$palette
-}
-
-#' @rdname atlas_palette
-#' @export
-brain_pal <- function(name = "dk", ...) {
-  lifecycle::deprecate_warn(
-    "0.1.0",
-    "brain_pal()",
-    "atlas_palette()"
-  )
-  atlas_palette(name, ...)
 }
 
 
@@ -44,7 +35,7 @@ brain_pal <- function(name = "dk", ...) {
 #' @return sf data.frame ready for plotting
 #' @export
 #' @examples
-#' sf_data <- atlas_sf(dk)
+#' sf_data <- atlas_sf(dk())
 #' head(sf_data)
 atlas_sf <- function(atlas) {
   if (!is_ggseg_atlas(atlas)) {
@@ -81,7 +72,7 @@ atlas_sf <- function(atlas) {
 #' @return data.frame with vertices ready for 3D rendering
 #' @export
 #' @examples
-#' verts <- atlas_vertices(dk)
+#' verts <- atlas_vertices(dk())
 #' head(verts)
 atlas_vertices <- function(atlas) {
   if (!is_ggseg_atlas(atlas)) {
@@ -112,7 +103,7 @@ atlas_vertices <- function(atlas) {
 #' @return data.frame with meshes ready for 3D rendering
 #' @export
 #' @examples
-#' meshes <- atlas_meshes(aseg)
+#' meshes <- atlas_meshes(aseg())
 #' head(meshes)
 atlas_meshes <- function(atlas) {
   if (!is_ggseg_atlas(atlas)) {

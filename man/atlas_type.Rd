@@ -16,8 +16,8 @@ Character string: "cortical", "subcortical", or "tract"
 Detect atlas type
 }
 \examples{
-atlas_type(dk)
-atlas_type(aseg)
-atlas_type(tracula)
+atlas_type(dk())
+atlas_type(aseg())
+atlas_type(tracula())
 
 }

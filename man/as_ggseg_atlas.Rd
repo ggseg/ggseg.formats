@@ -19,6 +19,6 @@ an object of class 'ggseg_atlas'
 Coerce to ggseg atlas
 }
 \examples{
-atlas <- as_ggseg_atlas(dk)
+atlas <- as_ggseg_atlas(dk())
 is_ggseg_atlas(atlas)
 }

@@ -35,7 +35,7 @@ like:
 
 ```{r}
 #| label: print-dk
-dk
+dk()
 ```
 The print method gives you a quick overview: the atlas name, type, how many
 regions it has, which hemispheres are present, what views the 2D geometry
@@ -48,8 +48,8 @@ The five slots are accessed with `$`:
 
 ```{r}
 #| label: atlas-slots
-dk$atlas
-dk$type
+dk()$atlas
+dk()$type
 ```
 
 `$atlas` is a short name (used to look up atlases by string) and `$type` is one
@@ -59,7 +59,7 @@ The `$palette` is a named character vector mapping labels to hex colours:
 
 ```{r}
 #| label: palette
-head(dk$palette)
+head(dk()$palette)
 ```
 
 `$core` is a data frame with one row per region. It always has `region` and
@@ -68,7 +68,7 @@ head(dk$palette)
 
 ```{r}
 #| label: core
-head(dk$core)
+head(dk()$core)
 ```
 
 Finally, `$data` is a `ggseg_atlas_data` object that holds the actual geometry.
@@ -76,7 +76,7 @@ Its contents depend on the atlas type.
 
 ```{r}
 #| label: data-class
-class(dk$data)
+class(dk()$data)
 ```
 
 ## Three atlas types
@@ -89,8 +89,8 @@ for 3D:
 
 ```{r}
 #| label: cortical-type
-dk$type
-names(dk$data)
+dk()$type
+names(dk()$data)
 ```
 
 **Subcortical** atlases like `aseg` represent deep brain structures. Their data
@@ -98,8 +98,8 @@ is a `ggseg_data_subcortical` with sf polygons and individual 3D meshes:
 
 ```{r}
 #| label: subcortical-type
-aseg$type
-names(aseg$data)
+aseg()$type
+names(aseg()$data)
 ```
 
 **Tract** atlases like `tracula` represent white matter bundles. Their data is a
@@ -107,8 +107,8 @@ names(aseg$data)
 
 ```{r}
 #| label: tract-type
-tracula$type
-names(tracula$data)
+tracula()$type
+names(tracula()$data)
 ```
 
 In every case the sf component drives 2D plotting and the type-specific component
@@ -125,7 +125,7 @@ identifier that links core to geometry). Most atlases also carry `hemi`:
 
 ```{r}
 #| label: core-structure
-str(dk$core)
+str(dk()$core)
 ```
 
 Some atlases include additional metadata columns. The `dk` atlas, for instance,
@@ -133,7 +133,7 @@ has `lobe`:
 
 ```{r}
 #| label: core-lobe
-unique(dk$core$lobe)
+unique(dk()$core$lobe)
 ```
 
 You can add your own metadata with `atlas_core_add()` (covered in the
@@ -148,7 +148,7 @@ slots directly.
 
 ```{r}
 #| label: atlas-regions
-atlas_regions(dk)
+atlas_regions(dk())
 ```
 
 `atlas_labels()` returns the unique labels (the identifiers used to join
@@ -156,25 +156,25 @@ geometry):
 
 ```{r}
 #| label: atlas-labels
-head(atlas_labels(dk))
+head(atlas_labels(dk()))
 ```
 
 `atlas_views()` returns the available 2D views:
 
 ```{r}
 #| label: atlas-views
-atlas_views(dk)
-atlas_views(aseg)
-atlas_views(tracula)
+atlas_views(dk())
+atlas_views(aseg())
+atlas_views(tracula())
 ```
 
 `atlas_type()` returns the type string:
 
 ```{r}
 #| label: atlas-type
-atlas_type(dk)
-atlas_type(aseg)
-atlas_type(tracula)
+atlas_type(dk())
+atlas_type(aseg())
+atlas_type(tracula())
 ```
 
 `atlas_palette()` retrieves the colour palette. You can pass the atlas object
@@ -182,7 +182,7 @@ directly or its name as a string:
 
 ```{r}
 #| label: atlas-palette
-head(atlas_palette(dk))
+head(atlas_palette(dk()))
 ```
 
 ## Extracting render-ready data
@@ -195,7 +195,7 @@ geometry so you get a single, ready-to-use table.
 
 ```{r}
 #| label: atlas-sf
-sf_data <- atlas_sf(dk)
+sf_data <- atlas_sf(dk())
 sf_data
 ```
 
@@ -203,7 +203,7 @@ sf_data
 
 ```{r}
 #| label: atlas-vertices
-vert_data <- atlas_vertices(dk)
+vert_data <- atlas_vertices(dk())
 vert_data
 ```
 
@@ -211,7 +211,7 @@ vert_data
 
 ```{r}
 #| label: atlas-meshes
-mesh_data <- atlas_meshes(aseg)
+mesh_data <- atlas_meshes(aseg())
 mesh_data
 ```
 
@@ -220,7 +220,7 @@ similar to `atlas_sf()` but with atlas-level columns (`atlas`, `type`) attached:
 
 ```{r}
 #| label: as-dataframe
-df <- as.data.frame(dk)
+df <- as.data.frame(dk())
 names(df)
 ```
 
@@ -230,7 +230,7 @@ names(df)
 
 ```{r}
 #| label: is-ggseg-atlas
-is_ggseg_atlas(dk)
+is_ggseg_atlas(dk())
 is_ggseg_atlas(mtcars)
 ```
 
@@ -239,7 +239,7 @@ is_ggseg_atlas(mtcars)
 
 ```{r}
 #| label: as-ggseg-atlas
-atlas_list <- as.list(dk)
+atlas_list <- as.list(dk())
 recovered <- as_ggseg_atlas(atlas_list)
 is_ggseg_atlas(recovered)
 ```

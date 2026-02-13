@@ -13,35 +13,34 @@ describe("atlas_palette", {
   })
 
   it("returns palette from atlas object directly", {
-    pal <- atlas_palette(dk)
+    pal <- atlas_palette(dk())
     expect_type(pal, "character")
     expect_true(length(pal) > 0)
   })
 
   it("errors when atlas not found", {
-    expect_error(atlas_palette("nonexistent_atlas"), "not found")
+    expect_error(atlas_palette("nonexistent_atlas"), "Could not find atlas")
   })
 
   it("errors when object is not a ggseg_atlas", {
     my_df <- data.frame(x = 1)
-    expect_error(atlas_palette("my_df"), "Could not find atlas")
-  })
+    expect_error(atlas_palette(my_df), "Could not find atlas")
 })
 
 describe("atlas_sf", {
   it("returns sf data from atlas", {
-    sf_data <- atlas_sf(dk)
+    sf_data <- atlas_sf(dk())
     expect_s3_class(sf_data, "sf")
   })
 
   it("has ggseg_sf as first class", {
-    sf_data <- atlas_sf(dk)
+    sf_data <- atlas_sf(dk())
     expect_equal(class(sf_data)[1], "ggseg_sf")
     expect_s3_class(sf_data, "sf")
   })
 
   it("prints a compact summary", {
-    sf_data <- atlas_sf(dk)
+    sf_data <- atlas_sf(dk())
     expect_snapshot(print(sf_data))
   })
 
@@ -50,7 +49,7 @@ describe("atlas_sf", {
   })
 
   it("errors when atlas has no sf data", {
-    atlas <- dk
+    atlas <- dk()
     atlas$data$sf <- NULL
     expect_error(atlas_sf(atlas), "does not contain sf")
   })
@@ -121,13 +120,13 @@ describe("atlas_sf", {
 
 describe("atlas_vertices", {
   it("has ggseg_vertices as first class", {
-    result <- atlas_vertices(dk)
+    result <- atlas_vertices(dk())
     expect_equal(class(result)[1], "ggseg_vertices")
     expect_s3_class(result, "tbl_df")
   })
 
   it("prints a compact summary", {
-    result <- atlas_vertices(dk)
+    result <- atlas_vertices(dk())
     expect_snapshot(print(result))
   })
 
@@ -205,13 +204,13 @@ describe("atlas_vertices", {
 
 describe("atlas_meshes", {
   it("has ggseg_meshes as first class", {
-    result <- atlas_meshes(aseg)
+    result <- atlas_meshes(aseg())
     expect_equal(class(result)[1], "ggseg_meshes")
     expect_s3_class(result, "data.frame")
   })
 
   it("prints a compact summary", {
-    result <- atlas_meshes(aseg)
+    result <- atlas_meshes(aseg())
     expect_snapshot(print(result))
   })
 
@@ -277,15 +276,6 @@ describe("atlas_meshes", {
   it("errors for non-ggseg_atlas input", {
     expect_error(atlas_meshes(data.frame()), "must be a.*ggseg_atlas")
   })
-})
 
 
-describe("brain_pal (deprecated)", {
-  it("warns and returns palette", {
-    lifecycle::expect_deprecated(
-      result <- brain_pal("dk")
-    )
-    expect_type(result, "character")
-    expect_true(length(result) > 0)
-  })
 })

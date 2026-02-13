@@ -44,7 +44,7 @@ and 3D data. The `pattern` argument is passed to `grepl()` with
 
 ```{r}
 #| label: region-remove
-no_cc <- atlas_region_remove(dk, "corpus callosum")
+no_cc <- atlas_region_remove(dk(), "corpus callosum")
 "corpus callosum" %in% atlas_regions(no_cc)
 ```
 
@@ -54,7 +54,7 @@ continuity, but non-matching regions leave core and palette):
 
 ```{r}
 #| label: region-keep
-frontal <- atlas_region_keep(dk, "frontal")
+frontal <- atlas_region_keep(dk(), "frontal")
 atlas_regions(frontal)
 ```
 
@@ -64,7 +64,7 @@ identifier):
 
 ```{r}
 #| label: region-keep-label
-lh_only <- atlas_region_keep(dk, "^lh_", match_on = "label")
+lh_only <- atlas_region_keep(dk(), "^lh_", match_on = "label")
 head(atlas_labels(lh_only))
 ```
 
@@ -77,7 +77,7 @@ appear in the legend or carry data. This is what
 
 ```{r}
 #| label: region-contextual
-ctx <- atlas_region_contextual(aseg, "ventricle")
+ctx <- atlas_region_contextual(aseg(), "ventricle")
 "lateral ventricle" %in% atlas_regions(ctx)
 ```
 
@@ -92,7 +92,9 @@ polygons entirely, leaving gaps in the 2D slices.
 ```{r}
 #| label: region-rename
 renamed <- atlas_region_rename(
-  dk, "banks of superior temporal sulcus", "STS banks"
+  dk(),
+  "banks of superior temporal sulcus",
+  "STS banks"
 )
 "STS banks" %in% atlas_regions(renamed)
 ```
@@ -101,7 +103,7 @@ Or pass a function for programmatic renaming:
 
 ```{r}
 #| label: region-rename-func
-upper <- atlas_region_rename(dk, ".*", toupper)
+upper <- atlas_region_rename(dk(), ".*", toupper)
 head(atlas_regions(upper))
 ```
 
@@ -111,7 +113,7 @@ head(atlas_regions(upper))
 
 ```{r}
 #| label: atlas-views
-atlas_views(aseg)
+atlas_views(aseg())
 ```
 
 `atlas_view_keep()` and `atlas_view_remove()` filter views by pattern. If you
@@ -119,7 +121,7 @@ only want the sagittal slice:
 
 ```{r}
 #| label: view-keep
-sag <- atlas_view_keep(aseg, "sagittal")
+sag <- atlas_view_keep(aseg(), "sagittal")
 atlas_views(sag)
 ```
 
@@ -127,7 +129,7 @@ Or remove several views at once by passing a vector:
 
 ```{r}
 #| label: view-remove
-fewer <- atlas_view_remove(aseg, c("axial_3", "coronal_2"))
+fewer <- atlas_view_remove(aseg(), c("axial_3", "coronal_2"))
 atlas_views(fewer)
 ```
 
@@ -139,14 +141,18 @@ slivers where a region just barely crossed a slice plane.
 threshold. Context polygons (those not in core) are never removed:
 ```{r}
 #| label: view-remove-small
-cleaned <- atlas_view_remove_small(aseg, min_area = 50)
+cleaned <- atlas_view_remove_small(aseg(), min_area = 50)
 ```
 
 You can scope the removal to specific views:
 
 ```{r}
 #| label: view-remove-small-scoped
-cleaned_sag <- atlas_view_remove_small(aseg, min_area = 50, views = "sagittal")
+cleaned_sag <- atlas_view_remove_small(
+  aseg(),
+  min_area = 50,
+  views = "sagittal"
+)
 ```
 
 `atlas_view_remove_region()` removes a specific region's sf geometry without
@@ -155,7 +161,11 @@ is misleading but you still want it in 3D:
 
 ```{r}
 #| label: view-remove-region
-no_stem_sf <- atlas_view_remove_region(aseg, "brain stem", match_on = "region")
+no_stem_sf <- atlas_view_remove_region(
+  aseg(),
+  "brain stem",
+  match_on = "region"
+)
 ```
 
 ## Reordering and gathering
@@ -166,7 +176,7 @@ side-by-side with a configurable gap:
 
 ```{r}
 #| label: view-gather
-trimmed <- aseg |>
+trimmed <- aseg() |>
   atlas_view_keep(c("sagittal", "coronal_3", "axial_3")) |>
   atlas_view_gather()
 atlas_views(trimmed)
@@ -177,7 +187,7 @@ at the same time. Views not mentioned in `order` are appended at the end:
 
 ```{r}
 #| label: view-reorder
-reordered <- aseg |>
+reordered <- aseg() |>
   atlas_view_keep(c("sagittal", "coronal_3", "axial_3")) |>
   atlas_view_reorder(c("axial_3", "sagittal", "coronal_3"))
 atlas_views(reordered)
@@ -193,12 +203,14 @@ information. Here we add a custom network column to a handful of regions:
 #| label: core-add
 network_info <- data.frame(
   region = c(
-    "superior frontal", "precuneus",
-    "inferior parietal", "posterior cingulate"
+    "superior frontal",
+    "precuneus",
+    "inferior parietal",
+    "posterior cingulate"
   ),
   network = "default mode"
 )
-enriched <- atlas_core_add(dk, network_info)
+enriched <- atlas_core_add(dk(), network_info)
 enriched$core[!is.na(enriched$core$network), c("region", "network")]
 ```
 
@@ -211,7 +223,7 @@ two-view figure of deep grey matter structures:
 
 ```{r}
 #| label: full-pipeline
-publication_aseg <- aseg |>
+publication_aseg <- aseg() |>
   atlas_view_keep(c("sagittal", "coronal_3")) |>
   atlas_region_contextual("ventricle|choroid|white|cc") |>
   atlas_view_remove_small(min_area = 30) |>
