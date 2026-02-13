@@ -22,7 +22,7 @@ data.frame with vertices ready for 3D rendering
 ## Examples
 
 ``` r
-verts <- atlas_vertices(dk)
+verts <- atlas_vertices(dk())
 head(verts)
 #> ── <ggseg_vertices> data: 6 × 6 ────────────────────────────────────────────────
 #> Vertices per region: 48 –232

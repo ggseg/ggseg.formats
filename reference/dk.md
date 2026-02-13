@@ -1,15 +1,15 @@
 # Desikan-Killiany Cortical Atlas
 
-Brain atlas for the Desikan-Killiany cortical parcellation with 34
-regions per hemisphere (68 total) on the cortical surface.
+Returns the Desikan-Killiany cortical parcellation atlas with 34 regions
+per hemisphere (68 total) on the cortical surface.
 
 ## Usage
 
 ``` r
-data(dk)
+dk()
 ```
 
-## Format
+## Value
 
 A `ggseg_atlas` object with components:
 
@@ -58,17 +58,9 @@ rostral anterior cingulate, rostral middle frontal, superior frontal,
 superior parietal, superior temporal, supramarginal, frontal pole,
 temporal pole, transverse temporal, and insula.
 
-## Usage
-
-    plot(dk)
-
-    # 3D plot with ggseg3d
-    library(ggseg3d)
-    ggseg3d(atlas = dk)
-
 ## References
 
-Desikan RS, Ségonne F, Fischl B, et al. (2006). An automated labeling
+Desikan RS, Segonne F, Fischl B, et al. (2006). An automated labeling
 system for subdividing the human cerebral cortex on MRI scans into gyral
 based regions of interest. NeuroImage, 31(3):968-980.
 [doi:10.1016/j.neuroimage.2006.01.021](https://doi.org/10.1016/j.neuroimage.2006.01.021)
@@ -79,20 +71,19 @@ parcellating the human cerebral cortex. Cerebral Cortex, 14(1):11-22.
 
 ## See also
 
-[aseg](https://ggseg.github.io/ggseg.formats/reference/aseg.md) for
+[`aseg()`](https://ggseg.github.io/ggseg.formats/reference/aseg.md) for
 subcortical structures,
 [`ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.md)
 for the atlas class constructor
 
 Other ggseg_atlases:
-[`aseg`](https://ggseg.github.io/ggseg.formats/reference/aseg.md),
-[`tracula`](https://ggseg.github.io/ggseg.formats/reference/tracula.md)
+[`aseg()`](https://ggseg.github.io/ggseg.formats/reference/aseg.md),
+[`tracula()`](https://ggseg.github.io/ggseg.formats/reference/tracula.md)
 
 ## Examples
 
 ``` r
-data(dk)
-dk
+dk()
 #> 
 #> ── dk ggseg atlas ──────────────────────────────────────────────────────────────
 #> Type: cortical
@@ -177,8 +168,7 @@ dk
 #> 69 right transverse temporal               rh_transversetemporal       temporal 
 #> 70 right insula                            rh_insula                   insula   
 
-# List regions
-atlas_regions(dk)
+atlas_regions(dk())
 #>  [1] "banks of superior temporal sulcus" "caudal anterior cingulate"        
 #>  [3] "caudal middle frontal"             "corpus callosum"                  
 #>  [5] "cuneus"                            "entorhinal"                       
@@ -197,9 +187,7 @@ atlas_regions(dk)
 #> [31] "superior parietal"                 "superior temporal"                
 #> [33] "supramarginal"                     "temporal pole"                    
 #> [35] "transverse temporal"              
-
-# List labels
-atlas_labels(dk)
+atlas_labels(dk())
 #>  [1] "lh_bankssts"                 "lh_caudalanteriorcingulate" 
 #>  [3] "lh_caudalmiddlefrontal"      "lh_corpuscallosum"          
 #>  [5] "lh_cuneus"                   "lh_entorhinal"              

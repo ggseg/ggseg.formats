@@ -1,16 +1,16 @@
 # FreeSurfer Automatic Subcortical Segmentation Atlas
 
-Brain atlas for FreeSurfer's automatic subcortical segmentation (aseg),
+Returns the FreeSurfer automatic subcortical segmentation (aseg) atlas
 containing deep brain structures including the thalamus, caudate,
 putamen, pallidum, hippocampus, amygdala, accumbens, and ventricles.
 
 ## Usage
 
 ``` r
-data(aseg)
+aseg()
 ```
 
-## Format
+## Value
 
 A `ggseg_atlas` object with components:
 
@@ -78,15 +78,6 @@ Plus midline and ventricular structures:
 
 - Cerebellar white matter
 
-## Usage
-
-    plot(aseg)
-
-    # 3D plot with ggseg3d
-    library(ggseg3d)
-    ggseg3d(atlas = aseg, hemisphere = "subcort") |>
-      add_glassbrain()
-
 ## References
 
 Fischl B, Salat DH, Busa E, et al. (2002). Whole brain segmentation:
@@ -96,20 +87,19 @@ Neuron, 33(3):341-355.
 
 ## See also
 
-[dk](https://ggseg.github.io/ggseg.formats/reference/dk.md) for cortical
-parcellation,
+[`dk()`](https://ggseg.github.io/ggseg.formats/reference/dk.md) for
+cortical parcellation,
 [`ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.md)
 for the atlas class constructor
 
 Other ggseg_atlases:
-[`dk`](https://ggseg.github.io/ggseg.formats/reference/dk.md),
-[`tracula`](https://ggseg.github.io/ggseg.formats/reference/tracula.md)
+[`dk()`](https://ggseg.github.io/ggseg.formats/reference/dk.md),
+[`tracula()`](https://ggseg.github.io/ggseg.formats/reference/tracula.md)
 
 ## Examples
 
 ``` r
-data(aseg)
-aseg
+aseg()
 #> 
 #> ── aseg ggseg atlas ────────────────────────────────────────────────────────────
 #> Type: subcortical
@@ -151,8 +141,7 @@ aseg
 #> 26 NA    corpus callosum mid-anterior  CC_Mid_Anterior      corpus callosum
 #> 27 NA    corpus callosum anterior      CC_Anterior          corpus callosum
 
-# List regions
-atlas_regions(aseg)
+atlas_regions(aseg())
 #>  [1] "amygdala"                      "brain stem"                   
 #>  [3] "caudate"                       "choroid plexus"               
 #>  [5] "corpus callosum anterior"      "corpus callosum central"      

@@ -149,7 +149,7 @@ Modified `ggseg_atlas` object
 ## Examples
 
 ``` r
-dk |>
+dk() |>
   atlas_region_remove("bankssts") |>
   atlas_region_keep("frontal", match_on = "region")
 #> 

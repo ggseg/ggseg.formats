@@ -23,7 +23,7 @@ an object of class 'ggseg_atlas'
 ## Examples
 
 ``` r
-atlas <- as_ggseg_atlas(dk)
+atlas <- as_ggseg_atlas(dk())
 is_ggseg_atlas(atlas)
 #> [1] TRUE
 ```

@@ -42,9 +42,6 @@ Convert old ggseg/ggseg3d atlases to the unified ggseg_atlas format.
 - [`atlas_labels()`](https://ggseg.github.io/ggseg.formats/reference/atlas_labels.md)
   [`brain_labels()`](https://ggseg.github.io/ggseg.formats/reference/atlas_labels.md)
   : Extract unique labels from an atlas
-- [`atlas_palette()`](https://ggseg.github.io/ggseg.formats/reference/atlas_palette.md)
-  [`brain_pal()`](https://ggseg.github.io/ggseg.formats/reference/atlas_palette.md)
-  : Get atlas palette
 - [`atlas_regions()`](https://ggseg.github.io/ggseg.formats/reference/atlas_regions.md)
   [`brain_regions()`](https://ggseg.github.io/ggseg.formats/reference/atlas_regions.md)
   : Extract unique region names from an atlas
@@ -94,7 +91,6 @@ Query atlas contents without reaching into slots directly.
 - [`atlas_meshes()`](https://ggseg.github.io/ggseg.formats/reference/atlas_meshes.md)
   : Get atlas meshes for 3D rendering
 - [`atlas_palette()`](https://ggseg.github.io/ggseg.formats/reference/atlas_palette.md)
-  [`brain_pal()`](https://ggseg.github.io/ggseg.formats/reference/atlas_palette.md)
   : Get atlas palette
 - [`atlas_regions()`](https://ggseg.github.io/ggseg.formats/reference/atlas_regions.md)
   [`brain_regions()`](https://ggseg.github.io/ggseg.formats/reference/atlas_regions.md)
@@ -131,11 +127,11 @@ enriching metadata. All return a new `ggseg_atlas`.
 
 Ready-to-use atlases shipped with the package.
 
-- [`dk`](https://ggseg.github.io/ggseg.formats/reference/dk.md) :
+- [`dk()`](https://ggseg.github.io/ggseg.formats/reference/dk.md) :
   Desikan-Killiany Cortical Atlas
-- [`aseg`](https://ggseg.github.io/ggseg.formats/reference/aseg.md) :
+- [`aseg()`](https://ggseg.github.io/ggseg.formats/reference/aseg.md) :
   FreeSurfer Automatic Subcortical Segmentation Atlas
-- [`tracula`](https://ggseg.github.io/ggseg.formats/reference/tracula.md)
+- [`tracula()`](https://ggseg.github.io/ggseg.formats/reference/tracula.md)
   : TRACULA White Matter Tract Atlas
 
 ## FreeSurfer I/O

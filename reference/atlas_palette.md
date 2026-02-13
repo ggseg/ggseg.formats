@@ -6,8 +6,6 @@ Retrieves the colour palette from a brain atlas.
 
 ``` r
 atlas_palette(name = "dk", ...)
-
-brain_pal(name = "dk", ...)
 ```
 
 ## Arguments
@@ -117,7 +115,7 @@ atlas_palette("aseg")
 #>            "#EAA91E"            "#000040"            "#000070" 
 #>           CC_Central      CC_Mid_Anterior          CC_Anterior 
 #>            "#0000A0"            "#0000D0"            "#0000FF" 
-atlas_palette(dk)
+atlas_palette(dk())
 #>                 lh_bankssts  lh_caudalanteriorcingulate 
 #>                   "#196428"                   "#7D64A0" 
 #>      lh_caudalmiddlefrontal           lh_corpuscallosum 

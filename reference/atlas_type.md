@@ -21,10 +21,10 @@ Character string: "cortical", "subcortical", or "tract"
 ## Examples
 
 ``` r
-atlas_type(dk)
+atlas_type(dk())
 #> [1] "cortical"
-atlas_type(aseg)
+atlas_type(aseg())
 #> [1] "subcortical"
-atlas_type(tracula)
+atlas_type(tracula())
 #> [1] "tract"
 ```

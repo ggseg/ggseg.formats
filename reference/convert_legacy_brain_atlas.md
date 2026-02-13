@@ -80,7 +80,7 @@ A `ggseg_atlas` object.
 
 ``` r
 # \donttest{
-new_atlas <- convert_legacy_brain_atlas(atlas_2d = dk)
+new_atlas <- convert_legacy_brain_atlas(atlas_2d = dk())
 #> ℹ Using existing vertex data from 2D atlas.
 # }
 ```

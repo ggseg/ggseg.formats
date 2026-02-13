@@ -21,7 +21,7 @@ sf data.frame ready for plotting
 ## Examples
 
 ``` r
-sf_data <- atlas_sf(dk)
+sf_data <- atlas_sf(dk())
 head(sf_data)
 #> Simple feature collection with 6 features and 6 fields
 #> Geometry type: MULTIPOLYGON

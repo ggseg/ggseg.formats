@@ -22,7 +22,7 @@ data.frame with meshes ready for 3D rendering
 ## Examples
 
 ``` r
-meshes <- atlas_meshes(aseg)
+meshes <- atlas_meshes(aseg())
 head(meshes)
 #> ── <ggseg_meshes> data: 6 × 6 ──────────────────────────────────────────────────
 #> # A tibble: 6 × 3

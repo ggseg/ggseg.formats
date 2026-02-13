@@ -23,7 +23,7 @@ Character vector of region names
 ## Examples
 
 ``` r
-atlas_regions(dk)
+atlas_regions(dk())
 #>  [1] "banks of superior temporal sulcus" "caudal anterior cingulate"        
 #>  [3] "caudal middle frontal"             "corpus callosum"                  
 #>  [5] "cuneus"                            "entorhinal"                       
@@ -42,7 +42,7 @@ atlas_regions(dk)
 #> [31] "superior parietal"                 "superior temporal"                
 #> [33] "supramarginal"                     "temporal pole"                    
 #> [35] "transverse temporal"              
-atlas_regions(aseg)
+atlas_regions(aseg())
 #>  [1] "amygdala"                      "brain stem"                   
 #>  [3] "caudate"                       "choroid plexus"               
 #>  [5] "corpus callosum anterior"      "corpus callosum central"      

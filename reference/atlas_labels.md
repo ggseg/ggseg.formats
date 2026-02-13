@@ -23,7 +23,7 @@ Character vector of atlas region labels
 ## Examples
 
 ``` r
-atlas_labels(dk)
+atlas_labels(dk())
 #>  [1] "lh_bankssts"                 "lh_caudalanteriorcingulate" 
 #>  [3] "lh_caudalmiddlefrontal"      "lh_corpuscallosum"          
 #>  [5] "lh_cuneus"                   "lh_entorhinal"              
@@ -59,7 +59,7 @@ atlas_labels(dk)
 #> [65] "rh_superiorfrontal"          "rh_superiorparietal"        
 #> [67] "rh_superiortemporal"         "rh_supramarginal"           
 #> [69] "rh_temporalpole"             "rh_transversetemporal"      
-atlas_labels(aseg)
+atlas_labels(aseg())
 #>  [1] "Brain-Stem"           "CC_Anterior"          "CC_Central"          
 #>  [4] "CC_Mid_Anterior"      "CC_Mid_Posterior"     "CC_Posterior"        
 #>  [7] "Left-Accumbens-area"  "Left-Amygdala"        "Left-Caudate"        

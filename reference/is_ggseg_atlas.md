@@ -33,12 +33,12 @@ logical
 ## Examples
 
 ``` r
-is_ggseg_atlas(dk)
+is_ggseg_atlas(dk())
 #> [1] TRUE
-is_cortical_atlas(dk)
+is_cortical_atlas(dk())
 #> [1] TRUE
-is_subcortical_atlas(aseg)
+is_subcortical_atlas(aseg())
 #> [1] TRUE
-is_tract_atlas(tracula)
+is_tract_atlas(tracula())
 #> [1] TRUE
 ```

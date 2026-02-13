@@ -21,6 +21,6 @@ logical
 ## Examples
 
 ``` r
-is_ggseg3d_atlas(dk)
+is_ggseg3d_atlas(dk())
 #> [1] FALSE
 ```
