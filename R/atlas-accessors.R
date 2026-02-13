@@ -9,8 +9,7 @@
 #' @return Named character vector of colours
 #' @export
 #' @examples
-#' atlas_palette("dk")
-#' atlas_palette("aseg")
+#' atlas_palette(aseg())
 #' atlas_palette(dk())
 atlas_palette <- function(name = "dk", ...) {
   atlas <- if (is.character(name)) {

@@ -124,7 +124,8 @@ describe("convert_legacy_brain_atlas", {
 
     expect_message(
       result <- convert_legacy_brain_atlas(
-        atlas_2d = mock_2d, atlas_name = "custom_name"
+        atlas_2d = mock_2d,
+        atlas_name = "custom_name"
       ),
       "Using existing vertex data"
     )
@@ -167,7 +168,8 @@ describe("convert_legacy_brain_atlas", {
 
     expect_message(
       result <- convert_legacy_brain_atlas(
-        atlas_3d = mock_3d, type = "subcortical"
+        atlas_3d = mock_3d,
+        type = "subcortical"
       ),
       "Extracted meshes"
     )
@@ -196,7 +198,9 @@ describe("convert_legacy_brain_atlas", {
     local_mocked_bindings(
       convert_legacy_brain_data = function(atlas) {
         atlas$core <- data.frame(
-          hemi = "left", region = "test", label = "lh_test",
+          hemi = "left",
+          region = "test",
+          label = "lh_test",
           stringsAsFactors = FALSE
         )
         vdf <- data.frame(label = "lh_test", stringsAsFactors = FALSE)
@@ -220,8 +224,11 @@ describe("convert_legacy_brain_atlas", {
       label = "lh_test",
       view = "lateral",
       geometry = sf::st_sfc(
-        sf::st_polygon(list(matrix(c(0, 0, 1, 0, 1, 1, 0, 0), ncol = 2,
-                                   byrow = TRUE)))
+        sf::st_polygon(list(matrix(
+          c(0, 0, 1, 0, 1, 1, 0, 0),
+          ncol = 2,
+          byrow = TRUE
+        )))
       )
     )
     vdf <- data.frame(label = "lh_test", stringsAsFactors = FALSE)
@@ -231,7 +238,9 @@ describe("convert_legacy_brain_atlas", {
         atlas = "test",
         type = "cortical",
         core = data.frame(
-          hemi = "left", region = "test", label = "lh_test",
+          hemi = "left",
+          region = "test",
+          label = "lh_test",
           stringsAsFactors = FALSE
         ),
         palette = c(lh_test = "#FF0000"),
@@ -263,11 +272,15 @@ describe("convert_legacy_brain_atlas", {
     )
     mock_3d$ggseg_3d <- list(
       data.frame(
-        region = "motor", label = "lh_motor", colour = "#FF0000",
+        region = "motor",
+        label = "lh_motor",
+        colour = "#FF0000",
         stringsAsFactors = FALSE
       ),
       data.frame(
-        region = "motor", label = "rh_motor", colour = "#0000FF",
+        region = "motor",
+        label = "rh_motor",
+        colour = "#0000FF",
         stringsAsFactors = FALSE
       )
     )
@@ -287,7 +300,9 @@ describe("convert_legacy_brain_atlas", {
       withCallingHandlers(
         convert_legacy_brain_atlas(atlas_3d = mock_3d),
         warning = function(w) {
-          if (grepl("Could not infer", conditionMessage(w))) warned <<- TRUE
+          if (grepl("Could not infer", conditionMessage(w))) {
+            warned <<- TRUE
+          }
           invokeRestart("muffleWarning")
         }
       ),
@@ -309,7 +324,9 @@ describe("convert_legacy_brain_atlas", {
     )
     mock_3d$ggseg_3d <- list(
       data.frame(
-        region = "thalamus", label = "Left-Thalamus", colour = "#FF0000",
+        region = "thalamus",
+        label = "Left-Thalamus",
+        colour = "#FF0000",
         stringsAsFactors = FALSE
       )
     )
@@ -322,7 +339,8 @@ describe("convert_legacy_brain_atlas", {
 
     expect_message(
       result <- convert_legacy_brain_atlas(
-        atlas_3d = mock_3d, type = "subcortical"
+        atlas_3d = mock_3d,
+        type = "subcortical"
       ),
       "Extracted meshes"
     )
@@ -421,16 +439,20 @@ describe("remap_palette_to_labels", {
 describe("convert_legacy_brain_atlas 2D-only path", {
   it("creates atlas from 2D sf without vertex data", {
     sf_geom <- sf::st_sf(
-      label = "lh_frontal", view = "lateral",
+      label = "lh_frontal",
+      view = "lateral",
       geometry = sf::st_sfc(make_polygon())
     )
     core <- data.frame(
-      hemi = "left", region = "frontal", label = "lh_frontal",
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal",
       stringsAsFactors = FALSE
     )
     mock_2d <- structure(
       list(
-        atlas = "test", type = "cortical",
+        atlas = "test",
+        type = "cortical",
         palette = c(lh_frontal = "#FF0000"),
         core = core,
         data = ggseg_data_cortical(sf = sf_geom)
@@ -453,7 +475,9 @@ describe("convert_legacy_brain_atlas 2D-only path", {
 
   it("extracts meshes with non-rgl format", {
     mock_3d <- data.frame(
-      atlas = "test_3d", hemi = "subcort", surf = "LCBC",
+      atlas = "test_3d",
+      hemi = "subcort",
+      surf = "LCBC",
       stringsAsFactors = FALSE
     )
     mesh_data <- list(
@@ -461,8 +485,10 @@ describe("convert_legacy_brain_atlas 2D-only path", {
       faces = data.frame(i = 1:2, j = 2:3, k = 3:4)
     )
     mock_3d$ggseg_3d <- list(data.frame(
-      region = "thalamus", label = "Left-Thalamus",
-      colour = "#FF0000", stringsAsFactors = FALSE
+      region = "thalamus",
+      label = "Left-Thalamus",
+      colour = "#FF0000",
+      stringsAsFactors = FALSE
     ))
     mock_3d$ggseg_3d[[1]]$mesh <- list(mesh_data)
 
@@ -473,7 +499,8 @@ describe("convert_legacy_brain_atlas 2D-only path", {
 
     expect_message(
       result <- convert_legacy_brain_atlas(
-        atlas_3d = mock_3d, type = "subcortical"
+        atlas_3d = mock_3d,
+        type = "subcortical"
       ),
       "Extracted meshes"
     )
@@ -487,16 +514,20 @@ describe("convert_legacy_brain_atlas 2D-only path", {
 describe("unify_legacy_atlases (deprecated)", {
   it("warns and delegates to convert_legacy_brain_atlas", {
     sf_geom <- sf::st_sf(
-      label = "lh_frontal", view = "lateral",
+      label = "lh_frontal",
+      view = "lateral",
       geometry = sf::st_sfc(make_polygon())
     )
     core <- data.frame(
-      hemi = "left", region = "frontal", label = "lh_frontal",
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal",
       stringsAsFactors = FALSE
     )
     mock_2d <- structure(
       list(
-        atlas = "test", type = "cortical",
+        atlas = "test",
+        type = "cortical",
         palette = c(lh_frontal = "#FF0000"),
         core = core,
         data = ggseg_data_cortical(sf = sf_geom)
@@ -541,14 +572,17 @@ describe("infer_vertices_from_meshes", {
     )
     mock_3d$ggseg_3d <- list(
       data.frame(
-        label = "lh_motor", region = "motor",
+        label = "lh_motor",
+        region = "motor",
         stringsAsFactors = FALSE
       )
     )
     mock_3d$ggseg_3d[[1]]$mesh <- list(region_mesh)
 
     result <- infer_vertices_from_meshes(
-      mock_3d, surface = "inflated", brain_meshes = mock_brain_meshes
+      mock_3d,
+      surface = "inflated",
+      brain_meshes = mock_brain_meshes
     )
 
     expect_type(result, "list")
@@ -558,19 +592,24 @@ describe("infer_vertices_from_meshes", {
 
   it("returns NULL when brain_meshes is NULL and surface not inflated", {
     mock_3d <- data.frame(
-      atlas = "test", hemi = "left", surf = "pial",
+      atlas = "test",
+      hemi = "left",
+      surf = "pial",
       stringsAsFactors = FALSE
     )
     mock_3d$ggseg_3d <- list(
       data.frame(
-        label = "lh_motor", region = "motor",
+        label = "lh_motor",
+        region = "motor",
         stringsAsFactors = FALSE
       )
     )
 
     expect_error(
       infer_vertices_from_meshes(
-        mock_3d, surface = "pial", brain_meshes = NULL
+        mock_3d,
+        surface = "pial",
+        brain_meshes = NULL
       ),
       "not available"
     )
@@ -578,7 +617,9 @@ describe("infer_vertices_from_meshes", {
 
   it("uses internal inflated mesh when brain_meshes is NULL", {
     mock_3d <- data.frame(
-      atlas = "test", hemi = "left", surf = "inflated",
+      atlas = "test",
+      hemi = "left",
+      surf = "inflated",
       stringsAsFactors = FALSE
     )
 
@@ -590,7 +631,8 @@ describe("infer_vertices_from_meshes", {
     )
     mock_3d$ggseg_3d <- list(
       data.frame(
-        label = "lh_test", region = "test",
+        label = "lh_test",
+        region = "test",
         stringsAsFactors = FALSE
       )
     )
@@ -610,18 +652,23 @@ describe("infer_vertices_from_meshes", {
       )
     )
     mock_3d <- data.frame(
-      atlas = "test", hemi = "left", surf = "inflated",
+      atlas = "test",
+      hemi = "left",
+      surf = "inflated",
       stringsAsFactors = FALSE
     )
     mock_3d$ggseg_3d <- list(
       data.frame(
-        label = "lh_motor", region = "motor",
+        label = "lh_motor",
+        region = "motor",
         stringsAsFactors = FALSE
       )
     )
 
     result <- infer_vertices_from_meshes(
-      mock_3d, surface = "inflated", brain_meshes = mock_brain_meshes
+      mock_3d,
+      surface = "inflated",
+      brain_meshes = mock_brain_meshes
     )
 
     expect_null(result)
@@ -640,24 +687,30 @@ describe("infer_vertices_from_meshes", {
     vb_mesh <- list(
       vb = matrix(
         c(1.0, 10.0, 100.0, 1, 3.0, 30.0, 300.0, 1),
-        nrow = 4, ncol = 2
+        nrow = 4,
+        ncol = 2
       )
     )
 
     mock_3d <- data.frame(
-      atlas = "test", hemi = "left", surf = "inflated",
+      atlas = "test",
+      hemi = "left",
+      surf = "inflated",
       stringsAsFactors = FALSE
     )
     mock_3d$ggseg_3d <- list(
       data.frame(
-        label = "lh_motor", region = "motor",
+        label = "lh_motor",
+        region = "motor",
         stringsAsFactors = FALSE
       )
     )
     mock_3d$ggseg_3d[[1]]$mesh <- list(vb_mesh)
 
     result <- infer_vertices_from_meshes(
-      mock_3d, surface = "inflated", brain_meshes = mock_brain_meshes
+      mock_3d,
+      surface = "inflated",
+      brain_meshes = mock_brain_meshes
     )
 
     expect_type(result, "list")
@@ -676,7 +729,9 @@ describe("infer_vertices_from_meshes", {
     )
 
     mock_3d <- data.frame(
-      atlas = "test", hemi = "left", surf = "inflated",
+      atlas = "test",
+      hemi = "left",
+      surf = "inflated",
       stringsAsFactors = FALSE
     )
     mock_3d$ggseg_3d <- list(
@@ -692,7 +747,9 @@ describe("infer_vertices_from_meshes", {
     mock_3d$ggseg_3d[[1]]$mesh <- list(region_mesh, NULL)
 
     result <- infer_vertices_from_meshes(
-      mock_3d, surface = "inflated", brain_meshes = mock_brain_meshes
+      mock_3d,
+      surface = "inflated",
+      brain_meshes = mock_brain_meshes
     )
 
     expect_type(result, "list")
@@ -711,19 +768,24 @@ describe("infer_vertices_from_meshes", {
     )
 
     mock_3d <- data.frame(
-      atlas = "test", hemi = "left", surf = "inflated",
+      atlas = "test",
+      hemi = "left",
+      surf = "inflated",
       stringsAsFactors = FALSE
     )
     mock_3d$ggseg_3d <- list(
       data.frame(
-        label = "lh_motor", region = "motor",
+        label = "lh_motor",
+        region = "motor",
         stringsAsFactors = FALSE
       )
     )
     mock_3d$ggseg_3d[[1]]$mesh <- list(list(something = "else"))
 
     result <- infer_vertices_from_meshes(
-      mock_3d, surface = "inflated", brain_meshes = mock_brain_meshes
+      mock_3d,
+      surface = "inflated",
+      brain_meshes = mock_brain_meshes
     )
 
     expect_null(result)
@@ -740,7 +802,9 @@ describe("infer_vertices_from_meshes", {
     )
 
     mock_3d <- data.frame(
-      atlas = "test", hemi = "left", surf = "inflated",
+      atlas = "test",
+      hemi = "left",
+      surf = "inflated",
       stringsAsFactors = FALSE
     )
     region_mesh <- list(
@@ -748,14 +812,17 @@ describe("infer_vertices_from_meshes", {
     )
     mock_3d$ggseg_3d <- list(
       data.frame(
-        label = "lh_nowhere", region = "nowhere",
+        label = "lh_nowhere",
+        region = "nowhere",
         stringsAsFactors = FALSE
       )
     )
     mock_3d$ggseg_3d[[1]]$mesh <- list(region_mesh)
 
     result <- infer_vertices_from_meshes(
-      mock_3d, surface = "inflated", brain_meshes = mock_brain_meshes
+      mock_3d,
+      surface = "inflated",
+      brain_meshes = mock_brain_meshes
     )
 
     expect_null(result)
@@ -778,8 +845,10 @@ describe("convert_legacy_brain_atlas palette remap", {
     old_palette <- c(frontal = "#FF0000", parietal = "#00FF00")
     old_atlas <- structure(
       list(
-        atlas = "test", type = "cortical",
-        core = core, palette = old_palette,
+        atlas = "test",
+        type = "cortical",
+        core = core,
+        palette = old_palette,
         data = ggseg_data_cortical(
           sf = sf_geom,
           vertices = data.frame(
@@ -791,7 +860,10 @@ describe("convert_legacy_brain_atlas palette remap", {
       class = c("cortical_atlas", "ggseg_atlas", "list")
     )
 
-    result <- convert_legacy_brain_atlas(atlas_2d = old_atlas)
+    expect_message(
+      result <- convert_legacy_brain_atlas(atlas_2d = old_atlas),
+      "Using existing vertex data from 2D atlas"
+    )
     expect_true("lh_frontal" %in% names(result$palette))
     expect_true("lh_parietal" %in% names(result$palette))
   })
@@ -872,18 +944,22 @@ describe("try_infer_vertices", {
     )
 
     mock_3d <- data.frame(
-      atlas = "test", hemi = "left", surf = "inflated",
+      atlas = "test",
+      hemi = "left",
+      surf = "inflated",
       stringsAsFactors = FALSE
     )
     region_mesh <- list(
       vertices = data.frame(
-        x = c(1.0, 2.0), y = c(10.0, 20.0),
+        x = c(1.0, 2.0),
+        y = c(10.0, 20.0),
         z = c(100.0, 200.0)
       )
     )
     mock_3d$ggseg_3d <- list(
       data.frame(
-        label = "lh_frontal", region = "frontal",
+        label = "lh_frontal",
+        region = "frontal",
         stringsAsFactors = FALSE
       )
     )
@@ -902,25 +978,32 @@ describe("try_infer_vertices", {
 
   it("returns NULL when inference fails but sf_data exists", {
     mock_3d <- data.frame(
-      atlas = "test", hemi = "left", surf = "inflated",
+      atlas = "test",
+      hemi = "left",
+      surf = "inflated",
       stringsAsFactors = FALSE
     )
     mock_3d$ggseg_3d <- list(
       data.frame(
-        label = "lh_frontal", region = "frontal",
+        label = "lh_frontal",
+        region = "frontal",
         stringsAsFactors = FALSE
       )
     )
     mock_3d$ggseg_3d[[1]]$mesh <- list(NULL)
 
     sf_geom <- sf::st_sf(
-      label = "lh_frontal", view = "lateral",
+      label = "lh_frontal",
+      view = "lateral",
       geometry = sf::st_sfc(make_polygon())
     )
 
     expect_warning(
       result <- try_infer_vertices(
-        mock_3d, "inflated", NULL, sf_data = sf_geom
+        mock_3d,
+        "inflated",
+        NULL,
+        sf_data = sf_geom
       ),
       "Could not infer"
     )

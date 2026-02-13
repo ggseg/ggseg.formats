@@ -25,6 +25,7 @@ describe("atlas_palette", {
   it("errors when object is not a ggseg_atlas", {
     my_df <- data.frame(x = 1)
     expect_error(atlas_palette(my_df), "Could not find atlas")
+  })
 })
 
 describe("atlas_sf", {
@@ -276,6 +277,4 @@ describe("atlas_meshes", {
   it("errors for non-ggseg_atlas input", {
     expect_error(atlas_meshes(data.frame()), "must be a.*ggseg_atlas")
   })
-
-
 })

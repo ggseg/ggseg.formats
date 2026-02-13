@@ -295,8 +295,10 @@ describe("as_brain_atlas (deprecated)", {
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
     atlas <- ggseg_atlas(
-      atlas = "test", type = "cortical",
-      core = core, data = ggseg_data_cortical(vertices = vertices)
+      atlas = "test",
+      type = "cortical",
+      core = core,
+      data = ggseg_data_cortical(vertices = vertices)
     )
     lifecycle::expect_deprecated(
       result <- as_brain_atlas(atlas)
@@ -309,14 +311,23 @@ describe("as_brain_atlas (deprecated)", {
 describe("as_ggseg_atlas.brain_atlas legacy paths", {
   it("converts brain_atlas with core and data.frame data", {
     sf_geom <- sf::st_sf(
-      hemi = "left", region = "frontal",
-      label = "lh_frontal", view = "lateral",
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal",
+      view = "lateral",
       geometry = sf::st_sfc(make_polygon())
     )
     old_atlas <- structure(
-      list(atlas = "old", type = "cortical", core = data.frame(
-        hemi = "left", region = "frontal", label = "lh_frontal"
-      ), data = sf_geom),
+      list(
+        atlas = "old",
+        type = "cortical",
+        core = data.frame(
+          hemi = "left",
+          region = "frontal",
+          label = "lh_frontal"
+        ),
+        data = sf_geom
+      ),
       class = "brain_atlas"
     )
     lifecycle::expect_deprecated(
@@ -327,16 +338,22 @@ describe("as_ggseg_atlas.brain_atlas legacy paths", {
 
   it("converts brain_atlas with separate sf field", {
     sf_geom <- sf::st_sf(
-      label = "lh_frontal", view = "lateral",
+      label = "lh_frontal",
+      view = "lateral",
       geometry = sf::st_sfc(make_polygon())
     )
     old_atlas <- structure(
       list(
-        atlas = "old", type = "cortical",
+        atlas = "old",
+        type = "cortical",
         core = data.frame(
-          hemi = "left", region = "frontal", label = "lh_frontal"
+          hemi = "left",
+          region = "frontal",
+          label = "lh_frontal"
         ),
-        sf = sf_geom, vertices = NULL, meshes = NULL
+        sf = sf_geom,
+        vertices = NULL,
+        meshes = NULL
       ),
       class = "brain_atlas"
     )
@@ -378,8 +395,11 @@ describe("as_ggseg_atlas.ggseg3d_atlas", {
     mock_3d$ggseg_3d <- list(region_data)
     class(mock_3d) <- c("ggseg3d_atlas", "data.frame")
 
-    lifecycle::expect_deprecated(
-      result <- as_ggseg_atlas(mock_3d)
+    expect_message(
+      lifecycle::expect_deprecated(
+        result <- as_ggseg_atlas(mock_3d)
+      ),
+      "Using existing vertex indices from 3D atlas"
     )
     expect_s3_class(result, "ggseg_atlas")
   })

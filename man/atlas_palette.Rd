@@ -19,7 +19,6 @@ Named character vector of colours
 Retrieves the colour palette from a brain atlas.
 }
 \examples{
-atlas_palette("dk")
-atlas_palette("aseg")
+atlas_palette(aseg())
 atlas_palette(dk())
 }

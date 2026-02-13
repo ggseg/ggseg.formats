@@ -11,3 +11,6 @@ data-raw/tracula/
 data-raw/dk/
 /doc/
 /Meta/
+
+/.quarto/
+**/*.quarto_ipynb

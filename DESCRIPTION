@@ -11,7 +11,7 @@ Description: Provides the 'ggseg_atlas' S3 class used across the 'ggseg'
     readers for 'FreeSurfer' statistics files.
 License: MIT + file LICENSE
 Depends: 
-    R (>= 3.5)
+    R (>= 4.1.0)
 Imports:
     cli,
     dplyr,

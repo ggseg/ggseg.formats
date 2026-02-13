@@ -5,7 +5,10 @@ format: gfm
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r}
+#| include: false
+#| label: setup
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -38,20 +41,25 @@ The package includes three atlases covering the main atlas types:
 - **tracula** — TRACULA white matter tract atlas
 
 ```{r}
+#| label: load
 library(ggseg.formats)
-dk
 ```
 
-```{r plot-dk}
-plot(dk)
+```{r }
+#| label: plot-dk
+
+plot(dk())
 ```
 
-```{r plot-aseg}
-plot(aseg)
+```{r}
+#| label: plot-aseg
+plot(aseg())
 ```
 
-```{r plot-tracula}
-plot(tracula)
+```{r}
+#| label: plot-tracula
+
+plot(tracula())
 ```
 
 ## Quick example
@@ -60,10 +68,12 @@ Atlas objects are designed for exploration and customisation. You can query
 regions, filter views, and pipe operations together:
 
 ```{r}
-aseg |>
+#| label: subset-aseg
+aseg_small <- aseg() |>
   atlas_region_keep("hippocampus|amygdala|thalamus") |>
-  atlas_view_keep("sagittal") |>
+  atlas_view_keep("coronal_3|axial_3") |>
   atlas_view_gather()
+plot(aseg_small)
 ```
 
 ## Installation
