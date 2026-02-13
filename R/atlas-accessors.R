@@ -26,7 +26,6 @@ atlas_palette <- function(name = "dk", ...) {
 
 #' @rdname atlas_palette
 #' @export
-#' @keywords internal
 brain_pal <- function(name = "dk", ...) {
   lifecycle::deprecate_warn(
     "0.1.0",
@@ -44,6 +43,9 @@ brain_pal <- function(name = "dk", ...) {
 #' @param atlas a ggseg_atlas object
 #' @return sf data.frame ready for plotting
 #' @export
+#' @examples
+#' sf_data <- atlas_sf(dk)
+#' head(sf_data)
 atlas_sf <- function(atlas) {
   if (!is_ggseg_atlas(atlas)) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas}.")
@@ -78,6 +80,9 @@ atlas_sf <- function(atlas) {
 #' @param atlas a ggseg_atlas object
 #' @return data.frame with vertices ready for 3D rendering
 #' @export
+#' @examples
+#' verts <- atlas_vertices(dk)
+#' head(verts)
 atlas_vertices <- function(atlas) {
   if (!is_ggseg_atlas(atlas)) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas}.")
@@ -106,6 +111,9 @@ atlas_vertices <- function(atlas) {
 #' @param atlas a ggseg_atlas object
 #' @return data.frame with meshes ready for 3D rendering
 #' @export
+#' @examples
+#' meshes <- atlas_meshes(aseg)
+#' head(meshes)
 atlas_meshes <- function(atlas) {
   if (!is_ggseg_atlas(atlas)) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas}.")

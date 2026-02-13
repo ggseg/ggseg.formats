@@ -3,6 +3,9 @@
 #' @param x object to make into a ggseg_atlas
 #' @return an object of class 'ggseg_atlas'
 #' @export
+#' @examples
+#' atlas <- as_ggseg_atlas(dk)
+#' is_ggseg_atlas(atlas)
 as_ggseg_atlas <- function(x) {
   UseMethod("as_ggseg_atlas")
 }
@@ -104,7 +107,6 @@ as_ggseg_atlas.list <- function(x) {
 
 #' @rdname as_ggseg_atlas
 #' @export
-#' @keywords internal
 as_brain_atlas <- function(x) {
   lifecycle::deprecate_warn(
     "0.2.0",
@@ -123,6 +125,7 @@ as_brain_atlas <- function(x) {
 #' @param x A legacy brain_atlas
 #' @return A ggseg_atlas in unified format
 #' @keywords internal
+#' @noRd
 convert_legacy_brain_data <- function(x) {
   if (!inherits(x, "brain_atlas") && !inherits(x, "ggseg_atlas")) {
     cli::cli_abort(
@@ -186,6 +189,7 @@ convert_legacy_brain_data <- function(x) {
 #' @param x A legacy brain_atlas
 #' @return A ggseg_atlas with the new structure
 #' @keywords internal
+#' @noRd
 convert_legacy_structure <- function(x) {
   type <- x$type
 

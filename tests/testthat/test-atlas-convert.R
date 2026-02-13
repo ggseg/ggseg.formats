@@ -761,3 +761,179 @@ describe("infer_vertices_from_meshes", {
     expect_null(result)
   })
 })
+
+
+describe("convert_legacy_brain_atlas palette remap", {
+  it("remaps palette when no label keys match core", {
+    sf_geom <- sf::st_sf(
+      label = c("lh_frontal", "lh_parietal"),
+      view = c("lateral", "lateral"),
+      geometry = sf::st_sfc(make_polygon(), make_polygon2())
+    )
+    core <- data.frame(
+      hemi = c("left", "left"),
+      region = c("frontal", "parietal"),
+      label = c("lh_frontal", "lh_parietal")
+    )
+    old_palette <- c(frontal = "#FF0000", parietal = "#00FF00")
+    old_atlas <- structure(
+      list(
+        atlas = "test", type = "cortical",
+        core = core, palette = old_palette,
+        data = ggseg_data_cortical(
+          sf = sf_geom,
+          vertices = data.frame(
+            label = c("lh_frontal", "lh_parietal"),
+            vertices = I(list(1L:3L, 4L:6L))
+          )
+        )
+      ),
+      class = c("cortical_atlas", "ggseg_atlas", "list")
+    )
+
+    result <- convert_legacy_brain_atlas(atlas_2d = old_atlas)
+    expect_true("lh_frontal" %in% names(result$palette))
+    expect_true("lh_parietal" %in% names(result$palette))
+  })
+})
+
+
+describe("build_atlas_data for tract type", {
+  it("builds tract atlas data from meshes", {
+    centerline <- matrix(rnorm(30), ncol = 3)
+    tangents <- matrix(rnorm(30), ncol = 3)
+    meshes_df <- data.frame(label = "cst_left")
+    meshes_df$mesh <- list(list(
+      vertices = data.frame(x = 1:10, y = 1:10, z = 1:10),
+      faces = data.frame(i = 1:3, j = 2:4, k = 3:5),
+      metadata = list(
+        centerline = centerline,
+        tangents = tangents,
+        n_centerline_points = 10
+      )
+    ))
+
+    result <- build_atlas_data("tract", NULL, NULL, meshes_df)
+    expect_s3_class(result, "ggseg_data_tract")
+  })
+})
+
+
+describe("extract_meshes_from_rgl", {
+  it("extracts meshes from rgl-style vb format", {
+    dt <- data.frame(
+      label = c("Left-Hippocampus", "Right-Hippocampus"),
+      stringsAsFactors = FALSE
+    )
+    m1 <- list(
+      vb = matrix(c(1:3, 4:6, 7:9, 10:12), nrow = 4),
+      it = matrix(1:3, nrow = 3)
+    )
+    m2 <- list(
+      vb = matrix(c(1:3, 4:6, 7:9, 10:12), nrow = 4),
+      it = matrix(1:3, nrow = 3)
+    )
+    dt$mesh <- list(m1, m2)
+
+    result <- extract_meshes_from_rgl(dt)
+    expect_equal(nrow(result), 2)
+    expect_true(all(c("label", "mesh") %in% names(result)))
+    expect_true(is.data.frame(result$mesh[[1]]$vertices))
+    expect_true(is.data.frame(result$mesh[[1]]$faces))
+  })
+
+  it("handles NULL mesh entries", {
+    dt <- data.frame(
+      label = c("region1", "region2"),
+      stringsAsFactors = FALSE
+    )
+    m1 <- list(
+      vb = matrix(c(1:3, 4:6, 7:9, 10:12), nrow = 4),
+      it = matrix(1:3, nrow = 3)
+    )
+    dt$mesh <- list(NULL, m1)
+
+    result <- extract_meshes_from_rgl(dt)
+    expect_null(result$mesh[[1]])
+    expect_true(is.data.frame(result$mesh[[2]]$vertices))
+  })
+})
+
+
+describe("try_infer_vertices", {
+  it("returns vertices when inference succeeds", {
+    brain_verts <- data.frame(
+      x = c(1.0, 2.0, 3.0, 4.0, 5.0),
+      y = c(10.0, 20.0, 30.0, 40.0, 50.0),
+      z = c(100.0, 200.0, 300.0, 400.0, 500.0)
+    )
+    mock_brain_meshes <- list(
+      lh_inflated = list(vertices = brain_verts)
+    )
+
+    mock_3d <- data.frame(
+      atlas = "test", hemi = "left", surf = "inflated",
+      stringsAsFactors = FALSE
+    )
+    region_mesh <- list(
+      vertices = data.frame(
+        x = c(1.0, 2.0), y = c(10.0, 20.0),
+        z = c(100.0, 200.0)
+      )
+    )
+    mock_3d$ggseg_3d <- list(
+      data.frame(
+        label = "lh_frontal", region = "frontal",
+        stringsAsFactors = FALSE
+      )
+    )
+    mock_3d$ggseg_3d[[1]]$mesh <- list(region_mesh)
+
+    result <- try_infer_vertices(
+      mock_3d,
+      surface = "inflated",
+      brain_meshes = mock_brain_meshes,
+      sf_data = NULL
+    )
+    expect_true(is.data.frame(result))
+    expect_equal(result$label, "lh_frontal")
+    expect_true(is.list(result$vertices))
+  })
+
+  it("returns NULL when inference fails but sf_data exists", {
+    mock_3d <- data.frame(
+      atlas = "test", hemi = "left", surf = "inflated",
+      stringsAsFactors = FALSE
+    )
+    mock_3d$ggseg_3d <- list(
+      data.frame(
+        label = "lh_frontal", region = "frontal",
+        stringsAsFactors = FALSE
+      )
+    )
+    mock_3d$ggseg_3d[[1]]$mesh <- list(NULL)
+
+    sf_geom <- sf::st_sf(
+      label = "lh_frontal", view = "lateral",
+      geometry = sf::st_sfc(make_polygon())
+    )
+
+    expect_warning(
+      result <- try_infer_vertices(
+        mock_3d, "inflated", NULL, sf_data = sf_geom
+      ),
+      "Could not infer"
+    )
+    expect_null(result)
+  })
+})
+
+
+describe("build_atlas_data default branch", {
+  it("falls through to default for unknown type", {
+    vertices <- data.frame(label = "lh_frontal")
+    vertices$vertices <- list(1L:3L)
+    result <- build_atlas_data("unknown_type", NULL, vertices, NULL)
+    expect_s3_class(result, "ggseg_data_cortical")
+  })
+})

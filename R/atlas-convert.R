@@ -40,13 +40,8 @@
 #' @importFrom tidyr unnest
 #'
 #' @examples
-#' \dontrun{
-#' # Convert a 3D atlas (quick, uses existing data)
-#' new_atlas <- convert_legacy_brain_atlas(atlas_3d = dk_3d)
-#'
-#' # Merge 2D and 3D atlases
-#' new_atlas <- convert_legacy_brain_atlas(atlas_2d = dk, atlas_3d = dk_3d)
-#'
+#' \donttest{
+#' new_atlas <- convert_legacy_brain_atlas(atlas_2d = dk)
 #' }
 convert_legacy_brain_atlas <- function(
   atlas_2d = NULL,
@@ -78,8 +73,14 @@ convert_legacy_brain_atlas <- function(
   palette <- if (has_2d) atlas_2d$palette else NULL
 
   result <- if (has_3d) {
-    extract_3d_data(atlas_3d, type, surface, brain_meshes,
-      core = core, palette = palette, sf_data = sf_data
+    extract_3d_data(
+      atlas_3d,
+      type,
+      surface,
+      brain_meshes,
+      core = core,
+      palette = palette,
+      sf_data = sf_data
     )
   } else {
     extract_2d_data(atlas_2d)
@@ -105,14 +106,18 @@ convert_legacy_brain_atlas <- function(
 
 
 #' @noRd
+#' @keywords internal
 validate_legacy_inputs <- function(has_2d, has_3d, atlas_2d, atlas_3d) {
   if (!has_2d && !has_3d) {
     cli::cli_abort(
       "At least one of {.arg atlas_2d} or {.arg atlas_3d} must be provided."
     )
   }
-  if (has_2d && !inherits(atlas_2d, "brain_atlas") &&
-        !inherits(atlas_2d, "ggseg_atlas")) {
+  if (
+    has_2d &&
+      !inherits(atlas_2d, "brain_atlas") &&
+      !inherits(atlas_2d, "ggseg_atlas")
+  ) {
     cli::cli_abort("{.arg atlas_2d} must be a {.cls ggseg_atlas} object.")
   }
   if (has_3d && !("ggseg_3d" %in% names(atlas_3d))) {
@@ -124,16 +129,25 @@ validate_legacy_inputs <- function(has_2d, has_3d, atlas_2d, atlas_3d) {
 
 
 #' @noRd
+#' @keywords internal
 extract_2d_sf <- function(has_2d, atlas_2d) {
-  if (!has_2d) return(NULL)
+  if (!has_2d) {
+    return(NULL)
+  }
   if (!is.null(atlas_2d$data$sf)) atlas_2d$data$sf else atlas_2d$sf
 }
 
 
 #' @noRd
+#' @keywords internal
 extract_3d_data <- function(
-  atlas_3d, type, surface, brain_meshes,
-  core, palette, sf_data
+  atlas_3d,
+  type,
+  surface,
+  brain_meshes,
+  core,
+  palette,
+  sf_data
 ) {
   dt <- tidyr::unnest(atlas_3d, ggseg_3d)
 
@@ -166,11 +180,14 @@ extract_3d_data <- function(
 
 
 #' @noRd
+#' @keywords internal
 extract_meshes_from_rgl <- function(dt) {
   meshes_df <- data.frame(label = dt$label, stringsAsFactors = FALSE)
   meshes_df$mesh <- lapply(seq_len(nrow(dt)), function(i) {
     m <- dt$mesh[[i]]
-    if (is.null(m)) return(NULL)
+    if (is.null(m)) {
+      return(NULL)
+    }
     convert_rgl_mesh(m)
   })
   meshes_df
@@ -178,6 +195,7 @@ extract_meshes_from_rgl <- function(dt) {
 
 
 #' @noRd
+#' @keywords internal
 convert_rgl_mesh <- function(m) {
   list(
     vertices = data.frame(
@@ -195,13 +213,17 @@ convert_rgl_mesh <- function(m) {
 
 
 #' @noRd
+#' @keywords internal
 try_infer_vertices <- function(atlas_3d, surface, brain_meshes, sf_data) {
   vertices_list <- infer_vertices_from_meshes(
-    atlas_3d, surface = surface, brain_meshes = brain_meshes
+    atlas_3d,
+    surface = surface,
+    brain_meshes = brain_meshes
   )
   if (!is.null(vertices_list)) {
     vertices_df <- data.frame(
-      label = names(vertices_list), stringsAsFactors = FALSE
+      label = names(vertices_list),
+      stringsAsFactors = FALSE
     )
     vertices_df$vertices <- unname(vertices_list)
     cli::cli_inform(
@@ -225,10 +247,13 @@ try_infer_vertices <- function(atlas_3d, surface, brain_meshes, sf_data) {
 
 
 #' @noRd
+#' @keywords internal
 extract_2d_data <- function(atlas_2d) {
   vertices <- NULL
-  if (!is.null(atlas_2d$data$vertices) &&
-        "vertices" %in% names(atlas_2d$data$vertices)) {
+  if (
+    !is.null(atlas_2d$data$vertices) &&
+      "vertices" %in% names(atlas_2d$data$vertices)
+  ) {
     vertices <- atlas_2d$data$vertices
     cli::cli_inform(
       c("i" = "Using existing vertex data from 2D atlas.")
@@ -244,14 +269,17 @@ extract_2d_data <- function(atlas_2d) {
 
 
 #' @noRd
+#' @keywords internal
 build_atlas_data <- function(type, sf_data, vertices_df, meshes_df) {
   switch(
     type,
     "cortical" = ggseg_data_cortical(
-      sf = sf_data, vertices = vertices_df
+      sf = sf_data,
+      vertices = vertices_df
     ),
     "subcortical" = ggseg_data_subcortical(
-      sf = sf_data, meshes = meshes_df
+      sf = sf_data,
+      meshes = meshes_df
     ),
     "tract" = ggseg_data_tract(sf = sf_data, meshes = meshes_df),
     ggseg_data_cortical(sf = sf_data, vertices = vertices_df)
@@ -261,7 +289,6 @@ build_atlas_data <- function(type, sf_data, vertices_df, meshes_df) {
 
 #' @rdname convert_legacy_brain_atlas
 #' @export
-#' @keywords internal
 unify_legacy_atlases <- function(
   atlas_2d = NULL,
   atlas_3d = NULL,
@@ -287,6 +314,7 @@ unify_legacy_atlases <- function(
 
 
 #' @noRd
+#' @keywords internal
 infer_atlas_type <- function(has_2d, atlas_2d, atlas_3d) {
   if (has_2d) {
     return(atlas_2d$type)
@@ -299,6 +327,7 @@ infer_atlas_type <- function(has_2d, atlas_2d, atlas_3d) {
 
 
 #' @noRd
+#' @keywords internal
 has_vertex_data <- function(dt) {
   if (!("vertices" %in% names(dt))) {
     return(FALSE)
@@ -308,6 +337,7 @@ has_vertex_data <- function(dt) {
 
 
 #' @noRd
+#' @keywords internal
 remap_palette_to_labels <- function(palette, core) {
   if (is.null(palette)) {
     return(NULL)
@@ -338,6 +368,7 @@ remap_palette_to_labels <- function(palette, core) {
 #'   `list(lh_inflated = ..., ...)` formats.
 #' @return Named list of integer vertex indices (0-based) keyed by label,
 #'   or NULL if brain_meshes unavailable.
+#' @noRd
 #' @keywords internal
 infer_vertices_from_meshes <- function(
   atlas_3d,

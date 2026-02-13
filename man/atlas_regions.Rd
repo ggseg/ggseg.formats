@@ -2,19 +2,10 @@
 % Please edit documentation in R/atlas-utils.R
 \name{atlas_regions}
 \alias{atlas_regions}
-\alias{atlas_regions.ggseg_atlas}
-\alias{atlas_regions.brain_atlas}
-\alias{atlas_regions.data.frame}
 \alias{brain_regions}
 \title{Extract unique region names from an atlas}
 \usage{
 atlas_regions(x)
-
-\method{atlas_regions}{ggseg_atlas}(x)
-
-\method{atlas_regions}{brain_atlas}(x)
-
-\method{atlas_regions}{data.frame}(x)
 
 brain_regions(x)
 }
@@ -27,4 +18,8 @@ Character vector of region names
 \description{
 Extract unique region names from an atlas
 }
-\keyword{internal}
+\examples{
+atlas_regions(dk)
+atlas_regions(aseg)
+
+}

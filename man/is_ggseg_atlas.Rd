@@ -29,4 +29,9 @@ These functions check both the class tag and structural validity
 by passing the object through \code{\link[=ggseg_atlas]{ggseg_atlas()}}. An object that
 carries the right class but fails validation returns \code{FALSE}.
 }
-\keyword{internal}
+\examples{
+is_ggseg_atlas(dk)
+is_cortical_atlas(dk)
+is_subcortical_atlas(aseg)
+is_tract_atlas(tracula)
+}

@@ -198,3 +198,24 @@
       41 right   SLF III                          rh.slf3.bbr.prep     association    
       42 right   uncinate fasciculus              rh.uf.bbr.prep       limbic         
 
+# print.ggseg_atlas / prints atlas without palette or 3D data (render_3d = none)
+
+    Code
+      print(atlas)
+    Message
+      
+      -- minimal ggseg atlas ---------------------------------------------------------
+      Type: cortical
+      Regions: 1
+      Hemispheres: left
+      Views: lateral
+      Palette: x
+      Rendering: v ggseg
+      x ggseg3d (none)
+      --------------------------------------------------------------------------------
+    Output
+      # A tibble: 1 x 3
+        hemi  region  label     
+        <chr> <chr>   <chr>     
+      1 left  frontal lh_frontal
+

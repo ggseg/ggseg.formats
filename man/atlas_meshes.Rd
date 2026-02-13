@@ -16,3 +16,7 @@ data.frame with meshes ready for 3D rendering
 Returns meshes data joined with core region info and palette colours.
 Used for subcortical and tract atlases.
 }
+\examples{
+meshes <- atlas_meshes(aseg)
+head(meshes)
+}

@@ -357,3 +357,30 @@ describe("as_ggseg_atlas.brain_atlas legacy paths", {
     )
   })
 })
+
+
+describe("as_ggseg_atlas.ggseg3d_atlas", {
+  it("converts ggseg3d atlas with deprecation warning", {
+    mock_3d <- data.frame(
+      atlas = "test_3d",
+      hemi = "left",
+      surf = "inflated",
+      stringsAsFactors = FALSE
+    )
+    region_data <- data.frame(
+      label = "lh_frontal",
+      region = "frontal",
+      colour = "#FF0000",
+      stringsAsFactors = FALSE
+    )
+    region_data$mesh <- list(NULL)
+    region_data$vertices <- list(1L:3L)
+    mock_3d$ggseg_3d <- list(region_data)
+    class(mock_3d) <- c("ggseg3d_atlas", "data.frame")
+
+    lifecycle::expect_deprecated(
+      result <- as_ggseg_atlas(mock_3d)
+    )
+    expect_s3_class(result, "ggseg_atlas")
+  })
+})

@@ -29,4 +29,7 @@ Retrieves a brain surface mesh for the specified hemisphere and surface type.
 By default, provides the inflated fsaverage5 surface from internal data.
 Other surfaces (pial, white, semi-inflated) require the ggseg3d package.
 }
-\keyword{internal}
+\examples{
+mesh <- get_brain_mesh("lh")
+head(mesh$vertices)
+}

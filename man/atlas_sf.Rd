@@ -15,3 +15,7 @@ sf data.frame ready for plotting
 \description{
 Returns sf data joined with core region info and palette colours.
 }
+\examples{
+sf_data <- atlas_sf(dk)
+head(sf_data)
+}

@@ -18,26 +18,21 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Cortical atlas
+#' core <- data.frame(
+#'   hemi = c("left", "left"),
+#'   region = c("region1", "region2"),
+#'   label = c("lh_region1", "lh_region2")
+#' )
+#' vertices <- data.frame(
+#'   label = c("lh_region1", "lh_region2"),
+#'   vertices = I(list(c(1L, 2L, 3L), c(4L, 5L, 6L)))
+#' )
 #' atlas <- ggseg_atlas(
-#'   atlas = "dk",
+#'   atlas = "test",
 #'   type = "cortical",
-#'   core = core_df,
-#'   data = ggseg_data_cortical(sf = geometry, vertices = vertex_indices)
+#'   core = core,
+#'   data = ggseg_data_cortical(vertices = vertices)
 #' )
-#'
-#' # Tract atlas
-#' atlas <- ggseg_atlas(
-#'   atlas = "hcp_tracts",
-#'   type = "tract",
-#'   core = core_df,
-#'   data = ggseg_data_tract(
-#'     meshes = tube_meshes,
-#'     scalars = list(FA = fa_values)
-#'   )
-#' )
-#' }
 ggseg_atlas <- function(atlas, type, core, data, palette = NULL) {
   type <- match.arg(type, c("cortical", "subcortical", "tract"))
 
@@ -104,7 +99,6 @@ ggseg_atlas <- function(atlas, type, core, data, palette = NULL) {
 
 #' @rdname ggseg_atlas
 #' @export
-#' @keywords internal
 brain_atlas <- function(atlas, type, core, data, palette = NULL) {
   lifecycle::deprecate_warn(
     "0.2.0",
@@ -131,6 +125,11 @@ brain_atlas <- function(atlas, type, core, data, palette = NULL) {
 #' @return logical
 #' @name is_ggseg_atlas
 #' @export
+#' @examples
+#' is_ggseg_atlas(dk)
+#' is_cortical_atlas(dk)
+#' is_subcortical_atlas(aseg)
+#' is_tract_atlas(tracula)
 is_ggseg_atlas <- function(x) {
   (inherits(x, "ggseg_atlas") || inherits(x, "brain_atlas")) &&
     validate_ggseg_atlas(x)
@@ -156,7 +155,6 @@ is_tract_atlas <- function(x) {
 
 #' @rdname is_ggseg_atlas
 #' @export
-#' @keywords internal
 is_brain_atlas <- function(x) {
   lifecycle::deprecate_warn(
     "0.2.0",
@@ -171,6 +169,8 @@ is_brain_atlas <- function(x) {
 #' @param x an object
 #' @return logical
 #' @export
+#' @examples
+#' is_ggseg3d_atlas(dk)
 is_ggseg3d_atlas <- function(x) {
   is.data.frame(x) && "ggseg_3d" %in% names(x)
 }

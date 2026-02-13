@@ -18,4 +18,8 @@ Character vector of view names, or NULL if no sf data
 \description{
 Get available views in atlas
 }
-\keyword{internal}
+\examples{
+atlas_views(aseg)
+atlas_views(tracula)
+
+}

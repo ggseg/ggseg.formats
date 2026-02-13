@@ -2,16 +2,10 @@
 % Please edit documentation in R/atlas-utils.R
 \name{atlas_labels}
 \alias{atlas_labels}
-\alias{atlas_labels.ggseg_atlas}
-\alias{atlas_labels.brain_atlas}
 \alias{brain_labels}
 \title{Extract unique labels from an atlas}
 \usage{
 atlas_labels(x)
-
-\method{atlas_labels}{ggseg_atlas}(x)
-
-\method{atlas_labels}{brain_atlas}(x)
 
 brain_labels(x)
 }
@@ -24,4 +18,8 @@ Character vector of atlas region labels
 \description{
 Extract unique labels from an atlas
 }
-\keyword{internal}
+\examples{
+atlas_labels(dk)
+atlas_labels(aseg)
+
+}

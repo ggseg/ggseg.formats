@@ -2,6 +2,7 @@
 #' @param sf sf data.frame to validate
 #' @return validated sf object
 #' @keywords internal
+#' @noRd
 validate_sf <- function(sf) {
   if (!is.data.frame(sf)) {
     cli::cli_abort("{.arg sf} must be a data.frame.")
@@ -39,6 +40,7 @@ validate_sf <- function(sf) {
 #' @param vertices vertices data.frame to validate
 #' @return validated vertices object
 #' @keywords internal
+#' @noRd
 validate_vertices <- function(vertices) {
   if (!is.data.frame(vertices)) {
     cli::cli_abort("{.arg vertices} must be a data.frame.")
@@ -72,6 +74,7 @@ validate_vertices <- function(vertices) {
 #' @param tract If TRUE, validates additional tract-specific mesh components
 #' @return validated meshes object
 #' @keywords internal
+#' @noRd
 validate_meshes <- function(meshes, tract = FALSE) {
   if (!is.data.frame(meshes)) {
     cli::cli_abort("{.arg meshes} must be a data.frame.")
@@ -153,7 +156,9 @@ validate_meshes <- function(meshes, tract = FALSE) {
 #' Validate tract mesh metadata
 #' @param metadata metadata list to validate
 #' @param label label for error messages
+#' @return No return value, called for side effects
 #' @keywords internal
+#' @noRd
 validate_tract_metadata <- function(metadata, label) {
   if (!is.list(metadata)) {
     cli::cli_warn("Mesh metadata for {.val {label}} should be a list.")
@@ -195,6 +200,7 @@ validate_tract_metadata <- function(metadata, label) {
 #' @param check_sf if TRUE, validate sf label coverage against core
 #' @return data (unchanged)
 #' @keywords internal
+#' @noRd
 validate_data_labels <- function(data, core, check_sf = FALSE) {
   core_labels <- core$label[!is.na(core$label)]
   n_core <- length(core_labels)
@@ -253,6 +259,7 @@ validate_3d_labels <- function(labels, core_labels, source) {
 #' @param core core data.frame
 #' @return palette (unchanged)
 #' @keywords internal
+#' @noRd
 validate_palette <- function(palette, core) {
   if (!is.character(palette) || is.null(names(palette))) {
     cli::cli_abort("{.arg palette} must be a named character vector.")

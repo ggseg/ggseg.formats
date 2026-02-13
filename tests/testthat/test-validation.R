@@ -390,3 +390,22 @@ describe("validate_tract_metadata", {
     )
   })
 })
+
+
+describe("validate_meshes calls validate_tract_metadata", {
+  it("validates tract mesh metadata when tract = TRUE", {
+    meshes <- data.frame(label = "cst_left")
+    meshes$mesh <- list(list(
+      vertices = data.frame(x = 1:10, y = 1:10, z = 1:10),
+      faces = data.frame(i = 1:3, j = 2:4, k = 3:5),
+      metadata = list(
+        n_centerline_points = 10,
+        centerline = matrix(rnorm(30), ncol = 3),
+        tangents = matrix(rnorm(30), ncol = 3)
+      )
+    ))
+
+    result <- ggseg.formats:::validate_meshes(meshes, tract = TRUE)
+    expect_equal(nrow(result), 1)
+  })
+})

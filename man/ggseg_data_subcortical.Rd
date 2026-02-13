@@ -28,7 +28,6 @@ Creates a data object for subcortical brain atlases. Subcortical atlases
 use individual 3D meshes for each structure (e.g., hippocampus, amygdala).
 }
 \examples{
-\dontrun{
 data <- ggseg_data_subcortical(
   meshes = data.frame(
     label = "hippocampus_left",
@@ -39,5 +38,3 @@ data <- ggseg_data_subcortical(
   )
 )
 }
-}
-\keyword{internal}

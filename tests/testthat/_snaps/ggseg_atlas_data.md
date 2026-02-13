@@ -39,7 +39,6 @@
       -- ggseg_data_tract --
       
       3D (ggseg3d): 1 centerlines (10 points)
-      Tube params: radius = 5, segments = 8
 
 # print methods / prints ggseg_data_cortical without sf
 
@@ -70,4 +69,15 @@
         label       vertices faces
         <chr>          <int> <int>
       1 hippocampus       10     3
+
+# print methods / prints ggseg_data_tract with sf and centerlines
+
+    Code
+      print(data)
+    Message
+      
+      -- ggseg_data_tract --
+      
+      2D (ggseg): 1 labels, views: sagittal
+      3D (ggseg3d): 1 centerlines (10 points)
 

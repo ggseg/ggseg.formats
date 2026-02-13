@@ -26,4 +26,3 @@ atlas_palette("dk")
 atlas_palette("aseg")
 atlas_palette(dk)
 }
-\keyword{internal}

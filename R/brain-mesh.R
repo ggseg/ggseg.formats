@@ -13,8 +13,10 @@
 #'
 #' @return A list with `vertices` (data.frame with x, y, z) and `faces`
 #'   (data.frame with i, j, k), or NULL if the mesh is not available.
-#' @keywords internal
 #' @export
+#' @examples
+#' mesh <- get_brain_mesh("lh")
+#' head(mesh$vertices)
 get_brain_mesh <- function(
   hemisphere = c("lh", "rh"),
   surface = "inflated",

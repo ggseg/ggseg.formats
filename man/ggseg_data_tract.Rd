@@ -5,21 +5,9 @@
 \alias{brain_data_tract}
 \title{Create tract atlas data}
 \usage{
-ggseg_data_tract(
-  sf = NULL,
-  centerlines = NULL,
-  tube_radius = 5,
-  tube_segments = 8,
-  meshes = NULL
-)
+ggseg_data_tract(sf = NULL, centerlines = NULL, meshes = NULL, ...)
 
-brain_data_tract(
-  sf = NULL,
-  centerlines = NULL,
-  tube_radius = 5,
-  tube_segments = 8,
-  meshes = NULL
-)
+brain_data_tract(sf = NULL, centerlines = NULL, meshes = NULL, ...)
 }
 \arguments{
 \item{sf}{sf data.frame with columns label, view, geometry for 2D rendering.
@@ -32,12 +20,11 @@ Optional.}
 \item tangents: list-column of n x 3 matrices (for orientation coloring)
 }}
 
-\item{tube_radius}{Radius for tube mesh generation. Default 5.}
-
-\item{tube_segments}{Number of segments around tube circumference. Default 8.}
-
 \item{meshes}{Deprecated. Use centerlines instead. If provided, will be
 converted to centerlines format.}
+
+\item{...}{Absorbs legacy fields (e.g. tube_radius, tube_segments) from
+old cached atlas objects.}
 }
 \value{
 An object of class c("ggseg_data_tract", "ggseg_atlas_data")
@@ -47,7 +34,6 @@ Creates a data object for white matter tract atlases. Stores centerlines
 compactly; tube meshes are generated at render time for efficiency.
 }
 \examples{
-\dontrun{
 centerlines_df <- data.frame(
   label = "cst_left",
   points = I(list(matrix(rnorm(150), ncol = 3))),
@@ -55,5 +41,3 @@ centerlines_df <- data.frame(
 )
 data <- ggseg_data_tract(centerlines = centerlines_df)
 }
-}
-\keyword{internal}

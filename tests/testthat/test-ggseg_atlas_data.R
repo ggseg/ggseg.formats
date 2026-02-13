@@ -313,4 +313,82 @@ describe("print methods", {
     data <- ggseg_data_subcortical(meshes = meshes)
     expect_snapshot(print(data))
   })
+
+  it("prints ggseg_data_tract with sf and centerlines", {
+    sf_geom <- sf::st_sf(
+      label = "cst_left",
+      view = "sagittal",
+      geometry = sf::st_sfc(make_polygon())
+    )
+    pts <- matrix(rnorm(30), ncol = 3)
+    tangents <- matrix(rnorm(30), ncol = 3)
+    centerlines <- data.frame(label = "cst_left")
+    centerlines$points <- list(pts)
+    centerlines$tangents <- list(tangents)
+
+    data <- ggseg_data_tract(sf = sf_geom, centerlines = centerlines)
+    expect_snapshot(print(data))
+  })
+})
+
+
+describe("deprecated brain_data wrappers", {
+  it("brain_data_cortical warns and returns correct class", {
+    vertices <- data.frame(label = "lh_frontal")
+    vertices$vertices <- list(1L:3L)
+
+    lifecycle::expect_deprecated(
+      result <- brain_data_cortical(vertices = vertices)
+    )
+    expect_s3_class(result, "ggseg_data_cortical")
+  })
+
+  it("brain_data_subcortical warns and returns correct class", {
+    meshes <- data.frame(label = "hippocampus")
+    meshes$mesh <- list(list(
+      vertices = data.frame(x = 1:10, y = 1:10, z = 1:10),
+      faces = data.frame(i = 1:3, j = 2:4, k = 3:5)
+    ))
+
+    lifecycle::expect_deprecated(
+      result <- brain_data_subcortical(meshes = meshes)
+    )
+    expect_s3_class(result, "ggseg_data_subcortical")
+  })
+
+  it("brain_data_tract warns and returns correct class", {
+    centerlines <- data.frame(label = "cst_left")
+    centerlines$points <- list(matrix(rnorm(30), ncol = 3))
+    centerlines$tangents <- list(matrix(rnorm(30), ncol = 3))
+
+    lifecycle::expect_deprecated(
+      result <- brain_data_tract(centerlines = centerlines)
+    )
+    expect_s3_class(result, "ggseg_data_tract")
+  })
+})
+
+
+describe("meshes_to_centerlines", {
+  it("returns NULL for NULL input", {
+    expect_null(meshes_to_centerlines(NULL))
+  })
+})
+
+
+describe("print_mesh_summary with NULL mesh entries", {
+  it("handles NULL mesh in vapply without error", {
+    meshes <- data.frame(label = c("region1", "region2"))
+    meshes$mesh <- list(
+      NULL,
+      list(
+        vertices = data.frame(x = 1:5, y = 1:5, z = 1:5),
+        faces = data.frame(i = 1:2, j = 2:3, k = 3:4)
+      )
+    )
+    expect_output(
+      ggseg.formats:::print_mesh_summary(meshes),
+      "region1"
+    )
+  })
 })

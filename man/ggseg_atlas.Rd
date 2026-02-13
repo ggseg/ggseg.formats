@@ -33,25 +33,19 @@ Creates an object of class 'ggseg_atlas' for plotting brain parcellations
 using ggseg (2D) and ggseg3d (3D).
 }
 \examples{
-\dontrun{
-# Cortical atlas
+core <- data.frame(
+  hemi = c("left", "left"),
+  region = c("region1", "region2"),
+  label = c("lh_region1", "lh_region2")
+)
+vertices <- data.frame(
+  label = c("lh_region1", "lh_region2"),
+  vertices = I(list(c(1L, 2L, 3L), c(4L, 5L, 6L)))
+)
 atlas <- ggseg_atlas(
-  atlas = "dk",
+  atlas = "test",
   type = "cortical",
-  core = core_df,
-  data = ggseg_data_cortical(sf = geometry, vertices = vertex_indices)
-)
-
-# Tract atlas
-atlas <- ggseg_atlas(
-  atlas = "hcp_tracts",
-  type = "tract",
-  core = core_df,
-  data = ggseg_data_tract(
-    meshes = tube_meshes,
-    scalars = list(FA = fa_values)
-  )
+  core = core,
+  data = ggseg_data_cortical(vertices = vertices)
 )
 }
-}
-\keyword{internal}

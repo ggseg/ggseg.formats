@@ -2,25 +2,26 @@
 #'
 #' @param x brain atlas
 #' @return Character vector of region names
+#' @examples
+#' atlas_regions(dk)
+#' atlas_regions(aseg)
+#'
 #' @export
 atlas_regions <- function(x) {
   UseMethod("atlas_regions")
 }
 
 #' @export
-#' @rdname atlas_regions
 atlas_regions.ggseg_atlas <- function(x) {
   get_uniq(x$core, "region")
 }
 
 #' @export
-#' @rdname atlas_regions
 atlas_regions.brain_atlas <- function(x) {
   get_uniq(x$core, "region")
 }
 
 #' @export
-#' @rdname atlas_regions
 atlas_regions.data.frame <- function(x) {
   get_uniq(x, "region")
 }
@@ -39,19 +40,21 @@ get_uniq <- function(x, type) {
 #'
 #' @param x brain atlas
 #' @return Character vector of atlas region labels
+#' @examples
+#' atlas_labels(dk)
+#' atlas_labels(aseg)
+#'
 #' @export
 atlas_labels <- function(x) {
   UseMethod("atlas_labels")
 }
 
 #' @export
-#' @rdname atlas_labels
 atlas_labels.ggseg_atlas <- function(x) {
   get_uniq(x$core, "label")
 }
 
 #' @export
-#' @rdname atlas_labels
 atlas_labels.brain_atlas <- function(x) {
   get_uniq(x$core, "label")
 }
@@ -59,7 +62,6 @@ atlas_labels.brain_atlas <- function(x) {
 
 #' @rdname atlas_regions
 #' @export
-#' @keywords internal
 brain_regions <- function(x) {
   lifecycle::deprecate_warn(
     "0.1.0",
@@ -71,7 +73,6 @@ brain_regions <- function(x) {
 
 #' @rdname atlas_labels
 #' @export
-#' @keywords internal
 brain_labels <- function(x) {
   lifecycle::deprecate_warn(
     "0.1.0",
@@ -83,26 +84,30 @@ brain_labels <- function(x) {
 
 
 #' Detect atlas type
-#' @keywords internal
+#' @param x brain atlas object
+#' @return Character string: "cortical", "subcortical", or "tract"
+#' @examples
+#' atlas_type(dk)
+#' atlas_type(aseg)
+#' atlas_type(tracula)
+#'
 #' @export
 atlas_type <- function(x) {
   UseMethod("atlas_type")
 }
 
-#' @keywords internal
 #' @export
 atlas_type.ggseg_atlas <- function(x) {
   guess_type(x)
 }
 
-#' @keywords internal
 #' @export
 atlas_type.brain_atlas <- function(x) {
   guess_type(x)
 }
 
-#' @keywords internal
 #' @noRd
+#' @keywords internal
 guess_type <- function(x) {
   if ("type" %in% names(x) && !is.na(x$type[1])) {
     return(unique(x$type))
@@ -168,14 +173,9 @@ guess_type <- function(x) {
 #' @return Modified `ggseg_atlas` object
 #'
 #' @examples
-#' \dontrun{
-#' atlas <- atlas |>
-#'   atlas_region_remove("White-Matter") |>
-#'   atlas_region_contextual("cortex") |>
-#'   atlas_view_keep(c("axial_3", "coronal_2", "sagittal")) |>
-#'   atlas_view_remove_small(min_area = 50) |>
-#'   atlas_view_gather()
-#' }
+#' dk |>
+#'   atlas_region_remove("bankssts") |>
+#'   atlas_region_keep("frontal", match_on = "region")
 #'
 #' @name atlas_manipulation
 #' @export
@@ -394,6 +394,10 @@ atlas_core_add <- function(atlas, data, by = "region") {
 #'
 #' @param atlas A `ggseg_atlas` object
 #' @return Character vector of view names, or NULL if no sf data
+#' @examples
+#' atlas_views(aseg)
+#' atlas_views(tracula)
+#'
 #' @export
 atlas_views <- function(atlas) {
   if (is.null(atlas$data$sf)) {
@@ -404,7 +408,6 @@ atlas_views <- function(atlas) {
 
 #' @rdname atlas_views
 #' @export
-#' @keywords internal
 brain_views <- function(atlas) {
   lifecycle::deprecate_warn(
     "0.1.0",
@@ -644,7 +647,8 @@ rebuild_atlas_data <- function(atlas, new_sf) {
   }
 }
 
-
+#' @noRd
+#' @keywords internal
 rebuild_atlas <- function(atlas, new_data) {
   validate_data_labels(new_data, atlas$core, check_sf = FALSE)
 

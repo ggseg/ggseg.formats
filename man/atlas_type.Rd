@@ -6,7 +6,18 @@
 \usage{
 atlas_type(x)
 }
+\arguments{
+\item{x}{brain atlas object}
+}
+\value{
+Character string: "cortical", "subcortical", or "tract"
+}
 \description{
 Detect atlas type
 }
-\keyword{internal}
+\examples{
+atlas_type(dk)
+atlas_type(aseg)
+atlas_type(tracula)
+
+}

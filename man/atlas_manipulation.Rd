@@ -134,13 +134,8 @@ in \code{order} are appended at end.
 
 }}
 \examples{
-\dontrun{
-atlas <- atlas |>
-  atlas_region_remove("White-Matter") |>
-  atlas_region_contextual("cortex") |>
-  atlas_view_keep(c("axial_3", "coronal_2", "sagittal")) |>
-  atlas_view_remove_small(min_area = 50) |>
-  atlas_view_gather()
-}
+dk |>
+  atlas_region_remove("bankssts") |>
+  atlas_region_keep("frontal", match_on = "region")
 
 }

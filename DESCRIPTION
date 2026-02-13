@@ -32,6 +32,7 @@ Suggests:
     vdiffr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Config/Needs/website: ggseg/ggseg.docs
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

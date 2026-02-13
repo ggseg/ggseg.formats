@@ -852,6 +852,15 @@ describe("atlas_view_reorder", {
     views <- atlas_views(result)
     expect_equal(views[1], "sagittal")
   })
+
+  it("warns when sf has no rows (empty views)", {
+    atlas <- make_multiview_atlas()
+    atlas$data$sf <- atlas$data$sf[0, ]
+    expect_warning(
+      atlas_view_reorder(atlas, c("lateral")),
+      "No matching views"
+    )
+  })
 })
 
 
@@ -860,5 +869,216 @@ describe("rebuild_atlas_data", {
     result <- atlas_view_keep(aseg, "axial")
     expect_s3_class(result, "ggseg_atlas")
     expect_s3_class(result$data, "ggseg_data_subcortical")
+  })
+
+  it("works with tract atlas sf", {
+    result <- atlas_view_keep(tracula, "sagittal")
+    expect_s3_class(result, "ggseg_atlas")
+    expect_s3_class(result$data, "ggseg_data_tract")
+  })
+})
+
+
+describe("atlas_region_remove with subcortical atlas", {
+  it("removes matching regions from subcortical core, palette, and meshes", {
+    result <- atlas_region_remove(aseg, "Thalamus")
+    expect_false(any(grepl("Thalamus", result$core$region, ignore.case = TRUE)))
+    expect_false(any(grepl(
+      "Thalamus", names(result$palette), ignore.case = TRUE
+    )))
+    expect_false(any(grepl(
+      "Thalamus", result$data$meshes$label,
+      ignore.case = TRUE
+    )))
+  })
+})
+
+
+describe("atlas_region_contextual with subcortical atlas", {
+  it("removes region from core/palette but keeps sf geometry", {
+    result <- atlas_region_contextual(aseg, "Thalamus")
+    expect_false(any(grepl(
+      "Thalamus", result$core$region, ignore.case = TRUE
+    )))
+    expect_false(any(grepl(
+      "Thalamus", names(result$palette), ignore.case = TRUE
+    )))
+    expect_s3_class(result$data, "ggseg_data_subcortical")
+  })
+})
+
+
+describe("atlas_region_keep with subcortical atlas", {
+  it("keeps only matching regions", {
+    result <- atlas_region_keep(aseg, "hippocampus")
+    expect_true(all(grepl(
+      "hippocampus", result$core$region, ignore.case = TRUE
+    )))
+    expect_s3_class(result$data, "ggseg_data_subcortical")
+  })
+})
+
+
+describe("atlas_view_remove_region matching by region", {
+  it("removes region geometry via region column match", {
+    atlas <- make_test_atlas()
+    result <- atlas_view_remove_region(atlas, "frontal", match_on = "region")
+    remaining_labels <- result$data$sf$label
+    expect_false("lh_frontal" %in% remaining_labels)
+    expect_false("rh_frontal" %in% remaining_labels)
+    expect_true("lh_parietal" %in% remaining_labels)
+  })
+
+  it("warns and returns NULL sf when all geometries removed", {
+    atlas <- make_test_atlas()
+    expect_warning(
+      result <- atlas_view_remove_region(atlas, ".*", match_on = "label"),
+      "All region geometries removed"
+    )
+  })
+})
+
+
+describe("atlas_view_reorder with nonexistent views", {
+  it("appends unmatched order entries but still reorders", {
+    atlas <- make_test_atlas()
+    result <- atlas_view_reorder(atlas, c("nonexistent"))
+    expect_s3_class(result, "ggseg_atlas")
+  })
+})
+
+
+describe("atlas_region_remove with tract atlas", {
+  it("removes matching regions from tract core and palette", {
+    result <- atlas_region_remove(tracula, "corticospinal")
+    expect_false(any(grepl(
+      "corticospinal", result$core$region,
+      ignore.case = TRUE
+    )))
+    expect_s3_class(result$data, "ggseg_data_tract")
+  })
+
+  it("removes sf labels matching the pattern directly", {
+    result <- atlas_region_remove(tracula, "cst")
+    remaining_sf <- result$data$sf$label
+    expect_false(any(grepl(
+      "cst", remaining_sf, ignore.case = TRUE
+    )))
+  })
+})
+
+
+describe("atlas_region_contextual with tract atlas", {
+  it("keeps sf but removes from core/palette", {
+    result <- atlas_region_contextual(tracula, "corticospinal")
+    expect_false(any(grepl(
+      "corticospinal", result$core$region,
+      ignore.case = TRUE
+    )))
+    expect_s3_class(result$data, "ggseg_data_tract")
+  })
+})
+
+
+describe("atlas_region_keep with tract atlas", {
+  it("keeps only matching regions", {
+    result <- atlas_region_keep(tracula, "corticospinal")
+    expect_true(all(grepl(
+      "corticospinal", result$core$region,
+      ignore.case = TRUE
+    )))
+    expect_s3_class(result$data, "ggseg_data_tract")
+  })
+})
+
+
+describe("guess_type edge cases", {
+  it("returns subcortical when view column has no medial/lateral", {
+    x <- data.frame(view = c("axial", "coronal"))
+    expect_warning(
+      result <- guess_type(x),
+      "Atlas type not set"
+    )
+    expect_equal(result, "subcortical")
+  })
+
+  it("returns subcortical when no view info at all", {
+    x <- data.frame(a = 1)
+    expect_warning(
+      result <- guess_type(x),
+      "Atlas type not set"
+    )
+    expect_equal(result, "subcortical")
+  })
+
+  it("reads views from x$sf$view for ggseg_atlas with legacy sf field", {
+    sf_geom <- sf::st_sf(
+      label = "lh_frontal", view = "lateral",
+      geometry = sf::st_sfc(make_polygon())
+    )
+    core <- data.frame(
+      hemi = "left", region = "frontal", label = "lh_frontal"
+    )
+    atlas <- ggseg_atlas(
+      atlas = "test", type = "cortical",
+      core = core,
+      data = ggseg_data_cortical(sf = sf_geom)
+    )
+    atlas$sf <- sf_geom
+    atlas$type <- NULL
+    expect_warning(
+      result <- guess_type(atlas),
+      "Atlas type not set"
+    )
+    expect_equal(result, "cortical")
+  })
+})
+
+
+describe("brain_atlas S3 method dispatch", {
+  it("atlas_regions works on brain_atlas class", {
+    atlas <- dk
+    class(atlas) <- c("brain_atlas", "list")
+    result <- atlas_regions(atlas)
+    expect_type(result, "character")
+    expect_true(length(result) > 0)
+  })
+
+  it("atlas_labels works on brain_atlas class", {
+    atlas <- dk
+    class(atlas) <- c("brain_atlas", "list")
+    result <- atlas_labels(atlas)
+    expect_type(result, "character")
+    expect_true(length(result) > 0)
+  })
+
+  it("atlas_type works on brain_atlas class", {
+    atlas <- dk
+    class(atlas) <- c("brain_atlas", "list")
+    result <- atlas_type(atlas)
+    expect_equal(result, "cortical")
+  })
+})
+
+
+describe("atlas_region_remove with no sf data", {
+  it("returns NULL sf when atlas has no sf", {
+    core <- data.frame(
+      hemi = c("left", "right"),
+      region = c("frontal", "parietal"),
+      label = c("lh_frontal", "rh_parietal")
+    )
+    vertices <- data.frame(
+      label = c("lh_frontal", "rh_parietal")
+    )
+    vertices$vertices <- list(1L:3L, 4L:6L)
+    atlas <- ggseg_atlas(
+      atlas = "test", type = "cortical",
+      core = core,
+      data = ggseg_data_cortical(vertices = vertices)
+    )
+    result <- atlas_region_remove(atlas, "frontal")
+    expect_null(result$data$sf)
+    expect_equal(nrow(result$core), 1)
   })
 })

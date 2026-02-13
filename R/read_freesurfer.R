@@ -130,6 +130,7 @@ read_freesurfer_table <- function(path, measure = NULL, ...) {
 #' helper function to easily grab subject information from directory path
 #' @param path file path
 #' @noRd
+#' @keywords internal
 find_subject_fromdir <- function(path) {
   strsplit(path, "/")[[1]][2]
 }
@@ -138,6 +139,7 @@ find_subject_fromdir <- function(path) {
 #'
 #' @param path file path
 #' @noRd
+#' @keywords internal
 find_hemi_fromfile <- function(path) {
   strsplit(basename(path), "\\.")[[1]][1]
 }

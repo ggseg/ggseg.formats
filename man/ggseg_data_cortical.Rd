@@ -25,14 +25,10 @@ vertex indices that map regions to vertices on a shared brain surface mesh
 (e.g., fsaverage5).
 }
 \examples{
-\dontrun{
 data <- ggseg_data_cortical(
-  sf = sf_geometry,
   vertices = data.frame(
     label = c("bankssts", "caudalanteriorcingulate"),
-    vertices = I(list(c(1, 2, 3), c(4, 5, 6)))
+    vertices = I(list(c(1L, 2L, 3L), c(4L, 5L, 6L)))
   )
 )
 }
-}
-\keyword{internal}
