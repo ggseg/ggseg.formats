@@ -4,6 +4,8 @@
 
 
     <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
+    <a href="https://ggseg.github.io" class="external-link">
+  <img src="ggsegverse-logo.png" id="ggsegverse-logo" alt="ggsegverse"></a>
 
     <a class="navbar-brand me-2" href="../index.html">ggseg.formats</a>
 
@@ -53,19 +55,35 @@
   </main></div>
 
 
-    <footer><div class="pkgdown-footer-left">
-  <p>Developed by Athanasia Mo Mowinckel.</p>
-</div>
+    <footer><div class="ggsegverse-footer py-3">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap">
+    <div class="d-flex align-items-center">
+      <a href="https://ggseg.github.io" class="external-link me-3">
+        <img src="ggsegverse-logo.png" alt="ggsegverse" height="40"></a>
+      <span class="text-muted">
+        Part of the <a href="https://ggseg.github.io" class="external-link"><strong>ggsegverse</strong></a>
+        — Gross Geometry Brain Segmentation Universe
+      </span>
+    </div>
+    <div class="text-muted">
+      Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
 
-<div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+    </div>
+  </div>
 </div>
 
     </footer></div>
 
 
 
-
-
-  </body></html>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var brand = document.querySelector(".navbar-brand");
+    if (!brand) return;
+    var root = brand.getAttribute("href").replace("index.html", "");
+    document.querySelectorAll(
+      '#ggsegverse-logo, .ggsegverse-footer img[alt="ggsegverse"]'
+    ).forEach(function(img) { img.src = root + "ggsegverse-logo.png"; });
+  });
+</script></body></html>
 

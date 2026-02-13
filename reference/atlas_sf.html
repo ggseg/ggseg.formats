@@ -4,6 +4,8 @@
 
 
     <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
+    <a href="https://ggseg.github.io" class="external-link">
+  <img src="ggsegverse-logo.png" id="ggsegverse-logo" alt="ggsegverse"></a>
 
     <a class="navbar-brand me-2" href="../index.html">ggseg.formats</a>
 
@@ -65,23 +67,64 @@
     <p>sf data.frame ready for plotting</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sf_data</span> <span class="op">&lt;-</span> <span class="fu">atlas_sf</span><span class="op">(</span><span class="va">dk</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sf_data</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 6 features and 6 fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTIPOLYGON</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 252.3839 ymin: 20.30279 xmax: 2552.774 ymax: 375.349</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        label     view hemi                            region</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                lh_bankssts inferior left banks of superior temporal sulcus</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                lh_bankssts  lateral left banks of superior temporal sulcus</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                lh_bankssts superior left banks of superior temporal sulcus</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 lh_caudalanteriorcingulate   medial left         caudal anterior cingulate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     lh_caudalmiddlefrontal inferior left             caudal middle frontal</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     lh_caudalmiddlefrontal  lateral left             caudal middle frontal</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        lobe                       geometry  colour</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  temporal MULTIPOLYGON (((534.4782 21... #196428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  temporal MULTIPOLYGON (((1121.478 12... #196428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  temporal MULTIPOLYGON (((2448.464 20... #196428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 cingulate MULTIPOLYGON (((1921.971 20... #7D64A0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   frontal MULTIPOLYGON (((272.7879 22... #641900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   frontal MULTIPOLYGON (((911.758 248... #641900</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
 
-    <footer><div class="pkgdown-footer-left">
-  <p>Developed by Athanasia Mo Mowinckel.</p>
-</div>
+    <footer><div class="ggsegverse-footer py-3">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap">
+    <div class="d-flex align-items-center">
+      <a href="https://ggseg.github.io" class="external-link me-3">
+        <img src="ggsegverse-logo.png" alt="ggsegverse" height="40"></a>
+      <span class="text-muted">
+        Part of the <a href="https://ggseg.github.io" class="external-link"><strong>ggsegverse</strong></a>
+        — Gross Geometry Brain Segmentation Universe
+      </span>
+    </div>
+    <div class="text-muted">
+      Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
 
-<div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+    </div>
+  </div>
 </div>
 
     </footer></div>
 
 
 
-
-
-  </body></html>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var brand = document.querySelector(".navbar-brand");
+    if (!brand) return;
+    var root = brand.getAttribute("href").replace("index.html", "");
+    document.querySelectorAll(
+      '#ggsegverse-logo, .ggsegverse-footer img[alt="ggsegverse"]'
+    ).forEach(function(img) { img.src = root + "ggsegverse-logo.png"; });
+  });
+</script></body></html>
 

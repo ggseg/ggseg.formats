@@ -6,6 +6,8 @@ use individual 3D meshes for each structure (e.g., hippocampus, amygdala)."></he
 
 
     <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
+    <a href="https://ggseg.github.io" class="external-link">
+  <img src="ggsegverse-logo.png" id="ggsegverse-logo" alt="ggsegverse"></a>
 
     <a class="navbar-brand me-2" href="../index.html">ggseg.formats</a>
 
@@ -80,8 +82,7 @@ Each mesh is a list with:</p><ul><li><p>vertices: data.frame with x, y, z column
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">ggseg_data_subcortical</span><span class="op">(</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">ggseg_data_subcortical</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  meshes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    label <span class="op">=</span> <span class="st">"hippocampus_left"</span>,</span></span>
 <span class="r-in"><span>    mesh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
@@ -90,26 +91,41 @@ Each mesh is a list with:</p><ul><li><p>vertices: data.frame with x, y, z column
 <span class="r-in"><span>    <span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
 
-    <footer><div class="pkgdown-footer-left">
-  <p>Developed by Athanasia Mo Mowinckel.</p>
-</div>
+    <footer><div class="ggsegverse-footer py-3">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap">
+    <div class="d-flex align-items-center">
+      <a href="https://ggseg.github.io" class="external-link me-3">
+        <img src="ggsegverse-logo.png" alt="ggsegverse" height="40"></a>
+      <span class="text-muted">
+        Part of the <a href="https://ggseg.github.io" class="external-link"><strong>ggsegverse</strong></a>
+        — Gross Geometry Brain Segmentation Universe
+      </span>
+    </div>
+    <div class="text-muted">
+      Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
 
-<div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+    </div>
+  </div>
 </div>
 
     </footer></div>
 
 
 
-
-
-  </body></html>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var brand = document.querySelector(".navbar-brand");
+    if (!brand) return;
+    var root = brand.getAttribute("href").replace("index.html", "");
+    document.querySelectorAll(
+      '#ggsegverse-logo, .ggsegverse-footer img[alt="ggsegverse"]'
+    ).forEach(function(img) { img.src = root + "ggsegverse-logo.png"; });
+  });
+</script></body></html>
 

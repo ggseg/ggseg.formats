@@ -149,12 +149,32 @@ Modified `ggseg_atlas` object
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-atlas <- atlas |>
-  atlas_region_remove("White-Matter") |>
-  atlas_region_contextual("cortex") |>
-  atlas_view_keep(c("axial_3", "coronal_2", "sagittal")) |>
-  atlas_view_remove_small(min_area = 50) |>
-  atlas_view_gather()
-} # }
+dk |>
+  atlas_region_remove("bankssts") |>
+  atlas_region_keep("frontal", match_on = "region")
+#> 
+#> ── dk ggseg atlas ──────────────────────────────────────────────────────────────
+#> Type: cortical
+#> Regions: 6
+#> Hemispheres: left, right
+#> Views: inferior, lateral, medial, superior
+#> Palette: ✔
+#> Rendering: ✔ ggseg
+#> ✔ ggseg3d (vertices)
+#> ────────────────────────────────────────────────────────────────────────────────
+#> # A tibble: 12 × 4
+#>    hemi  region                 label                   lobe   
+#>    <chr> <chr>                  <chr>                   <chr>  
+#>  1 left  caudal middle frontal  lh_caudalmiddlefrontal  frontal
+#>  2 left  lateral orbitofrontal  lh_lateralorbitofrontal frontal
+#>  3 left  medial orbitofrontal   lh_medialorbitofrontal  frontal
+#>  4 left  rostral middle frontal lh_rostralmiddlefrontal frontal
+#>  5 left  superior frontal       lh_superiorfrontal      frontal
+#>  6 left  frontal pole           lh_frontalpole          frontal
+#>  7 right caudal middle frontal  rh_caudalmiddlefrontal  frontal
+#>  8 right lateral orbitofrontal  rh_lateralorbitofrontal frontal
+#>  9 right medial orbitofrontal   rh_medialorbitofrontal  frontal
+#> 10 right rostral middle frontal rh_rostralmiddlefrontal frontal
+#> 11 right superior frontal       rh_superiorfrontal      frontal
+#> 12 right frontal pole           rh_frontalpole          frontal
 ```

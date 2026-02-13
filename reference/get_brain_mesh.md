@@ -36,3 +36,17 @@ get_brain_mesh(
 
 A list with `vertices` (data.frame with x, y, z) and `faces` (data.frame
 with i, j, k), or NULL if the mesh is not available.
+
+## Examples
+
+``` r
+mesh <- get_brain_mesh("lh")
+head(mesh$vertices)
+#>            x         y         z
+#> 1  -5.838037   2.50201 57.647400
+#> 2  16.432404 -64.17524 54.938030
+#> 3  30.062569  16.55329 43.195202
+#> 4   5.290642  92.21619 13.272218
+#> 5 -36.140617  24.74327 -2.762159
+#> 6 -28.666910 -40.43227 32.491753
+```

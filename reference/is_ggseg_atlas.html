@@ -8,6 +8,8 @@ carries the right class but fails validation returns FALSE."></head><body>
 
 
     <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
+    <a href="https://ggseg.github.io" class="external-link">
+  <img src="ggsegverse-logo.png" id="ggsegverse-logo" alt="ggsegverse"></a>
 
     <a class="navbar-brand me-2" href="../index.html">ggseg.formats</a>
 
@@ -79,23 +81,51 @@ carries the right class but fails validation returns <code>FALSE</code>.</p>
     <p>logical</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">is_ggseg_atlas</span><span class="op">(</span><span class="va">dk</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span><span class="fu">is_cortical_atlas</span><span class="op">(</span><span class="va">dk</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span><span class="fu">is_subcortical_atlas</span><span class="op">(</span><span class="va">aseg</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span><span class="fu">is_tract_atlas</span><span class="op">(</span><span class="va">tracula</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
 
-    <footer><div class="pkgdown-footer-left">
-  <p>Developed by Athanasia Mo Mowinckel.</p>
-</div>
+    <footer><div class="ggsegverse-footer py-3">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap">
+    <div class="d-flex align-items-center">
+      <a href="https://ggseg.github.io" class="external-link me-3">
+        <img src="ggsegverse-logo.png" alt="ggsegverse" height="40"></a>
+      <span class="text-muted">
+        Part of the <a href="https://ggseg.github.io" class="external-link"><strong>ggsegverse</strong></a>
+        — Gross Geometry Brain Segmentation Universe
+      </span>
+    </div>
+    <div class="text-muted">
+      Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
 
-<div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+    </div>
+  </div>
 </div>
 
     </footer></div>
 
 
 
-
-
-  </body></html>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var brand = document.querySelector(".navbar-brand");
+    if (!brand) return;
+    var root = brand.getAttribute("href").replace("index.html", "");
+    document.querySelectorAll(
+      '#ggsegverse-logo, .ggsegverse-footer img[alt="ggsegverse"]'
+    ).forEach(function(img) { img.src = root + "ggsegverse-logo.png"; });
+  });
+</script></body></html>
 

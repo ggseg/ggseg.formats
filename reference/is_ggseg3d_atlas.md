@@ -17,3 +17,10 @@ is_ggseg3d_atlas(x)
 ## Value
 
 logical
+
+## Examples
+
+``` r
+is_ggseg3d_atlas(dk)
+#> [1] FALSE
+```

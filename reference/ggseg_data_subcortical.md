@@ -35,7 +35,6 @@ An object of class c("ggseg_data_subcortical", "ggseg_atlas_data")
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 data <- ggseg_data_subcortical(
   meshes = data.frame(
     label = "hippocampus_left",
@@ -45,5 +44,4 @@ data <- ggseg_data_subcortical(
     )))
   )
 )
-} # }
 ```

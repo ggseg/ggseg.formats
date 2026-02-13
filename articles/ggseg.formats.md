@@ -196,7 +196,7 @@ generate tube meshes for 3D:
 tracula$type
 #> [1] "tract"
 names(tracula$data)
-#> [1] "sf"            "centerlines"   "tube_radius"   "tube_segments"
+#> [1] "sf"          "centerlines"
 ```
 
 In every case the sf component drives 2D plotting and the type-specific

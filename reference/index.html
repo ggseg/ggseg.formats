@@ -4,6 +4,8 @@
 
 
     <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
+    <a href="https://ggseg.github.io" class="external-link">
+  <img src="ggsegverse-logo.png" id="ggsegverse-logo" alt="ggsegverse"></a>
 
     <a class="navbar-brand me-2" href="../index.html">ggseg.formats</a>
 
@@ -53,10 +55,52 @@
 
       <dl><dt>
 
+          <code><a href="ggseg_atlas.html">ggseg_atlas()</a></code> <code><a href="ggseg_atlas.html">brain_atlas()</a></code>
+
+        </dt>
+        <dd>Constructor for ggseg atlas</dd>
+
+        <dt>
+
+          <code><a href="ggseg_data_cortical.html">ggseg_data_cortical()</a></code> <code><a href="ggseg_data_cortical.html">brain_data_cortical()</a></code>
+
+        </dt>
+        <dd>Create cortical atlas data</dd>
+
+        <dt>
+
+          <code><a href="ggseg_data_subcortical.html">ggseg_data_subcortical()</a></code> <code><a href="ggseg_data_subcortical.html">brain_data_subcortical()</a></code>
+
+        </dt>
+        <dd>Create subcortical atlas data</dd>
+
+        <dt>
+
+          <code><a href="ggseg_data_tract.html">ggseg_data_tract()</a></code> <code><a href="ggseg_data_tract.html">brain_data_tract()</a></code>
+
+        </dt>
+        <dd>Create tract atlas data</dd>
+
+        <dt>
+
           <code><a href="is_ggseg3d_atlas.html">is_ggseg3d_atlas()</a></code>
 
         </dt>
         <dd>Check if object is a legacy ggseg3d atlas</dd>
+
+        <dt>
+
+          <code><a href="is_ggseg_atlas.html">is_ggseg_atlas()</a></code> <code><a href="is_ggseg_atlas.html">is_cortical_atlas()</a></code> <code><a href="is_ggseg_atlas.html">is_subcortical_atlas()</a></code> <code><a href="is_ggseg_atlas.html">is_tract_atlas()</a></code> <code><a href="is_ggseg_atlas.html">is_brain_atlas()</a></code>
+
+        </dt>
+        <dd>Check ggseg atlas class</dd>
+
+        <dt>
+
+          <code><a href="as_ggseg_atlas.html">as_ggseg_atlas()</a></code> <code><a href="as_ggseg_atlas.html">as_brain_atlas()</a></code>
+
+        </dt>
+        <dd>Coerce to ggseg atlas</dd>
       </dl></div><div class="section level2">
       <h2 id="legacy-conversion">Legacy conversion<a class="anchor" aria-label="anchor" href="#legacy-conversion"></a></h2>
 
@@ -73,6 +117,83 @@
           <span class="badge lifecycle lifecycle-superseded">superseded</span>
         </dt>
         <dd>Convert legacy ggseg atlases to ggseg_atlas format</dd>
+
+        <dt>
+
+          <code><a href="as_ggseg_atlas.html">as_ggseg_atlas()</a></code> <code><a href="as_ggseg_atlas.html">as_brain_atlas()</a></code>
+
+        </dt>
+        <dd>Coerce to ggseg atlas</dd>
+
+        <dt>
+
+          <code><a href="atlas_labels.html">atlas_labels()</a></code> <code><a href="atlas_labels.html">brain_labels()</a></code>
+
+        </dt>
+        <dd>Extract unique labels from an atlas</dd>
+
+        <dt>
+
+          <code><a href="atlas_palette.html">atlas_palette()</a></code> <code><a href="atlas_palette.html">brain_pal()</a></code>
+
+        </dt>
+        <dd>Get atlas palette</dd>
+
+        <dt>
+
+          <code><a href="atlas_regions.html">atlas_regions()</a></code> <code><a href="atlas_regions.html">brain_regions()</a></code>
+
+        </dt>
+        <dd>Extract unique region names from an atlas</dd>
+
+        <dt>
+
+          <code><a href="atlas_views.html">atlas_views()</a></code> <code><a href="atlas_views.html">brain_views()</a></code>
+
+        </dt>
+        <dd>Get available views in atlas</dd>
+
+        <dt>
+
+          <code><a href="get_brain_mesh.html">get_brain_mesh()</a></code>
+
+        </dt>
+        <dd>Get brain surface mesh</dd>
+
+        <dt>
+
+          <code><a href="ggseg_atlas.html">ggseg_atlas()</a></code> <code><a href="ggseg_atlas.html">brain_atlas()</a></code>
+
+        </dt>
+        <dd>Constructor for ggseg atlas</dd>
+
+        <dt>
+
+          <code><a href="ggseg_data_cortical.html">ggseg_data_cortical()</a></code> <code><a href="ggseg_data_cortical.html">brain_data_cortical()</a></code>
+
+        </dt>
+        <dd>Create cortical atlas data</dd>
+
+        <dt>
+
+          <code><a href="ggseg_data_subcortical.html">ggseg_data_subcortical()</a></code> <code><a href="ggseg_data_subcortical.html">brain_data_subcortical()</a></code>
+
+        </dt>
+        <dd>Create subcortical atlas data</dd>
+
+        <dt>
+
+          <code><a href="ggseg_data_tract.html">ggseg_data_tract()</a></code> <code><a href="ggseg_data_tract.html">brain_data_tract()</a></code>
+
+        </dt>
+        <dd>Create tract atlas data</dd>
+
+        <dt>
+
+          <code><a href="is_ggseg_atlas.html">is_ggseg_atlas()</a></code> <code><a href="is_ggseg_atlas.html">is_cortical_atlas()</a></code> <code><a href="is_ggseg_atlas.html">is_subcortical_atlas()</a></code> <code><a href="is_ggseg_atlas.html">is_tract_atlas()</a></code> <code><a href="is_ggseg_atlas.html">is_brain_atlas()</a></code>
+
+        </dt>
+        <dd>Check ggseg atlas class</dd>
       </dl></div><div class="section level2">
       <h2 id="accessors">Accessors<a class="anchor" aria-label="anchor" href="#accessors"></a></h2>
 
@@ -84,6 +205,13 @@
 
 
       <dl><dt>
+
+          <code><a href="atlas_labels.html">atlas_labels()</a></code> <code><a href="atlas_labels.html">brain_labels()</a></code>
+
+        </dt>
+        <dd>Extract unique labels from an atlas</dd>
+
+        <dt>
 
           <code><a href="atlas_manipulation.html">atlas_region_remove()</a></code> <code><a href="atlas_manipulation.html">atlas_region_contextual()</a></code> <code><a href="atlas_manipulation.html">atlas_region_rename()</a></code> <code><a href="atlas_manipulation.html">atlas_region_keep()</a></code> <code><a href="atlas_manipulation.html">atlas_core_add()</a></code> <code><a href="atlas_manipulation.html">atlas_view_remove()</a></code> <code><a href="atlas_manipulation.html">atlas_view_keep()</a></code> <code><a href="atlas_manipulation.html">atlas_view_remove_region()</a></code> <code><a href="atlas_manipulation.html">atlas_view_remove_small()</a></code> <code><a href="atlas_manipulation.html">atlas_view_gather()</a></code> <code><a href="atlas_manipulation.html">atlas_view_reorder()</a></code>
 
@@ -99,6 +227,20 @@
 
         <dt>
 
+          <code><a href="atlas_palette.html">atlas_palette()</a></code> <code><a href="atlas_palette.html">brain_pal()</a></code>
+
+        </dt>
+        <dd>Get atlas palette</dd>
+
+        <dt>
+
+          <code><a href="atlas_regions.html">atlas_regions()</a></code> <code><a href="atlas_regions.html">brain_regions()</a></code>
+
+        </dt>
+        <dd>Extract unique region names from an atlas</dd>
+
+        <dt>
+
           <code><a href="atlas_sf.html">atlas_sf()</a></code>
 
         </dt>
@@ -106,10 +248,24 @@
 
         <dt>
 
+          <code><a href="atlas_type.html">atlas_type()</a></code>
+
+        </dt>
+        <dd>Detect atlas type</dd>
+
+        <dt>
+
           <code><a href="atlas_vertices.html">atlas_vertices()</a></code>
 
         </dt>
         <dd>Get atlas vertices for 3D rendering</dd>
+
+        <dt>
+
+          <code><a href="atlas_views.html">atlas_views()</a></code> <code><a href="atlas_views.html">brain_views()</a></code>
+
+        </dt>
+        <dd>Get available views in atlas</dd>
       </dl></div><div class="section level2">
       <h2 id="atlas-manipulation">Atlas manipulation<a class="anchor" aria-label="anchor" href="#atlas-manipulation"></a></h2>
 
@@ -191,19 +347,35 @@
     </nav></aside></div>
 
 
-    <footer><div class="pkgdown-footer-left">
-  <p>Developed by Athanasia Mo Mowinckel.</p>
-</div>
+    <footer><div class="ggsegverse-footer py-3">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap">
+    <div class="d-flex align-items-center">
+      <a href="https://ggseg.github.io" class="external-link me-3">
+        <img src="ggsegverse-logo.png" alt="ggsegverse" height="40"></a>
+      <span class="text-muted">
+        Part of the <a href="https://ggseg.github.io" class="external-link"><strong>ggsegverse</strong></a>
+        — Gross Geometry Brain Segmentation Universe
+      </span>
+    </div>
+    <div class="text-muted">
+      Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
 
-<div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+    </div>
+  </div>
 </div>
 
     </footer></div>
 
 
 
-
-
-  </body></html>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var brand = document.querySelector(".navbar-brand");
+    if (!brand) return;
+    var root = brand.getAttribute("href").replace("index.html", "");
+    document.querySelectorAll(
+      '#ggsegverse-logo, .ggsegverse-footer img[alt="ggsegverse"]'
+    ).forEach(function(img) { img.src = root + "ggsegverse-logo.png"; });
+  });
+</script></body></html>
 

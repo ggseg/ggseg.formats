@@ -19,3 +19,11 @@ as_brain_atlas(x)
 ## Value
 
 an object of class 'ggseg_atlas'
+
+## Examples
+
+``` r
+atlas <- as_ggseg_atlas(dk)
+is_ggseg_atlas(atlas)
+#> [1] TRUE
+```

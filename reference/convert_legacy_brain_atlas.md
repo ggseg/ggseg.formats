@@ -79,12 +79,8 @@ A `ggseg_atlas` object.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-# Convert a 3D atlas (quick, uses existing data)
-new_atlas <- convert_legacy_brain_atlas(atlas_3d = dk_3d)
-
-# Merge 2D and 3D atlases
-new_atlas <- convert_legacy_brain_atlas(atlas_2d = dk, atlas_3d = dk_3d)
-
-} # }
+# \donttest{
+new_atlas <- convert_legacy_brain_atlas(atlas_2d = dk)
+#> ℹ Using existing vertex data from 2D atlas.
+# }
 ```
