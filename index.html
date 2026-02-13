@@ -83,129 +83,28 @@
 <strong>tracula</strong> — TRACULA white matter tract atlas</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ggseg/ggseg.formats" class="external-link">ggseg.formats</a></span><span class="op">)</span></span>
-<span><span class="va">dk</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── dk ggseg atlas ──────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; Type: cortical</span></span>
-<span><span class="co">#&gt; Regions: 35</span></span>
-<span><span class="co">#&gt; Hemispheres: left, right</span></span>
-<span><span class="co">#&gt; Views: inferior, lateral, medial, superior</span></span>
-<span><span class="co">#&gt; Palette: ✔</span></span>
-<span><span class="co">#&gt; Rendering: ✔ ggseg</span></span>
-<span><span class="co">#&gt; ✔ ggseg3d (vertices)</span></span>
-<span><span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; # A tibble: 70 × 4</span></span>
-<span><span class="co">#&gt;    hemi  region                            label                       lobe     </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt;                             &lt;chr&gt;                       &lt;chr&gt;    </span></span>
-<span><span class="co">#&gt;  1 left  banks of superior temporal sulcus lh_bankssts                 temporal </span></span>
-<span><span class="co">#&gt;  2 left  caudal anterior cingulate         lh_caudalanteriorcingulate  cingulate</span></span>
-<span><span class="co">#&gt;  3 left  caudal middle frontal             lh_caudalmiddlefrontal      frontal  </span></span>
-<span><span class="co">#&gt;  4 left  corpus callosum                   lh_corpuscallosum           white ma…</span></span>
-<span><span class="co">#&gt;  5 left  cuneus                            lh_cuneus                   occipital</span></span>
-<span><span class="co">#&gt;  6 left  entorhinal                        lh_entorhinal               temporal </span></span>
-<span><span class="co">#&gt;  7 left  fusiform                          lh_fusiform                 temporal </span></span>
-<span><span class="co">#&gt;  8 left  inferior parietal                 lh_inferiorparietal         parietal </span></span>
-<span><span class="co">#&gt;  9 left  inferior temporal                 lh_inferiortemporal         temporal </span></span>
-<span><span class="co">#&gt; 10 left  isthmus cingulate                 lh_isthmuscingulate         cingulate</span></span>
-<span><span class="co">#&gt; 11 left  lateral occipital                 lh_lateraloccipital         occipital</span></span>
-<span><span class="co">#&gt; 12 left  lateral orbitofrontal             lh_lateralorbitofrontal     frontal  </span></span>
-<span><span class="co">#&gt; 13 left  lingual                           lh_lingual                  occipital</span></span>
-<span><span class="co">#&gt; 14 left  medial orbitofrontal              lh_medialorbitofrontal      frontal  </span></span>
-<span><span class="co">#&gt; 15 left  middle temporal                   lh_middletemporal           temporal </span></span>
-<span><span class="co">#&gt; 16 left  parahippocampal                   lh_parahippocampal          temporal </span></span>
-<span><span class="co">#&gt; 17 left  paracentral                       lh_paracentral              frontal  </span></span>
-<span><span class="co">#&gt; 18 left  pars opercularis                  lh_parsopercularis          frontal  </span></span>
-<span><span class="co">#&gt; 19 left  pars orbitalis                    lh_parsorbitalis            frontal  </span></span>
-<span><span class="co">#&gt; 20 left  pars triangularis                 lh_parstriangularis         frontal  </span></span>
-<span><span class="co">#&gt; 21 left  pericalcarine                     lh_pericalcarine            occipital</span></span>
-<span><span class="co">#&gt; 22 left  postcentral                       lh_postcentral              parietal </span></span>
-<span><span class="co">#&gt; 23 left  posterior cingulate               lh_posteriorcingulate       cingulate</span></span>
-<span><span class="co">#&gt; 24 left  precentral                        lh_precentral               frontal  </span></span>
-<span><span class="co">#&gt; 25 left  precuneus                         lh_precuneus                parietal </span></span>
-<span><span class="co">#&gt; 26 left  rostral anterior cingulate        lh_rostralanteriorcingulate cingulate</span></span>
-<span><span class="co">#&gt; 27 left  rostral middle frontal            lh_rostralmiddlefrontal     frontal  </span></span>
-<span><span class="co">#&gt; 28 left  superior frontal                  lh_superiorfrontal          frontal  </span></span>
-<span><span class="co">#&gt; 29 left  superior parietal                 lh_superiorparietal         parietal </span></span>
-<span><span class="co">#&gt; 30 left  superior temporal                 lh_superiortemporal         temporal </span></span>
-<span><span class="co">#&gt; 31 left  supramarginal                     lh_supramarginal            parietal </span></span>
-<span><span class="co">#&gt; 32 left  frontal pole                      lh_frontalpole              frontal  </span></span>
-<span><span class="co">#&gt; 33 left  temporal pole                     lh_temporalpole             temporal </span></span>
-<span><span class="co">#&gt; 34 left  transverse temporal               lh_transversetemporal       temporal </span></span>
-<span><span class="co">#&gt; 35 left  insula                            lh_insula                   insula   </span></span>
-<span><span class="co">#&gt; 36 right banks of superior temporal sulcus rh_bankssts                 temporal </span></span>
-<span><span class="co">#&gt; 37 right caudal anterior cingulate         rh_caudalanteriorcingulate  cingulate</span></span>
-<span><span class="co">#&gt; 38 right caudal middle frontal             rh_caudalmiddlefrontal      frontal  </span></span>
-<span><span class="co">#&gt; 39 right corpus callosum                   rh_corpuscallosum           white ma…</span></span>
-<span><span class="co">#&gt; 40 right cuneus                            rh_cuneus                   occipital</span></span>
-<span><span class="co">#&gt; 41 right entorhinal                        rh_entorhinal               temporal </span></span>
-<span><span class="co">#&gt; 42 right fusiform                          rh_fusiform                 temporal </span></span>
-<span><span class="co">#&gt; 43 right inferior parietal                 rh_inferiorparietal         parietal </span></span>
-<span><span class="co">#&gt; 44 right inferior temporal                 rh_inferiortemporal         temporal </span></span>
-<span><span class="co">#&gt; 45 right isthmus cingulate                 rh_isthmuscingulate         cingulate</span></span>
-<span><span class="co">#&gt; 46 right lateral occipital                 rh_lateraloccipital         occipital</span></span>
-<span><span class="co">#&gt; 47 right lateral orbitofrontal             rh_lateralorbitofrontal     frontal  </span></span>
-<span><span class="co">#&gt; 48 right lingual                           rh_lingual                  occipital</span></span>
-<span><span class="co">#&gt; 49 right medial orbitofrontal              rh_medialorbitofrontal      frontal  </span></span>
-<span><span class="co">#&gt; 50 right middle temporal                   rh_middletemporal           temporal </span></span>
-<span><span class="co">#&gt; 51 right parahippocampal                   rh_parahippocampal          temporal </span></span>
-<span><span class="co">#&gt; 52 right paracentral                       rh_paracentral              frontal  </span></span>
-<span><span class="co">#&gt; 53 right pars opercularis                  rh_parsopercularis          frontal  </span></span>
-<span><span class="co">#&gt; 54 right pars orbitalis                    rh_parsorbitalis            frontal  </span></span>
-<span><span class="co">#&gt; 55 right pars triangularis                 rh_parstriangularis         frontal  </span></span>
-<span><span class="co">#&gt; 56 right pericalcarine                     rh_pericalcarine            occipital</span></span>
-<span><span class="co">#&gt; 57 right postcentral                       rh_postcentral              parietal </span></span>
-<span><span class="co">#&gt; 58 right posterior cingulate               rh_posteriorcingulate       cingulate</span></span>
-<span><span class="co">#&gt; 59 right precentral                        rh_precentral               frontal  </span></span>
-<span><span class="co">#&gt; 60 right precuneus                         rh_precuneus                parietal </span></span>
-<span><span class="co">#&gt; 61 right rostral anterior cingulate        rh_rostralanteriorcingulate cingulate</span></span>
-<span><span class="co">#&gt; 62 right rostral middle frontal            rh_rostralmiddlefrontal     frontal  </span></span>
-<span><span class="co">#&gt; 63 right superior frontal                  rh_superiorfrontal          frontal  </span></span>
-<span><span class="co">#&gt; 64 right superior parietal                 rh_superiorparietal         parietal </span></span>
-<span><span class="co">#&gt; 65 right superior temporal                 rh_superiortemporal         temporal </span></span>
-<span><span class="co">#&gt; 66 right supramarginal                     rh_supramarginal            parietal </span></span>
-<span><span class="co">#&gt; 67 right frontal pole                      rh_frontalpole              frontal  </span></span>
-<span><span class="co">#&gt; 68 right temporal pole                     rh_temporalpole             temporal </span></span>
-<span><span class="co">#&gt; 69 right transverse temporal               rh_transversetemporal       temporal </span></span>
-<span><span class="co">#&gt; 70 right insula                            rh_insula                   insula</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ggseg/ggseg.formats" class="external-link">ggseg.formats</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dk</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot-dk-1.png" alt="" width="100%"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="reference/dk.html">dk</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot-dk-1.png" style="width:100.0%"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aseg</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot-aseg-1.png" alt="" width="100%"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="reference/aseg.html">aseg</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot-aseg-1.png" style="width:100.0%"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">tracula</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot-tracula-1.png" alt="" width="100%"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="reference/tracula.html">tracula</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot-tracula-1.png" style="width:100.0%"></p>
 </div>
 <div class="section level2">
 <h2 id="quick-example">Quick example<a class="anchor" aria-label="anchor" href="#quick-example"></a>
 </h2>
 <p>Atlas objects are designed for exploration and customisation. You can query regions, filter views, and pipe operations together:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">aseg</span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">aseg_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/aseg.html">aseg</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/atlas_manipulation.html">atlas_region_keep</a></span><span class="op">(</span><span class="st">"hippocampus|amygdala|thalamus"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/atlas_manipulation.html">atlas_view_keep</a></span><span class="op">(</span><span class="st">"sagittal"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/atlas_manipulation.html">atlas_view_keep</a></span><span class="op">(</span><span class="st">"coronal_3|axial_3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/atlas_manipulation.html">atlas_view_gather</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── aseg ggseg atlas ────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; Type: subcortical</span></span>
-<span><span class="co">#&gt; Regions: 3</span></span>
-<span><span class="co">#&gt; Hemispheres: left, right</span></span>
-<span><span class="co">#&gt; Views: sagittal</span></span>
-<span><span class="co">#&gt; Palette: ✔</span></span>
-<span><span class="co">#&gt; Rendering: ✔ ggseg</span></span>
-<span><span class="co">#&gt; ✔ ggseg3d (meshes)</span></span>
-<span><span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; # A tibble: 6 × 4</span></span>
-<span><span class="co">#&gt;   hemi  region      label             structure</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;             &lt;chr&gt;    </span></span>
-<span><span class="co">#&gt; 1 left  thalamus    Left-Thalamus     thalamus </span></span>
-<span><span class="co">#&gt; 2 left  hippocampus Left-Hippocampus  limbic   </span></span>
-<span><span class="co">#&gt; 3 left  amygdala    Left-Amygdala     limbic   </span></span>
-<span><span class="co">#&gt; 4 right thalamus    Right-Thalamus    thalamus </span></span>
-<span><span class="co">#&gt; 5 right hippocampus Right-Hippocampus limbic   </span></span>
-<span><span class="co">#&gt; 6 right amygdala    Right-Amygdala    limbic</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aseg_small</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-subset-aseg-1.png" style="width:100.0%"></p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
