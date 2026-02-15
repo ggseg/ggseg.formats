@@ -25,7 +25,7 @@
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ggseg/ggseg.formats" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ggsegverse/ggseg.formats" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch"><li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
@@ -41,7 +41,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Extract unique labels from an atlas</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ggseg/ggseg.formats/blob/main/R/atlas-utils.R" class="external-link"><code>R/atlas-utils.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ggsegverse/ggseg.formats/blob/main/R/atlas-utils.R" class="external-link"><code>R/atlas-utils.R</code></a></small>
       <div class="d-none name"><code>atlas_labels.Rd</code></div>
     </div>
 
@@ -108,15 +108,21 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [67] "rh_superiortemporal"         "rh_supramarginal"           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [69] "rh_temporalpole"             "rh_transversetemporal"      </span>
 <span class="r-in"><span><span class="fu">atlas_labels</span><span class="op">(</span><span class="fu"><a href="aseg.html">aseg</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Brain-Stem"           "CC_Anterior"          "CC_Central"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "CC_Mid_Anterior"      "CC_Mid_Posterior"     "CC_Posterior"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "Left-Accumbens-area"  "Left-Amygdala"        "Left-Caudate"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "Left-Hippocampus"     "Left-Pallidum"        "Left-Putamen"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "Left-Thalamus"        "Left-VentralDC"       "Left-choroid-plexus" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "Left-vessel"          "Optic-Chiasm"         "Right-Accumbens-area"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "Right-Amygdala"       "Right-Caudate"        "Right-Hippocampus"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22] "Right-Pallidum"       "Right-Putamen"        "Right-Thalamus"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "Right-VentralDC"      "Right-choroid-plexus" "Right-vessel"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Brain-Stem"              "CC_Anterior"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "CC_Central"              "CC_Mid_Anterior"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "CC_Mid_Posterior"        "CC_Posterior"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "Left-Accumbens-area"     "Left-Amygdala"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "Left-Caudate"            "Left-Cerebellum-Cortex" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "Left-Hippocampus"        "Left-Pallidum"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "Left-Putamen"            "Left-Thalamus"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "Left-VentralDC"          "Left-choroid-plexus"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "Left-vessel"             "Optic-Chiasm"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "Right-Accumbens-area"    "Right-Amygdala"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "Right-Caudate"           "Right-Cerebellum-Cortex"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "Right-Hippocampus"       "Right-Pallidum"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "Right-Putamen"           "Right-Thalamus"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "Right-VentralDC"         "Right-choroid-plexus"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "Right-vessel"           </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

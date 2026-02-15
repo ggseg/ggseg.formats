@@ -26,24 +26,26 @@ Named character vector of colours
 
 ``` r
 atlas_palette(aseg())
-#>        Left-Thalamus         Left-Caudate         Left-Putamen 
-#>            "#00760E"            "#7ABADC"            "#EC0DB0" 
-#>        Left-Pallidum           Brain-Stem     Left-Hippocampus 
-#>            "#0C30FF"            "#779FB0"            "#DCD814" 
-#>        Left-Amygdala  Left-Accumbens-area       Left-VentralDC 
-#>            "#67FFFF"            "#FFA500"            "#A52A2A" 
-#>          Left-vessel  Left-choroid-plexus       Right-Thalamus 
-#>            "#A020F0"            "#00C8C8"            "#00760E" 
-#>        Right-Caudate        Right-Putamen       Right-Pallidum 
-#>            "#7ABADC"            "#EC0DB0"            "#0D30FF" 
-#>    Right-Hippocampus       Right-Amygdala Right-Accumbens-area 
-#>            "#DCD814"            "#67FFFF"            "#FFA500" 
-#>      Right-VentralDC         Right-vessel Right-choroid-plexus 
-#>            "#A52A2A"            "#A020F0"            "#00C8DD" 
-#>         Optic-Chiasm         CC_Posterior     CC_Mid_Posterior 
-#>            "#EAA91E"            "#000040"            "#000070" 
-#>           CC_Central      CC_Mid_Anterior          CC_Anterior 
-#>            "#0000A0"            "#0000D0"            "#0000FF" 
+#>  Left-Cerebellum-Cortex           Left-Thalamus            Left-Caudate 
+#>               "#E69422"               "#00760E"               "#7ABADC" 
+#>            Left-Putamen           Left-Pallidum              Brain-Stem 
+#>               "#EC0DB0"               "#0C30FF"               "#779FB0" 
+#>        Left-Hippocampus           Left-Amygdala     Left-Accumbens-area 
+#>               "#DCD814"               "#67FFFF"               "#FFA500" 
+#>          Left-VentralDC             Left-vessel     Left-choroid-plexus 
+#>               "#A52A2A"               "#A020F0"               "#00C8C8" 
+#> Right-Cerebellum-Cortex          Right-Thalamus           Right-Caudate 
+#>               "#E69422"               "#00760E"               "#7ABADC" 
+#>           Right-Putamen          Right-Pallidum       Right-Hippocampus 
+#>               "#EC0DB0"               "#0D30FF"               "#DCD814" 
+#>          Right-Amygdala    Right-Accumbens-area         Right-VentralDC 
+#>               "#67FFFF"               "#FFA500"               "#A52A2A" 
+#>            Right-vessel    Right-choroid-plexus            Optic-Chiasm 
+#>               "#A020F0"               "#00C8DD"               "#EAA91E" 
+#>            CC_Posterior        CC_Mid_Posterior              CC_Central 
+#>               "#000040"               "#000070"               "#0000A0" 
+#>         CC_Mid_Anterior             CC_Anterior 
+#>               "#0000D0"               "#0000FF" 
 atlas_palette(dk())
 #>                 lh_bankssts  lh_caudalanteriorcingulate 
 #>                   "#196428"                   "#7D64A0" 

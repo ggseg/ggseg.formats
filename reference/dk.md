@@ -71,14 +71,14 @@ parcellating the human cerebral cortex. Cerebral Cortex, 14(1):11-22.
 
 ## See also
 
-[`aseg()`](https://ggseg.github.io/ggseg.formats/reference/aseg.md) for
-subcortical structures,
-[`ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.md)
+[`aseg()`](https://ggsegverse.github.io/ggseg.formats/reference/aseg.md)
+for subcortical structures,
+[`ggseg_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_atlas.md)
 for the atlas class constructor
 
 Other ggseg_atlases:
-[`aseg()`](https://ggseg.github.io/ggseg.formats/reference/aseg.md),
-[`tracula()`](https://ggseg.github.io/ggseg.formats/reference/tracula.md)
+[`aseg()`](https://ggsegverse.github.io/ggseg.formats/reference/aseg.md),
+[`tracula()`](https://ggsegverse.github.io/ggseg.formats/reference/tracula.md)
 
 ## Examples
 

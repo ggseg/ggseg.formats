@@ -1,8 +1,8 @@
 # ggseg.formats
 
 ggseg.formats provides the `ggseg_atlas` S3 class that powers the
-[ggseg](https://ggseg.github.io/ggseg/) ecosystem for 2D and 3D brain
-visualisation. It ships three bundled atlases, a set of accessor
+[ggseg](https://ggsegverse.github.io/ggseg/) ecosystem for 2D and 3D
+brain visualisation. It ships three bundled atlases, a set of accessor
 functions for querying atlas contents, and a pipe-friendly manipulation
 API for subsetting, renaming, and enriching atlas objects.
 
@@ -53,11 +53,11 @@ plot(aseg_small)
 
 ## Installation
 
-Install from the ggseg r-universe:
+Install from the ggsegverse r-universe:
 
 ``` r
 options(repos = c(
-    ggseg = 'https://ggseg.r-universe.dev',
+    ggsegverse = 'https://ggsegverse.r-universe.dev',
     CRAN = 'https://cloud.r-project.org'))
 
 install.packages('ggseg.formats')
@@ -72,9 +72,9 @@ devtools::install_github("ggseg/ggseg.formats")
 
 ## Learn more
 
-- [`vignette("ggseg.formats")`](https://ggseg.github.io/ggseg.formats/articles/ggseg.formats.md)
+- [`vignette("ggseg.formats")`](https://ggsegverse.github.io/ggseg.formats/articles/ggseg.formats.md)
   — understanding atlas structure and accessors
-- [`vignette("atlas-manipulation")`](https://ggseg.github.io/ggseg.formats/articles/atlas-manipulation.md)
+- [`vignette("atlas-manipulation")`](https://ggsegverse.github.io/ggseg.formats/articles/atlas-manipulation.md)
   — region, view, and metadata manipulation
 
 # Package index
@@ -83,105 +83,105 @@ devtools::install_github("ggseg/ggseg.formats")
 
 Create and inspect ggseg atlas objects.
 
-- [`ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.md)
-  [`brain_atlas()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.md)
+- [`ggseg_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_atlas.md)
+  [`brain_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_atlas.md)
   : Constructor for ggseg atlas
-- [`ggseg_data_cortical()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_cortical.md)
-  [`brain_data_cortical()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_cortical.md)
+- [`ggseg_data_cortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_cortical.md)
+  [`brain_data_cortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_cortical.md)
   : Create cortical atlas data
-- [`ggseg_data_subcortical()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_subcortical.md)
-  [`brain_data_subcortical()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_subcortical.md)
+- [`ggseg_data_subcortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_subcortical.md)
+  [`brain_data_subcortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_subcortical.md)
   : Create subcortical atlas data
-- [`ggseg_data_tract()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_tract.md)
-  [`brain_data_tract()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_tract.md)
+- [`ggseg_data_tract()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_tract.md)
+  [`brain_data_tract()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_tract.md)
   : Create tract atlas data
-- [`is_ggseg3d_atlas()`](https://ggseg.github.io/ggseg.formats/reference/is_ggseg3d_atlas.md)
+- [`is_ggseg3d_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/is_ggseg3d_atlas.md)
   : Check if object is a legacy ggseg3d atlas
-- [`is_ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
-  [`is_cortical_atlas()`](https://ggseg.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
-  [`is_subcortical_atlas()`](https://ggseg.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
-  [`is_tract_atlas()`](https://ggseg.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
-  [`is_brain_atlas()`](https://ggseg.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
+- [`is_ggseg_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
+  [`is_cortical_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
+  [`is_subcortical_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
+  [`is_tract_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
+  [`is_brain_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
   : Check ggseg atlas class
-- [`as_ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/as_ggseg_atlas.md)
-  [`as_brain_atlas()`](https://ggseg.github.io/ggseg.formats/reference/as_ggseg_atlas.md)
+- [`as_ggseg_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/as_ggseg_atlas.md)
+  [`as_brain_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/as_ggseg_atlas.md)
   : Coerce to ggseg atlas
 
 ## Legacy conversion
 
 Convert old ggseg/ggseg3d atlases to the unified ggseg_atlas format.
 
-- [`convert_legacy_brain_atlas()`](https://ggseg.github.io/ggseg.formats/reference/convert_legacy_brain_atlas.md)
-  [`unify_legacy_atlases()`](https://ggseg.github.io/ggseg.formats/reference/convert_legacy_brain_atlas.md)
+- [`convert_legacy_brain_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/convert_legacy_brain_atlas.md)
+  [`unify_legacy_atlases()`](https://ggsegverse.github.io/ggseg.formats/reference/convert_legacy_brain_atlas.md)
   **\[superseded\]** : Convert legacy ggseg atlases to ggseg_atlas
   format
-- [`as_ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/as_ggseg_atlas.md)
-  [`as_brain_atlas()`](https://ggseg.github.io/ggseg.formats/reference/as_ggseg_atlas.md)
+- [`as_ggseg_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/as_ggseg_atlas.md)
+  [`as_brain_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/as_ggseg_atlas.md)
   : Coerce to ggseg atlas
-- [`atlas_labels()`](https://ggseg.github.io/ggseg.formats/reference/atlas_labels.md)
-  [`brain_labels()`](https://ggseg.github.io/ggseg.formats/reference/atlas_labels.md)
+- [`atlas_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md)
+  [`brain_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md)
   : Extract unique labels from an atlas
-- [`atlas_regions()`](https://ggseg.github.io/ggseg.formats/reference/atlas_regions.md)
-  [`brain_regions()`](https://ggseg.github.io/ggseg.formats/reference/atlas_regions.md)
+- [`atlas_regions()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_regions.md)
+  [`brain_regions()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_regions.md)
   : Extract unique region names from an atlas
-- [`atlas_views()`](https://ggseg.github.io/ggseg.formats/reference/atlas_views.md)
-  [`brain_views()`](https://ggseg.github.io/ggseg.formats/reference/atlas_views.md)
+- [`atlas_views()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_views.md)
+  [`brain_views()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_views.md)
   : Get available views in atlas
-- [`get_brain_mesh()`](https://ggseg.github.io/ggseg.formats/reference/get_brain_mesh.md)
+- [`get_brain_mesh()`](https://ggsegverse.github.io/ggseg.formats/reference/get_brain_mesh.md)
   : Get brain surface mesh
-- [`ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.md)
-  [`brain_atlas()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.md)
+- [`ggseg_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_atlas.md)
+  [`brain_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_atlas.md)
   : Constructor for ggseg atlas
-- [`ggseg_data_cortical()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_cortical.md)
-  [`brain_data_cortical()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_cortical.md)
+- [`ggseg_data_cortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_cortical.md)
+  [`brain_data_cortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_cortical.md)
   : Create cortical atlas data
-- [`ggseg_data_subcortical()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_subcortical.md)
-  [`brain_data_subcortical()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_subcortical.md)
+- [`ggseg_data_subcortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_subcortical.md)
+  [`brain_data_subcortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_subcortical.md)
   : Create subcortical atlas data
-- [`ggseg_data_tract()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_tract.md)
-  [`brain_data_tract()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_tract.md)
+- [`ggseg_data_tract()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_tract.md)
+  [`brain_data_tract()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_tract.md)
   : Create tract atlas data
-- [`is_ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
-  [`is_cortical_atlas()`](https://ggseg.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
-  [`is_subcortical_atlas()`](https://ggseg.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
-  [`is_tract_atlas()`](https://ggseg.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
-  [`is_brain_atlas()`](https://ggseg.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
+- [`is_ggseg_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
+  [`is_cortical_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
+  [`is_subcortical_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
+  [`is_tract_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
+  [`is_brain_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
   : Check ggseg atlas class
 
 ## Accessors
 
 Query atlas contents without reaching into slots directly.
 
-- [`atlas_labels()`](https://ggseg.github.io/ggseg.formats/reference/atlas_labels.md)
-  [`brain_labels()`](https://ggseg.github.io/ggseg.formats/reference/atlas_labels.md)
+- [`atlas_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md)
+  [`brain_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md)
   : Extract unique labels from an atlas
-- [`atlas_region_remove()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_region_contextual()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_region_rename()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_region_keep()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_core_add()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_view_remove()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_view_keep()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_view_remove_region()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_view_remove_small()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_view_gather()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_view_reorder()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+- [`atlas_region_remove()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_region_contextual()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_region_rename()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_region_keep()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_core_add()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_remove()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_keep()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_remove_region()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_remove_small()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_gather()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_reorder()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   : Manipulate brain atlas regions and views
-- [`atlas_meshes()`](https://ggseg.github.io/ggseg.formats/reference/atlas_meshes.md)
+- [`atlas_meshes()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_meshes.md)
   : Get atlas meshes for 3D rendering
-- [`atlas_palette()`](https://ggseg.github.io/ggseg.formats/reference/atlas_palette.md)
+- [`atlas_palette()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_palette.md)
   : Get atlas palette
-- [`atlas_regions()`](https://ggseg.github.io/ggseg.formats/reference/atlas_regions.md)
-  [`brain_regions()`](https://ggseg.github.io/ggseg.formats/reference/atlas_regions.md)
+- [`atlas_regions()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_regions.md)
+  [`brain_regions()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_regions.md)
   : Extract unique region names from an atlas
-- [`atlas_sf()`](https://ggseg.github.io/ggseg.formats/reference/atlas_sf.md)
+- [`atlas_sf()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_sf.md)
   : Get atlas data for 2D rendering
-- [`atlas_type()`](https://ggseg.github.io/ggseg.formats/reference/atlas_type.md)
+- [`atlas_type()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_type.md)
   : Detect atlas type
-- [`atlas_vertices()`](https://ggseg.github.io/ggseg.formats/reference/atlas_vertices.md)
+- [`atlas_vertices()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_vertices.md)
   : Get atlas vertices for 3D rendering
-- [`atlas_views()`](https://ggseg.github.io/ggseg.formats/reference/atlas_views.md)
-  [`brain_views()`](https://ggseg.github.io/ggseg.formats/reference/atlas_views.md)
+- [`atlas_views()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_views.md)
+  [`brain_views()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_views.md)
   : Get available views in atlas
 
 ## Atlas manipulation
@@ -189,39 +189,39 @@ Query atlas contents without reaching into slots directly.
 Pipe-friendly functions for subsetting regions, managing views, and
 enriching metadata. All return a new `ggseg_atlas`.
 
-- [`atlas_region_remove()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_region_contextual()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_region_rename()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_region_keep()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_core_add()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_view_remove()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_view_keep()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_view_remove_region()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_view_remove_small()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_view_gather()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
-  [`atlas_view_reorder()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+- [`atlas_region_remove()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_region_contextual()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_region_rename()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_region_keep()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_core_add()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_remove()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_keep()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_remove_region()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_remove_small()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_gather()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_reorder()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   : Manipulate brain atlas regions and views
 
 ## Bundled atlases
 
 Ready-to-use atlases shipped with the package.
 
-- [`dk()`](https://ggseg.github.io/ggseg.formats/reference/dk.md) :
+- [`dk()`](https://ggsegverse.github.io/ggseg.formats/reference/dk.md) :
   Desikan-Killiany Cortical Atlas
-- [`aseg()`](https://ggseg.github.io/ggseg.formats/reference/aseg.md) :
-  FreeSurfer Automatic Subcortical Segmentation Atlas
-- [`tracula()`](https://ggseg.github.io/ggseg.formats/reference/tracula.md)
+- [`aseg()`](https://ggsegverse.github.io/ggseg.formats/reference/aseg.md)
+  : FreeSurfer Automatic Subcortical Segmentation Atlas
+- [`tracula()`](https://ggsegverse.github.io/ggseg.formats/reference/tracula.md)
   : TRACULA White Matter Tract Atlas
 
 ## FreeSurfer I/O
 
 Read FreeSurfer statistics files into R.
 
-- [`read_atlas_files()`](https://ggseg.github.io/ggseg.formats/reference/read_atlas_files.md)
+- [`read_atlas_files()`](https://ggsegverse.github.io/ggseg.formats/reference/read_atlas_files.md)
   : Read in atlas data from all subjects
-- [`read_freesurfer_stats()`](https://ggseg.github.io/ggseg.formats/reference/read_freesurfer_stats.md)
+- [`read_freesurfer_stats()`](https://ggsegverse.github.io/ggseg.formats/reference/read_freesurfer_stats.md)
   : Read in raw FreeSurfer stats file
-- [`read_freesurfer_table()`](https://ggseg.github.io/ggseg.formats/reference/read_freesurfer_table.md)
+- [`read_freesurfer_table()`](https://ggsegverse.github.io/ggseg.formats/reference/read_freesurfer_table.md)
   : Read in stats table from FreeSurfer
 
 # Articles
@@ -229,6 +229,6 @@ Read FreeSurfer statistics files into R.
 ### All vignettes
 
 - [Customising brain
-  atlases](https://ggseg.github.io/ggseg.formats/articles/atlas-manipulation.md):
+  atlases](https://ggsegverse.github.io/ggseg.formats/articles/atlas-manipulation.md):
 - [The ggseg_atlas
-  object](https://ggseg.github.io/ggseg.formats/articles/ggseg.formats.md):
+  object](https://ggsegverse.github.io/ggseg.formats/articles/ggseg.formats.md):

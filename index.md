@@ -1,8 +1,8 @@
 # ggseg.formats
 
 ggseg.formats provides the `ggseg_atlas` S3 class that powers the
-[ggseg](https://ggseg.github.io/ggseg/) ecosystem for 2D and 3D brain
-visualisation. It ships three bundled atlases, a set of accessor
+[ggseg](https://ggsegverse.github.io/ggseg/) ecosystem for 2D and 3D
+brain visualisation. It ships three bundled atlases, a set of accessor
 functions for querying atlas contents, and a pipe-friendly manipulation
 API for subsetting, renaming, and enriching atlas objects.
 
@@ -53,11 +53,11 @@ plot(aseg_small)
 
 ## Installation
 
-Install from the ggseg r-universe:
+Install from the ggsegverse r-universe:
 
 ``` r
 options(repos = c(
-    ggseg = 'https://ggseg.r-universe.dev',
+    ggsegverse = 'https://ggsegverse.r-universe.dev',
     CRAN = 'https://cloud.r-project.org'))
 
 install.packages('ggseg.formats')
@@ -72,7 +72,7 @@ devtools::install_github("ggseg/ggseg.formats")
 
 ## Learn more
 
-- [`vignette("ggseg.formats")`](https://ggseg.github.io/ggseg.formats/articles/ggseg.formats.md)
+- [`vignette("ggseg.formats")`](https://ggsegverse.github.io/ggseg.formats/articles/ggseg.formats.md)
   — understanding atlas structure and accessors
-- [`vignette("atlas-manipulation")`](https://ggseg.github.io/ggseg.formats/articles/atlas-manipulation.md)
+- [`vignette("atlas-manipulation")`](https://ggsegverse.github.io/ggseg.formats/articles/atlas-manipulation.md)
   — region, view, and metadata manipulation

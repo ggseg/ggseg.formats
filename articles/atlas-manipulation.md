@@ -23,7 +23,7 @@ accept a `ggseg_atlas` as the first argument, return a new
 
 ## Keeping and removing regions
 
-[`atlas_region_remove()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+[`atlas_region_remove()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
 strips a region entirely—from core, palette, sf geometry, and 3D data.
 The `pattern` argument is passed to
 [`grepl()`](https://rdrr.io/r/base/grep.html) with `ignore.case = TRUE`,
@@ -35,7 +35,7 @@ no_cc <- atlas_region_remove(dk(), "corpus callosum")
 #> [1] FALSE
 ```
 
-[`atlas_region_keep()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+[`atlas_region_keep()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
 is the inverse: it keeps only the regions that match and turns
 everything else into context geometry (sf is preserved for surface
 continuity, but non-matching regions leave core and palette):
@@ -63,7 +63,7 @@ head(atlas_labels(lh_only))
 
 Sometimes you want a region’s polygon to stay visible (rendered in grey)
 but not appear in the legend or carry data. This is what
-[`atlas_region_contextual()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+[`atlas_region_contextual()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
 does. It removes the region from core, palette, and 3D data but leaves
 the sf geometry in place:
 
@@ -74,13 +74,13 @@ ctx <- atlas_region_contextual(aseg(), "ventricle")
 ```
 
 Compare that to
-[`atlas_region_remove()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md),
+[`atlas_region_remove()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md),
 which would delete the ventricle polygons entirely, leaving gaps in the
 2D slices.
 
 ## Renaming regions
 
-[`atlas_region_rename()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+[`atlas_region_rename()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
 changes the `region` column without touching `label` (so geometry links
 stay intact). Pass a fixed string:
 
@@ -106,17 +106,18 @@ head(atlas_regions(upper))
 
 ## Managing views
 
-[`atlas_views()`](https://ggseg.github.io/ggseg.formats/reference/atlas_views.md)
+[`atlas_views()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_views.md)
 tells you what 2D views an atlas has:
 
 ``` r
 atlas_views(aseg())
-#> [1] "axial_3"   "axial_5"   "coronal_2" "coronal_3" "coronal_4" "sagittal"
+#> [1] "axial_3"   "axial_4"   "axial_5"   "axial_6"   "coronal_1" "coronal_2"
+#> [7] "sagittal"
 ```
 
-[`atlas_view_keep()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+[`atlas_view_keep()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
 and
-[`atlas_view_remove()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+[`atlas_view_remove()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
 filter views by pattern. If you only want the sagittal slice:
 
 ``` r
@@ -130,20 +131,20 @@ Or remove several views at once by passing a vector:
 ``` r
 fewer <- atlas_view_remove(aseg(), c("axial_3", "coronal_2"))
 atlas_views(fewer)
-#> [1] "axial_5"   "coronal_3" "coronal_4" "sagittal"
+#> [1] "axial_4"   "axial_5"   "axial_6"   "coronal_1" "sagittal"
 ```
 
 ## Cleaning up geometry
 
 After filtering regions you may have small polygon fragments left
 over—tiny slivers where a region just barely crossed a slice plane.
-[`atlas_view_remove_small()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+[`atlas_view_remove_small()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
 removes region polygons below a minimum area threshold. Context polygons
 (those not in core) are never removed:
 
 ``` r
 cleaned <- atlas_view_remove_small(aseg(), min_area = 50)
-#> ℹ Removed 13 geometries below area 50
+#> ℹ Removed 20 geometries below area 50
 ```
 
 You can scope the removal to specific views:
@@ -154,10 +155,10 @@ cleaned_sag <- atlas_view_remove_small(
   min_area = 50,
   views = "sagittal"
 )
-#> ℹ Removed 3 geometries below area 50
+#> ℹ Removed 2 geometries below area 50
 ```
 
-[`atlas_view_remove_region()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+[`atlas_view_remove_region()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
 removes a specific region’s sf geometry without touching core, palette,
 or 3D data. This is useful when a region’s 2D projection is misleading
 but you still want it in 3D:
@@ -174,7 +175,7 @@ no_stem_sf <- atlas_view_remove_region(
 
 When you remove views, the remaining geometry keeps its original
 coordinates, which can leave awkward gaps.
-[`atlas_view_gather()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+[`atlas_view_gather()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
 repositions views side-by-side with a configurable gap:
 
 ``` r
@@ -182,10 +183,10 @@ trimmed <- aseg() |>
   atlas_view_keep(c("sagittal", "coronal_3", "axial_3")) |>
   atlas_view_gather()
 atlas_views(trimmed)
-#> [1] "axial_3"   "coronal_3" "sagittal"
+#> [1] "axial_3"  "sagittal"
 ```
 
-[`atlas_view_reorder()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+[`atlas_view_reorder()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
 lets you choose the left-to-right order and repositions at the same
 time. Views not mentioned in `order` are appended at the end:
 
@@ -194,12 +195,12 @@ reordered <- aseg() |>
   atlas_view_keep(c("sagittal", "coronal_3", "axial_3")) |>
   atlas_view_reorder(c("axial_3", "sagittal", "coronal_3"))
 atlas_views(reordered)
-#> [1] "axial_3"   "sagittal"  "coronal_3"
+#> [1] "axial_3"  "sagittal"
 ```
 
 ## Adding metadata
 
-[`atlas_core_add()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+[`atlas_core_add()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
 left-joins a data frame onto the core table. This is useful for
 attaching grouping variables, statistical results, or any other
 per-region information. Here we add a custom network column to a handful
@@ -244,45 +245,60 @@ publication_aseg <- aseg() |>
   atlas_region_contextual("ventricle|choroid|white|cc") |>
   atlas_view_remove_small(min_area = 30) |>
   atlas_view_gather(gap = 0.1)
-#> ℹ Removed 3 geometries below area 30
+#> ℹ Removed 2 geometries below area 30
 
 publication_aseg
 #> 
 #> ── aseg ggseg atlas ────────────────────────────────────────────────────────────
 #> Type: subcortical
-#> Regions: 15
+#> Regions: 12
 #> Hemispheres: left, NA, right
-#> Views: coronal_3, sagittal
+#> Views: sagittal
 #> Palette: ✔
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (meshes)
 #> ────────────────────────────────────────────────────────────────────────────────
-#> # A tibble: 23 × 4
-#>    hemi  region                        label             structure      
-#>    <chr> <chr>                         <chr>             <chr>          
-#>  1 left  thalamus                      Left-Thalamus     thalamus       
-#>  2 left  caudate                       Left-Caudate      basal ganglia  
-#>  3 left  putamen                       Left-Putamen      basal ganglia  
-#>  4 left  pallidum                      Left-Pallidum     basal ganglia  
-#>  5 NA    brain stem                    Brain-Stem        brain stem     
-#>  6 left  hippocampus                   Left-Hippocampus  limbic         
-#>  7 left  amygdala                      Left-Amygdala     limbic         
-#>  8 left  ventral diencephalon          Left-VentralDC    diencephalon   
-#>  9 left  vessel                        Left-vessel       NA             
-#> 10 right thalamus                      Right-Thalamus    thalamus       
-#> 11 right caudate                       Right-Caudate     basal ganglia  
-#> 12 right putamen                       Right-Putamen     basal ganglia  
-#> 13 right pallidum                      Right-Pallidum    basal ganglia  
-#> 14 right hippocampus                   Right-Hippocampus limbic         
-#> 15 right amygdala                      Right-Amygdala    limbic         
-#> 16 right ventral diencephalon          Right-VentralDC   diencephalon   
-#> 17 right vessel                        Right-vessel      NA             
-#> 18 NA    optic chiasm                  Optic-Chiasm      NA             
-#> 19 NA    corpus callosum posterior     CC_Posterior      corpus callosum
-#> 20 NA    corpus callosum mid-posterior CC_Mid_Posterior  corpus callosum
-#> 21 NA    corpus callosum central       CC_Central        corpus callosum
-#> 22 NA    corpus callosum mid-anterior  CC_Mid_Anterior   corpus callosum
-#> 23 NA    corpus callosum anterior      CC_Anterior       corpus callosum
+#> # A tibble: 38 × 4
+#>    hemi  region          label                   structure    
+#>    <chr> <chr>           <chr>                   <chr>        
+#>  1 left  Cerebellum      Left-Cerebellum-Cortex  cerebellum   
+#>  2 left  Cerebellum      Left-Cerebellum-Cortex  cerebellum   
+#>  3 left  Thalamus        Left-Thalamus           basal ganglia
+#>  4 left  Thalamus        Left-Thalamus           basal ganglia
+#>  5 left  Thalamus Proper Left-Thalamus           basal ganglia
+#>  6 left  Thalamus Proper Left-Thalamus           basal ganglia
+#>  7 left  Caudate         Left-Caudate            basal ganglia
+#>  8 left  Caudate         Left-Caudate            basal ganglia
+#>  9 left  Putamen         Left-Putamen            basal ganglia
+#> 10 left  Putamen         Left-Putamen            basal ganglia
+#> 11 left  Pallidum        Left-Pallidum           basal ganglia
+#> 12 left  Pallidum        Left-Pallidum           basal ganglia
+#> 13 NA    Brain Stem      Brain-Stem              brainstem    
+#> 14 left  Hippocampus     Left-Hippocampus        limbic       
+#> 15 left  Hippocampus     Left-Hippocampus        limbic       
+#> 16 left  Amygdala        Left-Amygdala           limbic       
+#> 17 left  Amygdala        Left-Amygdala           limbic       
+#> 18 left  ventraldc       Left-VentralDC          NA           
+#> 19 left  vessel          Left-vessel             NA           
+#> 20 right Cerebellum      Right-Cerebellum-Cortex cerebellum   
+#> 21 right Cerebellum      Right-Cerebellum-Cortex cerebellum   
+#> 22 right Thalamus        Right-Thalamus          basal ganglia
+#> 23 right Thalamus        Right-Thalamus          basal ganglia
+#> 24 right Thalamus Proper Right-Thalamus          basal ganglia
+#> 25 right Thalamus Proper Right-Thalamus          basal ganglia
+#> 26 right Caudate         Right-Caudate           basal ganglia
+#> 27 right Caudate         Right-Caudate           basal ganglia
+#> 28 right Putamen         Right-Putamen           basal ganglia
+#> 29 right Putamen         Right-Putamen           basal ganglia
+#> 30 right Pallidum        Right-Pallidum          basal ganglia
+#> 31 right Pallidum        Right-Pallidum          basal ganglia
+#> 32 right Hippocampus     Right-Hippocampus       limbic       
+#> 33 right Hippocampus     Right-Hippocampus       limbic       
+#> 34 right Amygdala        Right-Amygdala          limbic       
+#> 35 right Amygdala        Right-Amygdala          limbic       
+#> 36 right ventraldc       Right-VentralDC         NA           
+#> 37 right vessel          Right-vessel            NA           
+#> 38 NA    Optic Chiasm    Optic-Chiasm            other
 ```
 
 Each function returns a valid `ggseg_atlas`, so you can inspect

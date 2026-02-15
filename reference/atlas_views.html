@@ -25,7 +25,7 @@
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ggseg/ggseg.formats" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ggsegverse/ggseg.formats" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch"><li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
@@ -41,7 +41,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Get available views in atlas</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ggseg/ggseg.formats/blob/main/R/atlas-utils.R" class="external-link"><code>R/atlas-utils.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ggsegverse/ggseg.formats/blob/main/R/atlas-utils.R" class="external-link"><code>R/atlas-utils.R</code></a></small>
       <div class="d-none name"><code>atlas_views.Rd</code></div>
     </div>
 
@@ -72,7 +72,8 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">atlas_views</span><span class="op">(</span><span class="fu"><a href="aseg.html">aseg</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "axial_3"   "axial_5"   "coronal_2" "coronal_3" "coronal_4" "sagittal" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "axial_3"   "axial_4"   "axial_5"   "axial_6"   "coronal_1" "coronal_2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7] "sagittal" </span>
 <span class="r-in"><span><span class="fu">atlas_views</span><span class="op">(</span><span class="fu"><a href="tracula.html">tracula</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "axial_2"          "axial_4"          "coronal_3"        "coronal_4"       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "sagittal_left"    "sagittal_midline" "sagittal_right"  </span>

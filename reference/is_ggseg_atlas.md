@@ -2,7 +2,7 @@
 
 These functions check both the class tag and structural validity by
 passing the object through
-[`ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.md).
+[`ggseg_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_atlas.md).
 An object that carries the right class but fails validation returns
 `FALSE`.
 

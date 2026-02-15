@@ -54,16 +54,16 @@ Neuroinformatics, 5:23.
 
 ## See also
 
-[`dk()`](https://ggseg.github.io/ggseg.formats/reference/dk.md) for
+[`dk()`](https://ggsegverse.github.io/ggseg.formats/reference/dk.md) for
 cortical parcellation,
-[`aseg()`](https://ggseg.github.io/ggseg.formats/reference/aseg.md) for
-subcortical structures,
-[`ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_atlas.md)
+[`aseg()`](https://ggsegverse.github.io/ggseg.formats/reference/aseg.md)
+for subcortical structures,
+[`ggseg_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_atlas.md)
 for the atlas class constructor
 
 Other ggseg_atlases:
-[`aseg()`](https://ggseg.github.io/ggseg.formats/reference/aseg.md),
-[`dk()`](https://ggseg.github.io/ggseg.formats/reference/dk.md)
+[`aseg()`](https://ggsegverse.github.io/ggseg.formats/reference/aseg.md),
+[`dk()`](https://ggsegverse.github.io/ggseg.formats/reference/dk.md)
 
 ## Examples
 

@@ -8,16 +8,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/ggseg/ggseg.formats/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/ggsegverse/ggseg.formats/blob/main/DESCRIPTION)
 
 Mowinckel A (2026). *ggseg.formats: Brain Atlas Data Structures for the
 'ggseg' Ecosystem*. R package version 0.0.1,
-<https://github.com/ggseg/ggseg.formats>.
+<https://github.com/ggsegverse/ggseg.formats>.
 
     @Manual{,
       title = {ggseg.formats: Brain Atlas Data Structures for the 'ggseg' Ecosystem},
       author = {Athanasia Mo Mowinckel},
       year = {2026},
       note = {R package version 0.0.1},
-      url = {https://github.com/ggseg/ggseg.formats},
+      url = {https://github.com/ggsegverse/ggseg.formats},
     }

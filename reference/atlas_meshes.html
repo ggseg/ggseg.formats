@@ -27,7 +27,7 @@ Used for subcortical and tract atlases."></head><body>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ggseg/ggseg.formats" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ggsegverse/ggseg.formats" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch"><li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
@@ -43,7 +43,7 @@ Used for subcortical and tract atlases."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Get atlas meshes for 3D rendering</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ggseg/ggseg.formats/blob/main/R/atlas-accessors.R" class="external-link"><code>R/atlas-accessors.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ggsegverse/ggseg.formats/blob/main/R/atlas-accessors.R" class="external-link"><code>R/atlas-accessors.R</code></a></small>
       <div class="d-none name"><code>atlas_meshes.Rd</code></div>
     </div>
 
@@ -76,14 +76,14 @@ Used for subcortical and tract atlases.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">meshes</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="color: #0000BB;">&lt;ggseg_meshes&gt;</span> data: 6 × 6 ──────────────────────────────────────────────────</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   label            vertices faces</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Left-Thalamus        <span style="text-decoration: underline;">1</span>864  <span style="text-decoration: underline;">3</span>724</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Left-Caudate         <span style="text-decoration: underline;">1</span>512  <span style="text-decoration: underline;">3</span>028</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Left-Putamen         <span style="text-decoration: underline;">1</span>998  <span style="text-decoration: underline;">3</span>992</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Left-Pallidum         723  <span style="text-decoration: underline;">1</span>442</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> Brain-Stem           <span style="text-decoration: underline;">4</span>608  <span style="text-decoration: underline;">9</span>212</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> Left-Hippocampus     <span style="text-decoration: underline;">1</span>892  <span style="text-decoration: underline;">3</span>780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   label                  vertices faces</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Left-Cerebellum-Cortex    <span style="text-decoration: underline;">21</span>232 <span style="text-decoration: underline;">42</span>456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Left-Cerebellum-Cortex    <span style="text-decoration: underline;">21</span>232 <span style="text-decoration: underline;">42</span>456</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Left-Thalamus              <span style="text-decoration: underline;">3</span>726  <span style="text-decoration: underline;">7</span>448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Left-Thalamus              <span style="text-decoration: underline;">3</span>726  <span style="text-decoration: underline;">7</span>448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> Left-Thalamus              <span style="text-decoration: underline;">3</span>726  <span style="text-decoration: underline;">7</span>448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> Left-Thalamus              <span style="text-decoration: underline;">3</span>726  <span style="text-decoration: underline;">7</span>448</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

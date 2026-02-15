@@ -43,13 +43,9 @@ atlas_regions(dk())
 #> [33] "supramarginal"                     "temporal pole"                    
 #> [35] "transverse temporal"              
 atlas_regions(aseg())
-#>  [1] "amygdala"                      "brain stem"                   
-#>  [3] "caudate"                       "choroid plexus"               
-#>  [5] "corpus callosum anterior"      "corpus callosum central"      
-#>  [7] "corpus callosum mid-anterior"  "corpus callosum mid-posterior"
-#>  [9] "corpus callosum posterior"     "hippocampus"                  
-#> [11] "nucleus accumbens"             "optic chiasm"                 
-#> [13] "pallidum"                      "putamen"                      
-#> [15] "thalamus"                      "ventral diencephalon"         
-#> [17] "vessel"                       
+#>  [1] "Amygdala"         "Brain Stem"       "Caudate"          "Cerebellum"      
+#>  [5] "Hippocampus"      "Optic Chiasm"     "Pallidum"         "Putamen"         
+#>  [9] "Thalamus"         "Thalamus Proper"  "accumbens area"   "cc anterior"     
+#> [13] "cc central"       "cc mid anterior"  "cc mid posterior" "cc posterior"    
+#> [17] "choroid plexus"   "ventraldc"        "vessel"          
 ```

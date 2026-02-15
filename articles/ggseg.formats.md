@@ -231,7 +231,7 @@ unique(dk()$core$lobe)
 ```
 
 You can add your own metadata with
-[`atlas_core_add()`](https://ggseg.github.io/ggseg.formats/reference/atlas_manipulation.md)
+[`atlas_core_add()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
 (covered in the manipulation vignette).
 
 ## Querying an atlas
@@ -239,7 +239,7 @@ You can add your own metadata with
 A set of accessor functions lets you pull information out without
 reaching into slots directly.
 
-[`atlas_regions()`](https://ggseg.github.io/ggseg.formats/reference/atlas_regions.md)
+[`atlas_regions()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_regions.md)
 returns the sorted unique region names:
 
 ``` r
@@ -264,7 +264,7 @@ atlas_regions(dk())
 #> [35] "transverse temporal"
 ```
 
-[`atlas_labels()`](https://ggseg.github.io/ggseg.formats/reference/atlas_labels.md)
+[`atlas_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md)
 returns the unique labels (the identifiers used to join geometry):
 
 ``` r
@@ -274,20 +274,21 @@ head(atlas_labels(dk()))
 #> [5] "lh_cuneus"                  "lh_entorhinal"
 ```
 
-[`atlas_views()`](https://ggseg.github.io/ggseg.formats/reference/atlas_views.md)
+[`atlas_views()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_views.md)
 returns the available 2D views:
 
 ``` r
 atlas_views(dk())
 #> [1] "inferior" "lateral"  "medial"   "superior"
 atlas_views(aseg())
-#> [1] "axial_3"   "axial_5"   "coronal_2" "coronal_3" "coronal_4" "sagittal"
+#> [1] "axial_3"   "axial_4"   "axial_5"   "axial_6"   "coronal_1" "coronal_2"
+#> [7] "sagittal"
 atlas_views(tracula())
 #> [1] "axial_2"          "axial_4"          "coronal_3"        "coronal_4"       
 #> [5] "sagittal_left"    "sagittal_midline" "sagittal_right"
 ```
 
-[`atlas_type()`](https://ggseg.github.io/ggseg.formats/reference/atlas_type.md)
+[`atlas_type()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_type.md)
 returns the type string:
 
 ``` r
@@ -299,7 +300,7 @@ atlas_type(tracula())
 #> [1] "tract"
 ```
 
-[`atlas_palette()`](https://ggseg.github.io/ggseg.formats/reference/atlas_palette.md)
+[`atlas_palette()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_palette.md)
 retrieves the colour palette. You can pass the atlas object directly or
 its name as a string:
 
@@ -319,7 +320,7 @@ When you need the actual data frames that ggseg and ggseg3d consume, use
 the `atlas_*()` extractors. These join core metadata and palette colours
 onto the raw geometry so you get a single, ready-to-use table.
 
-[`atlas_sf()`](https://ggseg.github.io/ggseg.formats/reference/atlas_sf.md)
+[`atlas_sf()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_sf.md)
 returns an sf data frame for 2D rendering:
 
 ``` r
@@ -357,7 +358,7 @@ sf_data
 #> 10    occipital MULTIPOLYGON (((1422.294 16... #DC1464
 ```
 
-[`atlas_vertices()`](https://ggseg.github.io/ggseg.formats/reference/atlas_vertices.md)
+[`atlas_vertices()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_vertices.md)
 returns the vertex data for cortical 3D rendering:
 
 ``` r
@@ -381,32 +382,32 @@ vert_data
 #> # ℹ 60 more rows
 ```
 
-[`atlas_meshes()`](https://ggseg.github.io/ggseg.formats/reference/atlas_meshes.md)
+[`atlas_meshes()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_meshes.md)
 returns mesh data for subcortical or tract 3D rendering:
 
 ``` r
 mesh_data <- atlas_meshes(aseg())
 mesh_data
-#> ── <ggseg_meshes> data: 27 × 6 ─────────────────────────────────────────────────
-#> # A tibble: 27 × 3
-#>    label               vertices faces
-#>    <chr>                  <int> <int>
-#>  1 Left-Thalamus           1864  3724
-#>  2 Left-Caudate            1512  3028
-#>  3 Left-Putamen            1998  3992
-#>  4 Left-Pallidum            723  1442
-#>  5 Brain-Stem              4608  9212
-#>  6 Left-Hippocampus        1892  3780
-#>  7 Left-Amygdala            710  1416
-#>  8 Left-Accumbens-area      432   860
-#>  9 Left-VentralDC          1683  3366
-#> 10 Left-vessel               77   150
-#> # ℹ 17 more rows
+#> ── <ggseg_meshes> data: 47 × 6 ─────────────────────────────────────────────────
+#> # A tibble: 47 × 3
+#>    label                  vertices faces
+#>    <chr>                     <int> <int>
+#>  1 Left-Cerebellum-Cortex    21232 42456
+#>  2 Left-Cerebellum-Cortex    21232 42456
+#>  3 Left-Thalamus              3726  7448
+#>  4 Left-Thalamus              3726  7448
+#>  5 Left-Thalamus              3726  7448
+#>  6 Left-Thalamus              3726  7448
+#>  7 Left-Caudate               3026  6056
+#>  8 Left-Caudate               3026  6056
+#>  9 Left-Putamen               3994  7984
+#> 10 Left-Putamen               3994  7984
+#> # ℹ 37 more rows
 ```
 
 [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) is a
 convenience method that produces a merged sf data frame similar to
-[`atlas_sf()`](https://ggseg.github.io/ggseg.formats/reference/atlas_sf.md)
+[`atlas_sf()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_sf.md)
 but with atlas-level columns (`atlas`, `type`) attached:
 
 ``` r
@@ -418,7 +419,7 @@ names(df)
 
 ## Checking and converting
 
-[`is_ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
+[`is_ggseg_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/is_ggseg_atlas.md)
 tests whether an object has the right class:
 
 ``` r
@@ -428,7 +429,7 @@ is_ggseg_atlas(mtcars)
 #> [1] FALSE
 ```
 
-[`as_ggseg_atlas()`](https://ggseg.github.io/ggseg.formats/reference/as_ggseg_atlas.md)
+[`as_ggseg_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/as_ggseg_atlas.md)
 coerces lists with the right structure into a proper `ggseg_atlas`:
 
 ``` r
@@ -441,5 +442,5 @@ is_ggseg_atlas(recovered)
 If you have an atlas object from an older version of ggseg that stored
 sf data directly in `$data` instead of using the new `ggseg_atlas_data`
 wrapper,
-[`convert_legacy_brain_atlas()`](https://ggseg.github.io/ggseg.formats/reference/convert_legacy_brain_atlas.md)
+[`convert_legacy_brain_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/convert_legacy_brain_atlas.md)
 will migrate it to the unified format.

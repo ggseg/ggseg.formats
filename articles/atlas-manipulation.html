@@ -46,7 +46,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ggseg/ggseg.formats" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ggsegverse/ggseg.formats" aria-label="GitHub"><span class="fa fa-github"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
@@ -71,14 +71,14 @@
       <h1>Customising brain atlases</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/ggseg/ggseg.formats/blob/main/vignettes/atlas-manipulation.Rmd" class="external-link"><code>vignettes/atlas-manipulation.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ggsegverse/ggseg.formats/blob/main/vignettes/atlas-manipulation.Rmd" class="external-link"><code>vignettes/atlas-manipulation.Rmd</code></a></small>
       <div class="d-none name"><code>atlas-manipulation.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ggseg/ggseg.formats" class="external-link">ggseg.formats</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ggsegverse/ggseg.formats" class="external-link">ggseg.formats</a></span><span class="op">)</span></span></code></pre></div>
 <p>Say you are preparing a figure that focuses on the subcortical
 structures visible in a single sagittal slice. You want to drop the
 views you don’t need, remove small polygon fragments that clutter the
@@ -171,7 +171,8 @@ intact). Pass a fixed string:</p>
 <p><code><a href="../reference/atlas_views.html">atlas_views()</a></code> tells you what 2D views an atlas has:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/atlas_views.html">atlas_views</a></span><span class="op">(</span><span class="fu"><a href="../reference/aseg.html">aseg</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "axial_3"   "axial_5"   "coronal_2" "coronal_3" "coronal_4" "sagittal"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "axial_3"   "axial_4"   "axial_5"   "axial_6"   "coronal_1" "coronal_2"</span></span>
+<span><span class="co">#&gt; [7] "sagittal"</span></span></code></pre></div>
 <p><code><a href="../reference/atlas_manipulation.html">atlas_view_keep()</a></code> and <code><a href="../reference/atlas_manipulation.html">atlas_view_remove()</a></code>
 filter views by pattern. If you only want the sagittal slice:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -182,7 +183,7 @@ filter views by pattern. If you only want the sagittal slice:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fewer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/atlas_manipulation.html">atlas_view_remove</a></span><span class="op">(</span><span class="fu"><a href="../reference/aseg.html">aseg</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"axial_3"</span>, <span class="st">"coronal_2"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/atlas_views.html">atlas_views</a></span><span class="op">(</span><span class="va">fewer</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "axial_5"   "coronal_3" "coronal_4" "sagittal"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "axial_4"   "axial_5"   "axial_6"   "coronal_1" "sagittal"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="cleaning-up-geometry">Cleaning up geometry<a class="anchor" aria-label="anchor" href="#cleaning-up-geometry"></a>
@@ -194,7 +195,7 @@ minimum area threshold. Context polygons (those not in core) are never
 removed:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cleaned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/atlas_manipulation.html">atlas_view_remove_small</a></span><span class="op">(</span><span class="fu"><a href="../reference/aseg.html">aseg</a></span><span class="op">(</span><span class="op">)</span>, min_area <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 13 geometries below area 50</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 20 geometries below area 50</span></span></code></pre></div>
 <p>You can scope the removal to specific views:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cleaned_sag</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/atlas_manipulation.html">atlas_view_remove_small</a></span><span class="op">(</span></span>
@@ -202,7 +203,7 @@ removed:</p>
 <span>  min_area <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  views <span class="op">=</span> <span class="st">"sagittal"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 3 geometries below area 50</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 2 geometries below area 50</span></span></code></pre></div>
 <p><code><a href="../reference/atlas_manipulation.html">atlas_view_remove_region()</a></code> removes a specific region’s
 sf geometry without touching core, palette, or 3D data. This is useful
 when a region’s 2D projection is misleading but you still want it in
@@ -226,7 +227,7 @@ configurable gap:</p>
 <span>  <span class="fu"><a href="../reference/atlas_manipulation.html">atlas_view_keep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sagittal"</span>, <span class="st">"coronal_3"</span>, <span class="st">"axial_3"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/atlas_manipulation.html">atlas_view_gather</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/atlas_views.html">atlas_views</a></span><span class="op">(</span><span class="va">trimmed</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "axial_3"   "coronal_3" "sagittal"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "axial_3"  "sagittal"</span></span></code></pre></div>
 <p><code><a href="../reference/atlas_manipulation.html">atlas_view_reorder()</a></code> lets you choose the left-to-right
 order and repositions at the same time. Views not mentioned in
 <code>order</code> are appended at the end:</p>
@@ -235,7 +236,7 @@ order and repositions at the same time. Views not mentioned in
 <span>  <span class="fu"><a href="../reference/atlas_manipulation.html">atlas_view_keep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sagittal"</span>, <span class="st">"coronal_3"</span>, <span class="st">"axial_3"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/atlas_manipulation.html">atlas_view_reorder</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"axial_3"</span>, <span class="st">"sagittal"</span>, <span class="st">"coronal_3"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/atlas_views.html">atlas_views</a></span><span class="op">(</span><span class="va">reordered</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "axial_3"   "sagittal"  "coronal_3"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "axial_3"  "sagittal"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="adding-metadata">Adding metadata<a class="anchor" aria-label="anchor" href="#adding-metadata"></a>
@@ -281,45 +282,60 @@ atlas for a compact two-view figure of deep grey matter structures:</p>
 <span>  <span class="fu"><a href="../reference/atlas_manipulation.html">atlas_region_contextual</a></span><span class="op">(</span><span class="st">"ventricle|choroid|white|cc"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/atlas_manipulation.html">atlas_view_remove_small</a></span><span class="op">(</span>min_area <span class="op">=</span> <span class="fl">30</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/atlas_manipulation.html">atlas_view_gather</a></span><span class="op">(</span>gap <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 3 geometries below area 30</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Removed 2 geometries below area 30</span></span>
 <span></span>
 <span><span class="va">publication_aseg</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">aseg ggseg atlas</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Type: subcortical</span></span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Regions:</span> 15</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Regions:</span> 12</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Hemispheres:</span> left, NA, right</span></span>
-<span><span class="co">#&gt; <span style="font-weight: bold;">Views:</span> coronal_3, sagittal</span></span>
+<span><span class="co">#&gt; <span style="font-weight: bold;">Views:</span> sagittal</span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Palette:</span> <span style="color: #00BB00;">✔</span></span></span>
 <span><span class="co">#&gt; <span style="font-weight: bold;">Rendering:</span> <span style="color: #00BB00;">✔</span> ggseg</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> ggseg3d (meshes)</span></span>
 <span><span class="co">#&gt; ────────────────────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 23 × 4</span></span></span>
-<span><span class="co">#&gt;    hemi  region                        label             structure      </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> left  thalamus                      Left-Thalamus     thalamus       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> left  caudate                       Left-Caudate      basal ganglia  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> left  putamen                       Left-Putamen      basal ganglia  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> left  pallidum                      Left-Pallidum     basal ganglia  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> <span style="color: #BB0000;">NA</span>    brain stem                    Brain-Stem        brain stem     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> left  hippocampus                   Left-Hippocampus  limbic         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> left  amygdala                      Left-Amygdala     limbic         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> left  ventral diencephalon          Left-VentralDC    diencephalon   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> left  vessel                        Left-vessel       <span style="color: #BB0000;">NA</span>             </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> right thalamus                      Right-Thalamus    thalamus       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> right caudate                       Right-Caudate     basal ganglia  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> right putamen                       Right-Putamen     basal ganglia  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> right pallidum                      Right-Pallidum    basal ganglia  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> right hippocampus                   Right-Hippocampus limbic         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> right amygdala                      Right-Amygdala    limbic         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> right ventral diencephalon          Right-VentralDC   diencephalon   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> right vessel                        Right-vessel      <span style="color: #BB0000;">NA</span>             </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> <span style="color: #BB0000;">NA</span>    optic chiasm                  Optic-Chiasm      <span style="color: #BB0000;">NA</span>             </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> <span style="color: #BB0000;">NA</span>    corpus callosum posterior     CC_Posterior      corpus callosum</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> <span style="color: #BB0000;">NA</span>    corpus callosum mid-posterior CC_Mid_Posterior  corpus callosum</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">21</span> <span style="color: #BB0000;">NA</span>    corpus callosum central       CC_Central        corpus callosum</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">22</span> <span style="color: #BB0000;">NA</span>    corpus callosum mid-anterior  CC_Mid_Anterior   corpus callosum</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">23</span> <span style="color: #BB0000;">NA</span>    corpus callosum anterior      CC_Anterior       corpus callosum</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 38 × 4</span></span></span>
+<span><span class="co">#&gt;    hemi  region          label                   structure    </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> left  Cerebellum      Left-Cerebellum-Cortex  cerebellum   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> left  Cerebellum      Left-Cerebellum-Cortex  cerebellum   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> left  Thalamus        Left-Thalamus           basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> left  Thalamus        Left-Thalamus           basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> left  Thalamus Proper Left-Thalamus           basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> left  Thalamus Proper Left-Thalamus           basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> left  Caudate         Left-Caudate            basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> left  Caudate         Left-Caudate            basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> left  Putamen         Left-Putamen            basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> left  Putamen         Left-Putamen            basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> left  Pallidum        Left-Pallidum           basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> left  Pallidum        Left-Pallidum           basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> <span style="color: #BB0000;">NA</span>    Brain Stem      Brain-Stem              brainstem    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> left  Hippocampus     Left-Hippocampus        limbic       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">15</span> left  Hippocampus     Left-Hippocampus        limbic       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">16</span> left  Amygdala        Left-Amygdala           limbic       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">17</span> left  Amygdala        Left-Amygdala           limbic       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">18</span> left  ventraldc       Left-VentralDC          <span style="color: #BB0000;">NA</span>           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">19</span> left  vessel          Left-vessel             <span style="color: #BB0000;">NA</span>           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">20</span> right Cerebellum      Right-Cerebellum-Cortex cerebellum   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">21</span> right Cerebellum      Right-Cerebellum-Cortex cerebellum   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">22</span> right Thalamus        Right-Thalamus          basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">23</span> right Thalamus        Right-Thalamus          basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">24</span> right Thalamus Proper Right-Thalamus          basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">25</span> right Thalamus Proper Right-Thalamus          basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">26</span> right Caudate         Right-Caudate           basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">27</span> right Caudate         Right-Caudate           basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">28</span> right Putamen         Right-Putamen           basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">29</span> right Putamen         Right-Putamen           basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">30</span> right Pallidum        Right-Pallidum          basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">31</span> right Pallidum        Right-Pallidum          basal ganglia</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">32</span> right Hippocampus     Right-Hippocampus       limbic       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">33</span> right Hippocampus     Right-Hippocampus       limbic       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">34</span> right Amygdala        Right-Amygdala          limbic       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">35</span> right Amygdala        Right-Amygdala          limbic       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">36</span> right ventraldc       Right-VentralDC         <span style="color: #BB0000;">NA</span>           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">37</span> right vessel          Right-vessel            <span style="color: #BB0000;">NA</span>           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">38</span> <span style="color: #BB0000;">NA</span>    Optic Chiasm    Optic-Chiasm            other</span></span></code></pre></div>
 <p>Each function returns a valid <code>ggseg_atlas</code>, so you can
 inspect intermediate results, branch the pipeline, or hand the final
 object straight to ggseg for plotting.</p>

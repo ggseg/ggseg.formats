@@ -30,10 +30,10 @@ brain_atlas(atlas, type, core, data, palette = NULL)
 - data:
 
   a ggseg_atlas_data object created by
-  [`ggseg_data_cortical()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_cortical.md),
-  [`ggseg_data_subcortical()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_subcortical.md),
+  [`ggseg_data_cortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_cortical.md),
+  [`ggseg_data_subcortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_subcortical.md),
   or
-  [`ggseg_data_tract()`](https://ggseg.github.io/ggseg.formats/reference/ggseg_data_tract.md).
+  [`ggseg_data_tract()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_tract.md).
   Must match the specified type.
 
 - palette:
