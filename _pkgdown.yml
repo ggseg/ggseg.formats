@@ -1,4 +1,4 @@
-url: https://ggseg.github.io/ggseg.formats/
+url: https://ggsegverse.github.io/ggseg.formats/
 
 template:
   package: ggseg.docs
@@ -10,7 +10,7 @@ navbar:
   components:
     github:
       icon: fa-github
-      href: https://github.com/ggseg/ggseg.formats
+      href: https://github.com/ggsegverse/ggseg.formats
       aria-label: GitHub
 
 reference:

@@ -96,44 +96,64 @@
       
       -- aseg ggseg atlas ------------------------------------------------------------
       Type: subcortical
-      Regions: 17
+      Regions: 19
       Hemispheres: left, NA, right
-      Views: axial_3, axial_5, coronal_2, coronal_3, coronal_4, sagittal
+      Views: axial_3, axial_4, axial_5, axial_6, coronal_1, coronal_2, sagittal
       Palette: v
       Rendering: v ggseg
       v ggseg3d (meshes)
       --------------------------------------------------------------------------------
     Output
-      # A tibble: 27 x 4
-         hemi  region                        label                structure      
-         <chr> <chr>                         <chr>                <chr>          
-       1 left  thalamus                      Left-Thalamus        thalamus       
-       2 left  caudate                       Left-Caudate         basal ganglia  
-       3 left  putamen                       Left-Putamen         basal ganglia  
-       4 left  pallidum                      Left-Pallidum        basal ganglia  
-       5 <NA>  brain stem                    Brain-Stem           brain stem     
-       6 left  hippocampus                   Left-Hippocampus     limbic         
-       7 left  amygdala                      Left-Amygdala        limbic         
-       8 left  nucleus accumbens             Left-Accumbens-area  basal ganglia  
-       9 left  ventral diencephalon          Left-VentralDC       diencephalon   
-      10 left  vessel                        Left-vessel          <NA>           
-      11 left  choroid plexus                Left-choroid-plexus  <NA>           
-      12 right thalamus                      Right-Thalamus       thalamus       
-      13 right caudate                       Right-Caudate        basal ganglia  
-      14 right putamen                       Right-Putamen        basal ganglia  
-      15 right pallidum                      Right-Pallidum       basal ganglia  
-      16 right hippocampus                   Right-Hippocampus    limbic         
-      17 right amygdala                      Right-Amygdala       limbic         
-      18 right nucleus accumbens             Right-Accumbens-area basal ganglia  
-      19 right ventral diencephalon          Right-VentralDC      diencephalon   
-      20 right vessel                        Right-vessel         <NA>           
-      21 right choroid plexus                Right-choroid-plexus <NA>           
-      22 <NA>  optic chiasm                  Optic-Chiasm         <NA>           
-      23 <NA>  corpus callosum posterior     CC_Posterior         corpus callosum
-      24 <NA>  corpus callosum mid-posterior CC_Mid_Posterior     corpus callosum
-      25 <NA>  corpus callosum central       CC_Central           corpus callosum
-      26 <NA>  corpus callosum mid-anterior  CC_Mid_Anterior      corpus callosum
-      27 <NA>  corpus callosum anterior      CC_Anterior          corpus callosum
+      # A tibble: 47 x 4
+         hemi  region           label                   structure    
+         <chr> <chr>            <chr>                   <chr>        
+       1 left  Cerebellum       Left-Cerebellum-Cortex  cerebellum   
+       2 left  Cerebellum       Left-Cerebellum-Cortex  cerebellum   
+       3 left  Thalamus         Left-Thalamus           basal ganglia
+       4 left  Thalamus         Left-Thalamus           basal ganglia
+       5 left  Thalamus Proper  Left-Thalamus           basal ganglia
+       6 left  Thalamus Proper  Left-Thalamus           basal ganglia
+       7 left  Caudate          Left-Caudate            basal ganglia
+       8 left  Caudate          Left-Caudate            basal ganglia
+       9 left  Putamen          Left-Putamen            basal ganglia
+      10 left  Putamen          Left-Putamen            basal ganglia
+      11 left  Pallidum         Left-Pallidum           basal ganglia
+      12 left  Pallidum         Left-Pallidum           basal ganglia
+      13 <NA>  Brain Stem       Brain-Stem              brainstem    
+      14 left  Hippocampus      Left-Hippocampus        limbic       
+      15 left  Hippocampus      Left-Hippocampus        limbic       
+      16 left  Amygdala         Left-Amygdala           limbic       
+      17 left  Amygdala         Left-Amygdala           limbic       
+      18 left  accumbens area   Left-Accumbens-area     <NA>         
+      19 left  ventraldc        Left-VentralDC          <NA>         
+      20 left  vessel           Left-vessel             <NA>         
+      21 left  choroid plexus   Left-choroid-plexus     <NA>         
+      22 right Cerebellum       Right-Cerebellum-Cortex cerebellum   
+      23 right Cerebellum       Right-Cerebellum-Cortex cerebellum   
+      24 right Thalamus         Right-Thalamus          basal ganglia
+      25 right Thalamus         Right-Thalamus          basal ganglia
+      26 right Thalamus Proper  Right-Thalamus          basal ganglia
+      27 right Thalamus Proper  Right-Thalamus          basal ganglia
+      28 right Caudate          Right-Caudate           basal ganglia
+      29 right Caudate          Right-Caudate           basal ganglia
+      30 right Putamen          Right-Putamen           basal ganglia
+      31 right Putamen          Right-Putamen           basal ganglia
+      32 right Pallidum         Right-Pallidum          basal ganglia
+      33 right Pallidum         Right-Pallidum          basal ganglia
+      34 right Hippocampus      Right-Hippocampus       limbic       
+      35 right Hippocampus      Right-Hippocampus       limbic       
+      36 right Amygdala         Right-Amygdala          limbic       
+      37 right Amygdala         Right-Amygdala          limbic       
+      38 right accumbens area   Right-Accumbens-area    <NA>         
+      39 right ventraldc        Right-VentralDC         <NA>         
+      40 right vessel           Right-vessel            <NA>         
+      41 right choroid plexus   Right-choroid-plexus    <NA>         
+      42 <NA>  Optic Chiasm     Optic-Chiasm            other        
+      43 <NA>  cc posterior     CC_Posterior            <NA>         
+      44 <NA>  cc mid posterior CC_Mid_Posterior        <NA>         
+      45 <NA>  cc central       CC_Central              <NA>         
+      46 <NA>  cc mid anterior  CC_Mid_Anterior         <NA>         
+      47 <NA>  cc anterior      CC_Anterior             <NA>         
 
 # print.ggseg_atlas / prints tract atlas with centerlines
 

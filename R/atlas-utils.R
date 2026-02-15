@@ -282,12 +282,17 @@ atlas_region_contextual <- function(
     new_data <- atlas$data
   }
 
-  ggseg_atlas(
-    atlas = atlas$atlas,
-    type = atlas$type,
-    palette = new_palette,
-    core = new_core,
-    data = new_data
+  validate_data_labels(new_data, new_core, check_sf = FALSE)
+
+  structure(
+    list(
+      atlas = atlas$atlas,
+      type = atlas$type,
+      palette = new_palette,
+      core = new_core,
+      data = new_data
+    ),
+    class = class(atlas)
   )
 }
 

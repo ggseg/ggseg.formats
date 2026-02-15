@@ -31,6 +31,8 @@ usethis::use_data(
   compress = "xz"
 )
 
+unlink("data", recursive = TRUE)
+
 cli::cli_alert_success(
   "Saved brain_mesh_inflated, .dk_atlas, 
   .aseg_atlas, .tracula_atlas to 

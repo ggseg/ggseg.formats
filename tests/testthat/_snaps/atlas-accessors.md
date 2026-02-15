@@ -63,20 +63,20 @@
     Code
       print(result)
     Message
-      -- <ggseg_meshes> data: 27 × 6 -------------------------------------------------
+      -- <ggseg_meshes> data: 47 × 6 -------------------------------------------------
     Output
-      # A tibble: 27 x 3
-         label               vertices faces
-         <chr>                  <int> <int>
-       1 Left-Thalamus           1864  3724
-       2 Left-Caudate            1512  3028
-       3 Left-Putamen            1998  3992
-       4 Left-Pallidum            723  1442
-       5 Brain-Stem              4608  9212
-       6 Left-Hippocampus        1892  3780
-       7 Left-Amygdala            710  1416
-       8 Left-Accumbens-area      432   860
-       9 Left-VentralDC          1683  3366
-      10 Left-vessel               77   150
-      # i 17 more rows
+      # A tibble: 47 x 3
+         label                  vertices faces
+         <chr>                     <int> <int>
+       1 Left-Cerebellum-Cortex    21232 42456
+       2 Left-Cerebellum-Cortex    21232 42456
+       3 Left-Thalamus              3726  7448
+       4 Left-Thalamus              3726  7448
+       5 Left-Thalamus              3726  7448
+       6 Left-Thalamus              3726  7448
+       7 Left-Caudate               3026  6056
+       8 Left-Caudate               3026  6056
+       9 Left-Putamen               3994  7984
+      10 Left-Putamen               3994  7984
+      # i 37 more rows
 

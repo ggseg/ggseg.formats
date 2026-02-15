@@ -17,7 +17,7 @@ library(dplyr)
 library(ggsegExtra) #nolint
 devtools::load_all()
 options(freesurfer.verbose = FALSE)
-future::plan(future::multisession(workers = 4))
+future::plan(future::multicore())
 progressr::handlers("cli")
 progressr::handlers(global = TRUE)
 
@@ -44,42 +44,37 @@ if (!file.exists(color_lut)) {
 #   - axial_inferior, axial_superior
 #   - coronal_posterior, coronal_anterior
 #   - sagittal_left, sagittal_right
-aseg_raw <- create_subcortical_atlas(
+aseg_raw <- create_subcortical_from_volume(
   input_volume = aseg_volume,
   input_lut = color_lut,
   atlas_name = "aseg",
   output_dir = "data-raw/",
   tolerance = 1,
   smoothness = 2,
-  steps = 1:9,
-  skip_existing = TRUE,
-  cleanup = FALSE,
-  verbose = TRUE
+  steps = 3:9,
+  skip_existing = FALSE,
+  cleanup = FALSE
 )
 
 cli::cli_h2("Post-processing atlas")
 
-cli::cli_alert_info("Remove white matter")
+cli::cli_alert_info("Remove unwanted regions")
 aseg_raw <- aseg_raw |>
   atlas_region_remove("White-Matter", match_on = "label") |>
   atlas_region_remove("WM-hypointensities", match_on = "label") |>
   atlas_region_remove("-Ventricle", match_on = "label") |>
   atlas_region_remove("-Vent$", match_on = "label") |>
   atlas_region_remove("CSF", match_on = "label") |>
-  atlas_region_remove("Cerebral-Cortex", match_on = "label")
-
-cli::cli_alert_info("Set cortex as context")
-aseg_raw <- aseg_raw |>
-  atlas_region_contextual("Cortex", match_on = "label")
+  atlas_region_remove("Cerebral-Cortex", match_on = "label") |>
+  atlas_view_remove_region("cerebellum", "label", "coronal")
 
 cli::cli_alert_info("Selecting views")
 aseg_raw <- aseg_raw |>
-  atlas_view_keep("axial_3|axial_5|coronal_2|coronal_3|coronal_4|sagittal")
-
-
-cli::cli_alert_info("Cleaning up view positions")
-aseg_raw <- aseg_raw |>
+  atlas_view_keep(
+    "coronal_1|coronal_2|sagittal|axial_3|axial_4|axial_5|axial_6"
+  ) |>
   atlas_view_gather()
+
 
 cli::cli_h2("Merging metadata")
 
@@ -106,7 +101,8 @@ core_with_meta <- aseg_raw$core |>
     aseg_metadata |>
       mutate(region_key = normalize_region(region)) |>
       select(region_key, label_pretty, structure),
-    by = "region_key"
+    by = "region_key",
+    relationship = "many-to-many"
   ) |>
   mutate(
     region = coalesce(label_pretty, region)

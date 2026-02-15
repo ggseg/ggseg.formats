@@ -36,5 +36,5 @@ Config/Needs/website: ggseg/ggseg.docs
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-URL: https://github.com/ggseg/ggseg.formats, https://ggseg.github.io/ggseg.formats/
-BugReports: https://github.com/ggseg/ggseg.formats/issues
+URL: https://github.com/ggsegverse/ggseg.formats, https://ggsegverse.github.io/ggseg.formats/
+BugReports: https://github.com/ggsegverse/ggseg.formats/issues

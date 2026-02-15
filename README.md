@@ -6,16 +6,16 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/ggseg/ggseg.formats/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ggseg/ggseg.formats/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/ggsegverse/ggseg.formats/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ggsegverse/ggseg.formats/actions/workflows/R-CMD-check.yaml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/ggseg.formats)](https://CRAN.R-project.org/package=ggseg.formats)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![pkgcheck](https://github.com/ggseg/ggseg.formats/workflows/pkgcheck/badge.svg)](https://github.com/ggseg/ggseg.formats/actions?query=workflow%3Apkgcheck)
+[![pkgcheck](https://github.com/ggsegverse/ggseg.formats/workflows/pkgcheck/badge.svg)](https://github.com/ggsegverse/ggseg.formats/actions?query=workflow%3Apkgcheck)
 <!-- badges: end -->
 
 ggseg.formats provides the `ggseg_atlas` S3 class that powers the
-[ggseg](https://ggseg.github.io/ggseg/) ecosystem for 2D and 3D brain
+[ggseg](https://ggsegverse.github.io/ggseg/) ecosystem for 2D and 3D brain
 visualisation. It ships three bundled atlases, a set of accessor
 functions for querying atlas contents, and a pipe-friendly manipulation
 API for subsetting, renaming, and enriching atlas objects.
@@ -67,11 +67,11 @@ plot(aseg_small)
 
 ## Installation
 
-Install from the ggseg r-universe:
+Install from the ggsegverse r-universe:
 
 ``` r
 options(repos = c(
-    ggseg = 'https://ggseg.r-universe.dev',
+    ggsegverse = 'https://ggsegverse.r-universe.dev',
     CRAN = 'https://cloud.r-project.org'))
 
 install.packages('ggseg.formats')
