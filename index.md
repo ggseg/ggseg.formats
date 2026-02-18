@@ -67,7 +67,7 @@ Or install the development version from GitHub:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("ggseg/ggseg.formats")
+devtools::install_github("ggsegverse/ggseg.formats")
 ```
 
 ## Learn more
