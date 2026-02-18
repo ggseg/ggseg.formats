@@ -143,6 +143,69 @@ make_multiview_atlas <- function() {
   )
 }
 
+make_cortical_hemi_atlas <- function() {
+  make_view_poly <- function(x_off, y_off, size = 1) {
+    sf::st_polygon(list(matrix(
+      c(
+        x_off, y_off,
+        x_off + size, y_off,
+        x_off + size, y_off + size,
+        x_off, y_off
+      ),
+      ncol = 2, byrow = TRUE
+    )))
+  }
+
+  lh_labels <- c("lh_frontal", "lh_parietal")
+  rh_labels <- c("rh_frontal", "rh_parietal")
+  views <- c("lateral", "medial")
+
+  sf_labels <- character(0)
+  sf_views <- character(0)
+  geoms <- list()
+
+  for (v in views) {
+    for (i in seq_along(lh_labels)) {
+      sf_labels <- c(sf_labels, lh_labels[i])
+      sf_views <- c(sf_views, v)
+      x <- (match(v, views) - 1) * 20 + (i - 1) * 3
+      geoms <- c(geoms, list(make_view_poly(x, 0, 2)))
+    }
+    for (i in seq_along(rh_labels)) {
+      sf_labels <- c(sf_labels, rh_labels[i])
+      sf_views <- c(sf_views, v)
+      x <- (match(v, views) - 1) * 20 + 10 + (i - 1) * 3
+      geoms <- c(geoms, list(make_view_poly(x, 0, 2)))
+    }
+  }
+
+  sf_geom <- sf::st_sf(
+    label = sf_labels,
+    view = sf_views,
+    geometry = sf::st_sfc(geoms)
+  )
+
+  core <- data.frame(
+    hemi = c("left", "left", "right", "right"),
+    region = c("frontal", "parietal", "frontal", "parietal"),
+    label = c(lh_labels, rh_labels),
+    stringsAsFactors = FALSE
+  )
+
+  palette <- c(
+    lh_frontal = "#FF0000", lh_parietal = "#00FF00",
+    rh_frontal = "#0000FF", rh_parietal = "#FFFF00"
+  )
+
+  ggseg_atlas(
+    atlas = "test_cortical",
+    type = "cortical",
+    core = core,
+    palette = palette,
+    data = ggseg_data_cortical(sf = sf_geom)
+  )
+}
+
 
 # atlas_regions ----
 
@@ -588,6 +651,25 @@ describe("atlas_view_gather", {
     atlas$data$sf <- NULL
     expect_warning(atlas_view_gather(atlas), "no sf data")
   })
+
+  it("keeps cortical hemi+view groups spatially coherent", {
+    atlas <- make_cortical_hemi_atlas()
+    result <- atlas_view_gather(atlas)
+
+    sf <- result$data$sf
+    for (v in unique(sf$view)) {
+      lh_rows <- sf[sf$view == v & grepl("^lh_", sf$label), ]
+      rh_rows <- sf[sf$view == v & grepl("^rh_", sf$label), ]
+      if (nrow(lh_rows) > 0 && nrow(rh_rows) > 0) {
+        lh_bbox <- sf::st_bbox(lh_rows)
+        rh_bbox <- sf::st_bbox(rh_rows)
+        expect_true(
+          lh_bbox["xmax"] < rh_bbox["xmin"] ||
+            rh_bbox["xmax"] < lh_bbox["xmin"]
+        )
+      }
+    }
+  })
 })
 
 
@@ -615,6 +697,19 @@ describe("atlas_view_reorder", {
     atlas <- make_multiview_atlas()
     result <- atlas_view_reorder(atlas, "nonexistent")
     expect_equal(length(unique(result$data$sf$view)), 3)
+  })
+
+  it("reorders cortical views with hemi sub-groups", {
+    atlas <- make_cortical_hemi_atlas()
+    result <- atlas_view_reorder(atlas, c("medial", "lateral"))
+
+    views_in_order <- unique(result$data$sf$view)
+    expect_equal(views_in_order, c("medial", "lateral"))
+
+    sf <- result$data$sf
+    medial_bbox <- sf::st_bbox(sf[sf$view == "medial", ])
+    lateral_bbox <- sf::st_bbox(sf[sf$view == "lateral", ])
+    expect_true(medial_bbox["xmax"] < lateral_bbox["xmin"])
   })
 })
 

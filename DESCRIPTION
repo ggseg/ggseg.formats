@@ -1,6 +1,6 @@
 Package: ggseg.formats
 Title: Brain Atlas Data Structures for the 'ggseg' Ecosystem
-Version: 0.0.1
+Version: 0.0.1.9000
 Authors@R: 
     person("Athanasia Mo", "Mowinckel", , "a.m.mowinckel@psykologi.uio.no", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5756-0223"))
@@ -32,7 +32,7 @@ Suggests:
     vdiffr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-Config/Needs/website: ggseg/ggseg.docs
+Config/Needs/website: ggsegverse/ggseg.docs
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

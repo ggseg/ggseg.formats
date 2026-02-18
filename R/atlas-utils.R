@@ -554,7 +554,7 @@ atlas_view_gather <- function(atlas, gap = 0.15) {
     return(atlas)
   }
 
-  new_sf <- reposition_views(atlas$data$sf, gap = gap)
+  new_sf <- reposition_views(atlas$data$sf, type = atlas$type, gap = gap)
   new_data <- rebuild_atlas_data(atlas, new_sf)
   rebuild_atlas(atlas, new_data)
 }
@@ -583,11 +583,26 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
     return(atlas)
   }
 
-  atlas$data$sf$view <- factor(atlas$data$sf$view, levels = order)
-  new_sf <- atlas$data$sf[order(atlas$data$sf$view), ]
-  new_sf$view <- as.character(new_sf$view)
+  if (atlas$type == "cortical") {
+    hemi <- ifelse(
+      grepl("^lh[_.]", atlas$data$sf$label), "left",
+      ifelse(grepl("^rh[_.]", atlas$data$sf$label), "right", "")
+    )
+    group_key <- paste(hemi, atlas$data$sf$view)
+    expanded_order <- unlist(lapply(order, function(v) {
+      hemis <- unique(hemi[atlas$data$sf$view == v])
+      hemis <- intersect(c("left", "right", ""), hemis)
+      paste(hemis, v)
+    }))
+    group_key <- factor(group_key, levels = expanded_order)
+    new_sf <- atlas$data$sf[order(group_key), ]
+  } else {
+    atlas$data$sf$view <- factor(atlas$data$sf$view, levels = order)
+    new_sf <- atlas$data$sf[order(atlas$data$sf$view), ]
+    new_sf$view <- as.character(new_sf$view)
+  }
 
-  new_sf <- reposition_views(new_sf, gap = gap)
+  new_sf <- reposition_views(new_sf, type = atlas$type, gap = gap)
   new_data <- rebuild_atlas_data(atlas, new_sf)
   rebuild_atlas(atlas, new_data)
 }
@@ -596,11 +611,21 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
 #' @keywords internal
 #' @noRd
 #' @importFrom sf st_geometry st_bbox st_coordinates
-reposition_views <- function(sf_obj, gap = 0.15) {
-  views <- unique(sf_obj$view)
+reposition_views <- function(sf_obj, type = NULL, gap = 0.15) {
+  group_key <- sf_obj$view
 
-  view_data <- lapply(views, function(v) {
-    idx <- sf_obj$view == v
+  if (identical(type, "cortical")) {
+    hemi <- ifelse(
+      grepl("^lh[_.]", sf_obj$label), "left",
+      ifelse(grepl("^rh[_.]", sf_obj$label), "right", "")
+    )
+    group_key <- paste(hemi, sf_obj$view)
+  }
+
+  groups <- unique(group_key)
+
+  view_data <- lapply(groups, function(g) {
+    idx <- group_key == g
     sf_obj[idx, ]
   })
 

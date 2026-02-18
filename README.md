@@ -15,8 +15,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 ggseg.formats provides the `ggseg_atlas` S3 class that powers the
-[ggseg](https://ggsegverse.github.io/ggseg/) ecosystem for 2D and 3D brain
-visualisation. It ships three bundled atlases, a set of accessor
+[ggseg](https://ggsegverse.github.io/ggseg/) ecosystem for 2D and 3D
+brain visualisation. It ships three bundled atlases, a set of accessor
 functions for querying atlas contents, and a pipe-friendly manipulation
 API for subsetting, renaming, and enriching atlas objects.
 
@@ -81,7 +81,7 @@ Or install the development version from GitHub:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("ggseg/ggseg.formats")
+devtools::install_github("ggsegverse/ggseg.formats")
 ```
 
 ## Learn more
