@@ -330,7 +330,7 @@ as.data.frame.ggseg_atlas <- function(x, ...) {
   result$atlas <- x$atlas
   result$type <- x$type
 
-  if (!is.null(x$palette)) {
+  if (!is.null(x$palette) && length(x$palette) > 0) {
     result$colour <- unname(x$palette[result$label])
   }
 
@@ -356,7 +356,7 @@ plot.ggseg_atlas <- function(x, show.legend = FALSE, ...) {
     # nolint end [object_name_linter]
     labs(title = paste(x$atlas, x$type, "atlas"))
 
-  if ("palette" %in% names(x)) {
+  if ("palette" %in% names(x) && length(x$palette) > 0) {
     p <- p +
       scale_fill_manual(
         values = x$palette
