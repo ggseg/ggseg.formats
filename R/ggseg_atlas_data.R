@@ -92,6 +92,46 @@ ggseg_data_subcortical <- function(sf = NULL, meshes = NULL) {
 }
 
 
+#' Create cerebellar atlas data
+#'
+#' Creates a data object for cerebellar brain atlases. Cerebellar atlases
+#' use sf polygons from a SUIT flatmap for 2D rendering and individual 3D
+#' meshes for each structure (like subcortical).
+#'
+#' @param sf sf data.frame with columns label, view, geometry for 2D rendering.
+#'   The view should be "flatmap".
+#' @param meshes data.frame with columns label and mesh (list-column).
+#'   Each mesh is a list with:
+#'   \itemize{
+#'     \item vertices: data.frame with x, y, z columns
+#'     \item faces: data.frame with i, j, k columns (1-based triangle indices)
+#'   }
+#'
+#' @return An object of class c("ggseg_data_cerebellar", "ggseg_atlas_data")
+#' @export
+ggseg_data_cerebellar <- function(sf = NULL, meshes = NULL) {
+  if (is.null(sf) && is.null(meshes)) {
+    cli::cli_abort("At least one of {.arg sf} or {.arg meshes} is required.")
+  }
+
+  if (!is.null(meshes)) {
+    meshes <- validate_meshes(meshes)
+  }
+
+  if (!is.null(sf)) {
+    sf <- validate_sf(sf)
+  }
+
+  structure(
+    list(
+      sf = sf,
+      meshes = meshes
+    ),
+    class = c("ggseg_data_cerebellar", "ggseg_atlas_data")
+  )
+}
+
+
 #' Create tract atlas data
 #'
 #' Creates a data object for white matter tract atlases. Stores centerlines
@@ -270,6 +310,25 @@ print.ggseg_data_cortical <- function(x, ...) {
 #' @export
 print.ggseg_data_subcortical <- function(x, ...) {
   cli::cli_h2("ggseg_data_subcortical")
+
+  if (!is.null(x$sf)) {
+    n_labels <- length(unique(x$sf$label)) # nolint: object_usage_linter
+    views <- paste0(unique(x$sf$view), collapse = ", ") # nolint
+    cli::cli_text("{.strong 2D (ggseg):} {n_labels} labels, views: {views}")
+  }
+
+  if (!is.null(x$meshes)) {
+    cli::cli_text("{.strong 3D (ggseg3d):} meshes")
+    print_mesh_summary(x$meshes)
+  }
+
+  invisible(x)
+}
+
+
+#' @export
+print.ggseg_data_cerebellar <- function(x, ...) {
+  cli::cli_h2("ggseg_data_cerebellar")
 
   if (!is.null(x$sf)) {
     n_labels <- length(unique(x$sf$label)) # nolint: object_usage_linter

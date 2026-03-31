@@ -4,14 +4,14 @@
 #' using ggseg (2D) and ggseg3d (3D).
 #'
 #' @param atlas atlas short name, length one
-#' @param type atlas type: "cortical", "subcortical", or "tract"
+#' @param type atlas type: "cortical", "subcortical", "tract", or "cerebellar"
 #' @param palette named character vector of colours keyed by label
 #' @param core data.frame with required columns hemi, region, label (one row per
 #'   unique region). May contain additional columns for grouping or metadata
 #'   (e.g., lobe, network, Brodmann area).
 #' @param data a ggseg_atlas_data object created by
 #'   [ggseg_data_cortical()], [ggseg_data_subcortical()],
-#'   or [ggseg_data_tract()].
+#'   [ggseg_data_tract()], or [ggseg_data_cerebellar()].
 #'   Must match the specified type.
 #'
 #' @return an object of class 'ggseg_atlas'
@@ -34,7 +34,7 @@
 #'   data = ggseg_data_cortical(vertices = vertices)
 #' )
 ggseg_atlas <- function(atlas, type, core, data, palette = NULL) {
-  type <- match.arg(type, c("cortical", "subcortical", "tract"))
+  type <- match.arg(type, c("cortical", "subcortical", "tract", "cerebellar"))
 
   if (length(atlas) != 1 || !is.character(atlas)) {
     cli::cli_abort(
@@ -61,7 +61,7 @@ ggseg_atlas <- function(atlas, type, core, data, palette = NULL) {
     cli::cli_abort(c(
       "{.arg data} must be a {.cls ggseg_atlas_data} object.",
       "i" = "Use {.fn ggseg_data_cortical}, {.fn ggseg_data_subcortical},
-      or {.fn ggseg_data_tract}."
+      {.fn ggseg_data_tract}, or {.fn ggseg_data_cerebellar}."
     ))
   }
 
@@ -151,6 +151,12 @@ is_subcortical_atlas <- function(x) {
 #' @export
 is_tract_atlas <- function(x) {
   inherits(x, "tract_atlas") && validate_ggseg_atlas(x)
+}
+
+#' @rdname is_ggseg_atlas
+#' @export
+is_cerebellar_atlas <- function(x) {
+  inherits(x, "cerebellar_atlas") && validate_ggseg_atlas(x)
 }
 
 #' @rdname is_ggseg_atlas

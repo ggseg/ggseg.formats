@@ -70,6 +70,32 @@
         <chr>          <int> <int>
       1 hippocampus       10     3
 
+# print methods / prints ggseg_data_cerebellar with sf and meshes
+
+    Code
+      print(data)
+    Message
+      
+      -- ggseg_data_cerebellar --
+      
+      2D (ggseg): 1 labels, views: flatmap
+      3D (ggseg3d): meshes
+    Output
+      # A tibble: 1 x 3
+        label     vertices faces
+        <chr>        <int> <int>
+      1 left_I-IV       10     3
+
+# print methods / prints ggseg_data_cerebellar without meshes
+
+    Code
+      print(data)
+    Message
+      
+      -- ggseg_data_cerebellar --
+      
+      2D (ggseg): 1 labels, views: flatmap
+
 # print methods / prints ggseg_data_tract with sf and centerlines
 
     Code

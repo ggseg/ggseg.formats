@@ -5,6 +5,7 @@
 \alias{is_cortical_atlas}
 \alias{is_subcortical_atlas}
 \alias{is_tract_atlas}
+\alias{is_cerebellar_atlas}
 \alias{is_brain_atlas}
 \title{Check ggseg atlas class}
 \usage{
@@ -15,6 +16,8 @@ is_cortical_atlas(x)
 is_subcortical_atlas(x)
 
 is_tract_atlas(x)
+
+is_cerebellar_atlas(x)
 
 is_brain_atlas(x)
 }

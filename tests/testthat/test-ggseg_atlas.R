@@ -70,6 +70,30 @@ describe("is_*_atlas helpers", {
     expect_false(is_tract_atlas("string"))
   })
 
+  it("is_cerebellar_atlas identifies cerebellar atlases", {
+    sf_geom <- sf::st_sf(
+      label = "left_I-IV",
+      view = "flatmap",
+      geometry = sf::st_sfc(
+        sf::st_polygon(list(matrix(c(0, 0, 1, 0, 1, 1, 0, 0),
+          ncol = 2, byrow = TRUE)))
+      )
+    )
+    cer <- ggseg_atlas(
+      atlas = "suit_lobules",
+      type = "cerebellar",
+      core = data.frame(
+        hemi = "left", region = "I-IV", label = "left_I-IV",
+        stringsAsFactors = FALSE
+      ),
+      data = ggseg_data_cerebellar(sf = sf_geom)
+    )
+    expect_true(is_cerebellar_atlas(cer))
+    expect_false(is_cerebellar_atlas(dk()))
+    expect_false(is_cerebellar_atlas(aseg()))
+    expect_false(is_cerebellar_atlas(NULL))
+  })
+
   it("is_ggseg_atlas matches all subtypes", {
     expect_true(is_ggseg_atlas(dk()))
     expect_true(is_ggseg_atlas(aseg()))
@@ -85,6 +109,94 @@ describe("is_*_atlas helpers", {
       class = c("cortical_atlas", "ggseg_atlas")
     )
     expect_false(is_cortical_atlas(fake_cortical))
+  })
+})
+
+
+describe("cerebellar atlas construction and data.frame conversion", {
+  make_cerebellar_atlas <- function() {
+    sf_geom <- sf::st_sf(
+      label = c("left_I-IV", "vermis_VI", "right_Crus-I"),
+      view = "flatmap",
+      geometry = sf::st_sfc(
+        sf::st_polygon(list(matrix(c(0, 0, 1, 0, 1, 1, 0, 0),
+          ncol = 2, byrow = TRUE))),
+        sf::st_polygon(list(matrix(c(2, 0, 3, 0, 3, 1, 2, 0),
+          ncol = 2, byrow = TRUE))),
+        sf::st_polygon(list(matrix(c(4, 0, 5, 0, 5, 1, 4, 0),
+          ncol = 2, byrow = TRUE)))
+      )
+    )
+    ggseg_atlas(
+      atlas = "suit_lobules",
+      type = "cerebellar",
+      core = data.frame(
+        hemi = c("left", "vermis", "right"),
+        region = c("I-IV", "VI", "Crus-I"),
+        label = c("left_I-IV", "vermis_VI", "right_Crus-I"),
+        stringsAsFactors = FALSE
+      ),
+      data = ggseg_data_cerebellar(sf = sf_geom)
+    )
+  }
+
+  it("creates a valid cerebellar atlas", {
+    atlas <- make_cerebellar_atlas()
+    expect_s3_class(atlas, "cerebellar_atlas")
+    expect_s3_class(atlas, "ggseg_atlas")
+    expect_equal(atlas$type, "cerebellar")
+    expect_equal(nrow(atlas$core), 3)
+  })
+
+  it("as.data.frame preserves vermis hemisphere", {
+    atlas <- make_cerebellar_atlas()
+    df <- as.data.frame(atlas)
+    expect_true("vermis" %in% df$hemi)
+    expect_true("left" %in% df$hemi)
+    expect_true("right" %in% df$hemi)
+    expect_equal(nrow(df), 3)
+  })
+
+  it("as.data.frame does not filter NA hemi for cerebellar", {
+    sf_geom <- sf::st_sf(
+      label = "midline_dentate",
+      view = "flatmap",
+      geometry = sf::st_sfc(
+        sf::st_polygon(list(matrix(c(0, 0, 1, 0, 1, 1, 0, 0),
+          ncol = 2, byrow = TRUE)))
+      )
+    )
+    atlas <- ggseg_atlas(
+      atlas = "test",
+      type = "cerebellar",
+      core = data.frame(
+        hemi = NA_character_,
+        region = "dentate",
+        label = "midline_dentate",
+        stringsAsFactors = FALSE
+      ),
+      data = ggseg_data_cerebellar(sf = sf_geom)
+    )
+    df <- as.data.frame(atlas)
+    expect_equal(nrow(df), 1)
+    expect_true(is.na(df$hemi[1]))
+  })
+
+  it("type mismatch errors correctly", {
+    vertices <- data.frame(label = "lh_frontal")
+    vertices$vertices <- list(1L:3L)
+    expect_error(
+      ggseg_atlas(
+        atlas = "test",
+        type = "cerebellar",
+        core = data.frame(
+          hemi = "left", region = "frontal", label = "lh_frontal",
+          stringsAsFactors = FALSE
+        ),
+        data = ggseg_data_cortical(vertices = vertices)
+      ),
+      "requires.*ggseg_data_cerebellar"
+    )
   })
 })
 
