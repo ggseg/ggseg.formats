@@ -4,15 +4,21 @@
 \alias{ggseg_data_cerebellar}
 \title{Create cerebellar atlas data}
 \usage{
-ggseg_data_cerebellar(sf = NULL, vertices = NULL)
+ggseg_data_cerebellar(sf = NULL, vertices = NULL, meshes = NULL)
 }
 \arguments{
 \item{sf}{sf data.frame with columns label, view, geometry for 2D rendering.
-The view should be "flatmap".}
+Surface regions use view "flatmap"; deep structures use other views.}
 
 \item{vertices}{data.frame with columns label and vertices (list-column of
 integer vectors). Each vector contains 0-based vertex indices into the
-SUIT cerebellar surface (see \code{\link[=get_cerebellar_mesh]{get_cerebellar_mesh()}}).}
+SUIT cerebellar surface (see \code{\link[=get_cerebellar_mesh]{get_cerebellar_mesh()}}). Only for surface
+regions.}
+
+\item{meshes}{Optional data.frame with columns label and mesh (list-column
+of mesh objects with vertices and faces). For deep cerebellar structures
+that are not on the cortical surface. Same format as
+\code{\link[=ggseg_data_subcortical]{ggseg_data_subcortical()}} meshes.}
 }
 \value{
 An object of class c("ggseg_data_cerebellar", "ggseg_atlas_data")
@@ -28,4 +34,9 @@ peduncular surface where the cerebellum meets the brainstem. Vertices
 on this cap (indices 28,935--30,012) are not assigned to any atlas
 region and render as \code{na_colour} in 3D, analogous to the medial wall
 in cortical atlases.
+
+Deep cerebellar structures (e.g. dentate, interposed, fastigial nuclei)
+that are not on the cortical surface are stored as individual per-region
+meshes in \code{meshes}, following the same format as subcortical atlases.
+Their 2D sf geometries use views other than "flatmap" (e.g. "nuclei").
 }

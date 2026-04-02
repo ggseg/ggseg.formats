@@ -57,7 +57,7 @@ Plus midline and ventricular structures:
 
 \examples{
 aseg()
-
+plot(aseg())
 atlas_regions(aseg())
 }
 \references{

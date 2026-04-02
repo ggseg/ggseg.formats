@@ -21,10 +21,9 @@ for all subjects in the subjects directory.
 Will add hemisphere and subject id to the data.
 }
 \examples{
-\dontrun{
+\dontshow{if (FALSE) withAutoprint(\{ # examplesIf}
 subj_dir <- "/path/to/freesurfer/7.2.0/subjects/"
 read_atlas_files(subj_dir, "aseg.stats")
-
 read_atlas_files(subj_dir, "lh.aparc.stats")
-}
+\dontshow{\}) # examplesIf}
 }

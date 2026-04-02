@@ -25,8 +25,8 @@ this function will read in the data and prepare it
 for ggseg.
 }
 \examples{
-\dontrun{
+\dontshow{if (FALSE) withAutoprint(\{ # examplesIf}
 file_path <- "all_subj_aseg.txt"
 read_freesurfer_table(file_path)
-}
+\dontshow{\}) # examplesIf}
 }

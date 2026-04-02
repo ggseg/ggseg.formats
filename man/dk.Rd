@@ -47,7 +47,7 @@ frontal pole, temporal pole, transverse temporal, and insula.
 
 \examples{
 dk()
-
+plot(dk())
 atlas_regions(dk())
 atlas_labels(dk())
 }

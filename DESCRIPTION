@@ -2,8 +2,11 @@ Package: ggseg.formats
 Title: Brain Atlas Data Structures for the 'ggseg' Ecosystem
 Version: 0.0.1.9001
 Authors@R: 
-    person("Athanasia Mo", "Mowinckel", , "a.m.mowinckel@psykologi.uio.no", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-5756-0223"))
+    c(person("Athanasia Mo", "Mowinckel", , "a.m.mowinckel@psykologi.uio.no",
+             role = c("aut", "cre"),
+             comment = c(ORCID = "0000-0002-5756-0223")),
+      person("Center for Lifespan Changes in Brain and Cognition (LCBC), University of Oslo",
+             role = "cph"))
 Description: Provides the 'ggseg_atlas' S3 class used across the 'ggseg'
     ecosystem for 2D and 3D brain visualisation. Ships three bundled atlases
     ('Desikan-Killiany', 'FreeSurfer' 'aseg', 'TRACULA') and functions for
@@ -23,7 +26,6 @@ Imports:
 Suggests:
     covr,
     devtools,
-    ggseg3d,
     here,
     knitr,
     rmarkdown,

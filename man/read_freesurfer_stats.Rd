@@ -22,9 +22,9 @@ subjects directory and reads it in as a
 data.frame.
 }
 \examples{
-\dontrun{
+\dontshow{if (FALSE) withAutoprint(\{ # examplesIf}
 subj_dir <- "/path/to/freesurfer/7.2.0/subjects/"
 aseg_stats <- file.path(subj_dir, "bert/stats/aseg.stats")
 read_freesurfer_stats(aseg_stats)
-}
+\dontshow{\}) # examplesIf}
 }
