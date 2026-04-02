@@ -135,6 +135,11 @@ jobs:
           pak::local_install("ggseg3d")
         shell: Rscript {0}
 
+      - name: Install freesurfer fork
+        run: |
+          pak::pak("drmowinckels/freesurfer@refactor")
+        shell: Rscript {0}
+
       - name: Install ggsegExtra dependencies
         run: |
           pak::local_install_deps("ggsegExtra", dependencies = TRUE)
