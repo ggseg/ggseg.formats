@@ -314,23 +314,23 @@ describe("print methods", {
     expect_snapshot(print(data))
   })
 
-  it("prints ggseg_data_cerebellar with sf and meshes", {
+  it("prints ggseg_data_cerebellar with sf and vertices", {
     sf_geom <- sf::st_sf(
       label = "left_I-IV",
       view = "flatmap",
       geometry = sf::st_sfc(make_polygon())
     )
-    meshes <- data.frame(label = "left_I-IV")
-    meshes$mesh <- list(list(
-      vertices = data.frame(x = 1:10, y = 1:10, z = 1:10),
-      faces = data.frame(i = 1:3, j = 2:4, k = 3:5)
-    ))
+    vertices <- data.frame(label = "left_I-IV")
+    vertices$vertices <- list(0L:9L)
 
-    data <- ggseg_data_cerebellar(sf = sf_geom, meshes = meshes)
+    data <- ggseg_data_cerebellar(
+      sf = sf_geom,
+      vertices = vertices
+    )
     expect_snapshot(print(data))
   })
 
-  it("prints ggseg_data_cerebellar without meshes", {
+  it("prints ggseg_data_cerebellar without vertices", {
     sf_geom <- sf::st_sf(
       label = "left_I-IV",
       view = "flatmap",
@@ -360,18 +360,15 @@ describe("print methods", {
 
 
 describe("ggseg_data_cerebellar", {
-  it("creates ggseg_data_cerebellar with meshes", {
-    meshes <- data.frame(label = "left_I-IV")
-    meshes$mesh <- list(list(
-      vertices = data.frame(x = 1:10, y = 1:10, z = 1:10),
-      faces = data.frame(i = 1:3, j = 2:4, k = 3:5)
-    ))
+  it("creates ggseg_data_cerebellar with vertices", {
+    vertices <- data.frame(label = "left_I-IV")
+    vertices$vertices <- list(0L:9L)
 
-    data <- ggseg_data_cerebellar(meshes = meshes)
+    data <- ggseg_data_cerebellar(vertices = vertices)
 
     expect_s3_class(data, "ggseg_data_cerebellar")
     expect_s3_class(data, "ggseg_atlas_data")
-    expect_equal(nrow(data$meshes), 1)
+    expect_equal(nrow(data$vertices), 1)
   })
 
   it("creates ggseg_data_cerebellar with sf", {
@@ -385,39 +382,42 @@ describe("ggseg_data_cerebellar", {
 
     expect_s3_class(data, "ggseg_data_cerebellar")
     expect_true(!is.null(data$sf))
-    expect_null(data$meshes)
+    expect_null(data$vertices)
   })
 
-  it("creates ggseg_data_cerebellar with both sf and meshes", {
+  it("creates ggseg_data_cerebellar with both sf and vertices", {
     sf_geom <- sf::st_sf(
       label = "left_I-IV",
       view = "flatmap",
       geometry = sf::st_sfc(make_polygon())
     )
-    meshes <- data.frame(label = "left_I-IV")
-    meshes$mesh <- list(list(
-      vertices = data.frame(x = 1:10, y = 1:10, z = 1:10),
-      faces = data.frame(i = 1:3, j = 2:4, k = 3:5)
-    ))
+    vertices <- data.frame(label = "left_I-IV")
+    vertices$vertices <- list(0L:9L)
 
-    data <- ggseg_data_cerebellar(sf = sf_geom, meshes = meshes)
+    data <- ggseg_data_cerebellar(
+      sf = sf_geom,
+      vertices = vertices
+    )
 
     expect_s3_class(data, "ggseg_data_cerebellar")
     expect_true(!is.null(data$sf))
-    expect_true(!is.null(data$meshes))
+    expect_true(!is.null(data$vertices))
   })
 
-  it("errors when neither sf nor meshes provided", {
-    expect_error(ggseg_data_cerebellar(), "sf.*meshes.*is required")
+  it("errors when neither sf nor vertices provided", {
+    expect_error(
+      ggseg_data_cerebellar(),
+      "sf.*vertices.*is required"
+    )
   })
 
-  it("validates mesh structure", {
-    meshes <- data.frame(label = "region1")
-    meshes$mesh <- list(list(vertices = 1))
+  it("validates vertices structure", {
+    vertices <- data.frame(label = "region1")
+    vertices$vertices <- list(integer(0))
 
     expect_error(
-      ggseg_data_cerebellar(meshes = meshes),
-      "needs.*vertices.*faces"
+      ggseg_data_cerebellar(vertices = vertices),
+      "Empty vertices"
     )
   })
 })

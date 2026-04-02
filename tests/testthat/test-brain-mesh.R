@@ -85,3 +85,21 @@ describe("get_brain_mesh", {
     expect_null(mesh)
   })
 })
+
+
+describe("get_cerebellar_mesh", {
+  it("returns SUIT cerebellar surface mesh", {
+    mesh <- get_cerebellar_mesh()
+
+    expect_true(!is.null(mesh))
+    expect_true("vertices" %in% names(mesh))
+    expect_true("faces" %in% names(mesh))
+    expect_equal(nrow(mesh$vertices), 30013)
+    expect_equal(nrow(mesh$faces), 57665)
+  })
+
+  it("has 0-based face indices", {
+    mesh <- get_cerebellar_mesh()
+    expect_equal(min(mesh$faces$i), 0L)
+  })
+})

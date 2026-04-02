@@ -51,3 +51,4 @@ Other ggseg_atlases:
 \code{\link{dk}()}
 }
 \concept{ggseg_atlases}
+\concept{tract_atlases}

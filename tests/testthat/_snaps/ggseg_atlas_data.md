@@ -70,7 +70,7 @@
         <chr>          <int> <int>
       1 hippocampus       10     3
 
-# print methods / prints ggseg_data_cerebellar with sf and meshes
+# print methods / prints ggseg_data_cerebellar with sf and vertices
 
     Code
       print(data)
@@ -79,14 +79,14 @@
       -- ggseg_data_cerebellar --
       
       2D (ggseg): 1 labels, views: flatmap
-      3D (ggseg3d): meshes
+      3D (ggseg3d): vertex indices (SUIT surface)
     Output
-      # A tibble: 1 x 3
-        label     vertices faces
-        <chr>        <int> <int>
-      1 left_I-IV       10     3
+      # A tibble: 1 x 2
+        label     vertices  
+        <chr>     <list>    
+      1 left_I-IV <int [10]>
 
-# print methods / prints ggseg_data_cerebellar without meshes
+# print methods / prints ggseg_data_cerebellar without vertices
 
     Code
       print(data)

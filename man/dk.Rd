@@ -71,4 +71,5 @@ Other ggseg_atlases:
 \code{\link{aseg}()},
 \code{\link{tracula}()}
 }
+\concept{cortical_atlases}
 \concept{ggseg_atlases}

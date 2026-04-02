@@ -95,23 +95,42 @@ ggseg_data_subcortical <- function(sf = NULL, meshes = NULL) {
 #' Create cerebellar atlas data
 #'
 #' Creates a data object for cerebellar brain atlases. Cerebellar atlases
-#' use sf polygons from a SUIT flatmap for 2D rendering and individual 3D
-#' meshes for each structure (like subcortical).
+#' use sf polygons from a SUIT flatmap for 2D rendering and vertex indices
+#' into the shared SUIT cerebellar surface mesh for 3D rendering.
+#'
+#' The shared mesh (see [get_cerebellar_mesh()]) includes a cap over the
+#' peduncular surface where the cerebellum meets the brainstem. Vertices
+#' on this cap (indices 28,935--30,012) are not assigned to any atlas
+#' region and render as `na_colour` in 3D, analogous to the medial wall
+#' in cortical atlases.
+#'
+#' Deep cerebellar structures (e.g. dentate, interposed, fastigial nuclei)
+#' that are not on the cortical surface are stored as individual per-region
+#' meshes in `meshes`, following the same format as subcortical atlases.
+#' Their 2D sf geometries use views other than "flatmap" (e.g. "nuclei").
 #'
 #' @param sf sf data.frame with columns label, view, geometry for 2D rendering.
-#'   The view should be "flatmap".
-#' @param meshes data.frame with columns label and mesh (list-column).
-#'   Each mesh is a list with:
-#'   \itemize{
-#'     \item vertices: data.frame with x, y, z columns
-#'     \item faces: data.frame with i, j, k columns (1-based triangle indices)
-#'   }
+#'   Surface regions use view "flatmap"; deep structures use other views.
+#' @param vertices data.frame with columns label and vertices (list-column of
+#'   integer vectors). Each vector contains 0-based vertex indices into the
+#'   SUIT cerebellar surface (see [get_cerebellar_mesh()]). Only for surface
+#'   regions.
+#' @param meshes Optional data.frame with columns label and mesh (list-column
+#'   of mesh objects with vertices and faces). For deep cerebellar structures
+#'   that are not on the cortical surface. Same format as
+#'   [ggseg_data_subcortical()] meshes.
 #'
 #' @return An object of class c("ggseg_data_cerebellar", "ggseg_atlas_data")
 #' @export
-ggseg_data_cerebellar <- function(sf = NULL, meshes = NULL) {
-  if (is.null(sf) && is.null(meshes)) {
-    cli::cli_abort("At least one of {.arg sf} or {.arg meshes} is required.")
+ggseg_data_cerebellar <- function(sf = NULL, vertices = NULL, meshes = NULL) {
+  if (is.null(sf) && is.null(vertices) && is.null(meshes)) {
+    cli::cli_abort(
+      "At least one of {.arg sf}, {.arg vertices}, or {.arg meshes} is required."
+    )
+  }
+
+  if (!is.null(vertices)) {
+    vertices <- validate_vertices(vertices)
   }
 
   if (!is.null(meshes)) {
@@ -125,6 +144,7 @@ ggseg_data_cerebellar <- function(sf = NULL, meshes = NULL) {
   structure(
     list(
       sf = sf,
+      vertices = vertices,
       meshes = meshes
     ),
     class = c("ggseg_data_cerebellar", "ggseg_atlas_data")
@@ -336,9 +356,9 @@ print.ggseg_data_cerebellar <- function(x, ...) {
     cli::cli_text("{.strong 2D (ggseg):} {n_labels} labels, views: {views}")
   }
 
-  if (!is.null(x$meshes)) {
-    cli::cli_text("{.strong 3D (ggseg3d):} meshes")
-    print_mesh_summary(x$meshes)
+  if (!is.null(x$vertices)) {
+    cli::cli_text("{.strong 3D (ggseg3d):} vertex indices (SUIT surface)")
+    print(x$vertices, ...)
   }
 
   invisible(x)

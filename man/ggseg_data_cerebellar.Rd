@@ -4,24 +4,28 @@
 \alias{ggseg_data_cerebellar}
 \title{Create cerebellar atlas data}
 \usage{
-ggseg_data_cerebellar(sf = NULL, meshes = NULL)
+ggseg_data_cerebellar(sf = NULL, vertices = NULL)
 }
 \arguments{
 \item{sf}{sf data.frame with columns label, view, geometry for 2D rendering.
 The view should be "flatmap".}
 
-\item{meshes}{data.frame with columns label and mesh (list-column).
-Each mesh is a list with:
-\itemize{
-\item vertices: data.frame with x, y, z columns
-\item faces: data.frame with i, j, k columns (1-based triangle indices)
-}}
+\item{vertices}{data.frame with columns label and vertices (list-column of
+integer vectors). Each vector contains 0-based vertex indices into the
+SUIT cerebellar surface (see \code{\link[=get_cerebellar_mesh]{get_cerebellar_mesh()}}).}
 }
 \value{
 An object of class c("ggseg_data_cerebellar", "ggseg_atlas_data")
 }
 \description{
 Creates a data object for cerebellar brain atlases. Cerebellar atlases
-use sf polygons from a SUIT flatmap for 2D rendering and individual 3D
-meshes for each structure (like subcortical).
+use sf polygons from a SUIT flatmap for 2D rendering and vertex indices
+into the shared SUIT cerebellar surface mesh for 3D rendering.
+}
+\details{
+The shared mesh (see \code{\link[=get_cerebellar_mesh]{get_cerebellar_mesh()}}) includes a cap over the
+peduncular surface where the cerebellum meets the brainstem. Vertices
+on this cap (indices 28,935--30,012) are not assigned to any atlas
+region and render as \code{na_colour} in 3D, analogous to the medial wall
+in cortical atlases.
 }

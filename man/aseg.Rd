@@ -76,3 +76,4 @@ Other ggseg_atlases:
 \code{\link{tracula}()}
 }
 \concept{ggseg_atlases}
+\concept{subcortical_atlases}

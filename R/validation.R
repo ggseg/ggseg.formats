@@ -205,11 +205,15 @@ validate_data_labels <- function(data, core, check_sf = FALSE) {
   core_labels <- core$label[!is.na(core$label)]
   n_core <- length(core_labels)
 
-  if (!is.null(data$vertices)) {
-    validate_3d_labels(data$vertices$label, core_labels, "vertices")
-  }
+  has_vertices <- !is.null(data$vertices)
+  has_meshes <- !is.null(data$meshes)
 
-  if (!is.null(data$meshes)) {
+  if (has_vertices && has_meshes) {
+    combined_labels <- unique(c(data$vertices$label, data$meshes$label))
+    validate_3d_labels(combined_labels, core_labels, "vertices+meshes")
+  } else if (has_vertices) {
+    validate_3d_labels(data$vertices$label, core_labels, "vertices")
+  } else if (has_meshes) {
     validate_3d_labels(data$meshes$label, core_labels, "meshes")
   }
 

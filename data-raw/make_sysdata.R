@@ -1,10 +1,12 @@
 # Consolidate all internal data into R/sysdata.rda
 #
-# Combines brain_mesh_inflated and atlas objects (.dk_atlas,
-# .aseg_atlas, .tracula_atlas) into a single internal data file.
+# Combines brain meshes and atlas objects into a single internal data file.
 #
-# Prerequisites: data/dk.rda, data/aseg.rda, data/tracula.rda must exist
-# (built by their respective make_*_atlas.R scripts).
+# Prerequisites:
+#   - data/dk.rda, data/aseg.rda, data/tracula.rda must exist
+#     (built by their respective make_*_atlas.R scripts)
+#   - data-raw/make_brain_mesh_inflated.R must have been run
+#   - data-raw/make_cerebellar_mesh.R must have been run
 #
 # Run with: source("data-raw/make_sysdata.R")
 
@@ -23,6 +25,7 @@ load("data/tracula.rda", envir = tracula_env)
 
 usethis::use_data(
   brain_mesh_inflated,
+  cerebellar_mesh_suit,
   .dk_atlas,
   .aseg_atlas,
   .tracula_atlas,
@@ -34,7 +37,7 @@ usethis::use_data(
 unlink("data", recursive = TRUE)
 
 cli::cli_alert_success(
-  "Saved brain_mesh_inflated, .dk_atlas, 
-  .aseg_atlas, .tracula_atlas to 
+  "Saved brain_mesh_inflated, cerebellar_mesh_suit,
+  .dk_atlas, .aseg_atlas, .tracula_atlas to
   R/sysdata.rda"
 )

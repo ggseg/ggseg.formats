@@ -612,6 +612,10 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
 #' @noRd
 #' @importFrom sf st_geometry st_bbox st_coordinates
 reposition_views <- function(sf_obj, type = NULL, gap = 0.15) {
+  if (inherits(sf_obj$geometry, "sfc_GEOMETRY")) {
+    sf_obj <- sf::st_cast(sf_obj, "MULTIPOLYGON")
+  }
+
   group_key <- sf_obj$view
 
   if (identical(type, "cortical")) {
@@ -665,8 +669,16 @@ reposition_views <- function(sf_obj, type = NULL, gap = 0.15) {
 #' @keywords internal
 #' @noRd
 rebuild_atlas_data <- function(atlas, new_sf) {
-  if (!is.null(atlas$data$vertices)) {
-    ggseg_data_cortical(sf = new_sf, vertices = atlas$data$vertices)
+  if (!is.null(atlas$data$vertices) && !is.null(atlas$data$meshes)) {
+    ggseg_data_cerebellar(
+      sf = new_sf, vertices = atlas$data$vertices, meshes = atlas$data$meshes
+    )
+  } else if (!is.null(atlas$data$vertices)) {
+    if (inherits(atlas$data, "ggseg_data_cerebellar")) {
+      ggseg_data_cerebellar(sf = new_sf, vertices = atlas$data$vertices)
+    } else {
+      ggseg_data_cortical(sf = new_sf, vertices = atlas$data$vertices)
+    }
   } else if (!is.null(atlas$data$meshes)) {
     ggseg_data_subcortical(sf = new_sf, meshes = atlas$data$meshes)
   } else if (!is.null(atlas$data$centerlines)) {
