@@ -13,3 +13,4 @@
 ^vignettes/.*_cache$
 ^doc$
 ^Meta$
+^codemeta\.json$
