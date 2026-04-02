@@ -1,3 +1,7 @@
+make_poly <- function(coords) {
+  sf::st_polygon(list(matrix(coords, ncol = 2, byrow = TRUE)))
+}
+
 describe("ggseg_atlas class", {
   it("dk is a ggseg_atlas", {
     expect_true(is_ggseg_atlas(dk()))
@@ -75,8 +79,7 @@ describe("is_*_atlas helpers", {
       label = "left_I-IV",
       view = "flatmap",
       geometry = sf::st_sfc(
-        sf::st_polygon(list(matrix(c(0, 0, 1, 0, 1, 1, 0, 0),
-          ncol = 2, byrow = TRUE)))
+        make_poly(c(0, 0, 1, 0, 1, 1, 0, 0))
       )
     )
     cer <- ggseg_atlas(
@@ -119,12 +122,9 @@ describe("cerebellar atlas construction and data.frame conversion", {
       label = c("left_I-IV", "vermis_VI", "right_Crus-I"),
       view = "flatmap",
       geometry = sf::st_sfc(
-        sf::st_polygon(list(matrix(c(0, 0, 1, 0, 1, 1, 0, 0),
-          ncol = 2, byrow = TRUE))),
-        sf::st_polygon(list(matrix(c(2, 0, 3, 0, 3, 1, 2, 0),
-          ncol = 2, byrow = TRUE))),
-        sf::st_polygon(list(matrix(c(4, 0, 5, 0, 5, 1, 4, 0),
-          ncol = 2, byrow = TRUE)))
+        make_poly(c(0, 0, 1, 0, 1, 1, 0, 0)),
+        make_poly(c(2, 0, 3, 0, 3, 1, 2, 0)),
+        make_poly(c(4, 0, 5, 0, 5, 1, 4, 0))
       )
     )
     ggseg_atlas(
@@ -162,8 +162,7 @@ describe("cerebellar atlas construction and data.frame conversion", {
       label = "midline_dentate",
       view = "flatmap",
       geometry = sf::st_sfc(
-        sf::st_polygon(list(matrix(c(0, 0, 1, 0, 1, 1, 0, 0),
-          ncol = 2, byrow = TRUE)))
+        make_poly(c(0, 0, 1, 0, 1, 1, 0, 0))
       )
     )
     atlas <- ggseg_atlas(

@@ -29,6 +29,7 @@ reference:
     desc: Query atlas contents without reaching into slots directly.
     contents:
       - starts_with("atlas_")
+      - get_cerebellar_mesh
   - title: Atlas manipulation
     desc: |
       Pipe-friendly functions for subsetting regions, managing views, and enriching metadata. All return a new `ggseg_atlas`.

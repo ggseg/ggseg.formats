@@ -45,7 +45,9 @@ for (fi in seq_len(nrow(faces))) {
   }
 }
 
-boundary_edges <- names(edge_count)[vapply(edge_count, function(x) x == 1L, logical(1))]
+boundary_edges <- names(edge_count)[
+  vapply(edge_count, function(x) x == 1L, logical(1))
+]
 cli::cli_alert_info("{length(boundary_edges)} boundary edges found")
 
 # ── Trace boundary loop ──────────────────────────────────────────────
@@ -115,5 +117,9 @@ cerebellar_mesh_suit <- list(
   faces = all_faces
 )
 
-save(cerebellar_mesh_suit, file = "data-raw/cerebellar_mesh_suit.rda", compress = "xz")
+save(
+  cerebellar_mesh_suit,
+  file = "data-raw/cerebellar_mesh_suit.rda",
+  compress = "xz"
+)
 cli::cli_alert_success("Saved to data-raw/cerebellar_mesh_suit.rda")

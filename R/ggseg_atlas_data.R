@@ -125,7 +125,8 @@ ggseg_data_subcortical <- function(sf = NULL, meshes = NULL) {
 ggseg_data_cerebellar <- function(sf = NULL, vertices = NULL, meshes = NULL) {
   if (is.null(sf) && is.null(vertices) && is.null(meshes)) {
     cli::cli_abort(
-      "At least one of {.arg sf}, {.arg vertices}, or {.arg meshes} is required."
+      c("At least one of {.arg sf}, {.arg vertices},",
+        "or {.arg meshes} is required.")
     )
   }
 
