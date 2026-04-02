@@ -549,12 +549,14 @@ atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
 #'   after view removal.
 #' @export
 atlas_view_gather <- function(atlas, gap = 0.15) {
-  if (is.null(atlas$data$sf)) {
-    cli::cli_warn("Atlas has no sf data")
+  sf_data <- atlas$data$sf
+  if (is.null(sf_data) || !inherits(sf_data, "sf") || nrow(sf_data) == 0) {
+    if (is.null(sf_data)) cli::cli_warn("Atlas has no sf data")
     return(atlas)
   }
 
-  new_sf <- reposition_views(atlas$data$sf, type = atlas$type, gap = gap)
+  new_sf <- reposition_views(sf_data, type = atlas$type, gap = gap)
+  if (is.null(new_sf) || !inherits(new_sf, "sf")) return(atlas)
   new_data <- rebuild_atlas_data(atlas, new_sf)
   rebuild_atlas(atlas, new_data)
 }
@@ -612,6 +614,11 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
 #' @noRd
 #' @importFrom sf st_geometry st_bbox st_coordinates
 reposition_views <- function(sf_obj, type = NULL, gap = 0.15) {
+  if (!inherits(sf_obj, "sf") && !inherits(sf_obj, "data.frame")) {
+    return(sf_obj)
+  }
+  if (is.null(sf_obj) || nrow(sf_obj) == 0) return(sf_obj)
+
   if (inherits(sf_obj$geometry, "sfc_GEOMETRY")) {
     sf_obj <- sf::st_cast(sf_obj, "MULTIPOLYGON")
   }
