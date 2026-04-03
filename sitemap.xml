@@ -7,6 +7,7 @@
 <url><loc>https://ggsegverse.github.io/ggseg.formats/articles/index.html</loc></url>
 <url><loc>https://ggsegverse.github.io/ggseg.formats/authors.html</loc></url>
 <url><loc>https://ggsegverse.github.io/ggseg.formats/index.html</loc></url>
+<url><loc>https://ggsegverse.github.io/ggseg.formats/news/index.html</loc></url>
 <url><loc>https://ggsegverse.github.io/ggseg.formats/reference/as_ggseg_atlas.html</loc></url>
 <url><loc>https://ggsegverse.github.io/ggseg.formats/reference/aseg.html</loc></url>
 <url><loc>https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.html</loc></url>
@@ -21,8 +22,10 @@
 <url><loc>https://ggsegverse.github.io/ggseg.formats/reference/convert_legacy_brain_atlas.html</loc></url>
 <url><loc>https://ggsegverse.github.io/ggseg.formats/reference/dk.html</loc></url>
 <url><loc>https://ggsegverse.github.io/ggseg.formats/reference/get_brain_mesh.html</loc></url>
+<url><loc>https://ggsegverse.github.io/ggseg.formats/reference/get_cerebellar_mesh.html</loc></url>
 <url><loc>https://ggsegverse.github.io/ggseg.formats/reference/ggseg.html</loc></url>
 <url><loc>https://ggsegverse.github.io/ggseg.formats/reference/ggseg_atlas.html</loc></url>
+<url><loc>https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_cerebellar.html</loc></url>
 <url><loc>https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_cortical.html</loc></url>
 <url><loc>https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_subcortical.html</loc></url>
 <url><loc>https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_tract.html</loc></url>

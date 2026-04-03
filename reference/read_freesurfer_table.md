@@ -32,8 +32,8 @@ tibble with stats information for subjects from FreeSurfer
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+if (FALSE) {
 file_path <- "all_subj_aseg.txt"
 read_freesurfer_table(file_path)
-} # }
+}
 ```

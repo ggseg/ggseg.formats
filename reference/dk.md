@@ -167,6 +167,7 @@ dk()
 #> 68 right temporal pole                     rh_temporalpole             temporal 
 #> 69 right transverse temporal               rh_transversetemporal       temporal 
 #> 70 right insula                            rh_insula                   insula   
+plot(dk())
 
 atlas_regions(dk())
 #>  [1] "banks of superior temporal sulcus" "caudal anterior cingulate"        

@@ -19,7 +19,7 @@ brain_atlas(atlas, type, core, data, palette = NULL)
 
 - type:
 
-  atlas type: "cortical", "subcortical", or "tract"
+  atlas type: "cortical", "subcortical", "tract", or "cerebellar"
 
 - core:
 
@@ -32,8 +32,9 @@ brain_atlas(atlas, type, core, data, palette = NULL)
   a ggseg_atlas_data object created by
   [`ggseg_data_cortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_cortical.md),
   [`ggseg_data_subcortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_subcortical.md),
+  [`ggseg_data_tract()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_tract.md),
   or
-  [`ggseg_data_tract()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_tract.md).
+  [`ggseg_data_cerebellar()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_cerebellar.md).
   Must match the specified type.
 
 - palette:

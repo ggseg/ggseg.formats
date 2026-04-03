@@ -17,6 +17,8 @@ is_subcortical_atlas(x)
 
 is_tract_atlas(x)
 
+is_cerebellar_atlas(x)
+
 is_brain_atlas(x)
 ```
 

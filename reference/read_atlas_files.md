@@ -27,10 +27,9 @@ tibble with stats information for subjects from FreeSurfer
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+if (FALSE) {
 subj_dir <- "/path/to/freesurfer/7.2.0/subjects/"
 read_atlas_files(subj_dir, "aseg.stats")
-
 read_atlas_files(subj_dir, "lh.aparc.stats")
-} # }
+}
 ```

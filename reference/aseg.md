@@ -160,6 +160,7 @@ aseg()
 #> 45 NA    cc central       CC_Central              NA           
 #> 46 NA    cc mid anterior  CC_Mid_Anterior         NA           
 #> 47 NA    cc anterior      CC_Anterior             NA           
+plot(aseg())
 
 atlas_regions(aseg())
 #>  [1] "Amygdala"         "Brain Stem"       "Caudate"          "Cerebellum"      

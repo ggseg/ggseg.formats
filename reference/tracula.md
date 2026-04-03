@@ -125,6 +125,7 @@ tracula()
 #> 40 right   SLF II                           rh.slf2.bbr.prep     association    
 #> 41 right   SLF III                          rh.slf3.bbr.prep     association    
 #> 42 right   uncinate fasciculus              rh.uf.bbr.prep       limbic         
+plot(tracula())
 
 atlas_regions(tracula())
 #>  [1] "CC body central"                  "CC body parietal"                

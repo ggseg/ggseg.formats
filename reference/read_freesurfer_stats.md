@@ -27,9 +27,9 @@ tibble with stats information for subjects from FreeSurfer
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+if (FALSE) {
 subj_dir <- "/path/to/freesurfer/7.2.0/subjects/"
 aseg_stats <- file.path(subj_dir, "bert/stats/aseg.stats")
 read_freesurfer_stats(aseg_stats)
-} # }
+}
 ```
