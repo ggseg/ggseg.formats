@@ -37,6 +37,7 @@ atlas_palette <- function(name = "dk", ...) {
 #' sf_data <- atlas_sf(dk())
 #' head(sf_data)
 atlas_sf <- function(atlas) {
+  require_sf("atlas_sf()")
   if (!is_ggseg_atlas(atlas)) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas}.")
   }

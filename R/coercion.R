@@ -137,6 +137,7 @@ convert_legacy_brain_data <- function(x) {
     return(restamp_class(x))
   }
 
+  require_sf("convert_legacy_brain_data()")
   sf_data <- x$data
   class(sf_data) <- setdiff(
     class(sf_data),

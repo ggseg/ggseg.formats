@@ -274,6 +274,17 @@ as.list.ggseg_atlas <- function(x, ...) {
 #' @export
 #' @importFrom dplyr left_join select any_of
 as.data.frame.ggseg_atlas <- function(x, ...) {
+  has_sf_slot <- (inherits(x$data, "ggseg_atlas_data") &&
+    !is.null(x$data$sf)) ||
+    inherits(x$data, "sf") ||
+    inherits(x$data, "data.frame")
+  if (!has_sf_slot) {
+    cli::cli_abort(
+      "Cannot convert ggseg_atlas to data.frame: no 2D geometry."
+    )
+  }
+  require_sf("as.data.frame.ggseg_atlas()")
+
   sf_data <- if (inherits(x$data, "ggseg_atlas_data") && !is.null(x$data$sf)) {
     sf::st_as_sf(x$data$sf)
   } else if (inherits(x$data, "sf") || inherits(x$data, "data.frame")) {
@@ -352,6 +363,7 @@ as.data.frame.ggseg_atlas <- function(x, ...) {
 #' @export
 plot.ggseg_atlas <- function(x, show.legend = FALSE, ...) {
   # nolint end: object_name_linter
+  require_sf("plot.ggseg_atlas()")
   p <- ggplot(as.data.frame(x)) +
     # nolint start [object_usage_linter]
     geom_sf(

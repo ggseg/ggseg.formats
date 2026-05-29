@@ -21,7 +21,6 @@ Imports:
     ggplot2,
     lifecycle,
     rlang,
-    sf,
     sfheaders,
     tidyr
 Suggests:
@@ -30,6 +29,7 @@ Suggests:
     here,
     knitr,
     rmarkdown,
+    sf,
     spelling,
     testthat (>= 3.0.0),
     vdiffr,

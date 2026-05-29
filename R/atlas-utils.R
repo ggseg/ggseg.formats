@@ -140,6 +140,7 @@ guess_type <- function(x) {
 #' **Region manipulation** modifies which regions are active in the atlas:
 #' - `atlas_region_remove()`: completely remove regions
 #' - `atlas_region_contextual()`: keep geometry but remove from core/palette
+#' - `atlas_context_remove()`: drop all contextual sf geometry
 #' - `atlas_region_rename()`: rename regions in core
 #' - `atlas_region_keep()`: keep only matching regions
 #'
@@ -297,6 +298,40 @@ atlas_region_contextual <- function(
 }
 
 
+#' @describeIn atlas_manipulation Drop all contextual sf geometry — every
+#'   sf row whose `label` is not present in `core`. Covers labels marked
+#'   via [atlas_region_contextual()] plus pipeline-generated outlines
+#'   (`cortex_`, `Background`, `unknown`). Remaining views are re-packed
+#'   via [atlas_view_gather()] so the plot focuses tightly on the
+#'   labelled regions.
+#' @export
+atlas_context_remove <- function(atlas) {
+  if (is.null(atlas$data$sf)) {
+    return(atlas)
+  }
+
+  core_labels <- atlas$core$label
+  sf_data <- atlas$data$sf
+  sf_data <- sf_data[sf_data$label %in% core_labels, , drop = FALSE]
+
+  new_data <- atlas$data
+  new_data$sf <- sf_data
+
+  atlas_view_gather(
+    structure(
+      list(
+        atlas = atlas$atlas,
+        type = atlas$type,
+        palette = atlas$palette,
+        core = atlas$core,
+        data = new_data
+      ),
+      class = class(atlas)
+    )
+  )
+}
+
+
 #' @describeIn atlas_manipulation Rename regions matching a pattern. Only
 #'   affects the `region` column, not `label`. If `replacement` is a function,
 #'   it receives matched names and returns new names.
@@ -423,7 +458,9 @@ brain_views <- function(atlas) {
 }
 
 
-#' @describeIn atlas_manipulation Remove views matching pattern from sf data.
+#' @describeIn atlas_manipulation Remove views matching pattern from sf
+#'   data. Remaining views are re-packed via [atlas_view_gather()] so
+#'   the layout stays tight.
 #' @export
 atlas_view_remove <- function(atlas, views) {
   if (is.null(atlas$data$sf)) {
@@ -441,7 +478,7 @@ atlas_view_remove <- function(atlas, views) {
   }
 
   new_data <- rebuild_atlas_data(atlas, new_sf)
-  rebuild_atlas(atlas, new_data)
+  atlas_view_gather(rebuild_atlas(atlas, new_data))
 }
 
 
@@ -468,7 +505,8 @@ atlas_view_keep <- function(atlas, views) {
 
 
 #' @describeIn atlas_manipulation Remove specific region geometry from sf
-#'   data only. Core, palette, and 3D data are unchanged.
+#'   data only. Core, palette, and 3D data are unchanged. Views are
+#'   re-packed via [atlas_view_gather()] in case any view shrank.
 #' @export
 atlas_view_remove_region <- function(
   atlas,
@@ -507,13 +545,14 @@ atlas_view_remove_region <- function(
   }
 
   new_data <- rebuild_atlas_data(atlas, new_sf)
-  rebuild_atlas(atlas, new_data)
+  atlas_view_gather(rebuild_atlas(atlas, new_data))
 }
 
 
 #' @describeIn atlas_manipulation Remove region geometries below a minimum
 #'   area threshold. Context geometries (labels not in core) are never
-#'   removed. Optionally scope to specific views.
+#'   removed. Optionally scope to specific views. Views are re-packed
+#'   via [atlas_view_gather()] in case any view shrank.
 #' @export
 atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
   if (is.null(atlas$data$sf)) {
@@ -521,6 +560,7 @@ atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
     return(atlas)
   }
 
+  require_sf("atlas_view_remove_small()")
   areas <- as.numeric(sf::st_area(atlas$data$sf$geometry))
   is_context <- is.na(atlas$data$sf$label) |
     !atlas$data$sf$label %in% atlas$core$label
@@ -541,7 +581,7 @@ atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
 
   new_sf <- atlas$data$sf[!is_small, , drop = FALSE]
   new_data <- rebuild_atlas_data(atlas, new_sf)
-  rebuild_atlas(atlas, new_data)
+  atlas_view_gather(rebuild_atlas(atlas, new_data))
 }
 
 
@@ -551,12 +591,16 @@ atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
 atlas_view_gather <- function(atlas, gap = 0.15) {
   sf_data <- atlas$data$sf
   if (is.null(sf_data) || !inherits(sf_data, "sf") || nrow(sf_data) == 0) {
-    if (is.null(sf_data)) cli::cli_warn("Atlas has no sf data")
+    if (is.null(sf_data)) {
+      cli::cli_warn("Atlas has no sf data")
+    }
     return(atlas)
   }
 
   new_sf <- reposition_views(sf_data, type = atlas$type, gap = gap)
-  if (is.null(new_sf) || !inherits(new_sf, "sf")) return(atlas)
+  if (is.null(new_sf) || !inherits(new_sf, "sf")) {
+    return(atlas)
+  }
   new_data <- rebuild_atlas_data(atlas, new_sf)
   rebuild_atlas(atlas, new_data)
 }
@@ -587,7 +631,8 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
 
   if (atlas$type == "cortical") {
     hemi <- ifelse(
-      grepl("^lh[_.]", atlas$data$sf$label), "left",
+      grepl("^lh[_.]", atlas$data$sf$label),
+      "left",
       ifelse(grepl("^rh[_.]", atlas$data$sf$label), "right", "")
     )
     group_key <- paste(hemi, atlas$data$sf$view)
@@ -612,12 +657,15 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
 
 #' @keywords internal
 #' @noRd
-#' @importFrom sf st_geometry st_bbox st_coordinates
 reposition_views <- function(sf_obj, type = NULL, gap = 0.15) {
   if (!inherits(sf_obj, "sf") && !inherits(sf_obj, "data.frame")) {
     return(sf_obj)
   }
-  if (is.null(sf_obj) || nrow(sf_obj) == 0) return(sf_obj)
+  if (is.null(sf_obj) || nrow(sf_obj) == 0) {
+    return(sf_obj)
+  }
+
+  require_sf("reposition_views()")
 
   if (inherits(sf_obj$geometry, "sfc_GEOMETRY")) {
     sf_obj <- sf::st_cast(sf_obj, "MULTIPOLYGON")
@@ -627,7 +675,8 @@ reposition_views <- function(sf_obj, type = NULL, gap = 0.15) {
 
   if (identical(type, "cortical")) {
     hemi <- ifelse(
-      grepl("^lh[_.]", sf_obj$label), "left",
+      grepl("^lh[_.]", sf_obj$label),
+      "left",
       ifelse(grepl("^rh[_.]", sf_obj$label), "right", "")
     )
     group_key <- paste(hemi, sf_obj$view)
@@ -678,7 +727,9 @@ reposition_views <- function(sf_obj, type = NULL, gap = 0.15) {
 rebuild_atlas_data <- function(atlas, new_sf) {
   if (!is.null(atlas$data$vertices) && !is.null(atlas$data$meshes)) {
     ggseg_data_cerebellar(
-      sf = new_sf, vertices = atlas$data$vertices, meshes = atlas$data$meshes
+      sf = new_sf,
+      vertices = atlas$data$vertices,
+      meshes = atlas$data$meshes
     )
   } else if (!is.null(atlas$data$vertices)) {
     if (inherits(atlas$data, "ggseg_data_cerebellar")) {

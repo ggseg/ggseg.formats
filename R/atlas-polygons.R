@@ -20,6 +20,7 @@
 #' polys <- sf_to_polygons(dk()$data$sf)
 #' }
 sf_to_polygons <- function(sf_data) {
+  require_sf("sf_to_polygons()")
   if (!inherits(sf_data, "sf")) {
     cli::cli_abort("{.arg sf_data} must inherit from class {.cls sf}.")
   }

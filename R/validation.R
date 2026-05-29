@@ -4,6 +4,7 @@
 #' @keywords internal
 #' @noRd
 validate_sf <- function(sf) {
+  require_sf("validate_sf()")
   if (!is.data.frame(sf)) {
     cli::cli_abort("{.arg sf} must be a data.frame.")
   }

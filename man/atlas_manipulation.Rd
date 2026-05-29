@@ -4,6 +4,7 @@
 \alias{atlas_manipulation}
 \alias{atlas_region_remove}
 \alias{atlas_region_contextual}
+\alias{atlas_context_remove}
 \alias{atlas_region_rename}
 \alias{atlas_region_keep}
 \alias{atlas_core_add}
@@ -18,6 +19,8 @@
 atlas_region_remove(atlas, pattern, match_on = c("region", "label"))
 
 atlas_region_contextual(atlas, pattern, match_on = c("region", "label"))
+
+atlas_context_remove(atlas)
 
 atlas_region_rename(atlas, pattern, replacement)
 
@@ -79,6 +82,7 @@ Functions for modifying brain atlas objects. These cover three areas:
 \itemize{
 \item \code{atlas_region_remove()}: completely remove regions
 \item \code{atlas_region_contextual()}: keep geometry but remove from core/palette
+\item \code{atlas_context_remove()}: drop all contextual sf geometry
 \item \code{atlas_region_rename()}: rename regions in core
 \item \code{atlas_region_keep()}: keep only matching regions
 }
@@ -104,6 +108,13 @@ Functions for modifying brain atlas objects. These cover three areas:
 from core, palette, and 3D data. Context geometries render grey and don't
 appear in legends.
 
+\item \code{atlas_context_remove()}: Drop all contextual sf geometry — every
+sf row whose \code{label} is not present in \code{core}. Covers labels marked
+via \code{\link[=atlas_region_contextual]{atlas_region_contextual()}} plus pipeline-generated outlines
+(\code{cortex_}, \code{Background}, \code{unknown}). Remaining views are re-packed
+via \code{\link[=atlas_view_gather]{atlas_view_gather()}} so the plot focuses tightly on the
+labelled regions.
+
 \item \code{atlas_region_rename()}: Rename regions matching a pattern. Only
 affects the \code{region} column, not \code{label}. If \code{replacement} is a function,
 it receives matched names and returns new names.
@@ -115,16 +126,20 @@ is preserved for surface continuity.
 \item \code{atlas_core_add()}: Join additional metadata columns to
 atlas core.
 
-\item \code{atlas_view_remove()}: Remove views matching pattern from sf data.
+\item \code{atlas_view_remove()}: Remove views matching pattern from sf
+data. Remaining views are re-packed via \code{\link[=atlas_view_gather]{atlas_view_gather()}} so
+the layout stays tight.
 
 \item \code{atlas_view_keep()}: Keep only views matching pattern.
 
 \item \code{atlas_view_remove_region()}: Remove specific region geometry from sf
-data only. Core, palette, and 3D data are unchanged.
+data only. Core, palette, and 3D data are unchanged. Views are
+re-packed via \code{\link[=atlas_view_gather]{atlas_view_gather()}} in case any view shrank.
 
 \item \code{atlas_view_remove_small()}: Remove region geometries below a minimum
 area threshold. Context geometries (labels not in core) are never
-removed. Optionally scope to specific views.
+removed. Optionally scope to specific views. Views are re-packed
+via \code{\link[=atlas_view_gather]{atlas_view_gather()}} in case any view shrank.
 
 \item \code{atlas_view_gather()}: Reposition remaining views to close gaps
 after view removal.

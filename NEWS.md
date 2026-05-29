@@ -27,8 +27,14 @@ Foundation work for the `sf-optional` milestone — see
 - `validate_data_labels()` checks 2D label coverage against whichever 2D source
   is present (`sf` or `polygons`), preserving the same 80%/90% thresholds.
 
-`sfheaders` joins Imports. `sf` remains in Imports for this release; it moves to
-Suggests once downstream renderers (ggseg) consume the polygon format directly.
+`sfheaders` joins Imports. **`sf` moves from Imports to Suggests.** The
+package can now be installed without GDAL / GEOS / PROJ system libraries —
+enabling wasm builds and air-gapped installs. Functions that genuinely need
+sf (e.g. `validate_sf()`, `as.data.frame.ggseg_atlas()`, `plot.ggseg_atlas()`,
+the `atlas_view_*` repositioning helpers) check `requireNamespace("sf")` at
+entry and error with a clear pointer to `as_polygon_atlas()` if sf is
+unavailable. The bundled `dk`, `aseg`, and `tracula` atlases still carry
+their `sf` slots, so callers who have sf installed see no behavioural change.
 
 ## ggseg.formats 0.0.2
 
