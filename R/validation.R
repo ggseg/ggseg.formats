@@ -221,22 +221,35 @@ validate_data_labels <- function(data, core, check_sf = FALSE) {
     validate_3d_labels(data$centerlines$label, core_labels, "centerlines")
   }
 
-  if (isTRUE(check_sf) && !is.null(data$sf) && n_core > 0) {
-    sf_labels <- unique(data$sf$label[!is.na(data$sf$label)])
-    missing <- setdiff(core_labels, sf_labels)
-    coverage <- 1 - length(missing) / n_core
+  if (isTRUE(check_sf) && n_core > 0) {
+    twod_source <- NULL
+    twod_kind <- NULL
+    if (!is.null(data$sf)) {
+      twod_source <- data$sf
+      twod_kind <- "sf"
+    } else if (!is.null(data$polygons)) {
+      twod_source <- data$polygons
+      twod_kind <- "polygons"
+    }
 
-    if (coverage < 0.8) {
-      cli::cli_abort(c(
-        "sf covers only {.strong {round(coverage * 100)}%} of core labels
-        (minimum 80%).",
-        "i" = "Missing from sf: {.val {missing}}."
-      ))
-    } else if (coverage < 0.9) {
-      cli::cli_warn(c(
-        "sf covers only {.strong {round(coverage * 100)}%} of core labels.",
-        "i" = "Missing from sf: {.val {missing}}."
-      ))
+    if (!is.null(twod_source)) {
+      twod_labels <- unique(twod_source$label[!is.na(twod_source$label)])
+      missing <- setdiff(core_labels, twod_labels)
+      coverage <- 1 - length(missing) / n_core
+
+      if (coverage < 0.8) {
+        cli::cli_abort(c(
+          "{twod_kind} covers only {.strong {round(coverage * 100)}%} of core
+          labels (minimum 80%).",
+          "i" = "Missing from {twod_kind}: {.val {missing}}."
+        ))
+      } else if (coverage < 0.9) {
+        cli::cli_warn(c(
+          "{twod_kind} covers only {.strong {round(coverage * 100)}%} of core
+          labels.",
+          "i" = "Missing from {twod_kind}: {.val {missing}}."
+        ))
+      }
     }
   }
 

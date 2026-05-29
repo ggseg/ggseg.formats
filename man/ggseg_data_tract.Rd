@@ -5,13 +5,23 @@
 \alias{brain_data_tract}
 \title{Create tract atlas data}
 \usage{
-ggseg_data_tract(sf = NULL, centerlines = NULL, meshes = NULL, ...)
+ggseg_data_tract(
+  sf = NULL,
+  polygons = NULL,
+  centerlines = NULL,
+  meshes = NULL,
+  ...
+)
 
 brain_data_tract(sf = NULL, centerlines = NULL, meshes = NULL, ...)
 }
 \arguments{
 \item{sf}{sf data.frame with columns label, view, geometry for 2D rendering.
-Optional.}
+Optional. Provide either \code{sf} or \code{polygons}.}
+
+\item{polygons}{A \code{brain_polygons} tibble (nested by label) for sf-optional
+2D rendering. See \code{\link[=sf_to_polygons]{sf_to_polygons()}}. If \code{sf} is provided and \code{polygons}
+is \code{NULL}, polygons are derived automatically.}
 
 \item{centerlines}{data.frame with columns:
 \itemize{

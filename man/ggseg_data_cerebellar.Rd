@@ -4,11 +4,21 @@
 \alias{ggseg_data_cerebellar}
 \title{Create cerebellar atlas data}
 \usage{
-ggseg_data_cerebellar(sf = NULL, vertices = NULL, meshes = NULL)
+ggseg_data_cerebellar(
+  sf = NULL,
+  polygons = NULL,
+  vertices = NULL,
+  meshes = NULL
+)
 }
 \arguments{
 \item{sf}{sf data.frame with columns label, view, geometry for 2D rendering.
-Surface regions use view "flatmap"; deep structures use other views.}
+Surface regions use view "flatmap"; deep structures use other views.
+Provide either \code{sf} or \code{polygons}.}
+
+\item{polygons}{A \code{brain_polygons} tibble (nested by label) for sf-optional
+2D rendering. See \code{\link[=sf_to_polygons]{sf_to_polygons()}}. If \code{sf} is provided and \code{polygons}
+is \code{NULL}, polygons are derived automatically.}
 
 \item{vertices}{data.frame with columns label and vertices (list-column of
 integer vectors). Each vector contains 0-based vertex indices into the

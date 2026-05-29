@@ -5,13 +5,17 @@
 \alias{brain_data_cortical}
 \title{Create cortical atlas data}
 \usage{
-ggseg_data_cortical(sf = NULL, vertices = NULL)
+ggseg_data_cortical(sf = NULL, polygons = NULL, vertices = NULL)
 
 brain_data_cortical(sf = NULL, vertices = NULL)
 }
 \arguments{
 \item{sf}{sf data.frame with columns label, view, geometry for 2D rendering.
-Optional but required for ggseg plotting.}
+Optional. Provide either \code{sf} or \code{polygons} for 2D rendering.}
+
+\item{polygons}{A \code{brain_polygons} tibble (nested by label) for sf-optional
+2D rendering. See \code{\link[=sf_to_polygons]{sf_to_polygons()}}. If \code{sf} is provided and \code{polygons}
+is \code{NULL}, polygons are derived automatically.}
 
 \item{vertices}{data.frame with columns label and vertices (list-column of
 integer vectors). Each vector contains vertex indices for that region.}

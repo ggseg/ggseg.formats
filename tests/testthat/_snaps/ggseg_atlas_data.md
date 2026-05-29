@@ -6,7 +6,7 @@
       
       -- ggseg_data_cortical --
       
-      2D (ggseg): 1 labels, views: lateral
+      2D (ggseg): 1 labels (sf), views: lateral
       3D (ggseg3d): vertex indices
     Output
       # A tibble: 1 x 2
@@ -22,7 +22,7 @@
       
       -- ggseg_data_subcortical --
       
-      2D (ggseg): 1 labels, views: axial
+      2D (ggseg): 1 labels (sf), views: axial
       3D (ggseg3d): meshes
     Output
       # A tibble: 1 x 3
@@ -78,7 +78,7 @@
       
       -- ggseg_data_cerebellar --
       
-      2D (ggseg): 1 labels, views: flatmap
+      2D (ggseg): 1 labels (sf), views: flatmap
       3D (ggseg3d): vertex indices (SUIT surface)
     Output
       # A tibble: 1 x 2
@@ -94,7 +94,7 @@
       
       -- ggseg_data_cerebellar --
       
-      2D (ggseg): 1 labels, views: flatmap
+      2D (ggseg): 1 labels (sf), views: flatmap
 
 # print methods / prints ggseg_data_tract with sf and centerlines
 
@@ -104,6 +104,6 @@
       
       -- ggseg_data_tract --
       
-      2D (ggseg): 1 labels, views: sagittal
+      2D (ggseg): 1 labels (sf), views: sagittal
       3D (ggseg3d): 1 centerlines (10 points)
 

@@ -1,7 +1,7 @@
 Package: ggseg.formats
 Title: Brain Atlas Data Structures for the 'ggseg' Ecosystem
-Version: 0.0.2
-Authors@R: 
+Version: 0.0.3.9000
+Authors@R:
     c(person("Athanasia Mo", "Mowinckel", , "a.m.mowinckel@psykologi.uio.no",
              role = c("aut", "cre"),
              comment = c(ORCID = "0000-0002-5756-0223")),
@@ -22,6 +22,7 @@ Imports:
     lifecycle,
     rlang,
     sf,
+    sfheaders,
     tidyr
 Suggests:
     covr,
@@ -31,7 +32,8 @@ Suggests:
     rmarkdown,
     spelling,
     testthat (>= 3.0.0),
-    vdiffr
+    vdiffr,
+    withr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/Needs/website: ggsegverse/ggseg.docs
@@ -40,3 +42,4 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 URL: https://github.com/ggsegverse/ggseg.formats, https://ggsegverse.github.io/ggseg.formats/
 BugReports: https://github.com/ggsegverse/ggseg.formats/issues
+LazyData: true

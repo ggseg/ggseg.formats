@@ -1,4 +1,34 @@
-# ggseg.formats 
+# ggseg.formats
+
+## ggseg.formats 0.0.3 (development)
+
+### sf-optional atlas format
+
+Foundation work for the `sf-optional` milestone — see
+[ggsegverse/ggseg.formats#4](https://github.com/ggsegverse/ggseg.formats/issues/4).
+
+- New `brain_polygons` representation: a nested tibble keyed by `label`, with a
+  `geometry` list-column containing per-view, per-ring point coordinates
+  (`view`, `x`, `y`, `group`, `subgroup`). Renderable directly by
+  `ggplot2::geom_polygon()` via the `subgroup` aesthetic (which handles holes
+  through `grid::pathGrob` even-odd fill).
+- `sf_to_polygons()` and `polygons_to_sf()` round-trip atlas geometry losslessly.
+  The sf-side conversion uses `sfheaders` (pure Rcpp, no GDAL/GEOS/PROJ system
+  libraries), enabling wasm builds and air-gapped installation paths.
+- `ggseg_data_cortical()`, `ggseg_data_subcortical()`, `ggseg_data_cerebellar()`,
+  and `ggseg_data_tract()` now accept a `polygons =` argument alongside `sf =`.
+  When only `sf` is supplied, the `polygons` slot is derived automatically; the
+  two slots are kept in sync so existing callers see no change.
+- `as_lite_atlas()` and `as_sf_atlas()` convert between the sf-backed and lite
+  forms at the atlas level.
+- `migrate_atlas_files()` walks a package's `data/` directory and rewrites every
+  `ggseg_atlas` `.rda` in the lite format. Intended for downstream atlas-package
+  maintainers across the ggsegverse ecosystem.
+- `validate_data_labels()` checks 2D label coverage against whichever 2D source
+  is present (`sf` or `polygons`), preserving the same 80%/90% thresholds.
+
+`sfheaders` joins Imports. `sf` remains in Imports for this release; it moves to
+Suggests once downstream renderers (ggseg) consume the polygon format directly.
 
 ## ggseg.formats 0.0.2
 

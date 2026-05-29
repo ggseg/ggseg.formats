@@ -5,13 +5,17 @@
 \alias{brain_data_subcortical}
 \title{Create subcortical atlas data}
 \usage{
-ggseg_data_subcortical(sf = NULL, meshes = NULL)
+ggseg_data_subcortical(sf = NULL, polygons = NULL, meshes = NULL)
 
 brain_data_subcortical(sf = NULL, meshes = NULL)
 }
 \arguments{
 \item{sf}{sf data.frame with columns label, view, geometry for 2D rendering.
-Optional.}
+Optional. Provide either \code{sf} or \code{polygons} for 2D rendering.}
+
+\item{polygons}{A \code{brain_polygons} tibble (nested by label) for sf-optional
+2D rendering. See \code{\link[=sf_to_polygons]{sf_to_polygons()}}. If \code{sf} is provided and \code{polygons}
+is \code{NULL}, polygons are derived automatically.}
 
 \item{meshes}{data.frame with columns label and mesh (list-column).
 Each mesh is a list with:
