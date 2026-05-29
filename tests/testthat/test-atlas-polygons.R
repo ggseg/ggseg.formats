@@ -131,27 +131,27 @@ describe("ggseg_data_cortical() with polygons", {
   })
 })
 
-describe("as_lite_atlas() / as_sf_atlas()", {
-  it("as_lite_atlas drops sf and populates polygons", {
-    lite <- as_lite_atlas(dk())
-    expect_null(lite$data$sf)
-    expect_s3_class(lite$data$polygons, "brain_polygons")
-    expect_true(is_ggseg_atlas(lite))
+describe("as_polygon_atlas() / as_sf_atlas()", {
+  it("as_polygon_atlas drops sf and populates polygons", {
+    poly <- as_polygon_atlas(dk())
+    expect_null(poly$data$sf)
+    expect_s3_class(poly$data$polygons, "brain_polygons")
+    expect_true(is_ggseg_atlas(poly))
   })
 
   it("as_sf_atlas rehydrates sf from polygons", {
-    lite <- as_lite_atlas(dk())
-    rehy <- as_sf_atlas(lite)
+    poly <- as_polygon_atlas(dk())
+    rehy <- as_sf_atlas(poly)
     expect_s3_class(rehy$data$sf, "sf")
     expect_s3_class(rehy$data$polygons, "brain_polygons")
   })
 
-  it("is_cortical_atlas still holds after going lite", {
-    expect_true(is_cortical_atlas(as_lite_atlas(dk())))
+  it("is_cortical_atlas still holds after dropping sf", {
+    expect_true(is_cortical_atlas(as_polygon_atlas(dk())))
   })
 
   it("errors on non-atlas input", {
-    expect_error(as_lite_atlas(list()), "ggseg_atlas")
+    expect_error(as_polygon_atlas(list()), "ggseg_atlas")
     expect_error(as_sf_atlas(list()), "ggseg_atlas")
   })
 })

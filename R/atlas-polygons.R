@@ -1,6 +1,6 @@
-# Lite (sf-optional) atlas polygon format ----
+# sf-optional atlas polygon format ----
 
-#' Convert an sf atlas geometry to the lite polygon format
+#' Convert an sf atlas geometry to the sf-optional polygon format
 #'
 #' Extracts coordinates from an sf-backed atlas geometry table and returns a
 #' nested tibble keyed by `label`. Each row carries a `geometry` list-column
@@ -48,7 +48,7 @@ sf_to_polygons <- function(sf_data) {
 }
 
 
-#' Convert lite polygons to an sf data frame
+#' Convert sf-optional polygons to an sf data frame
 #'
 #' Inverse of [sf_to_polygons()]. Uses [sfheaders::sf_multipolygon()] to build
 #' MULTIPOLYGON geometries — sfheaders is pure Rcpp and has no GDAL/GEOS/PROJ

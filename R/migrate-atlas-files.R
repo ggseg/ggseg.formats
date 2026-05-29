@@ -1,11 +1,12 @@
 # Atlas migration helper for downstream maintainers ----
 
-#' Migrate atlas `.rda` files to the lite (sf-optional) format
+#' Migrate atlas `.rda` files to the sf-optional polygon format
 #'
 #' Walks a directory of `.rda` files, finds every `ggseg_atlas` object inside
 #' them, derives the `polygons` slot from `sf` via [sf_to_polygons()], and
-#' rewrites the `.rda`. By default this is a true "go lite" migration that
-#' drops the `sf` slot; pass `keep_sf = TRUE` to retain it alongside polygons.
+#' rewrites the `.rda`. By default this drops the `sf` slot — the migration
+#' converts atlases to the polygon-only format. Pass `keep_sf = TRUE` to
+#' retain the `sf` slot alongside polygons.
 #'
 #' Intended for downstream atlas-package maintainers across the ggsegverse
 #' ecosystem: run once against your `data/` directory, then drop `sf` from
@@ -14,7 +15,8 @@
 #' @param path Directory containing `.rda` files to migrate. Defaults to
 #'   `"data"`, the conventional location in R packages.
 #' @param keep_sf If `TRUE`, the `sf` slot is preserved alongside the new
-#'   `polygons` slot (additive). Default `FALSE` — the migration is "go lite".
+#'   `polygons` slot (additive). Default `FALSE` — the migration replaces
+#'   the sf slot with polygons.
 #' @param quiet If `TRUE`, suppress per-file status messages.
 #'
 #' @return Invisibly, a character vector of paths to the files that were
@@ -47,7 +49,7 @@ migrate_atlas_files <- function(path = "data", keep_sf = FALSE, quiet = FALSE) {
 
     for (nm in nms) {
       obj <- env[[nm]]
-      if (!is_ggseg_atlas_lite(obj)) {
+      if (!is_atlas_for_migration(obj)) {
         next
       }
       if (is.null(obj$data$sf)) {
@@ -86,7 +88,7 @@ migrate_atlas_files <- function(path = "data", keep_sf = FALSE, quiet = FALSE) {
 #' cached objects can be migrated even if their layout has drifted.
 #' @noRd
 #' @keywords internal
-is_ggseg_atlas_lite <- function(x) {
+is_atlas_for_migration <- function(x) {
   (inherits(x, "ggseg_atlas") || inherits(x, "brain_atlas")) &&
     is.list(x) &&
     !is.null(x$data) &&

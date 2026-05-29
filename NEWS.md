@@ -19,11 +19,11 @@ Foundation work for the `sf-optional` milestone — see
   and `ggseg_data_tract()` now accept a `polygons =` argument alongside `sf =`.
   When only `sf` is supplied, the `polygons` slot is derived automatically; the
   two slots are kept in sync so existing callers see no change.
-- `as_lite_atlas()` and `as_sf_atlas()` convert between the sf-backed and lite
-  forms at the atlas level.
+- `as_polygon_atlas()` and `as_sf_atlas()` convert between the sf-backed and
+  polygon-only forms at the atlas level.
 - `migrate_atlas_files()` walks a package's `data/` directory and rewrites every
-  `ggseg_atlas` `.rda` in the lite format. Intended for downstream atlas-package
-  maintainers across the ggsegverse ecosystem.
+  `ggseg_atlas` `.rda` to the polygon format. Intended for downstream
+  atlas-package maintainers across the ggsegverse ecosystem.
 - `validate_data_labels()` checks 2D label coverage against whichever 2D source
   is present (`sf` or `polygons`), preserving the same 80%/90% thresholds.
 

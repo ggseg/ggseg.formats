@@ -2,7 +2,7 @@
 % Please edit documentation in R/atlas-polygons.R
 \name{polygons_to_sf}
 \alias{polygons_to_sf}
-\title{Convert lite polygons to an sf data frame}
+\title{Convert sf-optional polygons to an sf data frame}
 \usage{
 polygons_to_sf(polygons)
 }

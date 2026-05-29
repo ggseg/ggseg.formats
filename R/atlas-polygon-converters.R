@@ -1,6 +1,6 @@
 # Top-level atlas-format converters ----
 
-#' Convert a ggseg atlas to the lite (sf-optional) format
+#' Convert a ggseg atlas to the sf-optional polygon format
 #'
 #' Ensures the atlas carries a `polygons` slot (derived from `sf` if needed)
 #' and drops the `sf` slot. The result renders identically via the
@@ -16,11 +16,11 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' lite <- as_lite_atlas(dk())
-#' is.null(lite$data$sf)         # TRUE
-#' inherits(lite$data$polygons, "brain_polygons")  # TRUE
+#' poly <- as_polygon_atlas(dk())
+#' is.null(poly$data$sf)                              # TRUE
+#' inherits(poly$data$polygons, "brain_polygons")     # TRUE
 #' }
-as_lite_atlas <- function(atlas) {
+as_polygon_atlas <- function(atlas) {
   if (!inherits(atlas, "ggseg_atlas") && !inherits(atlas, "brain_atlas")) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas} object.")
   }
@@ -42,12 +42,12 @@ as_lite_atlas <- function(atlas) {
 
 #' Rehydrate a ggseg atlas into sf-backed form
 #'
-#' Inverse of [as_lite_atlas()]. Materialises an sf-class geometry table from
-#' the `polygons` slot (using [sfheaders::sf_multipolygon()] under the hood —
-#' no system library dependencies for the conversion itself). Use this when
-#' you want to run sf operations (buffers, intersections, CRS transforms) on
-#' atlas geometry; the underlying sf operations themselves still require a
-#' full sf installation.
+#' Inverse of [as_polygon_atlas()]. Materialises an sf-class geometry table
+#' from the `polygons` slot (using [sfheaders::sf_multipolygon()] under the
+#' hood — no system library dependencies for the conversion itself). Use
+#' this when you want to run sf operations (buffers, intersections, CRS
+#' transforms) on atlas geometry; the underlying sf operations themselves
+#' still require a full sf installation.
 #'
 #' The returned atlas keeps `$data$polygons` populated alongside `$data$sf`.
 #'
@@ -58,7 +58,7 @@ as_lite_atlas <- function(atlas) {
 #' @examples
 #' \dontrun{
 #' library(sf)
-#' atlas <- as_sf_atlas(as_lite_atlas(dk()))
+#' atlas <- as_sf_atlas(as_polygon_atlas(dk()))
 #' st_buffer(atlas$data$sf$geometry[[1]], dist = 2)
 #' }
 as_sf_atlas <- function(atlas) {

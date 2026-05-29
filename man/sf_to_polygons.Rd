@@ -2,7 +2,7 @@
 % Please edit documentation in R/atlas-polygons.R
 \name{sf_to_polygons}
 \alias{sf_to_polygons}
-\title{Convert an sf atlas geometry to the lite polygon format}
+\title{Convert an sf atlas geometry to the sf-optional polygon format}
 \usage{
 sf_to_polygons(sf_data)
 }

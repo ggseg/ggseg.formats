@@ -2,7 +2,7 @@
 % Please edit documentation in R/migrate-atlas-files.R
 \name{migrate_atlas_files}
 \alias{migrate_atlas_files}
-\title{Migrate atlas \code{.rda} files to the lite (sf-optional) format}
+\title{Migrate atlas \code{.rda} files to the sf-optional polygon format}
 \usage{
 migrate_atlas_files(path = "data", keep_sf = FALSE, quiet = FALSE)
 }
@@ -11,7 +11,8 @@ migrate_atlas_files(path = "data", keep_sf = FALSE, quiet = FALSE)
 \code{"data"}, the conventional location in R packages.}
 
 \item{keep_sf}{If \code{TRUE}, the \code{sf} slot is preserved alongside the new
-\code{polygons} slot (additive). Default \code{FALSE} — the migration is "go lite".}
+\code{polygons} slot (additive). Default \code{FALSE} — the migration replaces
+the sf slot with polygons.}
 
 \item{quiet}{If \code{TRUE}, suppress per-file status messages.}
 }
@@ -22,8 +23,9 @@ rewritten.
 \description{
 Walks a directory of \code{.rda} files, finds every \code{ggseg_atlas} object inside
 them, derives the \code{polygons} slot from \code{sf} via \code{\link[=sf_to_polygons]{sf_to_polygons()}}, and
-rewrites the \code{.rda}. By default this is a true "go lite" migration that
-drops the \code{sf} slot; pass \code{keep_sf = TRUE} to retain it alongside polygons.
+rewrites the \code{.rda}. By default this drops the \code{sf} slot — the migration
+converts atlases to the polygon-only format. Pass \code{keep_sf = TRUE} to
+retain the \code{sf} slot alongside polygons.
 }
 \details{
 Intended for downstream atlas-package maintainers across the ggsegverse
