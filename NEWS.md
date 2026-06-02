@@ -50,6 +50,22 @@ their `sf` slots, so callers who have sf installed see no behavioural change.
   a freshly rewritten `sf` slot; the two 2D representations stay consistent
   after every operation.
 
+### sf-free view manipulation
+
+- `atlas_context_remove()`, `atlas_view_remove()`, `atlas_view_keep()`,
+  `atlas_view_remove_region()`, `atlas_view_remove_small()`,
+  `atlas_view_gather()`, and `atlas_view_reorder()` now run on polygon-only
+  atlases with no `sf` installed. Filtering, polygon area (shoelace), and view
+  repositioning are implemented in pure R against the `brain_polygons`
+  coordinate table; the polygon results match the sf path to floating-point
+  precision. sf-backed atlases continue to use the existing sf code path
+  unchanged.
+- `atlas_views()` reads view names from `polygons` when `sf` is absent.
+- `atlas_region_keep()` and `atlas_region_remove()` no longer drop 2D geometry
+  on polygon-only atlases (they previously rebuilt from the `sf` slot only).
+- View helpers now warn about "no 2D geometry" (rather than "no sf data") only
+  when an atlas carries neither `sf` nor `polygons`.
+
 ## ggseg.formats 0.0.2
 
 ### Deep cerebellar nuclei support

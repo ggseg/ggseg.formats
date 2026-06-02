@@ -281,9 +281,16 @@ describe("atlas_views", {
     expect_equal(result, c("axial_1", "axial_2", "sagittal"))
   })
 
-  it("returns NULL when no sf data", {
+  it("reads views from polygons when sf is absent", {
     atlas <- make_test_atlas()
     atlas$data$sf <- NULL
+    expect_equal(atlas_views(atlas), c("lateral", "medial"))
+  })
+
+  it("returns NULL when no 2D data", {
+    atlas <- make_test_atlas()
+    atlas$data$sf <- NULL
+    atlas$data$polygons <- NULL
     expect_null(atlas_views(atlas))
   })
 })
@@ -741,10 +748,20 @@ describe("atlas_view_remove", {
     expect_equal(unique(result$data$sf$view), "sagittal")
   })
 
-  it("warns when no sf data", {
+  it("warns when no 2D data", {
     atlas <- make_test_atlas()
     atlas$data$sf <- NULL
-    expect_warning(atlas_view_remove(atlas, "lateral"), "no sf data")
+    atlas$data$polygons <- NULL
+    expect_warning(atlas_view_remove(atlas, "lateral"), "no 2D geometry")
+  })
+
+  it("removes views from a polygon-only atlas without sf", {
+    atlas <- make_test_atlas()
+    atlas$data$sf <- NULL
+    result <- atlas_view_remove(atlas, "medial")
+    expect_null(result$data$sf)
+    expect_false("medial" %in% atlas_views(result))
+    expect_true("lateral" %in% atlas_views(result))
   })
 
   it("warns when all views removed", {
@@ -866,13 +883,30 @@ describe("atlas_view_remove_small", {
     expect_equal(result$palette, atlas$palette)
   })
 
-  it("warns when no sf data", {
+  it("warns when no 2D data", {
     atlas <- make_test_atlas()
     atlas$data$sf <- NULL
+    atlas$data$polygons <- NULL
     expect_warning(
       atlas_view_remove_small(atlas, min_area = 1),
-      "no sf data"
+      "no 2D geometry"
     )
+  })
+
+  it("removes small geometries from a polygon-only atlas", {
+    atlas <- make_multiview_atlas()
+    poly <- as_polygon_atlas(atlas)
+    expect_message(
+      result <- atlas_view_remove_small(poly, min_area = 2),
+      "Removed"
+    )
+    expect_null(result$data$sf)
+
+    n_geoms <- function(p) {
+      flat <- polygons_unnest(p)
+      length(unique(paste(flat$label, flat$view)))
+    }
+    expect_true(n_geoms(result$data$polygons) < nrow(atlas$data$sf))
   })
 })
 
@@ -892,10 +926,35 @@ describe("atlas_view_gather", {
     )
   })
 
-  it("warns when no sf data", {
+  it("warns when no 2D data", {
     atlas <- make_test_atlas()
     atlas$data$sf <- NULL
-    expect_warning(atlas_view_gather(atlas), "no sf data")
+    atlas$data$polygons <- NULL
+    expect_warning(atlas_view_gather(atlas), "no 2D geometry")
+  })
+
+  it("repositions a polygon-only atlas without sf", {
+    atlas <- make_multiview_atlas()
+    poly <- as_polygon_atlas(atlas)
+    result <- atlas_view_gather(poly)
+
+    expect_null(result$data$sf)
+    expect_s3_class(result$data$polygons, "brain_polygons")
+
+    # each hemi+view group occupies a disjoint horizontal band (packed left
+    # to right with gaps); the exact ordering is representation-dependent.
+    flat <- polygons_unnest(result$data$polygons)
+    hemi <- ifelse(
+      grepl("^lh", flat$label),
+      "left",
+      ifelse(grepl("^rh", flat$label), "right", "")
+    )
+    groups <- split(seq_len(nrow(flat)), paste(hemi, flat$view))
+    ranges <- lapply(groups, function(idx) range(flat$x[idx]))
+    ordered <- ranges[order(vapply(ranges, `[`, numeric(1), 1))]
+    for (i in seq_len(length(ordered) - 1)) {
+      expect_lte(ordered[[i]][2], ordered[[i + 1]][1])
+    }
   })
 
   it("keeps cortical hemi+view groups spatially coherent", {
@@ -956,6 +1015,64 @@ describe("atlas_view_reorder", {
     medial_bbox <- sf::st_bbox(sf[sf$view == "medial", ])
     lateral_bbox <- sf::st_bbox(sf[sf$view == "lateral", ])
     expect_true(medial_bbox["xmax"] < lateral_bbox["xmin"])
+  })
+})
+
+
+# polygon-only view operations ----
+
+describe("view operations on polygon-only atlases", {
+  poly_views <- function(atlas) {
+    unique(polygons_unnest(atlas$data$polygons)$view)
+  }
+
+  it("atlas_context_remove drops context geometry without sf", {
+    poly <- as_polygon_atlas(make_test_atlas())
+    result <- atlas_context_remove(poly)
+    expect_null(result$data$sf)
+    expect_false("lh_unknown" %in% result$data$polygons$label)
+    expect_setequal(result$data$polygons$label, result$core$label)
+  })
+
+  it("atlas_view_keep keeps only matching views without sf", {
+    poly <- as_polygon_atlas(make_multiview_atlas())
+    result <- atlas_view_keep(poly, "axial_1")
+    expect_null(result$data$sf)
+    expect_equal(poly_views(result), "axial_1")
+  })
+
+  it("atlas_view_remove_region drops a region's geometry without sf", {
+    poly <- as_polygon_atlas(make_test_atlas())
+    result <- atlas_view_remove_region(poly, "lh_frontal", match_on = "label")
+    expect_null(result$data$sf)
+    expect_false("lh_frontal" %in% result$data$polygons$label)
+    # core is untouched by a view-only removal
+    expect_true("lh_frontal" %in% result$core$label)
+  })
+
+  it("atlas_view_remove_region by region matches sf-path geometry", {
+    atlas <- make_multiview_atlas()
+    sf_res <- atlas_view_remove_region(atlas, "frontal", match_on = "region")
+    poly_res <- atlas_view_remove_region(
+      as_polygon_atlas(atlas),
+      "frontal",
+      match_on = "region"
+    )
+    expect_setequal(
+      unique(sf_res$data$sf$label),
+      poly_res$data$polygons$label
+    )
+  })
+
+  it("atlas_view_reorder lays views out in the requested order", {
+    poly <- as_polygon_atlas(make_cortical_hemi_atlas())
+    result <- atlas_view_reorder(poly, c("medial", "lateral"))
+    expect_null(result$data$sf)
+
+    flat <- polygons_unnest(result$data$polygons)
+    medial_xmax <- max(flat$x[flat$view == "medial"])
+    lateral_xmin <- min(flat$x[flat$view == "lateral"])
+    expect_lte(medial_xmax, lateral_xmin)
   })
 })
 
@@ -1124,7 +1241,7 @@ describe("atlas_view_remove_region", {
     expect_false("lh_frontal" %in% sf_data$label)
   })
 
-  it("warns when atlas has no sf data", {
+  it("warns when atlas has no 2D data", {
     core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
@@ -1136,7 +1253,7 @@ describe("atlas_view_remove_region", {
     )
     expect_warning(
       atlas_view_remove_region(atlas, "frontal"),
-      "no sf data"
+      "no 2D geometry"
     )
   })
 })
@@ -1158,7 +1275,7 @@ describe("atlas_view_keep", {
     )
   })
 
-  it("warns when atlas has no sf data", {
+  it("warns when atlas has no 2D data", {
     core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
@@ -1168,13 +1285,13 @@ describe("atlas_view_keep", {
       core = core,
       data = ggseg_data_cortical(vertices = vertices)
     )
-    expect_warning(atlas_view_keep(atlas, "lateral"), "no sf data")
+    expect_warning(atlas_view_keep(atlas, "lateral"), "no 2D geometry")
   })
 })
 
 
 describe("atlas_view_reorder", {
-  it("warns when atlas has no sf data", {
+  it("warns when atlas has no 2D data", {
     core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
@@ -1184,7 +1301,7 @@ describe("atlas_view_reorder", {
       core = core,
       data = ggseg_data_cortical(vertices = vertices)
     )
-    expect_warning(atlas_view_reorder(atlas, "lateral"), "no sf data")
+    expect_warning(atlas_view_reorder(atlas, "lateral"), "no 2D geometry")
   })
 
   it("appends unmentioned views to end of order", {
