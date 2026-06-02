@@ -147,12 +147,17 @@ make_cortical_hemi_atlas <- function() {
   make_view_poly <- function(x_off, y_off, size = 1) {
     sf::st_polygon(list(matrix(
       c(
-        x_off, y_off,
-        x_off + size, y_off,
-        x_off + size, y_off + size,
-        x_off, y_off
+        x_off,
+        y_off,
+        x_off + size,
+        y_off,
+        x_off + size,
+        y_off + size,
+        x_off,
+        y_off
       ),
-      ncol = 2, byrow = TRUE
+      ncol = 2,
+      byrow = TRUE
     )))
   }
 
@@ -193,8 +198,10 @@ make_cortical_hemi_atlas <- function() {
   )
 
   palette <- c(
-    lh_frontal = "#FF0000", lh_parietal = "#00FF00",
-    rh_frontal = "#0000FF", rh_parietal = "#FFFF00"
+    lh_frontal = "#FF0000",
+    lh_parietal = "#00FF00",
+    rh_frontal = "#0000FF",
+    rh_parietal = "#FFFF00"
   )
 
   ggseg_atlas(
@@ -382,6 +389,245 @@ describe("atlas_region_contextual", {
     result <- atlas_region_contextual(atlas, "^lh_f", match_on = "label")
     expect_equal(nrow(result$core), 2)
     expect_equal(result$core$label, c("lh_parietal", "rh_frontal"))
+  })
+
+  it("draws contextual sf rows before remaining core rows", {
+    atlas <- make_test_atlas()
+    result <- atlas_region_contextual(atlas, "parietal")
+    sf <- result$data$sf
+    is_core <- sf$label %in% result$core$label
+    # the demoted region (lh_parietal) was in the middle; it must now lead
+    expect_equal(sf$label[1], "lh_parietal")
+    expect_true(max(which(!is_core)) < min(which(is_core)))
+  })
+
+  it("matches case-insensitively by default", {
+    atlas <- make_test_atlas()
+    result <- atlas_region_contextual(atlas, "FRONTAL")
+    expect_false(any(grepl("frontal", result$core$region)))
+  })
+
+  it("respects ignore.case = FALSE", {
+    atlas <- make_test_atlas()
+    result <- atlas_region_contextual(atlas, "FRONTAL", ignore.case = FALSE)
+    # no region matches the upper-case pattern, so nothing is demoted
+    expect_equal(nrow(result$core), nrow(atlas$core))
+  })
+
+  it("keeps sf and polygons in sync after demoting a region", {
+    atlas <- make_test_atlas()
+    result <- atlas_region_contextual(atlas, "parietal")
+    expect_setequal(
+      unique(result$data$sf$label),
+      result$data$polygons$label
+    )
+    # the demoted region keeps its geometry in both representations
+    expect_true("lh_parietal" %in% result$data$polygons$label)
+  })
+
+  it("operates on a polygon-only atlas without sf", {
+    poly <- as_polygon_atlas(make_test_atlas())
+    expect_null(poly$data$sf)
+
+    result <- atlas_region_contextual(poly, "parietal")
+    expect_null(result$data$sf)
+    expect_s3_class(result$data$polygons, "brain_polygons")
+    # demoted geometry retained, dropped from core, drawn first (behind core)
+    expect_true("lh_parietal" %in% result$data$polygons$label)
+    expect_false("lh_parietal" %in% result$core$label)
+    is_core <- result$data$polygons$label %in% result$core$label
+    expect_true(max(which(!is_core)) < min(which(is_core)))
+  })
+})
+
+
+# atlas_region_op ----
+
+describe("atlas_region_op", {
+  make_op_atlas <- function() {
+    outer <- sf::st_polygon(list(matrix(
+      c(0, 0, 10, 0, 10, 10, 0, 10, 0, 0),
+      ncol = 2,
+      byrow = TRUE
+    )))
+    inner <- sf::st_polygon(list(matrix(
+      c(3, 3, 7, 3, 7, 7, 3, 7, 3, 3),
+      ncol = 2,
+      byrow = TRUE
+    )))
+    sf_geom <- sf::st_sf(
+      label = c("cortex", "wm"),
+      view = c("v1", "v1"),
+      geometry = sf::st_sfc(outer, inner)
+    )
+    core <- data.frame(
+      hemi = c(NA, NA),
+      region = c("cortex", "wm"),
+      label = c("cortex", "wm"),
+      stringsAsFactors = FALSE
+    )
+    ggseg_atlas(
+      atlas = "op",
+      type = "subcortical",
+      palette = c(cortex = "#aaaaaa", wm = "#bbbbbb"),
+      core = core,
+      data = ggseg_data_subcortical(sf = sf_geom, meshes = NULL)
+    )
+  }
+
+  area_of <- function(atlas, lbl) {
+    g <- atlas$data$sf$geometry[atlas$data$sf$label == lbl]
+    as.numeric(sum(sf::st_area(g)))
+  }
+  holes_of <- function(atlas, lbl) {
+    g <- atlas$data$sf$geometry[[which(atlas$data$sf$label == lbl)[1]]]
+    if (inherits(g, "MULTIPOLYGON")) {
+      sum(vapply(g, length, integer(1))) - length(g)
+    } else if (inherits(g, "POLYGON")) {
+      length(g) - 1
+    } else {
+      NA_integer_
+    }
+  }
+
+  it("difference punches y out of x as a hole", {
+    r <- atlas_region_op(
+      make_op_atlas(),
+      "cortex",
+      "wm",
+      action = "difference",
+      into = "ribbon"
+    )
+    expect_equal(holes_of(r, "ribbon"), 1)
+    expect_equal(area_of(r, "ribbon"), 100 - 16)
+  })
+
+  it("intersection keeps only the overlap", {
+    r <- atlas_region_op(
+      make_op_atlas(),
+      "cortex",
+      "wm",
+      action = "intersection",
+      into = "ov"
+    )
+    expect_equal(area_of(r, "ov"), 16)
+  })
+
+  it("union merges both operands", {
+    r <- atlas_region_op(
+      make_op_atlas(),
+      "cortex",
+      "wm",
+      action = "union",
+      into = "both"
+    )
+    expect_equal(area_of(r, "both"), 100)
+  })
+
+  it("leaves the input regions in place", {
+    r <- atlas_region_op(
+      make_op_atlas(),
+      "cortex",
+      "wm",
+      action = "difference",
+      into = "ribbon"
+    )
+    expect_true(all(c("cortex", "wm") %in% r$data$sf$label))
+  })
+
+  it("result is contextual without a colour", {
+    r <- atlas_region_op(
+      make_op_atlas(),
+      "cortex",
+      "wm",
+      action = "difference",
+      into = "ribbon"
+    )
+    expect_false("ribbon" %in% r$core$label)
+    expect_false("ribbon" %in% names(r$palette))
+    expect_true("ribbon" %in% r$data$sf$label)
+  })
+
+  it("colour registers the result in core and palette", {
+    r <- atlas_region_op(
+      make_op_atlas(),
+      "cortex",
+      "wm",
+      action = "difference",
+      into = "ribbon",
+      colour = "#123456"
+    )
+    expect_true("ribbon" %in% r$core$label)
+    expect_equal(r$palette[["ribbon"]], "#123456")
+  })
+
+  it("draws a contextual result behind core regions", {
+    r <- atlas_region_op(
+      make_op_atlas(),
+      "cortex",
+      "wm",
+      action = "difference",
+      into = "ribbon"
+    )
+    sf <- r$data$sf
+    is_core <- sf$label %in% r$core$label
+    expect_true(max(which(!is_core)) < min(which(is_core)))
+  })
+
+  it("writes the result into the polygons slot too", {
+    r <- atlas_region_op(
+      make_op_atlas(),
+      "cortex",
+      "wm",
+      action = "difference",
+      into = "ribbon"
+    )
+    expect_true("ribbon" %in% r$data$polygons$label)
+    expect_setequal(r$data$sf$label, r$data$polygons$label)
+  })
+
+  it("operates on a polygon-only atlas and stays polygon-only", {
+    poly <- as_polygon_atlas(make_op_atlas())
+    expect_null(poly$data$sf)
+
+    r <- atlas_region_op(
+      poly,
+      "cortex",
+      "wm",
+      action = "difference",
+      into = "ribbon"
+    )
+    expect_null(r$data$sf)
+    expect_true("ribbon" %in% r$data$polygons$label)
+
+    rehydrated <- as_sf_atlas(r)
+    g <- rehydrated$data$sf$geometry[rehydrated$data$sf$label == "ribbon"]
+    expect_equal(as.numeric(sum(sf::st_area(g))), 100 - 16)
+  })
+
+  it("matches sf-backed and polygon-only results", {
+    sf_res <- atlas_region_op(
+      make_op_atlas(),
+      "cortex",
+      "wm",
+      action = "intersection",
+      into = "ov"
+    )
+    poly_res <- atlas_region_op(
+      as_polygon_atlas(make_op_atlas()),
+      "cortex",
+      "wm",
+      action = "intersection",
+      into = "ov"
+    )
+    poly_sf <- as_sf_atlas(poly_res)$data$sf
+    sf_area <- as.numeric(sum(sf::st_area(
+      sf_res$data$sf$geometry[sf_res$data$sf$label == "ov"]
+    )))
+    poly_area <- as.numeric(sum(sf::st_area(
+      poly_sf$geometry[poly_sf$label == "ov"]
+    )))
+    expect_equal(sf_area, poly_area)
   })
 })
 
@@ -979,10 +1225,13 @@ describe("atlas_region_remove with subcortical atlas", {
     result <- atlas_region_remove(aseg(), "Thalamus")
     expect_false(any(grepl("Thalamus", result$core$region, ignore.case = TRUE)))
     expect_false(any(grepl(
-      "Thalamus", names(result$palette), ignore.case = TRUE
+      "Thalamus",
+      names(result$palette),
+      ignore.case = TRUE
     )))
     expect_false(any(grepl(
-      "Thalamus", result$data$meshes$label,
+      "Thalamus",
+      result$data$meshes$label,
       ignore.case = TRUE
     )))
   })
@@ -993,10 +1242,14 @@ describe("atlas_region_contextual with subcortical atlas", {
   it("removes region from core/palette but keeps sf geometry", {
     result <- atlas_region_contextual(aseg(), "Thalamus")
     expect_false(any(grepl(
-      "Thalamus", result$core$region, ignore.case = TRUE
+      "Thalamus",
+      result$core$region,
+      ignore.case = TRUE
     )))
     expect_false(any(grepl(
-      "Thalamus", names(result$palette), ignore.case = TRUE
+      "Thalamus",
+      names(result$palette),
+      ignore.case = TRUE
     )))
     expect_s3_class(result$data, "ggseg_data_subcortical")
   })
@@ -1007,7 +1260,9 @@ describe("atlas_region_keep with subcortical atlas", {
   it("keeps only matching regions", {
     result <- atlas_region_keep(aseg(), "hippocampus")
     expect_true(all(grepl(
-      "hippocampus", result$core$region, ignore.case = TRUE
+      "hippocampus",
+      result$core$region,
+      ignore.case = TRUE
     )))
     expect_s3_class(result$data, "ggseg_data_subcortical")
   })
@@ -1047,7 +1302,8 @@ describe("atlas_region_remove with tract atlas", {
   it("removes matching regions from tract core and palette", {
     result <- atlas_region_remove(tracula(), "corticospinal")
     expect_false(any(grepl(
-      "corticospinal", result$core$region,
+      "corticospinal",
+      result$core$region,
       ignore.case = TRUE
     )))
     expect_s3_class(result$data, "ggseg_data_tract")
@@ -1057,7 +1313,9 @@ describe("atlas_region_remove with tract atlas", {
     result <- atlas_region_remove(tracula(), "cst")
     remaining_sf <- result$data$sf$label
     expect_false(any(grepl(
-      "cst", remaining_sf, ignore.case = TRUE
+      "cst",
+      remaining_sf,
+      ignore.case = TRUE
     )))
   })
 })
@@ -1067,7 +1325,8 @@ describe("atlas_region_contextual with tract atlas", {
   it("keeps sf but removes from core/palette", {
     result <- atlas_region_contextual(tracula(), "corticospinal")
     expect_false(any(grepl(
-      "corticospinal", result$core$region,
+      "corticospinal",
+      result$core$region,
       ignore.case = TRUE
     )))
     expect_s3_class(result$data, "ggseg_data_tract")
@@ -1079,7 +1338,8 @@ describe("atlas_region_keep with tract atlas", {
   it("keeps only matching regions", {
     result <- atlas_region_keep(tracula(), "corticospinal")
     expect_true(all(grepl(
-      "corticospinal", result$core$region,
+      "corticospinal",
+      result$core$region,
       ignore.case = TRUE
     )))
     expect_s3_class(result$data, "ggseg_data_tract")
@@ -1108,14 +1368,18 @@ describe("guess_type edge cases", {
 
   it("reads views from x$sf$view for ggseg_atlas with legacy sf field", {
     sf_geom <- sf::st_sf(
-      label = "lh_frontal", view = "lateral",
+      label = "lh_frontal",
+      view = "lateral",
       geometry = sf::st_sfc(make_polygon())
     )
     core <- data.frame(
-      hemi = "left", region = "frontal", label = "lh_frontal"
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal"
     )
     atlas <- ggseg_atlas(
-      atlas = "test", type = "cortical",
+      atlas = "test",
+      type = "cortical",
       core = core,
       data = ggseg_data_cortical(sf = sf_geom)
     )
@@ -1168,7 +1432,8 @@ describe("atlas_region_remove with no sf data", {
     )
     vertices$vertices <- list(1L:3L, 4L:6L)
     atlas <- ggseg_atlas(
-      atlas = "test", type = "cortical",
+      atlas = "test",
+      type = "cortical",
       core = core,
       data = ggseg_data_cortical(vertices = vertices)
     )

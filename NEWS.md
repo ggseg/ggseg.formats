@@ -36,6 +36,20 @@ entry and error with a clear pointer to `as_polygon_atlas()` if sf is
 unavailable. The bundled `dk`, `aseg`, and `tracula` atlases still carry
 their `sf` slots, so callers who have sf installed see no behavioural change.
 
+### Region geometry operations
+
+- New `atlas_region_op()` combines two sets of region geometry with a boolean
+  operation per view (`difference`, `intersection`, `union`, `symdifference`),
+  writing the result to a new region. Boolean ops need a geometry engine, so
+  this helper always requires `sf`; a polygon-only atlas is rehydrated for the
+  operation and the result returned in polygon form.
+- `atlas_region_contextual()` now operates on whichever 2D representation an
+  atlas carries (`sf` and/or `polygons`) and keeps both in sync — it needs no
+  `sf` for a polygon-only atlas. It also gains an `ignore.case` argument.
+- The atlas manipulation helpers no longer leave a stale `polygons` slot behind
+  a freshly rewritten `sf` slot; the two 2D representations stay consistent
+  after every operation.
+
 ## ggseg.formats 0.0.2
 
 ### Deep cerebellar nuclei support
