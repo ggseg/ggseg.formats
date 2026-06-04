@@ -86,10 +86,12 @@ describe("is_*_atlas helpers", {
       atlas = "suit_lobules",
       type = "cerebellar",
       core = data.frame(
-        hemi = "left", region = "I-IV", label = "left_I-IV",
+        hemi = "left",
+        region = "I-IV",
+        label = "left_I-IV",
         stringsAsFactors = FALSE
       ),
-      data = ggseg_data_cerebellar(sf = sf_geom)
+      data = ggseg_data_cerebellar(geom = sf_geom)
     )
     expect_true(is_cerebellar_atlas(cer))
     expect_false(is_cerebellar_atlas(dk()))
@@ -136,7 +138,7 @@ describe("cerebellar atlas construction and data.frame conversion", {
         label = c("left_I-IV", "vermis_VI", "right_Crus-I"),
         stringsAsFactors = FALSE
       ),
-      data = ggseg_data_cerebellar(sf = sf_geom)
+      data = ggseg_data_cerebellar(geom = sf_geom)
     )
   }
 
@@ -174,7 +176,7 @@ describe("cerebellar atlas construction and data.frame conversion", {
         label = "midline_dentate",
         stringsAsFactors = FALSE
       ),
-      data = ggseg_data_cerebellar(sf = sf_geom)
+      data = ggseg_data_cerebellar(geom = sf_geom)
     )
     df <- as.data.frame(atlas)
     expect_equal(nrow(df), 1)
@@ -189,7 +191,9 @@ describe("cerebellar atlas construction and data.frame conversion", {
         atlas = "test",
         type = "cerebellar",
         core = data.frame(
-          hemi = "left", region = "frontal", label = "lh_frontal",
+          hemi = "left",
+          region = "frontal",
+          label = "lh_frontal",
           stringsAsFactors = FALSE
         ),
         data = ggseg_data_cortical(vertices = vertices)
@@ -208,8 +212,10 @@ describe("ggseg_atlas constructor validation", {
 
     expect_error(
       ggseg_atlas(
-        atlas = c("a", "b"), type = "cortical",
-        core = core, data = ggseg_data_cortical(vertices = vertices)
+        atlas = c("a", "b"),
+        type = "cortical",
+        core = core,
+        data = ggseg_data_cortical(vertices = vertices)
       ),
       "single character string"
     )
@@ -222,8 +228,10 @@ describe("ggseg_atlas constructor validation", {
 
     expect_error(
       ggseg_atlas(
-        atlas = "test", type = "cortical",
-        core = core, data = ggseg_data_cortical(vertices = vertices)
+        atlas = "test",
+        type = "cortical",
+        core = core,
+        data = ggseg_data_cortical(vertices = vertices)
       ),
       "must contain columns"
     )
@@ -233,8 +241,10 @@ describe("ggseg_atlas constructor validation", {
     core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
     expect_error(
       ggseg_atlas(
-        atlas = "test", type = "cortical",
-        core = core, data = list(sf = NULL)
+        atlas = "test",
+        type = "cortical",
+        core = core,
+        data = list(sf = NULL)
       ),
       "ggseg_atlas_data"
     )
@@ -249,8 +259,10 @@ describe("ggseg_atlas constructor validation", {
     ))
     expect_error(
       ggseg_atlas(
-        atlas = "test", type = "cortical",
-        core = core, data = ggseg_data_subcortical(meshes = meshes)
+        atlas = "test",
+        type = "cortical",
+        core = core,
+        data = ggseg_data_subcortical(meshes = meshes)
       ),
       "requires.*ggseg_data_cortical"
     )
@@ -266,8 +278,10 @@ describe("deprecated wrappers", {
 
     lifecycle::expect_deprecated(
       brain_atlas(
-        atlas = "test", type = "cortical",
-        core = core, data = ggseg_data_cortical(vertices = vertices)
+        atlas = "test",
+        type = "cortical",
+        core = core,
+        data = ggseg_data_cortical(vertices = vertices)
       )
     )
   })
@@ -293,9 +307,10 @@ describe("as.data.frame.ggseg_atlas", {
     vertices$vertices <- list(1L:3L, 4L:6L)
 
     atlas <- ggseg_atlas(
-      atlas = "test", type = "cortical",
+      atlas = "test",
+      type = "cortical",
       core = core,
-      data = ggseg_data_cortical(sf = sf_geom, vertices = vertices)
+      data = ggseg_data_cortical(geom = sf_geom, vertices = vertices)
     )
 
     df <- as.data.frame(atlas)
@@ -310,15 +325,18 @@ describe("as.data.frame.ggseg_atlas", {
       geometry = sf::st_sfc(make_polygon(), make_polygon2())
     )
     core <- data.frame(
-      hemi = "left", region = "frontal", label = "lh_frontal"
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal"
     )
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
 
     atlas <- ggseg_atlas(
-      atlas = "test", type = "cortical",
+      atlas = "test",
+      type = "cortical",
       core = core,
-      data = ggseg_data_cortical(sf = sf_geom, vertices = vertices)
+      data = ggseg_data_cortical(geom = sf_geom, vertices = vertices)
     )
 
     df <- as.data.frame(atlas)
@@ -331,7 +349,8 @@ describe("as.data.frame.ggseg_atlas", {
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
     atlas <- ggseg_atlas(
-      atlas = "test", type = "cortical",
+      atlas = "test",
+      type = "cortical",
       core = core,
       data = ggseg_data_cortical(vertices = vertices)
     )
@@ -351,16 +370,20 @@ describe("print.ggseg_atlas", {
 
   it("prints atlas without palette or 3D data (render_3d = none)", {
     core <- data.frame(
-      hemi = "left", region = "frontal", label = "lh_frontal"
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal"
     )
     sf_geom <- sf::st_sf(
-      label = "lh_frontal", view = "lateral",
+      label = "lh_frontal",
+      view = "lateral",
       geometry = sf::st_sfc(make_polygon())
     )
     atlas <- ggseg_atlas(
-      atlas = "minimal", type = "cortical",
+      atlas = "minimal",
+      type = "cortical",
       core = core,
-      data = ggseg_data_cortical(sf = sf_geom)
+      data = ggseg_data_cortical(geom = sf_geom)
     )
     expect_snapshot(print(atlas))
   })
@@ -387,14 +410,18 @@ describe("is_ggseg3d_atlas", {
 describe("ggseg_atlas constructor validation", {
   it("errors on vector atlas name", {
     core <- data.frame(
-      hemi = "left", region = "frontal", label = "lh_frontal"
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal"
     )
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
     expect_error(
       ggseg_atlas(
-        atlas = c("a", "b"), type = "cortical",
-        core = core, data = ggseg_data_cortical(vertices = vertices)
+        atlas = c("a", "b"),
+        type = "cortical",
+        core = core,
+        data = ggseg_data_cortical(vertices = vertices)
       ),
       "single character string"
     )
@@ -417,13 +444,16 @@ describe("as.data.frame.ggseg_atlas edge cases", {
       geometry = sf::st_sfc(make_polygon(), make_polygon2())
     )
     core <- data.frame(
-      hemi = "left", region = "frontal", label = "lh_frontal"
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal"
     )
     atlas <- ggseg_atlas(
-      atlas = "test", type = "cortical",
+      atlas = "test",
+      type = "cortical",
       core = core,
       data = ggseg_data_cortical(
-        sf = sf_geom,
+        geom = sf_geom,
         vertices = data.frame(label = "lh_frontal", vertices = I(list(1L:3L)))
       )
     )
@@ -440,12 +470,15 @@ describe("as.data.frame.ggseg_atlas edge cases", {
       geometry = sf::st_sfc(make_polygon(), make_polygon2())
     )
     core <- data.frame(
-      hemi = NA_character_, region = "frontal", label = "lh_frontal"
+      hemi = NA_character_,
+      region = "frontal",
+      label = "lh_frontal"
     )
     atlas <- ggseg_atlas(
-      atlas = "test", type = "subcortical",
+      atlas = "test",
+      type = "subcortical",
       core = core,
-      data = ggseg_data_subcortical(sf = sf_geom)
+      data = ggseg_data_subcortical(geom = sf_geom)
     )
     df <- as.data.frame(atlas)
     frontal_row <- df[df$label == "lh_frontal", ]
@@ -464,10 +497,11 @@ describe("as.data.frame.ggseg_atlas edge cases", {
       label = c("lh_frontal", "no_prefix")
     )
     atlas <- ggseg_atlas(
-      atlas = "test", type = "cortical",
+      atlas = "test",
+      type = "cortical",
       core = core,
       data = ggseg_data_cortical(
-        sf = sf_geom,
+        geom = sf_geom,
         vertices = data.frame(
           label = c("lh_frontal", "no_prefix"),
           vertices = I(list(1L:3L, 4L:6L))
@@ -486,7 +520,8 @@ describe("ggseg_atlas constructor: non-data.frame core", {
     vertices$vertices <- list(1L:3L)
     expect_error(
       ggseg_atlas(
-        atlas = "test", type = "cortical",
+        atlas = "test",
+        type = "cortical",
         core = list(hemi = "left", region = "frontal", label = "lh_frontal"),
         data = ggseg_data_cortical(vertices = vertices)
       ),
@@ -499,15 +534,19 @@ describe("ggseg_atlas constructor: non-data.frame core", {
 describe("as.data.frame with legacy data structure", {
   it("handles data as raw sf (not ggseg_atlas_data)", {
     sf_geom <- sf::st_sf(
-      label = "lh_frontal", view = "lateral",
+      label = "lh_frontal",
+      view = "lateral",
       geometry = sf::st_sfc(make_polygon())
     )
     core <- data.frame(
-      hemi = "left", region = "frontal", label = "lh_frontal"
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal"
     )
     atlas <- structure(
       list(
-        atlas = "test", type = "cortical",
+        atlas = "test",
+        type = "cortical",
         palette = c(lh_frontal = "#FF0000"),
         core = core,
         data = sf_geom
@@ -521,12 +560,14 @@ describe("as.data.frame with legacy data structure", {
 
   it("handles NULL core", {
     sf_geom <- sf::st_sf(
-      label = "lh_frontal", view = "lateral",
+      label = "lh_frontal",
+      view = "lateral",
       geometry = sf::st_sfc(make_polygon())
     )
     atlas <- structure(
       list(
-        atlas = "test", type = "subcortical",
+        atlas = "test",
+        type = "subcortical",
         palette = NULL,
         core = NULL,
         data = sf_geom

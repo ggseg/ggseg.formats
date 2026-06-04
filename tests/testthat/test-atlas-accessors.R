@@ -49,10 +49,11 @@ describe("atlas_sf", {
     expect_error(atlas_sf(list()), "must be a")
   })
 
-  it("errors when atlas has no sf data", {
+  it("errors when atlas has no 2D geometry", {
     atlas <- dk()
+    atlas$data$geom <- NULL
     atlas$data$sf <- NULL
-    expect_error(atlas_sf(atlas), "does not contain sf")
+    expect_error(atlas_sf(atlas), "does not contain 2D geometry")
   })
 
   it("returns sf joined with core and palette", {
@@ -76,7 +77,7 @@ describe("atlas_sf", {
       type = "cortical",
       palette = palette,
       core = core,
-      data = ggseg_data_cortical(sf = sf_geom)
+      data = ggseg_data_cortical(geom = sf_geom)
     )
 
     result <- atlas_sf(atlas)
@@ -108,7 +109,7 @@ describe("atlas_sf", {
       atlas = "test",
       type = "cortical",
       core = core,
-      data = ggseg_data_cortical(sf = sf_geom)
+      data = ggseg_data_cortical(geom = sf_geom)
     )
 
     result <- atlas_sf(atlas)
