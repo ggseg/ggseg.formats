@@ -109,18 +109,24 @@ describe("validate_polygons()", {
   })
 })
 
-describe("ggseg_data_cortical() with polygons", {
-  it("accepts polygons-only input", {
-    polys <- sf_to_polygons(dk()$data$sf)
-    d <- ggseg_data_cortical(polygons = polys)
+describe("ggseg_data_cortical() geometry", {
+  it("accepts polygons input as geom", {
+    polys <- sf_to_polygons(atlas_geom(dk()))
+    d <- ggseg_data_cortical(geom = polys)
+    expect_s3_class(d$geom, "brain_polygons")
     expect_null(d$sf)
-    expect_s3_class(d$polygons, "brain_polygons")
+    expect_null(d$polygons)
   })
 
-  it("auto-derives polygons from sf", {
-    d <- ggseg_data_cortical(sf = dk()$data$sf)
-    expect_s3_class(d$sf, "sf")
-    expect_s3_class(d$polygons, "brain_polygons")
+  it("accepts sf input as geom", {
+    d <- ggseg_data_cortical(geom = atlas_geom(dk()))
+    expect_s3_class(d$geom, "sf")
+  })
+
+  it("converts a deprecated sf= argument to polygons", {
+    withr::local_options(lifecycle_verbosity = "quiet")
+    d <- ggseg_data_cortical(sf = atlas_geom(dk()))
+    expect_s3_class(d$geom, "brain_polygons")
   })
 
   it("errors with no 2D and no 3D source", {
@@ -132,21 +138,22 @@ describe("ggseg_data_cortical() with polygons", {
 })
 
 describe("as_polygon_atlas() / as_sf_atlas()", {
-  it("as_polygon_atlas drops sf and populates polygons", {
+  it("as_polygon_atlas stores polygons in the geom slot", {
     poly <- as_polygon_atlas(dk())
+    expect_true(is_atlas_polygon(poly))
+    expect_s3_class(atlas_geom(poly), "brain_polygons")
     expect_null(poly$data$sf)
-    expect_s3_class(poly$data$polygons, "brain_polygons")
+    expect_null(poly$data$polygons)
     expect_true(is_ggseg_atlas(poly))
   })
 
-  it("as_sf_atlas rehydrates sf from polygons", {
-    poly <- as_polygon_atlas(dk())
-    rehy <- as_sf_atlas(poly)
-    expect_s3_class(rehy$data$sf, "sf")
-    expect_s3_class(rehy$data$polygons, "brain_polygons")
+  it("as_sf_atlas rehydrates sf into the geom slot", {
+    rehy <- as_sf_atlas(as_polygon_atlas(dk()))
+    expect_true(is_atlas_sf(rehy))
+    expect_s3_class(atlas_geom(rehy), "sf")
   })
 
-  it("is_cortical_atlas still holds after dropping sf", {
+  it("is_cortical_atlas still holds after conversion", {
     expect_true(is_cortical_atlas(as_polygon_atlas(dk())))
   })
 
@@ -157,7 +164,7 @@ describe("as_polygon_atlas() / as_sf_atlas()", {
 })
 
 describe("migrate_atlas_files()", {
-  it("rewrites .rda files to drop sf and add polygons", {
+  it("rewrites .rda files to a polygon geom slot", {
     tmp <- withr::local_tempdir()
     atlas <- dk()
     save(atlas, file = file.path(tmp, "atlas.rda"))
@@ -168,10 +175,11 @@ describe("migrate_atlas_files()", {
     env <- new.env()
     load(file.path(tmp, "atlas.rda"), envir = env)
     expect_null(env$atlas$data$sf)
-    expect_s3_class(env$atlas$data$polygons, "brain_polygons")
+    expect_null(env$atlas$data$polygons)
+    expect_s3_class(env$atlas$data$geom, "brain_polygons")
   })
 
-  it("keep_sf = TRUE preserves the sf slot", {
+  it("keep_sf = TRUE stores the geom as sf", {
     tmp <- withr::local_tempdir()
     atlas <- dk()
     save(atlas, file = file.path(tmp, "atlas.rda"))
@@ -180,8 +188,9 @@ describe("migrate_atlas_files()", {
 
     env <- new.env()
     load(file.path(tmp, "atlas.rda"), envir = env)
-    expect_s3_class(env$atlas$data$sf, "sf")
-    expect_s3_class(env$atlas$data$polygons, "brain_polygons")
+    expect_s3_class(env$atlas$data$geom, "sf")
+    expect_null(env$atlas$data$sf)
+    expect_null(env$atlas$data$polygons)
   })
 
   it("skips .rda files with no atlas to migrate", {
