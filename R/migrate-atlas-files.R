@@ -3,10 +3,10 @@
 #' Migrate atlas `.rda` files to the sf-optional polygon format
 #'
 #' Walks a directory of `.rda` files, finds every `ggseg_atlas` object inside
-#' them, derives the `polygons` slot from `sf` via [sf_to_polygons()], and
-#' rewrites the `.rda`. By default this drops the `sf` slot — the migration
-#' converts atlases to the polygon-only format. Pass `keep_sf = TRUE` to
-#' retain the `sf` slot alongside polygons.
+#' them, and rewrites their 2D geometry into the single `geom` slot. By default
+#' the geometry is stored as `brain_polygons` (sf-optional); any legacy `sf` /
+#' `polygons` slots are dropped. Pass `keep_sf = TRUE` to store the geometry as
+#' sf instead.
 #'
 #' Intended for downstream atlas-package maintainers across the ggsegverse
 #' ecosystem: run once against your `data/` directory, then drop `sf` from
@@ -14,9 +14,8 @@
 #'
 #' @param path Directory containing `.rda` files to migrate. Defaults to
 #'   `"data"`, the conventional location in R packages.
-#' @param keep_sf If `TRUE`, the `sf` slot is preserved alongside the new
-#'   `polygons` slot (additive). Default `FALSE` — the migration replaces
-#'   the sf slot with polygons.
+#' @param keep_sf If `TRUE`, the geometry is stored in `geom` as sf. Default
+#'   `FALSE` — the geometry is stored as `brain_polygons` (sf-optional).
 #' @param quiet If `TRUE`, suppress per-file status messages.
 #'
 #' @return Invisibly, a character vector of paths to the files that were
@@ -52,15 +51,24 @@ migrate_atlas_files <- function(path = "data", keep_sf = FALSE, quiet = FALSE) {
       if (!is_atlas_for_migration(obj)) {
         next
       }
-      if (is.null(obj$data$sf)) {
+      geom <- geom_from_data(obj$data)
+      if (is.null(geom)) {
         next
       }
-      if (is.null(obj$data$polygons)) {
-        obj$data$polygons <- sf_to_polygons(obj$data$sf)
+      target <- if (keep_sf) {
+        if (inherits(geom, "brain_polygons")) polygons_to_sf(geom) else geom
+      } else {
+        if (inherits(geom, "sf")) sf_to_polygons(geom) else geom
       }
-      if (!keep_sf) {
-        obj$data$sf <- NULL
+      already_migrated <- identical(obj$data$geom, target) &&
+        is.null(obj$data$sf) &&
+        is.null(obj$data$polygons)
+      if (already_migrated) {
+        next
       }
+      obj$data$geom <- target
+      obj$data$sf <- NULL
+      obj$data$polygons <- NULL
       env[[nm]] <- obj
       changed <- TRUE
     }

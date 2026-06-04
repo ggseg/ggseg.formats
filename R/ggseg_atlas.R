@@ -205,7 +205,8 @@ validate_ggseg_atlas <- function(x) {
 #' @importFrom stats na.omit
 print.ggseg_atlas <- function(x, ...) {
   data <- x$data
-  has_sf <- !is.null(data$sf)
+  geom <- geom_from_data(data)
+  has_sf <- !is.null(geom)
   has_3d <- !is.null(data$vertices) ||
     !is.null(data$meshes) ||
     !is.null(data$centerlines)
@@ -220,7 +221,12 @@ print.ggseg_atlas <- function(x, ...) {
   cli::cli_text("{.strong Hemispheres:} {hemis}")
 
   if (has_sf) {
-    views <- paste0(unique(data$sf$view), collapse = ", ") # nolint
+    geom_views <- if (inherits(geom, "brain_polygons")) {
+      unique(polygons_unnest(geom)$view)
+    } else {
+      unique(geom$view)
+    }
+    views <- paste0(geom_views, collapse = ", ") # nolint
     cli::cli_text("{.strong Views:} {views}")
   }
 
@@ -274,19 +280,29 @@ as.list.ggseg_atlas <- function(x, ...) {
 #' @export
 #' @importFrom dplyr left_join select any_of
 as.data.frame.ggseg_atlas <- function(x, ...) {
-  has_sf_slot <- (inherits(x$data, "ggseg_atlas_data") &&
-    !is.null(x$data$sf)) ||
+  geom <- if (inherits(x$data, "ggseg_atlas_data")) {
+    geom_from_data(x$data)
+  } else {
+    NULL
+  }
+  has_2d_slot <- !is.null(geom) ||
     inherits(x$data, "sf") ||
     inherits(x$data, "data.frame")
-  if (!has_sf_slot) {
+  if (!has_2d_slot) {
     cli::cli_abort(
       "Cannot convert ggseg_atlas to data.frame: no 2D geometry."
     )
   }
   require_sf("as.data.frame.ggseg_atlas()")
 
-  sf_data <- if (inherits(x$data, "ggseg_atlas_data") && !is.null(x$data$sf)) {
-    sf::st_as_sf(x$data$sf)
+  sf_data <- if (!is.null(geom)) {
+    sf::st_as_sf(
+      if (inherits(geom, "brain_polygons")) {
+        polygons_to_sf(geom)
+      } else {
+        geom
+      }
+    )
   } else if (inherits(x$data, "sf") || inherits(x$data, "data.frame")) {
     sf::st_as_sf(x$data)
   } else {

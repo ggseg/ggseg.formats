@@ -4,13 +4,10 @@
 #' vertex indices that map regions to vertices on a shared brain surface mesh
 #' (e.g., fsaverage5).
 #'
-#' @param sf sf data.frame with columns label, view, geometry for 2D rendering.
-#'   Optional. Provide either `sf` or `polygons` for 2D rendering.
-#' @param polygons A `brain_polygons` tibble (nested by label) for sf-optional
-#'   2D rendering. See [sf_to_polygons()]. If `sf` is provided and `polygons`
-#'   is `NULL`, polygons are derived automatically.
+#' @template geom
 #' @param vertices data.frame with columns label and vertices (list-column of
 #'   integer vectors). Each vector contains vertex indices for that region.
+#' @template geom_dots
 #'
 #' @return An object of class c("ggseg_data_cortical", "ggseg_atlas_data")
 #' @export
@@ -22,10 +19,12 @@
 #'     vertices = I(list(c(1L, 2L, 3L), c(4L, 5L, 6L)))
 #'   )
 #' )
-ggseg_data_cortical <- function(sf = NULL, polygons = NULL, vertices = NULL) {
-  if (is.null(sf) && is.null(polygons) && is.null(vertices)) {
+ggseg_data_cortical <- function(geom = NULL, vertices = NULL, ...) {
+  geom <- resolve_geom(geom, ..., .fn = "ggseg_data_cortical")
+
+  if (is.null(geom) && is.null(vertices)) {
     cli::cli_abort(
-      "At least one of {.arg sf}, {.arg polygons}, or {.arg vertices} is required."
+      "At least one of {.arg geom} or {.arg vertices} is required."
     )
   }
 
@@ -33,20 +32,9 @@ ggseg_data_cortical <- function(sf = NULL, polygons = NULL, vertices = NULL) {
     vertices <- validate_vertices(vertices)
   }
 
-  if (!is.null(sf)) {
-    sf <- validate_sf(sf)
-  }
-
-  if (!is.null(polygons)) {
-    polygons <- validate_polygons(polygons)
-  } else if (!is.null(sf)) {
-    polygons <- sf_to_polygons(sf)
-  }
-
   structure(
     list(
-      sf = sf,
-      polygons = polygons,
+      geom = geom,
       vertices = vertices
     ),
     class = c("ggseg_data_cortical", "ggseg_atlas_data")
@@ -59,17 +47,14 @@ ggseg_data_cortical <- function(sf = NULL, polygons = NULL, vertices = NULL) {
 #' Creates a data object for subcortical brain atlases. Subcortical atlases
 #' use individual 3D meshes for each structure (e.g., hippocampus, amygdala).
 #'
-#' @param sf sf data.frame with columns label, view, geometry for 2D rendering.
-#'   Optional. Provide either `sf` or `polygons` for 2D rendering.
-#' @param polygons A `brain_polygons` tibble (nested by label) for sf-optional
-#'   2D rendering. See [sf_to_polygons()]. If `sf` is provided and `polygons`
-#'   is `NULL`, polygons are derived automatically.
+#' @template geom
 #' @param meshes data.frame with columns label and mesh (list-column).
 #'   Each mesh is a list with:
 #'   \itemize{
 #'     \item vertices: data.frame with x, y, z columns
 #'     \item faces: data.frame with i, j, k columns (1-based triangle indices)
 #'   }
+#' @template geom_dots
 #'
 #' @return An object of class c("ggseg_data_subcortical", "ggseg_atlas_data")
 #' @export
@@ -84,31 +69,20 @@ ggseg_data_cortical <- function(sf = NULL, polygons = NULL, vertices = NULL) {
 #'     )))
 #'   )
 #' )
-ggseg_data_subcortical <- function(sf = NULL, polygons = NULL, meshes = NULL) {
-  if (is.null(sf) && is.null(polygons) && is.null(meshes)) {
-    cli::cli_abort(
-      "At least one of {.arg sf}, {.arg polygons}, or {.arg meshes} is required."
-    )
+ggseg_data_subcortical <- function(geom = NULL, meshes = NULL, ...) {
+  geom <- resolve_geom(geom, ..., .fn = "ggseg_data_subcortical")
+
+  if (is.null(geom) && is.null(meshes)) {
+    cli::cli_abort("At least one of {.arg geom} or {.arg meshes} is required.")
   }
 
   if (!is.null(meshes)) {
     meshes <- validate_meshes(meshes)
   }
 
-  if (!is.null(sf)) {
-    sf <- validate_sf(sf)
-  }
-
-  if (!is.null(polygons)) {
-    polygons <- validate_polygons(polygons)
-  } else if (!is.null(sf)) {
-    polygons <- sf_to_polygons(sf)
-  }
-
   structure(
     list(
-      sf = sf,
-      polygons = polygons,
+      geom = geom,
       meshes = meshes
     ),
     class = c("ggseg_data_subcortical", "ggseg_atlas_data")
@@ -133,12 +107,7 @@ ggseg_data_subcortical <- function(sf = NULL, polygons = NULL, meshes = NULL) {
 #' meshes in `meshes`, following the same format as subcortical atlases.
 #' Their 2D sf geometries use views other than "flatmap" (e.g. "nuclei").
 #'
-#' @param sf sf data.frame with columns label, view, geometry for 2D rendering.
-#'   Surface regions use view "flatmap"; deep structures use other views.
-#'   Provide either `sf` or `polygons`.
-#' @param polygons A `brain_polygons` tibble (nested by label) for sf-optional
-#'   2D rendering. See [sf_to_polygons()]. If `sf` is provided and `polygons`
-#'   is `NULL`, polygons are derived automatically.
+#' @template geom
 #' @param vertices data.frame with columns label and vertices (list-column of
 #'   integer vectors). Each vector contains 0-based vertex indices into the
 #'   SUIT cerebellar surface (see [get_cerebellar_mesh()]). Only for surface
@@ -147,23 +116,22 @@ ggseg_data_subcortical <- function(sf = NULL, polygons = NULL, meshes = NULL) {
 #'   of mesh objects with vertices and faces). For deep cerebellar structures
 #'   that are not on the cortical surface. Same format as
 #'   [ggseg_data_subcortical()] meshes.
+#' @template geom_dots
 #'
 #' @return An object of class c("ggseg_data_cerebellar", "ggseg_atlas_data")
 #' @export
 ggseg_data_cerebellar <- function(
-  sf = NULL,
-  polygons = NULL,
+  geom = NULL,
   vertices = NULL,
-  meshes = NULL
+  meshes = NULL,
+  ...
 ) {
-  if (
-    is.null(sf) && is.null(polygons) && is.null(vertices) && is.null(meshes)
-  ) {
+  geom <- resolve_geom(geom, ..., .fn = "ggseg_data_cerebellar")
+
+  if (is.null(geom) && is.null(vertices) && is.null(meshes)) {
     cli::cli_abort(
-      c(
-        "At least one of {.arg sf}, {.arg polygons}, {.arg vertices},",
-        "or {.arg meshes} is required."
-      )
+      "At least one of {.arg geom}, {.arg vertices}, or {.arg meshes} is
+       required."
     )
   }
 
@@ -175,20 +143,9 @@ ggseg_data_cerebellar <- function(
     meshes <- validate_meshes(meshes)
   }
 
-  if (!is.null(sf)) {
-    sf <- validate_sf(sf)
-  }
-
-  if (!is.null(polygons)) {
-    polygons <- validate_polygons(polygons)
-  } else if (!is.null(sf)) {
-    polygons <- sf_to_polygons(sf)
-  }
-
   structure(
     list(
-      sf = sf,
-      polygons = polygons,
+      geom = geom,
       vertices = vertices,
       meshes = meshes
     ),
@@ -202,11 +159,7 @@ ggseg_data_cerebellar <- function(
 #' Creates a data object for white matter tract atlases. Stores centerlines
 #' compactly; tube meshes are generated at render time for efficiency.
 #'
-#' @param sf sf data.frame with columns label, view, geometry for 2D rendering.
-#'   Optional. Provide either `sf` or `polygons`.
-#' @param polygons A `brain_polygons` tibble (nested by label) for sf-optional
-#'   2D rendering. See [sf_to_polygons()]. If `sf` is provided and `polygons`
-#'   is `NULL`, polygons are derived automatically.
+#' @template geom
 #' @param centerlines data.frame with columns:
 #'   \itemize{
 #'     \item label: tract identifier (character)
@@ -215,8 +168,9 @@ ggseg_data_cerebellar <- function(
 #'   }
 #' @param meshes Deprecated. Use centerlines instead. If provided, will be
 #'   converted to centerlines format.
-#' @param ... Absorbs legacy fields (e.g. tube_radius, tube_segments) from
-#'   old cached atlas objects.
+#' @param ... Captures a deprecated `sf` argument (converted to polygons) and
+#'   absorbs legacy fields (e.g. tube_radius, tube_segments) from old cached
+#'   atlas objects.
 #'
 #' @return An object of class c("ggseg_data_tract", "ggseg_atlas_data")
 #' @export
@@ -229,8 +183,7 @@ ggseg_data_cerebellar <- function(
 #' )
 #' data <- ggseg_data_tract(centerlines = centerlines_df)
 ggseg_data_tract <- function(
-  sf = NULL,
-  polygons = NULL,
+  geom = NULL,
   centerlines = NULL,
   meshes = NULL,
   ...
@@ -239,9 +192,11 @@ ggseg_data_tract <- function(
     centerlines <- meshes_to_centerlines(meshes)
   }
 
-  if (is.null(sf) && is.null(polygons) && is.null(centerlines)) {
+  geom <- resolve_geom(geom, ..., .fn = "ggseg_data_tract")
+
+  if (is.null(geom) && is.null(centerlines)) {
     cli::cli_abort(
-      "At least one of {.arg sf}, {.arg polygons}, or {.arg centerlines} is required."
+      "At least one of {.arg geom} or {.arg centerlines} is required."
     )
   }
 
@@ -249,20 +204,9 @@ ggseg_data_tract <- function(
     centerlines <- validate_centerlines(centerlines)
   }
 
-  if (!is.null(sf)) {
-    sf <- validate_sf(sf)
-  }
-
-  if (!is.null(polygons)) {
-    polygons <- validate_polygons(polygons)
-  } else if (!is.null(sf)) {
-    polygons <- sf_to_polygons(sf)
-  }
-
   structure(
     list(
-      sf = sf,
-      polygons = polygons,
+      geom = geom,
       centerlines = centerlines
     ),
     class = c("ggseg_data_tract", "ggseg_atlas_data")
@@ -442,18 +386,11 @@ print.ggseg_data_tract <- function(x, ...) {
 #' @noRd
 #' @keywords internal
 summarise_2d <- function(x) {
-  src <- NULL
-  kind <- NULL
-  if (!is.null(x$sf)) {
-    src <- x$sf
-    kind <- "sf"
-  } else if (!is.null(x$polygons)) {
-    src <- x$polygons
-    kind <- "polygons"
-  }
+  src <- geom_from_data(x)
   if (is.null(src)) {
     return(NULL)
   }
+  kind <- if (inherits(src, "brain_polygons")) "polygons" else "sf"
   n_labels <- length(unique(src$label))
   if (kind == "sf") {
     views <- paste0(unique(src$view), collapse = ", ")

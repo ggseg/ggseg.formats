@@ -223,14 +223,12 @@ validate_data_labels <- function(data, core, check_sf = FALSE) {
   }
 
   if (isTRUE(check_sf) && n_core > 0) {
-    twod_source <- NULL
-    twod_kind <- NULL
-    if (!is.null(data$sf)) {
-      twod_source <- data$sf
-      twod_kind <- "sf"
-    } else if (!is.null(data$polygons)) {
-      twod_source <- data$polygons
-      twod_kind <- "polygons"
+    twod_source <- geom_from_data(data)
+    twod_kind <- if (inherits(twod_source, "brain_polygons")) {
+      # nolint: object_usage_linter, line_length_linter.
+      "polygons"
+    } else {
+      "sf"
     }
 
     if (!is.null(twod_source)) {

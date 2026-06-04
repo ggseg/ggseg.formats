@@ -203,16 +203,7 @@ atlas_region_remove <- function(
   new_core <- atlas$core[keep_mask, , drop = FALSE]
   new_palette <- atlas$palette[!names(atlas$palette) %in% labels_to_remove]
 
-  new_sf <- if (!is.null(atlas$data$sf)) {
-    atlas$data$sf[!grepl(pattern, atlas$data$sf$label, ignore.case = TRUE), ]
-  } else {
-    NULL
-  }
-  new_poly <- if (!is.null(atlas$data$polygons)) {
-    polygons_drop_pattern(atlas$data$polygons, pattern)
-  } else {
-    NULL
-  }
+  new_geom <- geom_drop_pattern(geom_from_data(atlas$data), pattern)
 
   if (!is.null(atlas$data$vertices)) {
     new_vertices <- atlas$data$vertices[
@@ -220,26 +211,16 @@ atlas_region_remove <- function(
       ,
       drop = FALSE
     ]
-    new_data <- ggseg_data_cortical(
-      sf = new_sf,
-      polygons = new_poly,
-      vertices = new_vertices
-    )
+    new_data <- ggseg_data_cortical(geom = new_geom, vertices = new_vertices)
   } else if (!is.null(atlas$data$meshes)) {
     new_meshes <- atlas$data$meshes[
       !atlas$data$meshes$label %in% labels_to_remove,
       ,
       drop = FALSE
     ]
-    new_data <- ggseg_data_subcortical(
-      sf = new_sf,
-      polygons = new_poly,
-      meshes = new_meshes
-    )
+    new_data <- ggseg_data_subcortical(geom = new_geom, meshes = new_meshes)
   } else {
-    new_data <- atlas$data
-    new_data$sf <- new_sf
-    new_data$polygons <- new_poly
+    new_data <- rebuild_data_with_geom(atlas$data, new_geom)
   }
 
   ggseg_atlas(
@@ -305,10 +286,9 @@ atlas_region_contextual <- function(
   # order, so move every row whose label is no longer in core (the regions
   # just made contextual, plus pipeline outlines like `cortex`/`Background`)
   # ahead of the core rows. This keeps focus regions on top where context
-  # structures spatially overlap them in projection. Reorder both 2D
-  # representations identically so they stay in sync without invoking sf.
-  new_sf <- order_context_behind(atlas$data$sf, new_core$label)
-  new_poly <- order_context_behind(atlas$data$polygons, new_core$label)
+  # structures spatially overlap them in projection. `order_context_behind()`
+  # works on either geometry representation without invoking sf.
+  new_geom <- order_context_behind(geom_from_data(atlas$data), new_core$label)
 
   if (!is.null(atlas$data$vertices)) {
     new_vertices <- atlas$data$vertices[
@@ -316,26 +296,16 @@ atlas_region_contextual <- function(
       ,
       drop = FALSE
     ]
-    new_data <- ggseg_data_cortical(
-      sf = new_sf,
-      polygons = new_poly,
-      vertices = new_vertices
-    )
+    new_data <- ggseg_data_cortical(geom = new_geom, vertices = new_vertices)
   } else if (!is.null(atlas$data$meshes)) {
     new_meshes <- atlas$data$meshes[
       !atlas$data$meshes$label %in% labels_to_remove,
       ,
       drop = FALSE
     ]
-    new_data <- ggseg_data_subcortical(
-      sf = new_sf,
-      polygons = new_poly,
-      meshes = new_meshes
-    )
+    new_data <- ggseg_data_subcortical(geom = new_geom, meshes = new_meshes)
   } else {
-    new_data <- atlas$data
-    new_data$sf <- new_sf
-    new_data$polygons <- new_poly
+    new_data <- rebuild_data_with_geom(atlas$data, new_geom)
   }
 
   validate_data_labels(new_data, new_core, check_sf = FALSE)
@@ -393,13 +363,14 @@ atlas_region_op <- function(
     cli::cli_abort("{.arg into} must be a single label for the result region.")
   }
 
-  was_polygon_only <- is.null(atlas$data$sf)
-  sf_data <- atlas$data$sf
+  was_polygon_only <- is.null(data_sf(atlas$data))
+  sf_data <- data_sf(atlas$data)
   if (is.null(sf_data)) {
-    if (is.null(atlas$data$polygons)) {
+    poly <- data_poly(atlas$data)
+    if (is.null(poly)) {
       cli::cli_abort("Atlas has no 2D geometry to operate on.")
     }
-    sf_data <- polygons_to_sf(atlas$data$polygons)
+    sf_data <- polygons_to_sf(poly)
   }
   geom_col <- attr(sf_data, "sf_column")
 
@@ -480,10 +451,10 @@ atlas_region_op <- function(
   # Context regions (not in core) draw behind core regions; keep that order.
   new_sf <- order_context_behind(new_sf, new_core$label)
 
-  new_data <- rebuild_atlas_data(atlas, new_sf)
-  if (was_polygon_only) {
-    new_data$sf <- NULL
-  }
+  # Convert the sf result back to polygons so a polygon-only atlas keeps its
+  # original representation (the op rehydrates to sf only for the GEOS engine).
+  new_geom <- if (was_polygon_only) sf_to_polygons(new_sf) else new_sf
+  new_data <- rebuild_data_with_geom(atlas$data, new_geom)
   validate_data_labels(new_data, new_core, check_sf = FALSE)
   structure(
     list(
@@ -506,17 +477,17 @@ atlas_region_op <- function(
 #'   labelled regions.
 #' @export
 atlas_context_remove <- function(atlas) {
-  if (is.null(atlas$data$sf)) {
-    if (is.null(atlas$data$polygons)) {
+  if (is.null(data_sf(atlas$data))) {
+    if (is.null(data_poly(atlas$data))) {
       return(atlas)
     }
-    new_poly <- polygons_keep_labels(atlas$data$polygons, atlas$core$label)
+    new_poly <- polygons_keep_labels(data_poly(atlas$data), atlas$core$label)
     return(atlas_view_gather(set_atlas_polygons(atlas, new_poly)))
   }
 
   require_sf("atlas_context_remove()")
-  keep_mask <- atlas$data$sf$label %in% atlas$core$label
-  new_sf <- atlas$data$sf[keep_mask, , drop = FALSE]
+  keep_mask <- data_sf(atlas$data)$label %in% atlas$core$label
+  new_sf <- data_sf(atlas$data)[keep_mask, , drop = FALSE]
 
   new_data <- rebuild_atlas_data(atlas, new_sf)
   atlas_view_gather(rebuild_atlas(atlas, new_data))
@@ -569,28 +540,22 @@ atlas_region_keep <- function(atlas, pattern, match_on = c("region", "label")) {
   new_core <- atlas$core[keep_mask, , drop = FALSE]
   new_palette <- atlas$palette[names(atlas$palette) %in% labels_to_keep]
 
+  geom <- geom_from_data(atlas$data)
+
   if (!is.null(atlas$data$vertices)) {
     new_vertices <- atlas$data$vertices[
       atlas$data$vertices$label %in% labels_to_keep,
       ,
       drop = FALSE
     ]
-    new_data <- ggseg_data_cortical(
-      sf = atlas$data$sf,
-      polygons = atlas$data$polygons,
-      vertices = new_vertices
-    )
+    new_data <- ggseg_data_cortical(geom = geom, vertices = new_vertices)
   } else if (!is.null(atlas$data$meshes)) {
     new_meshes <- atlas$data$meshes[
       atlas$data$meshes$label %in% labels_to_keep,
       ,
       drop = FALSE
     ]
-    new_data <- ggseg_data_subcortical(
-      sf = atlas$data$sf,
-      polygons = atlas$data$polygons,
-      meshes = new_meshes
-    )
+    new_data <- ggseg_data_subcortical(geom = geom, meshes = new_meshes)
   } else {
     new_data <- atlas$data
   }
@@ -633,11 +598,11 @@ atlas_core_add <- function(atlas, data, by = "region") {
 #'
 #' @export
 atlas_views <- function(atlas) {
-  if (!is.null(atlas$data$sf)) {
-    return(unique(atlas$data$sf$view))
+  if (!is.null(data_sf(atlas$data))) {
+    return(unique(data_sf(atlas$data)$view))
   }
-  if (!is.null(atlas$data$polygons)) {
-    return(unique(polygons_unnest(atlas$data$polygons)$view))
+  if (!is.null(data_poly(atlas$data))) {
+    return(unique(polygons_unnest(data_poly(atlas$data))$view))
   }
   NULL
 }
@@ -659,12 +624,12 @@ brain_views <- function(atlas) {
 #'   the layout stays tight.
 #' @export
 atlas_view_remove <- function(atlas, views) {
-  if (is.null(atlas$data$sf)) {
-    if (is.null(atlas$data$polygons)) {
+  if (is.null(data_sf(atlas$data))) {
+    if (is.null(data_poly(atlas$data))) {
       cli::cli_warn("Atlas has no 2D geometry, nothing to remove")
       return(atlas)
     }
-    new_poly <- polygons_filter_view(atlas$data$polygons, views, keep = FALSE)
+    new_poly <- polygons_filter_view(data_poly(atlas$data), views, keep = FALSE)
     if (is.null(new_poly)) {
       cli::cli_warn("All views removed, 2D geometry will be NULL")
     }
@@ -673,8 +638,8 @@ atlas_view_remove <- function(atlas, views) {
 
   require_sf("atlas_view_remove()")
   pattern <- paste(views, collapse = "|")
-  keep_mask <- !grepl(pattern, atlas$data$sf$view, ignore.case = TRUE)
-  new_sf <- atlas$data$sf[keep_mask, , drop = FALSE]
+  keep_mask <- !grepl(pattern, data_sf(atlas$data)$view, ignore.case = TRUE)
+  new_sf <- data_sf(atlas$data)[keep_mask, , drop = FALSE]
 
   if (nrow(new_sf) == 0) {
     cli::cli_warn("All views removed, sf data will be NULL")
@@ -689,12 +654,12 @@ atlas_view_remove <- function(atlas, views) {
 #' @describeIn atlas_manipulation Keep only views matching pattern.
 #' @export
 atlas_view_keep <- function(atlas, views) {
-  if (is.null(atlas$data$sf)) {
-    if (is.null(atlas$data$polygons)) {
+  if (is.null(data_sf(atlas$data))) {
+    if (is.null(data_poly(atlas$data))) {
       cli::cli_warn("Atlas has no 2D geometry, nothing to keep")
       return(atlas)
     }
-    new_poly <- polygons_filter_view(atlas$data$polygons, views, keep = TRUE)
+    new_poly <- polygons_filter_view(data_poly(atlas$data), views, keep = TRUE)
     if (is.null(new_poly)) {
       cli::cli_warn("No views matched pattern, 2D geometry will be NULL")
     }
@@ -702,8 +667,8 @@ atlas_view_keep <- function(atlas, views) {
   }
 
   pattern <- paste(views, collapse = "|")
-  keep_mask <- grepl(pattern, atlas$data$sf$view, ignore.case = TRUE)
-  new_sf <- atlas$data$sf[keep_mask, , drop = FALSE]
+  keep_mask <- grepl(pattern, data_sf(atlas$data)$view, ignore.case = TRUE)
+  new_sf <- data_sf(atlas$data)[keep_mask, , drop = FALSE]
 
   if (nrow(new_sf) == 0) {
     cli::cli_warn("No views matched pattern, sf data will be NULL")
@@ -727,12 +692,12 @@ atlas_view_remove_region <- function(
 ) {
   match_on <- match.arg(match_on)
 
-  if (is.null(atlas$data$sf)) {
-    if (is.null(atlas$data$polygons)) {
+  if (is.null(data_sf(atlas$data))) {
+    if (is.null(data_poly(atlas$data))) {
       cli::cli_warn("Atlas has no 2D geometry, nothing to remove")
       return(atlas)
     }
-    poly_labels <- atlas$data$polygons$label
+    poly_labels <- data_poly(atlas$data)$label
     if (match_on == "region") {
       hit <- grepl(pattern, atlas$core$region, ignore.case = TRUE) &
         !is.na(atlas$core$region)
@@ -743,7 +708,7 @@ atlas_view_remove_region <- function(
       ]
     }
     new_poly <- polygons_remove_region(
-      atlas$data$polygons,
+      data_poly(atlas$data),
       drop_labels,
       views = views
     )
@@ -759,19 +724,19 @@ atlas_view_remove_region <- function(
     match_col <- atlas$core$region
     hit <- grepl(pattern, match_col, ignore.case = TRUE) & !is.na(match_col)
     labels_to_remove <- atlas$core$label[hit]
-    is_match <- atlas$data$sf$label %in% labels_to_remove
+    is_match <- data_sf(atlas$data)$label %in% labels_to_remove
   } else {
-    is_match <- grepl(pattern, atlas$data$sf$label, ignore.case = TRUE)
+    is_match <- grepl(pattern, data_sf(atlas$data)$label, ignore.case = TRUE)
   }
 
   if (!is.null(views)) {
     view_pattern <- paste(views, collapse = "|")
-    in_view <- grepl(view_pattern, atlas$data$sf$view, ignore.case = TRUE)
+    in_view <- grepl(view_pattern, data_sf(atlas$data)$view, ignore.case = TRUE)
     is_match <- is_match & in_view
   }
 
-  is_match[is.na(atlas$data$sf$label)] <- FALSE
-  new_sf <- atlas$data$sf[!is_match, , drop = FALSE]
+  is_match[is.na(data_sf(atlas$data)$label)] <- FALSE
+  new_sf <- data_sf(atlas$data)[!is_match, , drop = FALSE]
 
   if (nrow(new_sf) == 0) {
     cli::cli_warn("All region geometries removed, sf data will be NULL")
@@ -789,13 +754,13 @@ atlas_view_remove_region <- function(
 #'   via [atlas_view_gather()] in case any view shrank.
 #' @export
 atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
-  if (is.null(atlas$data$sf)) {
-    if (is.null(atlas$data$polygons)) {
+  if (is.null(data_sf(atlas$data))) {
+    if (is.null(data_poly(atlas$data))) {
       cli::cli_warn("Atlas has no 2D geometry, nothing to remove")
       return(atlas)
     }
     res <- polygons_remove_small(
-      atlas$data$polygons,
+      data_poly(atlas$data),
       min_area,
       core_labels = atlas$core$label,
       views = views
@@ -809,14 +774,14 @@ atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
   }
 
   require_sf("atlas_view_remove_small()")
-  areas <- as.numeric(sf::st_area(atlas$data$sf$geometry))
-  is_context <- is.na(atlas$data$sf$label) |
-    !atlas$data$sf$label %in% atlas$core$label
+  areas <- as.numeric(sf::st_area(data_sf(atlas$data)$geometry))
+  is_context <- is.na(data_sf(atlas$data)$label) |
+    !data_sf(atlas$data)$label %in% atlas$core$label
   is_small <- areas < min_area & !is_context
 
   if (!is.null(views)) {
     pattern <- paste(views, collapse = "|")
-    in_view <- grepl(pattern, atlas$data$sf$view, ignore.case = TRUE)
+    in_view <- grepl(pattern, data_sf(atlas$data)$view, ignore.case = TRUE)
     is_small <- is_small & in_view
   }
 
@@ -827,7 +792,7 @@ atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
     )
   }
 
-  new_sf <- atlas$data$sf[!is_small, , drop = FALSE]
+  new_sf <- data_sf(atlas$data)[!is_small, , drop = FALSE]
   new_data <- rebuild_atlas_data(atlas, new_sf)
   atlas_view_gather(rebuild_atlas(atlas, new_data))
 }
@@ -837,17 +802,17 @@ atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
 #'   after view removal.
 #' @export
 atlas_view_gather <- function(atlas, gap = 0.15) {
-  sf_data <- atlas$data$sf
+  sf_data <- data_sf(atlas$data)
   if (is.null(sf_data) || !inherits(sf_data, "sf") || nrow(sf_data) == 0) {
-    if (is.null(sf_data) && !is.null(atlas$data$polygons)) {
+    if (is.null(sf_data) && !is.null(data_poly(atlas$data))) {
       new_poly <- reposition_polygons(
-        atlas$data$polygons,
+        data_poly(atlas$data),
         type = atlas$type,
         gap = gap
       )
       return(set_atlas_polygons(atlas, new_poly))
     }
-    if (is.null(sf_data) && is.null(atlas$data$polygons)) {
+    if (is.null(sf_data) && is.null(data_poly(atlas$data))) {
       cli::cli_warn("Atlas has no 2D geometry")
     }
     return(atlas)
@@ -866,17 +831,17 @@ atlas_view_gather <- function(atlas, gap = 0.15) {
 #'   in `order` are appended at end.
 #' @export
 atlas_view_reorder <- function(atlas, order, gap = 0.15) {
-  if (is.null(atlas$data$sf)) {
-    if (is.null(atlas$data$polygons)) {
+  if (is.null(data_sf(atlas$data))) {
+    if (is.null(data_poly(atlas$data))) {
       cli::cli_warn("Atlas has no 2D geometry")
       return(atlas)
     }
-    current_views <- unique(polygons_unnest(atlas$data$polygons)$view)
+    current_views <- unique(polygons_unnest(data_poly(atlas$data))$view)
     if (!any(order %in% current_views)) {
       cli::cli_warn("No matching views found in order specification")
     }
     new_poly <- reorder_polygons(
-      atlas$data$polygons,
+      data_poly(atlas$data),
       order,
       type = atlas$type,
       gap = gap
@@ -884,7 +849,8 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
     return(set_atlas_polygons(atlas, new_poly))
   }
 
-  current_views <- unique(atlas$data$sf$view)
+  sf_data <- data_sf(atlas$data)
+  current_views <- unique(sf_data$view)
 
   missing_from_order <- setdiff(current_views, order)
   if (length(missing_from_order) > 0) {
@@ -900,21 +866,21 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
 
   if (atlas$type == "cortical") {
     hemi <- ifelse(
-      grepl("^lh[_.]", atlas$data$sf$label),
+      grepl("^lh[_.]", sf_data$label),
       "left",
-      ifelse(grepl("^rh[_.]", atlas$data$sf$label), "right", "")
+      ifelse(grepl("^rh[_.]", sf_data$label), "right", "")
     )
-    group_key <- paste(hemi, atlas$data$sf$view)
+    group_key <- paste(hemi, sf_data$view)
     expanded_order <- unlist(lapply(order, function(v) {
-      hemis <- unique(hemi[atlas$data$sf$view == v])
+      hemis <- unique(hemi[sf_data$view == v])
       hemis <- intersect(c("left", "right", ""), hemis)
       paste(hemis, v)
     }))
     group_key <- factor(group_key, levels = expanded_order)
-    new_sf <- atlas$data$sf[order(group_key), ]
+    new_sf <- sf_data[order(group_key), ]
   } else {
-    atlas$data$sf$view <- factor(atlas$data$sf$view, levels = order)
-    new_sf <- atlas$data$sf[order(atlas$data$sf$view), ]
+    sf_data$view <- factor(sf_data$view, levels = order)
+    new_sf <- sf_data[order(sf_data$view), ]
     new_sf$view <- as.character(new_sf$view)
   }
 
@@ -991,45 +957,54 @@ reposition_views <- function(sf_obj, type = NULL, gap = 0.15) {
 }
 
 
+#' Rebuild an atlas data object around a single new 2D geometry
+#'
+#' Stores `geom` (an sf or `brain_polygons` object, or NULL) in the unified
+#' `geom` slot, preserving the 3D payload and clearing any legacy `sf` /
+#' `polygons` slots so no redundant representation lingers.
+#' @keywords internal
+#' @noRd
+rebuild_data_with_geom <- function(data, geom) {
+  if (!is.null(data$vertices) && !is.null(data$meshes)) {
+    ggseg_data_cerebellar(
+      geom = geom,
+      vertices = data$vertices,
+      meshes = data$meshes
+    )
+  } else if (!is.null(data$vertices)) {
+    if (inherits(data, "ggseg_data_cerebellar")) {
+      ggseg_data_cerebellar(geom = geom, vertices = data$vertices)
+    } else {
+      ggseg_data_cortical(geom = geom, vertices = data$vertices)
+    }
+  } else if (!is.null(data$meshes)) {
+    ggseg_data_subcortical(geom = geom, meshes = data$meshes)
+  } else if (!is.null(data$centerlines)) {
+    ggseg_data_tract(geom = geom, centerlines = data$centerlines)
+  } else {
+    new_data <- data
+    new_data$geom <- geom
+    new_data$sf <- NULL
+    new_data$polygons <- NULL
+    new_data
+  }
+}
+
 #' @keywords internal
 #' @noRd
 rebuild_atlas_data <- function(atlas, new_sf) {
-  if (!is.null(atlas$data$vertices) && !is.null(atlas$data$meshes)) {
-    ggseg_data_cerebellar(
-      sf = new_sf,
-      vertices = atlas$data$vertices,
-      meshes = atlas$data$meshes
-    )
-  } else if (!is.null(atlas$data$vertices)) {
-    if (inherits(atlas$data, "ggseg_data_cerebellar")) {
-      ggseg_data_cerebellar(sf = new_sf, vertices = atlas$data$vertices)
-    } else {
-      ggseg_data_cortical(sf = new_sf, vertices = atlas$data$vertices)
-    }
-  } else if (!is.null(atlas$data$meshes)) {
-    ggseg_data_subcortical(sf = new_sf, meshes = atlas$data$meshes)
-  } else if (!is.null(atlas$data$centerlines)) {
-    ggseg_data_tract(sf = new_sf, centerlines = atlas$data$centerlines)
-  } else {
-    # 2D-only atlas: keep both representations in sync rather than leaving
-    # a stale polygons slot behind the freshly assigned sf.
-    atlas$data$sf <- new_sf
-    atlas$data$polygons <- if (is.null(new_sf)) NULL else sf_to_polygons(new_sf)
-    atlas$data
-  }
+  rebuild_data_with_geom(atlas$data, new_sf)
 }
 
 #' Swap in new polygon geometry on a polygon-only atlas
 #'
-#' Used by the sf-free view helpers. Leaves the `sf` slot NULL and the 3D
-#' payload untouched; `new_polygons` may be NULL when all geometry was removed.
+#' Used by the sf-free view helpers. Stores `new_polygons` in the unified
+#' `geom` slot and leaves the 3D payload untouched; `new_polygons` may be NULL
+#' when all geometry was removed.
 #' @noRd
 #' @keywords internal
 set_atlas_polygons <- function(atlas, new_polygons) {
-  new_data <- atlas$data
-  new_data$sf <- NULL
-  new_data$polygons <- new_polygons
-  rebuild_atlas(atlas, new_data)
+  rebuild_atlas(atlas, rebuild_data_with_geom(atlas$data, new_polygons))
 }
 
 #' @noRd

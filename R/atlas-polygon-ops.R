@@ -73,6 +73,23 @@ polygons_remove_region <- function(polygons, drop_labels, views = NULL) {
 }
 
 
+#' Drop labels matching a pattern from either geometry representation
+#'
+#' Class-dispatching wrapper: `brain_polygons` go through
+#' `polygons_drop_pattern()` (sf-free), sf geometry is row-filtered on `label`.
+#' @noRd
+#' @keywords internal
+geom_drop_pattern <- function(geom, pattern) {
+  if (is.null(geom)) {
+    return(NULL)
+  }
+  if (inherits(geom, "brain_polygons")) {
+    return(polygons_drop_pattern(geom, pattern))
+  }
+  geom[!grepl(pattern, geom$label, ignore.case = TRUE), , drop = FALSE]
+}
+
+
 #' Shoelace area of a single ring
 #' @noRd
 #' @keywords internal

@@ -5,23 +5,15 @@
 \alias{brain_data_tract}
 \title{Create tract atlas data}
 \usage{
-ggseg_data_tract(
-  sf = NULL,
-  polygons = NULL,
-  centerlines = NULL,
-  meshes = NULL,
-  ...
-)
+ggseg_data_tract(geom = NULL, centerlines = NULL, meshes = NULL, ...)
 
 brain_data_tract(sf = NULL, centerlines = NULL, meshes = NULL, ...)
 }
 \arguments{
-\item{sf}{sf data.frame with columns label, view, geometry for 2D rendering.
-Optional. Provide either \code{sf} or \code{polygons}.}
-
-\item{polygons}{A \code{brain_polygons} tibble (nested by label) for sf-optional
-2D rendering. See \code{\link[=sf_to_polygons]{sf_to_polygons()}}. If \code{sf} is provided and \code{polygons}
-is \code{NULL}, polygons are derived automatically.}
+\item{geom}{2D geometry for rendering, stored in the single \code{geom} slot:
+either an sf data.frame (columns \code{label}, \code{view}, \code{geometry}) or a
+\code{brain_polygons} tibble (see \code{\link[=sf_to_polygons]{sf_to_polygons()}}). The class of \code{geom}
+determines the rendering path used downstream.}
 
 \item{centerlines}{data.frame with columns:
 \itemize{
@@ -33,8 +25,9 @@ is \code{NULL}, polygons are derived automatically.}
 \item{meshes}{Deprecated. Use centerlines instead. If provided, will be
 converted to centerlines format.}
 
-\item{...}{Absorbs legacy fields (e.g. tube_radius, tube_segments) from
-old cached atlas objects.}
+\item{...}{Captures a deprecated \code{sf} argument (converted to polygons) and
+absorbs legacy fields (e.g. tube_radius, tube_segments) from old cached
+atlas objects.}
 }
 \value{
 An object of class c("ggseg_data_tract", "ggseg_atlas_data")

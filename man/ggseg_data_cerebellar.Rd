@@ -4,21 +4,13 @@
 \alias{ggseg_data_cerebellar}
 \title{Create cerebellar atlas data}
 \usage{
-ggseg_data_cerebellar(
-  sf = NULL,
-  polygons = NULL,
-  vertices = NULL,
-  meshes = NULL
-)
+ggseg_data_cerebellar(geom = NULL, vertices = NULL, meshes = NULL, ...)
 }
 \arguments{
-\item{sf}{sf data.frame with columns label, view, geometry for 2D rendering.
-Surface regions use view "flatmap"; deep structures use other views.
-Provide either \code{sf} or \code{polygons}.}
-
-\item{polygons}{A \code{brain_polygons} tibble (nested by label) for sf-optional
-2D rendering. See \code{\link[=sf_to_polygons]{sf_to_polygons()}}. If \code{sf} is provided and \code{polygons}
-is \code{NULL}, polygons are derived automatically.}
+\item{geom}{2D geometry for rendering, stored in the single \code{geom} slot:
+either an sf data.frame (columns \code{label}, \code{view}, \code{geometry}) or a
+\code{brain_polygons} tibble (see \code{\link[=sf_to_polygons]{sf_to_polygons()}}). The class of \code{geom}
+determines the rendering path used downstream.}
 
 \item{vertices}{data.frame with columns label and vertices (list-column of
 integer vectors). Each vector contains 0-based vertex indices into the
@@ -29,6 +21,10 @@ regions.}
 of mesh objects with vertices and faces). For deep cerebellar structures
 that are not on the cortical surface. Same format as
 \code{\link[=ggseg_data_subcortical]{ggseg_data_subcortical()}} meshes.}
+
+\item{...}{Captures a deprecated \code{sf} argument: if supplied it is converted
+to the polygon representation via \code{\link[=sf_to_polygons]{sf_to_polygons()}} and a deprecation
+warning is issued. Prefer passing 2D geometry via \code{geom}.}
 }
 \value{
 An object of class c("ggseg_data_cerebellar", "ggseg_atlas_data")

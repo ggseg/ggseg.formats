@@ -2,7 +2,7 @@
 % Please edit documentation in R/atlas-polygon-converters.R
 \name{as_polygon_atlas}
 \alias{as_polygon_atlas}
-\title{Convert a ggseg atlas to the sf-optional polygon format}
+\title{Convert a ggseg atlas to the sf-optional polygon representation}
 \usage{
 as_polygon_atlas(atlas)
 }
@@ -10,22 +10,22 @@ as_polygon_atlas(atlas)
 \item{atlas}{A \code{ggseg_atlas} (or legacy \code{brain_atlas}) object.}
 }
 \value{
-A \code{ggseg_atlas} with \verb{$data$polygons} populated and \verb{$data$sf} set
-to \code{NULL}.
+A \code{ggseg_atlas} whose \verb{$data$geom} is a \code{brain_polygons} object.
 }
 \description{
-Ensures the atlas carries a \code{polygons} slot (derived from \code{sf} if needed)
-and drops the \code{sf} slot. The result renders identically via the
+Sets the single \code{geom} slot to the \code{brain_polygons} representation,
+converting from sf if needed. The result renders identically via the
 \code{geom_polygon}-based path in ggseg, but no longer depends on the sf class
 machinery in \verb{$data} — useful for wasm builds and air-gapped installs.
 }
 \details{
-To rehydrate sf for geometric operations later, use \code{\link[=as_sf_atlas]{as_sf_atlas()}}.
+Conversion is lossless, so a single representation is kept (no redundant
+sf alongside polygons). To rehydrate sf for geometric operations later,
+use \code{\link[=as_sf_atlas]{as_sf_atlas()}}.
 }
 \examples{
 \dontrun{
 poly <- as_polygon_atlas(dk())
-is.null(poly$data$sf)                              # TRUE
-inherits(poly$data$polygons, "brain_polygons")     # TRUE
+is_atlas_polygon(poly) # TRUE
 }
 }

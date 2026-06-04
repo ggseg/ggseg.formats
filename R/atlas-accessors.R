@@ -26,9 +26,93 @@ atlas_palette <- function(name = "dk", ...) {
 }
 
 
+#' Get the raw 2D geometry of an atlas
+#'
+#' Returns the single 2D geometry object stored in `atlas$data$geom`, which is
+#' either an sf-class data frame or a `brain_polygons` tibble. Its class
+#' determines which rendering path is used downstream.
+#'
+#' For backward compatibility with released atlases built before the unified
+#' `geom` slot, this falls back to the legacy `sf` slot. Reverse dependencies
+#' should call this accessor (or [atlas_sf()] / [atlas_polygons()]) rather than
+#' reaching into `atlas$data` directly.
+#'
+#' @param atlas a ggseg_atlas object
+#' @return an sf or `brain_polygons` object, or `NULL` if the atlas has no 2D
+#'   geometry
+#' @export
+#' @examples
+#' g <- atlas_geom(dk())
+#' atlas_geometry_type(dk())
+atlas_geom <- function(atlas) {
+  if (!is_ggseg_atlas(atlas)) {
+    cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas}.")
+  }
+  geom_from_data(atlas$data)
+}
+
+#' @keywords internal
+#' @noRd
+geom_from_data <- function(data) {
+  if (!is.null(data$geom)) {
+    return(data$geom)
+  }
+  data$sf
+}
+
+#' The sf-class geometry of an atlas data object, or NULL if it is polygon-only
+#' @keywords internal
+#' @noRd
+data_sf <- function(data) {
+  geom <- geom_from_data(data)
+  if (inherits(geom, "sf")) geom else NULL
+}
+
+#' The brain_polygons geometry of an atlas data object, or NULL if it is sf
+#' @keywords internal
+#' @noRd
+data_poly <- function(data) {
+  geom <- geom_from_data(data)
+  if (inherits(geom, "brain_polygons")) geom else NULL
+}
+
+#' Classify or test an atlas's 2D geometry
+#'
+#' @param atlas a ggseg_atlas object
+#' @return `atlas_geometry_type()` returns `"sf"`, `"polygon"`, or `NA`.
+#'   `is_atlas_sf()` / `is_atlas_polygon()` return a logical scalar.
+#' @export
+#' @examples
+#' atlas_geometry_type(dk())
+#' is_atlas_polygon(dk())
+atlas_geometry_type <- function(atlas) {
+  geom <- atlas_geom(atlas)
+  if (inherits(geom, "sf")) {
+    "sf"
+  } else if (inherits(geom, "brain_polygons")) {
+    "polygon"
+  } else {
+    NA_character_
+  }
+}
+
+#' @rdname atlas_geometry_type
+#' @export
+is_atlas_sf <- function(atlas) {
+  inherits(atlas_geom(atlas), "sf")
+}
+
+#' @rdname atlas_geometry_type
+#' @export
+is_atlas_polygon <- function(atlas) {
+  inherits(atlas_geom(atlas), "brain_polygons")
+}
+
 #' Get atlas data for 2D rendering
 #'
-#' Returns sf data joined with core region info and palette colours.
+#' Returns sf data joined with core region info and palette colours. This is
+#' the interception point used by ggseg for plotting: it always returns
+#' sf geometry, converting from the polygon representation when needed.
 #'
 #' @param atlas a ggseg_atlas object
 #' @return sf data.frame ready for plotting
@@ -42,11 +126,17 @@ atlas_sf <- function(atlas) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas}.")
   }
 
-  if (is.null(atlas$data$sf)) {
-    cli::cli_abort("Atlas does not contain sf geometry for 2D rendering.")
+  geom <- atlas_geom(atlas)
+  if (is.null(geom)) {
+    cli::cli_abort("Atlas does not contain 2D geometry for rendering.")
+  }
+  sf_geom <- if (inherits(geom, "brain_polygons")) {
+    polygons_to_sf(geom)
+  } else {
+    geom
   }
 
-  sf_data <- sf::st_as_sf(atlas$data$sf)
+  sf_data <- sf::st_as_sf(sf_geom)
   core_cols <- intersect(names(sf_data), c("hemi", "region"))
   if (length(core_cols) > 0) {
     sf_data[core_cols] <- NULL
@@ -60,6 +150,32 @@ atlas_sf <- function(atlas) {
 
   class(result) <- c("ggseg_sf", class(result))
   result
+}
+
+#' Get atlas polygons for 2D rendering
+#'
+#' Returns the `brain_polygons` representation of the atlas geometry,
+#' converting from sf when needed. The sf-optional counterpart to [atlas_sf()].
+#'
+#' @param atlas a ggseg_atlas object
+#' @return a `brain_polygons` tibble
+#' @export
+#' @examples
+#' polys <- atlas_polygons(dk())
+atlas_polygons <- function(atlas) {
+  if (!is_ggseg_atlas(atlas)) {
+    cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas}.")
+  }
+
+  geom <- atlas_geom(atlas)
+  if (is.null(geom)) {
+    cli::cli_abort("Atlas does not contain 2D geometry for rendering.")
+  }
+  if (inherits(geom, "brain_polygons")) {
+    geom
+  } else {
+    sf_to_polygons(geom)
+  }
 }
 
 

@@ -10,9 +10,8 @@ migrate_atlas_files(path = "data", keep_sf = FALSE, quiet = FALSE)
 \item{path}{Directory containing \code{.rda} files to migrate. Defaults to
 \code{"data"}, the conventional location in R packages.}
 
-\item{keep_sf}{If \code{TRUE}, the \code{sf} slot is preserved alongside the new
-\code{polygons} slot (additive). Default \code{FALSE} — the migration replaces
-the sf slot with polygons.}
+\item{keep_sf}{If \code{TRUE}, the geometry is stored in \code{geom} as sf. Default
+\code{FALSE} — the geometry is stored as \code{brain_polygons} (sf-optional).}
 
 \item{quiet}{If \code{TRUE}, suppress per-file status messages.}
 }
@@ -22,10 +21,10 @@ rewritten.
 }
 \description{
 Walks a directory of \code{.rda} files, finds every \code{ggseg_atlas} object inside
-them, derives the \code{polygons} slot from \code{sf} via \code{\link[=sf_to_polygons]{sf_to_polygons()}}, and
-rewrites the \code{.rda}. By default this drops the \code{sf} slot — the migration
-converts atlases to the polygon-only format. Pass \code{keep_sf = TRUE} to
-retain the \code{sf} slot alongside polygons.
+them, and rewrites their 2D geometry into the single \code{geom} slot. By default
+the geometry is stored as \code{brain_polygons} (sf-optional); any legacy \code{sf} /
+\code{polygons} slots are dropped. Pass \code{keep_sf = TRUE} to store the geometry as
+sf instead.
 }
 \details{
 Intended for downstream atlas-package maintainers across the ggsegverse

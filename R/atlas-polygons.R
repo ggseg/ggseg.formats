@@ -156,6 +156,52 @@ validate_polygons <- function(polygons) {
 }
 
 
+#' Validate a 2D geometry object (sf or brain_polygons)
+#'
+#' @param geom an sf or `brain_polygons` object
+#' @return the validated geometry
+#' @keywords internal
+#' @noRd
+validate_geom <- function(geom) {
+  if (inherits(geom, "sf")) {
+    return(validate_sf(geom))
+  }
+  if (inherits(geom, "brain_polygons")) {
+    return(validate_polygons(geom))
+  }
+  cli::cli_abort(
+    "{.arg geom} must be an {.cls sf} or {.cls brain_polygons} object,
+     not {.cls {class(geom)[1]}}."
+  )
+}
+
+
+#' Resolve the geom slot from `geom` plus a deprecated `sf` dot
+#'
+#' Constructors now take a single `geom`. The released `sf` argument, passed
+#' through `...`, is captured here: it is converted to the polygon
+#' representation via [sf_to_polygons()] and a deprecation warning is issued.
+#'
+#' @keywords internal
+#' @noRd
+resolve_geom <- function(geom = NULL, ..., .fn) {
+  dots <- list(...)
+  if (is.null(geom) && !is.null(dots$sf)) {
+    lifecycle::deprecate_warn(
+      "0.0.3.9001",
+      sprintf("%s(sf)", .fn),
+      sprintf("%s(geom)", .fn),
+      details = "sf input is converted to polygons via `sf_to_polygons()`."
+    )
+    geom <- sf_to_polygons(validate_sf(dots$sf))
+  }
+  if (is.null(geom)) {
+    return(NULL)
+  }
+  validate_geom(geom)
+}
+
+
 #' @export
 print.brain_polygons <- function(x, ...) {
   cli::cli_h2("brain_polygons")

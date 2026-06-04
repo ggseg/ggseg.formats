@@ -5,20 +5,22 @@
 \alias{brain_data_cortical}
 \title{Create cortical atlas data}
 \usage{
-ggseg_data_cortical(sf = NULL, polygons = NULL, vertices = NULL)
+ggseg_data_cortical(geom = NULL, vertices = NULL, ...)
 
 brain_data_cortical(sf = NULL, vertices = NULL)
 }
 \arguments{
-\item{sf}{sf data.frame with columns label, view, geometry for 2D rendering.
-Optional. Provide either \code{sf} or \code{polygons} for 2D rendering.}
-
-\item{polygons}{A \code{brain_polygons} tibble (nested by label) for sf-optional
-2D rendering. See \code{\link[=sf_to_polygons]{sf_to_polygons()}}. If \code{sf} is provided and \code{polygons}
-is \code{NULL}, polygons are derived automatically.}
+\item{geom}{2D geometry for rendering, stored in the single \code{geom} slot:
+either an sf data.frame (columns \code{label}, \code{view}, \code{geometry}) or a
+\code{brain_polygons} tibble (see \code{\link[=sf_to_polygons]{sf_to_polygons()}}). The class of \code{geom}
+determines the rendering path used downstream.}
 
 \item{vertices}{data.frame with columns label and vertices (list-column of
 integer vectors). Each vector contains vertex indices for that region.}
+
+\item{...}{Captures a deprecated \code{sf} argument: if supplied it is converted
+to the polygon representation via \code{\link[=sf_to_polygons]{sf_to_polygons()}} and a deprecation
+warning is issued. Prefer passing 2D geometry via \code{geom}.}
 }
 \value{
 An object of class c("ggseg_data_cortical", "ggseg_atlas_data")

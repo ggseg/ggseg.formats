@@ -1,80 +1,88 @@
 # Top-level atlas-format converters ----
 
-#' Convert a ggseg atlas to the sf-optional polygon format
+#' Convert a ggseg atlas to the sf-optional polygon representation
 #'
-#' Ensures the atlas carries a `polygons` slot (derived from `sf` if needed)
-#' and drops the `sf` slot. The result renders identically via the
+#' Sets the single `geom` slot to the `brain_polygons` representation,
+#' converting from sf if needed. The result renders identically via the
 #' `geom_polygon`-based path in ggseg, but no longer depends on the sf class
 #' machinery in `$data` — useful for wasm builds and air-gapped installs.
 #'
-#' To rehydrate sf for geometric operations later, use [as_sf_atlas()].
+#' Conversion is lossless, so a single representation is kept (no redundant
+#' sf alongside polygons). To rehydrate sf for geometric operations later,
+#' use [as_sf_atlas()].
 #'
 #' @param atlas A `ggseg_atlas` (or legacy `brain_atlas`) object.
 #'
-#' @return A `ggseg_atlas` with `$data$polygons` populated and `$data$sf` set
-#'   to `NULL`.
+#' @return A `ggseg_atlas` whose `$data$geom` is a `brain_polygons` object.
 #' @export
 #' @examples
 #' \dontrun{
 #' poly <- as_polygon_atlas(dk())
-#' is.null(poly$data$sf)                              # TRUE
-#' inherits(poly$data$polygons, "brain_polygons")     # TRUE
+#' is_atlas_polygon(poly) # TRUE
 #' }
 as_polygon_atlas <- function(atlas) {
   if (!inherits(atlas, "ggseg_atlas") && !inherits(atlas, "brain_atlas")) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas} object.")
   }
 
-  if (is.null(atlas$data$polygons)) {
-    if (is.null(atlas$data$sf)) {
-      cli::cli_abort(c(
-        "Atlas has no 2D geometry to convert.",
-        "i" = "Need either {.field sf} or {.field polygons} in {.code atlas$data}."
-      ))
-    }
-    atlas$data$polygons <- sf_to_polygons(atlas$data$sf)
+  geom <- geom_from_data(atlas$data)
+  if (is.null(geom)) {
+    cli::cli_abort(c(
+      "Atlas has no 2D geometry to convert.",
+      "i" = "Need {.field geom} in {.code atlas$data}."
+    ))
+  }
+  if (!inherits(geom, "brain_polygons")) {
+    geom <- sf_to_polygons(geom)
   }
 
+  atlas$data$geom <- geom
   atlas$data$sf <- NULL
+  atlas$data$polygons <- NULL
   atlas
 }
 
 
 #' Rehydrate a ggseg atlas into sf-backed form
 #'
-#' Inverse of [as_polygon_atlas()]. Materialises an sf-class geometry table
-#' from the `polygons` slot (using [sfheaders::sf_multipolygon()] under the
-#' hood — no system library dependencies for the conversion itself). Use
-#' this when you want to run sf operations (buffers, intersections, CRS
-#' transforms) on atlas geometry; the underlying sf operations themselves
-#' still require a full sf installation.
+#' Inverse of [as_polygon_atlas()]. Sets the single `geom` slot to an sf-class
+#' geometry table, converting from polygons via [sfheaders::sf_multipolygon()]
+#' if needed — sfheaders is pure Rcpp with no GDAL/GEOS/PROJ dependencies, so
+#' the conversion itself does not require a full sf installation. Use this when
+#' you want to run sf operations (buffers, intersections, CRS transforms) on
+#' atlas geometry; those sf operations themselves still require sf.
 #'
-#' The returned atlas keeps `$data$polygons` populated alongside `$data$sf`.
+#' Conversion is lossless, so a single representation is kept (no redundant
+#' polygons alongside sf).
 #'
 #' @param atlas A `ggseg_atlas` (or legacy `brain_atlas`) object.
 #'
-#' @return A `ggseg_atlas` with both `$data$sf` and `$data$polygons` populated.
+#' @return A `ggseg_atlas` whose `$data$geom` is an sf object.
 #' @export
 #' @examples
 #' \dontrun{
 #' library(sf)
 #' atlas <- as_sf_atlas(as_polygon_atlas(dk()))
-#' st_buffer(atlas$data$sf$geometry[[1]], dist = 2)
+#' st_buffer(atlas_geom(atlas)$geometry[[1]], dist = 2)
 #' }
 as_sf_atlas <- function(atlas) {
   if (!inherits(atlas, "ggseg_atlas") && !inherits(atlas, "brain_atlas")) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas} object.")
   }
 
-  if (is.null(atlas$data$sf)) {
-    if (is.null(atlas$data$polygons)) {
-      cli::cli_abort(c(
-        "Atlas has no 2D geometry to convert.",
-        "i" = "Need either {.field sf} or {.field polygons} in {.code atlas$data}."
-      ))
-    }
-    atlas$data$sf <- polygons_to_sf(atlas$data$polygons)
+  geom <- geom_from_data(atlas$data)
+  if (is.null(geom)) {
+    cli::cli_abort(c(
+      "Atlas has no 2D geometry to convert.",
+      "i" = "Need {.field geom} in {.code atlas$data}."
+    ))
+  }
+  if (inherits(geom, "brain_polygons")) {
+    geom <- polygons_to_sf(geom)
   }
 
+  atlas$data$geom <- geom
+  atlas$data$sf <- NULL
+  atlas$data$polygons <- NULL
   atlas
 }

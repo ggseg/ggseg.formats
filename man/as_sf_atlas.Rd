@@ -10,23 +10,24 @@ as_sf_atlas(atlas)
 \item{atlas}{A \code{ggseg_atlas} (or legacy \code{brain_atlas}) object.}
 }
 \value{
-A \code{ggseg_atlas} with both \verb{$data$sf} and \verb{$data$polygons} populated.
+A \code{ggseg_atlas} whose \verb{$data$geom} is an sf object.
 }
 \description{
-Inverse of \code{\link[=as_polygon_atlas]{as_polygon_atlas()}}. Materialises an sf-class geometry table
-from the \code{polygons} slot (using \code{\link[sfheaders:sf_multipolygon]{sfheaders::sf_multipolygon()}} under the
-hood — no system library dependencies for the conversion itself). Use
-this when you want to run sf operations (buffers, intersections, CRS
-transforms) on atlas geometry; the underlying sf operations themselves
-still require a full sf installation.
+Inverse of \code{\link[=as_polygon_atlas]{as_polygon_atlas()}}. Sets the single \code{geom} slot to an sf-class
+geometry table, converting from polygons via \code{\link[sfheaders:sf_multipolygon]{sfheaders::sf_multipolygon()}}
+if needed — sfheaders is pure Rcpp with no GDAL/GEOS/PROJ dependencies, so
+the conversion itself does not require a full sf installation. Use this when
+you want to run sf operations (buffers, intersections, CRS transforms) on
+atlas geometry; those sf operations themselves still require sf.
 }
 \details{
-The returned atlas keeps \verb{$data$polygons} populated alongside \verb{$data$sf}.
+Conversion is lossless, so a single representation is kept (no redundant
+polygons alongside sf).
 }
 \examples{
 \dontrun{
 library(sf)
 atlas <- as_sf_atlas(as_polygon_atlas(dk()))
-st_buffer(atlas$data$sf$geometry[[1]], dist = 2)
+st_buffer(atlas_geom(atlas)$geometry[[1]], dist = 2)
 }
 }
