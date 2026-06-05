@@ -21,6 +21,8 @@ integer vectors). Each vector contains vertex indices for that region.}
 \item{...}{Captures a deprecated \code{sf} argument: if supplied it is converted
 to the polygon representation via \code{\link[=sf_to_polygons]{sf_to_polygons()}} and a deprecation
 warning is issued. Prefer passing 2D geometry via \code{geom}.}
+
+\item{sf}{Deprecated. Pass 2D geometry via \code{geom} instead.}
 }
 \value{
 An object of class c("ggseg_data_cortical", "ggseg_atlas_data")

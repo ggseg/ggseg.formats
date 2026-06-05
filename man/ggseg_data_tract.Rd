@@ -28,6 +28,8 @@ converted to centerlines format.}
 \item{...}{Captures a deprecated \code{sf} argument (converted to polygons) and
 absorbs legacy fields (e.g. tube_radius, tube_segments) from old cached
 atlas objects.}
+
+\item{sf}{Deprecated. Pass 2D geometry via \code{geom} instead.}
 }
 \value{
 An object of class c("ggseg_data_tract", "ggseg_atlas_data")
