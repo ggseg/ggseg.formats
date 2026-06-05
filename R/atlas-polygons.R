@@ -118,7 +118,9 @@ validate_polygons <- function(polygons) {
   }
 
   if (anyDuplicated(polygons$label)) {
+    # nolint start: object_usage_linter
     dup <- polygons$label[duplicated(polygons$label)]
+    # nolint end
     cli::cli_abort(c(
       "{.arg polygons} must have one row per {.field label}.",
       "i" = "Duplicated: {.val {unique(dup)}}."
@@ -207,9 +209,11 @@ print.brain_polygons <- function(x, ...) {
   cli::cli_h2("brain_polygons")
   cli::cli_text("{.strong Labels:} {nrow(x)}")
   if (nrow(x) > 0) {
+    # nolint start: object_usage_linter
     views <- unique(unlist(lapply(x$geometry, function(g) unique(g$view))))
-    cli::cli_text("{.strong Views:} {paste(views, collapse = ', ')}")
     n_pts <- sum(vapply(x$geometry, nrow, integer(1)))
+    # nolint end
+    cli::cli_text("{.strong Views:} {paste(views, collapse = ', ')}")
     cli::cli_text("{.strong Total points:} {n_pts}")
   }
   NextMethod()

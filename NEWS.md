@@ -1,6 +1,27 @@
 # ggseg.formats
 
-## ggseg.formats 0.0.3 (development)
+## ggseg.formats 0.0.3.9001 (development)
+
+### Unified `geom` slot (breaking)
+
+Atlas 2D geometry now lives in a single `atlas$data$geom` slot whose class
+(`sf` or `brain_polygons`) determines the rendering path. The parallel `sf` and
+`polygons` slots are gone — conversion between the two is lossless, so only one
+representation is ever stored.
+
+- New accessors: `atlas_geom()`, `atlas_polygons()`, `atlas_geometry_type()`,
+  `is_atlas_sf()`, `is_atlas_polygon()`. `atlas_sf()` now converts from the
+  polygon representation when needed and is the single interception point for
+  ggseg plotting. `atlas_geom()` falls back to a legacy `sf` slot, so atlases
+  built before this change keep working. Reverse dependencies should call these
+  accessors rather than reaching into `atlas$data`.
+- `ggseg_data_cortical()` / `ggseg_data_subcortical()` /
+  `ggseg_data_cerebellar()` / `ggseg_data_tract()` now take a single `geom`
+  argument. A released `sf` argument is still accepted via `...` (converted to
+  polygons via `sf_to_polygons()`) with a deprecation warning.
+- `as_polygon_atlas()` / `as_sf_atlas()` set the single `geom` slot.
+- `migrate_atlas_files()` rewrites atlases to the single `geom` slot
+  (polygons by default; `keep_sf = TRUE` stores sf).
 
 ### sf-optional atlas format
 

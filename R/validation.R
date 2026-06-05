@@ -224,12 +224,13 @@ validate_data_labels <- function(data, core, check_sf = FALSE) {
 
   if (isTRUE(check_sf) && n_core > 0) {
     twod_source <- geom_from_data(data)
+    # nolint start: object_usage_linter
     twod_kind <- if (inherits(twod_source, "brain_polygons")) {
-      # nolint: object_usage_linter, line_length_linter.
       "polygons"
     } else {
       "sf"
     }
+    # nolint end
 
     if (!is.null(twod_source)) {
       twod_labels <- unique(twod_source$label[!is.na(twod_source$label)])

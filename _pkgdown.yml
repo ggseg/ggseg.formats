@@ -29,7 +29,18 @@ reference:
     desc: Query atlas contents without reaching into slots directly.
     contents:
       - starts_with("atlas_")
+      - starts_with("is_atlas")
       - get_cerebellar_mesh
+  - title: Geometry representation (sf-optional)
+    desc: |
+      Convert atlas 2D geometry between sf and the sf-optional `brain_polygons`
+      representation stored in the single `geom` slot, and migrate atlas files.
+    contents:
+      - as_polygon_atlas
+      - as_sf_atlas
+      - polygons_to_sf
+      - sf_to_polygons
+      - migrate_atlas_files
   - title: Atlas manipulation
     desc: |
       Pipe-friendly functions for subsetting regions, managing views, and enriching metadata. All return a new `ggseg_atlas`.

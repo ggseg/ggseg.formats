@@ -435,6 +435,7 @@ print_mesh_summary <- function(meshes) {
 
 # Deprecated wrappers ----
 
+#' @param sf Deprecated. Pass 2D geometry via `geom` instead.
 #' @rdname ggseg_data_cortical
 #' @export
 brain_data_cortical <- function(sf = NULL, vertices = NULL) {
@@ -447,6 +448,7 @@ brain_data_cortical <- function(sf = NULL, vertices = NULL) {
 }
 
 
+#' @param sf Deprecated. Pass 2D geometry via `geom` instead.
 #' @rdname ggseg_data_subcortical
 #' @export
 brain_data_subcortical <- function(sf = NULL, meshes = NULL) {
@@ -459,6 +461,7 @@ brain_data_subcortical <- function(sf = NULL, meshes = NULL) {
 }
 
 
+#' @param sf Deprecated. Pass 2D geometry via `geom` instead.
 #' @rdname ggseg_data_tract
 #' @export
 brain_data_tract <- function(

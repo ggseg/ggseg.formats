@@ -244,7 +244,7 @@ describe("convert_legacy_brain_atlas", {
           stringsAsFactors = FALSE
         ),
         palette = c(lh_test = "#FF0000"),
-        data = list(sf = mock_sf, vertices = vdf)
+        data = ggseg_data_cortical(geom = mock_sf, vertices = vdf)
       ),
       class = "brain_atlas"
     )
@@ -260,7 +260,7 @@ describe("convert_legacy_brain_atlas", {
     )
 
     expect_s3_class(result, "ggseg_atlas")
-    expect_false(is.null(result$data$sf))
+    expect_false(is.null(atlas_geom(result)))
   })
 
   it("warns when vertex inference fails for cortical 3D atlas", {
@@ -455,7 +455,7 @@ describe("convert_legacy_brain_atlas 2D-only path", {
         type = "cortical",
         palette = c(lh_frontal = "#FF0000"),
         core = core,
-        data = ggseg_data_cortical(sf = sf_geom)
+        data = ggseg_data_cortical(geom = sf_geom)
       ),
       class = "brain_atlas"
     )
@@ -530,7 +530,7 @@ describe("unify_legacy_atlases (deprecated)", {
         type = "cortical",
         palette = c(lh_frontal = "#FF0000"),
         core = core,
-        data = ggseg_data_cortical(sf = sf_geom)
+        data = ggseg_data_cortical(geom = sf_geom)
       ),
       class = "brain_atlas"
     )
@@ -850,7 +850,7 @@ describe("convert_legacy_brain_atlas palette remap", {
         core = core,
         palette = old_palette,
         data = ggseg_data_cortical(
-          sf = sf_geom,
+          geom = sf_geom,
           vertices = data.frame(
             label = c("lh_frontal", "lh_parietal"),
             vertices = I(list(1L:3L, 4L:6L))

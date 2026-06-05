@@ -5,6 +5,29 @@
 # atlases (no GDAL/GEOS/PROJ). All operate on the flat coordinate table
 # (`label`, `view`, `x`, `y`, `group`, `subgroup`) obtained by unnesting.
 
+#' Determine the left-to-right ordering of view groups for repositioning
+#'
+#' When `group_order` is supplied (e.g. by reorder) it wins, filtered to the
+#' groups actually present. Otherwise groups are ordered by their current
+#' centroid x (ties broken by group name), which depends only on coordinates —
+#' not on row order — so sf and `brain_polygons` inputs pack identically.
+#'
+#' @param group_key Per-row group assignment (view, or hemi+view).
+#' @param group_order Optional explicit ordering, or NULL.
+#' @param centroid_x Function mapping a group value to its centroid x.
+#' @return Character vector of group values in left-to-right order.
+#' @noRd
+#' @keywords internal
+order_view_groups <- function(group_key, group_order, centroid_x) {
+  if (!is.null(group_order)) {
+    return(group_order[group_order %in% group_key])
+  }
+  uniq <- unique(group_key)
+  cx <- vapply(uniq, centroid_x, numeric(1))
+  uniq[order(cx, uniq)]
+}
+
+
 #' Unnest a brain_polygons to its flat coordinate table
 #' @noRd
 #' @keywords internal
@@ -188,11 +211,10 @@ reposition_flat <- function(flat, type = NULL, gap = 0.15, group_order = NULL) {
     group_key <- paste(hemi, flat$view)
   }
 
-  groups <- if (is.null(group_order)) {
-    unique(group_key)
-  } else {
-    group_order[group_order %in% group_key]
-  }
+  groups <- order_view_groups(group_key, group_order, function(g) {
+    idx <- group_key == g
+    (min(flat$x[idx]) + max(flat$x[idx])) / 2
+  })
 
   for (g in groups) {
     idx <- which(group_key == g)

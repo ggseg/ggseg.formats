@@ -14,7 +14,8 @@ require_sf <- function(what) {
   if (!requireNamespace("sf", quietly = TRUE)) {
     cli::cli_abort(c(
       "{what} requires the {.pkg sf} package, which is not installed.",
-      "i" = "Install with {.run install.packages(\"sf\")}, or use the polygon-format alternative (see {.fn as_polygon_atlas})."
+      "i" = "Install with {.run install.packages(\"sf\")}, or use the
+             polygon-format alternative (see {.fn as_polygon_atlas})."
     ))
   }
   invisible(TRUE)

@@ -269,7 +269,7 @@ atlas_region_contextual <- function(
   atlas,
   pattern,
   match_on = c("region", "label"),
-  ignore.case = TRUE
+  ignore.case = TRUE # nolint: object_name_linter.
 ) {
   match_on <- match.arg(match_on)
 
@@ -864,35 +864,46 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
     return(atlas)
   }
 
-  if (atlas$type == "cortical") {
+  group_order <- if (atlas$type == "cortical") {
     hemi <- ifelse(
       grepl("^lh[_.]", sf_data$label),
       "left",
       ifelse(grepl("^rh[_.]", sf_data$label), "right", "")
     )
-    group_key <- paste(hemi, sf_data$view)
-    expanded_order <- unlist(lapply(order, function(v) {
-      hemis <- unique(hemi[sf_data$view == v])
-      hemis <- intersect(c("left", "right", ""), hemis)
+    unlist(lapply(order, function(v) {
+      hemis <- intersect(
+        c("left", "right", ""),
+        unique(hemi[sf_data$view == v])
+      )
       paste(hemis, v)
     }))
-    group_key <- factor(group_key, levels = expanded_order)
-    new_sf <- sf_data[order(group_key), ]
   } else {
-    sf_data$view <- factor(sf_data$view, levels = order)
-    new_sf <- sf_data[order(sf_data$view), ]
-    new_sf$view <- as.character(new_sf$view)
+    order
   }
 
-  new_sf <- reposition_views(new_sf, type = atlas$type, gap = gap)
+  new_sf <- reposition_views(
+    sf_data,
+    type = atlas$type,
+    gap = gap,
+    group_order = group_order
+  )
   new_data <- rebuild_atlas_data(atlas, new_sf)
   rebuild_atlas(atlas, new_data)
 }
 
 
+#' @param group_order Optional explicit left-to-right ordering of the
+#'   view (or hemi+view) groups. When `NULL`, groups are ordered by their
+#'   current centroid x so the packed layout is independent of row order
+#'   (and therefore identical for sf and polygon representations).
 #' @keywords internal
 #' @noRd
-reposition_views <- function(sf_obj, type = NULL, gap = 0.15) {
+reposition_views <- function(
+  sf_obj,
+  type = NULL,
+  gap = 0.15,
+  group_order = NULL
+) {
   if (!inherits(sf_obj, "sf") && !inherits(sf_obj, "data.frame")) {
     return(sf_obj)
   }
@@ -917,7 +928,14 @@ reposition_views <- function(sf_obj, type = NULL, gap = 0.15) {
     group_key <- paste(hemi, sf_obj$view)
   }
 
-  groups <- unique(group_key)
+  groups <- order_view_groups(
+    group_key,
+    group_order,
+    centroid_x = function(g) {
+      bbox <- sf::st_bbox(sf_obj$geometry[group_key == g])
+      unname((bbox[["xmin"]] + bbox[["xmax"]]) / 2)
+    }
+  )
 
   view_data <- lapply(groups, function(g) {
     idx <- group_key == g

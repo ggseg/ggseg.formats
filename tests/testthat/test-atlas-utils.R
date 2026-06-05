@@ -764,7 +764,10 @@ describe("atlas_view_remove", {
 
   it("warns when all views removed", {
     atlas <- make_multiview_atlas()
-    expect_warning(atlas_view_remove(atlas, ".*"), "All views removed")
+    expect_warning(
+      expect_warning(atlas_view_remove(atlas, ".*"), "All views removed"),
+      "no 2D geometry"
+    )
   })
 })
 
@@ -1091,7 +1094,8 @@ describe("as.data.frame context ordering", {
 
   it("works with atlas that has no context geometry", {
     atlas <- make_test_atlas()
-    atlas$data$geom <- atlas$data$geom[atlas$data$geom$label %in% atlas$core$label, ]
+    keep <- atlas$data$geom$label %in% atlas$core$label
+    atlas$data$geom <- atlas$data$geom[keep, ]
     df <- as.data.frame(atlas)
     expect_s3_class(df, "sf")
     expect_equal(nrow(df), 3)
@@ -1395,8 +1399,11 @@ describe("atlas_view_remove_region matching by region", {
   it("warns and returns NULL sf when all geometries removed", {
     atlas <- make_test_atlas()
     expect_warning(
-      result <- atlas_view_remove_region(atlas, ".*", match_on = "label"),
-      "All region geometries removed"
+      expect_warning(
+        atlas_view_remove_region(atlas, ".*", match_on = "label"),
+        "All region geometries removed"
+      ),
+      "no 2D geometry"
     )
   })
 })
