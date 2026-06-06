@@ -137,6 +137,7 @@ convert_legacy_brain_data <- function(x) {
     return(restamp_class(x))
   }
 
+  require_sf("convert_legacy_brain_data()")
   sf_data <- x$data
   class(sf_data) <- setdiff(
     class(sf_data),
@@ -165,10 +166,10 @@ convert_legacy_brain_data <- function(x) {
 
   data <- switch(
     type,
-    "cortical" = ggseg_data_cortical(sf = sf_data, vertices = NULL),
-    "subcortical" = ggseg_data_subcortical(sf = sf_data, meshes = NULL),
-    "tract" = ggseg_data_tract(sf = sf_data, meshes = NULL),
-    ggseg_data_cortical(sf = sf_data, vertices = NULL)
+    "cortical" = ggseg_data_cortical(geom = sf_data, vertices = NULL),
+    "subcortical" = ggseg_data_subcortical(geom = sf_data, meshes = NULL),
+    "tract" = ggseg_data_tract(geom = sf_data, meshes = NULL),
+    ggseg_data_cortical(geom = sf_data, vertices = NULL)
   )
 
   ggseg_atlas(
@@ -195,9 +196,9 @@ convert_legacy_structure <- function(x) {
 
   data <- switch(
     type,
-    "cortical" = ggseg_data_cortical(sf = x$sf, vertices = x$vertices),
-    "subcortical" = ggseg_data_subcortical(sf = x$sf, meshes = x$meshes),
-    "tract" = ggseg_data_tract(sf = x$sf, meshes = x$meshes),
+    "cortical" = ggseg_data_cortical(geom = x$sf, vertices = x$vertices),
+    "subcortical" = ggseg_data_subcortical(geom = x$sf, meshes = x$meshes),
+    "tract" = ggseg_data_tract(geom = x$sf, meshes = x$meshes),
     cli::cli_abort("Unknown atlas type: {.val {type}}")
   )
 

@@ -13,7 +13,9 @@ atlas_sf(atlas)
 sf data.frame ready for plotting
 }
 \description{
-Returns sf data joined with core region info and palette colours.
+Returns sf data joined with core region info and palette colours. This is
+the interception point used by ggseg for plotting: it always returns
+sf geometry, converting from the polygon representation when needed.
 }
 \examples{
 sf_data <- atlas_sf(dk())

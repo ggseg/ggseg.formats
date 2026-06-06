@@ -1,4 +1,93 @@
-# ggseg.formats 
+# ggseg.formats
+
+## ggseg.formats 0.0.2.9001 (development)
+
+### Unified `geom` slot (breaking)
+
+Atlas 2D geometry now lives in a single `atlas$data$geom` slot whose class
+(`sf` or `brain_polygons`) determines the rendering path. The parallel `sf` and
+`polygons` slots are gone — conversion between the two is lossless, so only one
+representation is ever stored.
+
+- New accessors: `atlas_geom()`, `atlas_polygons()`, `atlas_geometry_type()`,
+  `is_atlas_sf()`, `is_atlas_polygon()`. `atlas_sf()` now converts from the
+  polygon representation when needed and is the single interception point for
+  ggseg plotting. `atlas_geom()` falls back to a legacy `sf` slot, so atlases
+  built before this change keep working. Reverse dependencies should call these
+  accessors rather than reaching into `atlas$data`.
+- `ggseg_data_cortical()` / `ggseg_data_subcortical()` /
+  `ggseg_data_cerebellar()` / `ggseg_data_tract()` now take a single `geom`
+  argument. A released `sf` argument is still accepted via `...` (converted to
+  polygons via `sf_to_polygons()`) with a deprecation warning.
+- `as_polygon_atlas()` / `as_sf_atlas()` set the single `geom` slot.
+- `migrate_atlas_files()` rewrites atlases to the single `geom` slot
+  (polygons by default; `keep_sf = TRUE` stores sf).
+
+### sf-optional atlas format
+
+Foundation work for the `sf-optional` milestone — see
+[ggsegverse/ggseg.formats#4](https://github.com/ggsegverse/ggseg.formats/issues/4).
+
+- New `brain_polygons` representation: a nested tibble keyed by `label`, with a
+  `geometry` list-column containing per-view, per-ring point coordinates
+  (`view`, `x`, `y`, `group`, `subgroup`). Renderable directly by
+  `ggplot2::geom_polygon()` via the `subgroup` aesthetic (which handles holes
+  through `grid::pathGrob` even-odd fill).
+- Geometry round-trips between sf and `brain_polygons` losslessly. The sf-side
+  conversion uses `sfheaders` (pure Rcpp, no GDAL/GEOS/PROJ system libraries),
+  enabling wasm builds and air-gapped installation paths. The low-level
+  converters are internal; the public API is the atlas-level `as_sf_atlas()` /
+  `as_polygon_atlas()` and the `atlas_sf()` / `atlas_polygons()` accessors.
+- `ggseg_data_cortical()`, `ggseg_data_subcortical()`, `ggseg_data_cerebellar()`,
+  and `ggseg_data_tract()` now accept a `polygons =` argument alongside `sf =`.
+  When only `sf` is supplied, the `polygons` slot is derived automatically; the
+  two slots are kept in sync so existing callers see no change.
+- `as_polygon_atlas()` and `as_sf_atlas()` convert between the sf-backed and
+  polygon-only forms at the atlas level.
+- `migrate_atlas_files()` walks a package's `data/` directory and rewrites every
+  `ggseg_atlas` `.rda` to the polygon format. Intended for downstream
+  atlas-package maintainers across the ggsegverse ecosystem.
+- `validate_data_labels()` checks 2D label coverage against whichever 2D source
+  is present (`sf` or `polygons`), preserving the same 80%/90% thresholds.
+
+`sfheaders` joins Imports. **`sf` moves from Imports to Suggests.** The
+package can now be installed without GDAL / GEOS / PROJ system libraries —
+enabling wasm builds and air-gapped installs. Functions that genuinely need
+sf (e.g. `validate_sf()`, `as.data.frame.ggseg_atlas()`, `plot.ggseg_atlas()`,
+the `atlas_view_*` repositioning helpers) check `requireNamespace("sf")` at
+entry and error with a clear pointer to `as_polygon_atlas()` if sf is
+unavailable. The bundled `dk`, `aseg`, and `tracula` atlases still carry
+their `sf` slots, so callers who have sf installed see no behavioural change.
+
+### Region geometry operations
+
+- New `atlas_region_op()` combines two sets of region geometry with a boolean
+  operation per view (`difference`, `intersection`, `union`, `symdifference`),
+  writing the result to a new region. Boolean ops need a geometry engine, so
+  this helper always requires `sf`; a polygon-only atlas is rehydrated for the
+  operation and the result returned in polygon form.
+- `atlas_region_contextual()` now operates on whichever 2D representation an
+  atlas carries (`sf` and/or `polygons`) and keeps both in sync — it needs no
+  `sf` for a polygon-only atlas. It also gains an `ignore.case` argument.
+- The atlas manipulation helpers no longer leave a stale `polygons` slot behind
+  a freshly rewritten `sf` slot; the two 2D representations stay consistent
+  after every operation.
+
+### sf-free view manipulation
+
+- `atlas_context_remove()`, `atlas_view_remove()`, `atlas_view_keep()`,
+  `atlas_view_remove_region()`, `atlas_view_remove_small()`,
+  `atlas_view_gather()`, and `atlas_view_reorder()` now run on polygon-only
+  atlases with no `sf` installed. Filtering, polygon area (shoelace), and view
+  repositioning are implemented in pure R against the `brain_polygons`
+  coordinate table; the polygon results match the sf path to floating-point
+  precision. sf-backed atlases continue to use the existing sf code path
+  unchanged.
+- `atlas_views()` reads view names from `polygons` when `sf` is absent.
+- `atlas_region_keep()` and `atlas_region_remove()` no longer drop 2D geometry
+  on polygon-only atlases (they previously rebuilt from the `sf` slot only).
+- View helpers now warn about "no 2D geometry" (rather than "no sf data") only
+  when an atlas carries neither `sf` nor `polygons`.
 
 ## ggseg.formats 0.0.2
 

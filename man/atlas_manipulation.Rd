@@ -4,6 +4,8 @@
 \alias{atlas_manipulation}
 \alias{atlas_region_remove}
 \alias{atlas_region_contextual}
+\alias{atlas_region_op}
+\alias{atlas_context_remove}
 \alias{atlas_region_rename}
 \alias{atlas_region_keep}
 \alias{atlas_core_add}
@@ -17,7 +19,24 @@
 \usage{
 atlas_region_remove(atlas, pattern, match_on = c("region", "label"))
 
-atlas_region_contextual(atlas, pattern, match_on = c("region", "label"))
+atlas_region_contextual(
+  atlas,
+  pattern,
+  match_on = c("region", "label"),
+  ignore.case = TRUE
+)
+
+atlas_region_op(
+  atlas,
+  x,
+  y,
+  action = c("difference", "intersection", "union", "symdifference"),
+  into,
+  match_on = c("label", "region"),
+  colour = NULL
+)
+
+atlas_context_remove(atlas)
 
 atlas_region_rename(atlas, pattern, replacement)
 
@@ -50,6 +69,22 @@ atlas_view_reorder(atlas, order, gap = 0.15)
 
 \item{match_on}{Column to match against: \code{"region"} or \code{"label"}.}
 
+\item{ignore.case}{For \code{atlas_region_contextual()}: passed to \code{\link[=grepl]{grepl()}}.
+Defaults to \code{TRUE} for backwards compatibility, but note that a context
+pattern like \code{"Thalamus"} then also matches focus labels such as
+\code{"hypothalamus"}; set \code{FALSE} (and/or anchor the pattern) when that
+matters.}
+
+\item{x, y}{For \code{atlas_region_op()}: patterns selecting the two operands.}
+
+\item{action}{For \code{atlas_region_op()}: the boolean operation to apply.}
+
+\item{into}{For \code{atlas_region_op()}: label for the result region.}
+
+\item{colour}{For \code{atlas_region_op()}: optional fill for \code{into}. When
+supplied, \code{into} is registered in core and palette; when \code{NULL}, the
+result is contextual geometry only.}
+
 \item{replacement}{For \code{atlas_region_rename()}: replacement string or
 function.}
 
@@ -79,8 +114,11 @@ Functions for modifying brain atlas objects. These cover three areas:
 \itemize{
 \item \code{atlas_region_remove()}: completely remove regions
 \item \code{atlas_region_contextual()}: keep geometry but remove from core/palette
+\item \code{atlas_context_remove()}: drop all contextual sf geometry
 \item \code{atlas_region_rename()}: rename regions in core
 \item \code{atlas_region_keep()}: keep only matching regions
+\item \code{atlas_region_op()}: combine two regions' geometry with a boolean op
+(difference / intersection / union / symdifference)
 }
 
 \strong{View manipulation} modifies the 2D sf geometry data:
@@ -102,7 +140,30 @@ Functions for modifying brain atlas objects. These cover three areas:
 \itemize{
 \item \code{atlas_region_contextual()}: Keep geometry for visual context but remove
 from core, palette, and 3D data. Context geometries render grey and don't
-appear in legends.
+appear in legends. Contextual rows are moved behind the remaining core
+regions so focus regions draw on top where they overlap in projection.
+Operates on whichever 2D representation the atlas carries (\code{sf} and/or
+\code{polygons}), keeping both in sync, and needs no \code{sf} for a polygon atlas.
+
+\item \code{atlas_region_op()}: Combine two sets of region geometry with a
+vector boolean operation (per view), writing the result to a new region
+\code{into}. \code{x} and \code{y} are patterns matched against \code{match_on}; within each
+view their matching geometries are unioned, then combined via \code{action}:
+\code{"difference"} (x minus y, e.g. punching white matter out of a cortex
+silhouette), \code{"intersection"}, \code{"union"}, or \code{"symdifference"}. Inputs are
+left in place; any existing \code{into} geometry is replaced. With a \code{colour},
+\code{into} becomes a legended core region; otherwise it stays contextual
+(grey) and is drawn behind the core regions. Boolean ops need a geometry
+engine, so this is the one manipulation helper that always requires \code{sf}
+installed; a polygon-only atlas is rehydrated for the operation and the
+result is returned in polygon form.
+
+\item \code{atlas_context_remove()}: Drop all contextual sf geometry — every
+sf row whose \code{label} is not present in \code{core}. Covers labels marked
+via \code{\link[=atlas_region_contextual]{atlas_region_contextual()}} plus pipeline-generated outlines
+(\code{cortex_}, \code{Background}, \code{unknown}). Remaining views are re-packed
+via \code{\link[=atlas_view_gather]{atlas_view_gather()}} so the plot focuses tightly on the
+labelled regions.
 
 \item \code{atlas_region_rename()}: Rename regions matching a pattern. Only
 affects the \code{region} column, not \code{label}. If \code{replacement} is a function,
@@ -115,16 +176,20 @@ is preserved for surface continuity.
 \item \code{atlas_core_add()}: Join additional metadata columns to
 atlas core.
 
-\item \code{atlas_view_remove()}: Remove views matching pattern from sf data.
+\item \code{atlas_view_remove()}: Remove views matching pattern from sf
+data. Remaining views are re-packed via \code{\link[=atlas_view_gather]{atlas_view_gather()}} so
+the layout stays tight.
 
 \item \code{atlas_view_keep()}: Keep only views matching pattern.
 
 \item \code{atlas_view_remove_region()}: Remove specific region geometry from sf
-data only. Core, palette, and 3D data are unchanged.
+data only. Core, palette, and 3D data are unchanged. Views are
+re-packed via \code{\link[=atlas_view_gather]{atlas_view_gather()}} in case any view shrank.
 
 \item \code{atlas_view_remove_small()}: Remove region geometries below a minimum
 area threshold. Context geometries (labels not in core) are never
-removed. Optionally scope to specific views.
+removed. Optionally scope to specific views. Views are re-packed
+via \code{\link[=atlas_view_gather]{atlas_view_gather()}} in case any view shrank.
 
 \item \code{atlas_view_gather()}: Reposition remaining views to close gaps
 after view removal.

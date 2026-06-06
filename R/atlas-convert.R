@@ -134,7 +134,12 @@ extract_2d_sf <- function(has_2d, atlas_2d) {
   if (!has_2d) {
     return(NULL)
   }
-  if (!is.null(atlas_2d$data$sf)) atlas_2d$data$sf else atlas_2d$sf
+  geom <- if (inherits(atlas_2d$data, "ggseg_atlas_data")) {
+    geom_from_data(atlas_2d$data)
+  } else {
+    NULL
+  }
+  if (!is.null(geom)) geom else atlas_2d$sf
 }
 
 
@@ -274,15 +279,15 @@ build_atlas_data <- function(type, sf_data, vertices_df, meshes_df) {
   switch(
     type,
     "cortical" = ggseg_data_cortical(
-      sf = sf_data,
+      geom = sf_data,
       vertices = vertices_df
     ),
     "subcortical" = ggseg_data_subcortical(
-      sf = sf_data,
+      geom = sf_data,
       meshes = meshes_df
     ),
-    "tract" = ggseg_data_tract(sf = sf_data, meshes = meshes_df),
-    ggseg_data_cortical(sf = sf_data, vertices = vertices_df)
+    "tract" = ggseg_data_tract(geom = sf_data, meshes = meshes_df),
+    ggseg_data_cortical(geom = sf_data, vertices = vertices_df)
   )
 }
 

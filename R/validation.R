@@ -4,6 +4,7 @@
 #' @keywords internal
 #' @noRd
 validate_sf <- function(sf) {
+  require_sf("validate_sf()")
   if (!is.data.frame(sf)) {
     cli::cli_abort("{.arg sf} must be a data.frame.")
   }
@@ -221,22 +222,34 @@ validate_data_labels <- function(data, core, check_sf = FALSE) {
     validate_3d_labels(data$centerlines$label, core_labels, "centerlines")
   }
 
-  if (isTRUE(check_sf) && !is.null(data$sf) && n_core > 0) {
-    sf_labels <- unique(data$sf$label[!is.na(data$sf$label)])
-    missing <- setdiff(core_labels, sf_labels)
-    coverage <- 1 - length(missing) / n_core
+  if (isTRUE(check_sf) && n_core > 0) {
+    twod_source <- geom_from_data(data)
+    # nolint start: object_usage_linter
+    twod_kind <- if (inherits(twod_source, "brain_polygons")) {
+      "polygons"
+    } else {
+      "sf"
+    }
+    # nolint end
 
-    if (coverage < 0.8) {
-      cli::cli_abort(c(
-        "sf covers only {.strong {round(coverage * 100)}%} of core labels
-        (minimum 80%).",
-        "i" = "Missing from sf: {.val {missing}}."
-      ))
-    } else if (coverage < 0.9) {
-      cli::cli_warn(c(
-        "sf covers only {.strong {round(coverage * 100)}%} of core labels.",
-        "i" = "Missing from sf: {.val {missing}}."
-      ))
+    if (!is.null(twod_source)) {
+      twod_labels <- unique(twod_source$label[!is.na(twod_source$label)])
+      missing <- setdiff(core_labels, twod_labels)
+      coverage <- 1 - length(missing) / n_core
+
+      if (coverage < 0.8) {
+        cli::cli_abort(c(
+          "{twod_kind} covers only {.strong {round(coverage * 100)}%} of core
+          labels (minimum 80%).",
+          "i" = "Missing from {twod_kind}: {.val {missing}}."
+        ))
+      } else if (coverage < 0.9) {
+        cli::cli_warn(c(
+          "{twod_kind} covers only {.strong {round(coverage * 100)}%} of core
+          labels.",
+          "i" = "Missing from {twod_kind}: {.val {missing}}."
+        ))
+      }
     }
   }
 

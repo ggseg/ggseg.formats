@@ -5,13 +5,15 @@
 \alias{brain_data_subcortical}
 \title{Create subcortical atlas data}
 \usage{
-ggseg_data_subcortical(sf = NULL, meshes = NULL)
+ggseg_data_subcortical(geom = NULL, meshes = NULL, ...)
 
 brain_data_subcortical(sf = NULL, meshes = NULL)
 }
 \arguments{
-\item{sf}{sf data.frame with columns label, view, geometry for 2D rendering.
-Optional.}
+\item{geom}{2D geometry for rendering, stored in the single \code{geom} slot:
+either an sf data.frame (columns \code{label}, \code{view}, \code{geometry}) or a
+\code{brain_polygons} tibble (see \code{\link[=sf_to_polygons]{sf_to_polygons()}}). The class of \code{geom}
+determines the rendering path used downstream.}
 
 \item{meshes}{data.frame with columns label and mesh (list-column).
 Each mesh is a list with:
@@ -19,6 +21,12 @@ Each mesh is a list with:
 \item vertices: data.frame with x, y, z columns
 \item faces: data.frame with i, j, k columns (1-based triangle indices)
 }}
+
+\item{...}{Captures a deprecated \code{sf} argument: if supplied it is converted
+to the polygon representation via \code{\link[=sf_to_polygons]{sf_to_polygons()}} and a deprecation
+warning is issued. Prefer passing 2D geometry via \code{geom}.}
+
+\item{sf}{Deprecated. Pass 2D geometry via \code{geom} instead.}
 }
 \value{
 An object of class c("ggseg_data_subcortical", "ggseg_atlas_data")

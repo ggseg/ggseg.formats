@@ -258,7 +258,7 @@ describe("convert_legacy_brain_data", {
     result <- convert_legacy_brain_data(legacy)
 
     expect_s3_class(result, "ggseg_atlas")
-    expect_true("view" %in% names(result$data$sf))
+    expect_true("view" %in% names(atlas_geom(result)))
   })
 
   it("handles legacy atlas without colour column", {

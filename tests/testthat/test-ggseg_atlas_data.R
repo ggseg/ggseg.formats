@@ -58,10 +58,10 @@ describe("ggseg_data_cortical", {
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
 
-    data <- ggseg_data_cortical(sf = sf_geom, vertices = vertices)
+    data <- ggseg_data_cortical(geom = sf_geom, vertices = vertices)
 
     expect_s3_class(data, "ggseg_data_cortical")
-    expect_true(!is.null(data$sf))
+    expect_true(!is.null(geom_from_data(data)))
     expect_true(!is.null(data$vertices))
   })
 })
@@ -110,10 +110,10 @@ describe("ggseg_data_subcortical", {
       faces = data.frame(i = 1:3, j = 2:4, k = 3:5)
     ))
 
-    data <- ggseg_data_subcortical(sf = sf_geom, meshes = meshes)
+    data <- ggseg_data_subcortical(geom = sf_geom, meshes = meshes)
 
     expect_s3_class(data, "ggseg_data_subcortical")
-    expect_true(!is.null(data$sf))
+    expect_true(!is.null(geom_from_data(data)))
     expect_true(!is.null(data$meshes))
   })
 })
@@ -139,8 +139,8 @@ describe("ggseg_data_tract", {
     expect_equal(nrow(data$centerlines), 1)
   })
 
-  it("errors when no sf or centerlines provided", {
-    expect_error(ggseg_data_tract(), "sf.*centerlines")
+  it("errors when no geom or centerlines provided", {
+    expect_error(ggseg_data_tract(), "geom.*centerlines")
   })
 
   it("errors when all meshes lack centerline metadata", {
@@ -166,10 +166,10 @@ describe("ggseg_data_tract", {
       )
     )
 
-    data <- ggseg_data_tract(sf = sf_geom)
+    data <- ggseg_data_tract(geom = sf_geom)
 
     expect_s3_class(data, "ggseg_data_tract")
-    expect_true(!is.null(data$sf))
+    expect_true(!is.null(geom_from_data(data)))
   })
 
   it("creates ggseg_data_tract with centerlines directly", {
@@ -264,7 +264,7 @@ describe("print methods", {
     vertices <- data.frame(label = "lh_frontal")
     vertices$vertices <- list(1L:3L)
 
-    data <- ggseg_data_cortical(sf = sf_geom, vertices = vertices)
+    data <- ggseg_data_cortical(geom = sf_geom, vertices = vertices)
     expect_snapshot(print(data))
   })
 
@@ -280,7 +280,7 @@ describe("print methods", {
       faces = data.frame(i = 1:3, j = 2:4, k = 3:5)
     ))
 
-    data <- ggseg_data_subcortical(sf = sf_geom, meshes = meshes)
+    data <- ggseg_data_subcortical(geom = sf_geom, meshes = meshes)
     expect_snapshot(print(data))
   })
 
@@ -324,7 +324,7 @@ describe("print methods", {
     vertices$vertices <- list(0L:9L)
 
     data <- ggseg_data_cerebellar(
-      sf = sf_geom,
+      geom = sf_geom,
       vertices = vertices
     )
     expect_snapshot(print(data))
@@ -337,7 +337,7 @@ describe("print methods", {
       geometry = sf::st_sfc(make_polygon())
     )
 
-    data <- ggseg_data_cerebellar(sf = sf_geom)
+    data <- ggseg_data_cerebellar(geom = sf_geom)
     expect_snapshot(print(data))
   })
 
@@ -353,7 +353,7 @@ describe("print methods", {
     centerlines$points <- list(pts)
     centerlines$tangents <- list(tangents)
 
-    data <- ggseg_data_tract(sf = sf_geom, centerlines = centerlines)
+    data <- ggseg_data_tract(geom = sf_geom, centerlines = centerlines)
     expect_snapshot(print(data))
   })
 })
@@ -378,10 +378,10 @@ describe("ggseg_data_cerebellar", {
       geometry = sf::st_sfc(make_polygon())
     )
 
-    data <- ggseg_data_cerebellar(sf = sf_geom)
+    data <- ggseg_data_cerebellar(geom = sf_geom)
 
     expect_s3_class(data, "ggseg_data_cerebellar")
-    expect_true(!is.null(data$sf))
+    expect_true(!is.null(geom_from_data(data)))
     expect_null(data$vertices)
   })
 
@@ -395,19 +395,19 @@ describe("ggseg_data_cerebellar", {
     vertices$vertices <- list(0L:9L)
 
     data <- ggseg_data_cerebellar(
-      sf = sf_geom,
+      geom = sf_geom,
       vertices = vertices
     )
 
     expect_s3_class(data, "ggseg_data_cerebellar")
-    expect_true(!is.null(data$sf))
+    expect_true(!is.null(geom_from_data(data)))
     expect_true(!is.null(data$vertices))
   })
 
-  it("errors when neither sf nor vertices provided", {
+  it("errors when neither geom nor vertices provided", {
     expect_error(
       ggseg_data_cerebellar(),
-      "sf.*vertices.*is required"
+      "geom.*vertices.*is required"
     )
   })
 

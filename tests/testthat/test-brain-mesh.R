@@ -46,7 +46,8 @@ describe("get_brain_mesh", {
     )
 
     mesh <- get_brain_mesh(
-      hemisphere = "lh", surface = "custom",
+      hemisphere = "lh",
+      surface = "custom",
       brain_meshes = custom_mesh
     )
 
@@ -62,7 +63,8 @@ describe("get_brain_mesh", {
     )
 
     mesh <- get_brain_mesh(
-      hemisphere = "lh", surface = "pial",
+      hemisphere = "lh",
+      surface = "pial",
       brain_meshes = custom_mesh
     )
 
@@ -78,7 +80,8 @@ describe("get_brain_mesh", {
     )
 
     mesh <- get_brain_mesh(
-      hemisphere = "rh", surface = "inflated",
+      hemisphere = "rh",
+      surface = "inflated",
       brain_meshes = custom_mesh
     )
 
