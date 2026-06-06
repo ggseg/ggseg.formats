@@ -15,7 +15,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 ggseg.formats provides the `ggseg_atlas` S3 class that powers the
-[ggseg](https://ggsegverse.github.io/ggseg/) ecosystem for 2D and 3D
+[ggsegverse](https://ggsegverse.github.io/ggseg/) ecosystem for 2D and 3D
 brain visualisation. It ships four bundled atlases, a set of accessor
 functions for querying atlas contents, and a pipe-friendly manipulation
 API for subsetting, renaming, and enriching atlas objects.

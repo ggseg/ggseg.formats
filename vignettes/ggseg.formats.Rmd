@@ -24,7 +24,7 @@ library(ggseg.formats)
 library(sf)
 ```
 
-Everything in the ggseg ecosystem starts from a single object: the `ggseg_atlas`.
+Everything in the ggsegverse ecosystem starts from a single object: the `ggseg_atlas`.
 Whether you are making a 2D cortical flatmap with ggseg or spinning a 3D mesh in
 ggseg3d, the atlas is the container that holds the geometry, the region metadata,
 and the colour palette together. This vignette walks through the structure so you
