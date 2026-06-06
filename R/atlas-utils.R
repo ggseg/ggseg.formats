@@ -204,24 +204,11 @@ atlas_region_remove <- function(
   new_palette <- atlas$palette[!names(atlas$palette) %in% labels_to_remove]
 
   new_geom <- geom_drop_pattern(geom_from_data(atlas$data), pattern)
-
-  if (!is.null(atlas$data$vertices)) {
-    new_vertices <- atlas$data$vertices[
-      !atlas$data$vertices$label %in% labels_to_remove,
-      ,
-      drop = FALSE
-    ]
-    new_data <- ggseg_data_cortical(geom = new_geom, vertices = new_vertices)
-  } else if (!is.null(atlas$data$meshes)) {
-    new_meshes <- atlas$data$meshes[
-      !atlas$data$meshes$label %in% labels_to_remove,
-      ,
-      drop = FALSE
-    ]
-    new_data <- ggseg_data_subcortical(geom = new_geom, meshes = new_meshes)
-  } else {
-    new_data <- rebuild_data_with_geom(atlas$data, new_geom)
-  }
+  new_data <- rebuild_data_with_geom(
+    atlas$data,
+    new_geom,
+    keep_row = function(label) !label %in% labels_to_remove
+  )
 
   ggseg_atlas(
     atlas = atlas$atlas,
@@ -289,24 +276,11 @@ atlas_region_contextual <- function(
   # structures spatially overlap them in projection. `order_context_behind()`
   # works on either geometry representation without invoking sf.
   new_geom <- order_context_behind(geom_from_data(atlas$data), new_core$label)
-
-  if (!is.null(atlas$data$vertices)) {
-    new_vertices <- atlas$data$vertices[
-      !atlas$data$vertices$label %in% labels_to_remove,
-      ,
-      drop = FALSE
-    ]
-    new_data <- ggseg_data_cortical(geom = new_geom, vertices = new_vertices)
-  } else if (!is.null(atlas$data$meshes)) {
-    new_meshes <- atlas$data$meshes[
-      !atlas$data$meshes$label %in% labels_to_remove,
-      ,
-      drop = FALSE
-    ]
-    new_data <- ggseg_data_subcortical(geom = new_geom, meshes = new_meshes)
-  } else {
-    new_data <- rebuild_data_with_geom(atlas$data, new_geom)
-  }
+  new_data <- rebuild_data_with_geom(
+    atlas$data,
+    new_geom,
+    keep_row = function(label) !label %in% labels_to_remove
+  )
 
   validate_data_labels(new_data, new_core, check_sf = FALSE)
 
@@ -540,25 +514,11 @@ atlas_region_keep <- function(atlas, pattern, match_on = c("region", "label")) {
   new_core <- atlas$core[keep_mask, , drop = FALSE]
   new_palette <- atlas$palette[names(atlas$palette) %in% labels_to_keep]
 
-  geom <- geom_from_data(atlas$data)
-
-  if (!is.null(atlas$data$vertices)) {
-    new_vertices <- atlas$data$vertices[
-      atlas$data$vertices$label %in% labels_to_keep,
-      ,
-      drop = FALSE
-    ]
-    new_data <- ggseg_data_cortical(geom = geom, vertices = new_vertices)
-  } else if (!is.null(atlas$data$meshes)) {
-    new_meshes <- atlas$data$meshes[
-      atlas$data$meshes$label %in% labels_to_keep,
-      ,
-      drop = FALSE
-    ]
-    new_data <- ggseg_data_subcortical(geom = geom, meshes = new_meshes)
-  } else {
-    new_data <- atlas$data
-  }
+  new_data <- rebuild_data_with_geom(
+    atlas$data,
+    geom_from_data(atlas$data),
+    keep_row = function(label) label %in% labels_to_keep
+  )
 
   ggseg_atlas(
     atlas = atlas$atlas,
@@ -982,23 +942,29 @@ reposition_views <- function(
 #' `polygons` slots so no redundant representation lingers.
 #' @keywords internal
 #' @noRd
-rebuild_data_with_geom <- function(data, geom) {
+rebuild_data_with_geom <- function(data, geom, keep_row = NULL) {
+  filt <- function(df) {
+    if (is.null(df) || is.null(keep_row)) {
+      return(df)
+    }
+    df[keep_row(df$label), , drop = FALSE]
+  }
   if (!is.null(data$vertices) && !is.null(data$meshes)) {
     ggseg_data_cerebellar(
       geom = geom,
-      vertices = data$vertices,
-      meshes = data$meshes
+      vertices = filt(data$vertices),
+      meshes = filt(data$meshes)
     )
   } else if (!is.null(data$vertices)) {
     if (inherits(data, "ggseg_data_cerebellar")) {
-      ggseg_data_cerebellar(geom = geom, vertices = data$vertices)
+      ggseg_data_cerebellar(geom = geom, vertices = filt(data$vertices))
     } else {
-      ggseg_data_cortical(geom = geom, vertices = data$vertices)
+      ggseg_data_cortical(geom = geom, vertices = filt(data$vertices))
     }
   } else if (!is.null(data$meshes)) {
-    ggseg_data_subcortical(geom = geom, meshes = data$meshes)
+    ggseg_data_subcortical(geom = geom, meshes = filt(data$meshes))
   } else if (!is.null(data$centerlines)) {
-    ggseg_data_tract(geom = geom, centerlines = data$centerlines)
+    ggseg_data_tract(geom = geom, centerlines = filt(data$centerlines))
   } else {
     new_data <- data
     new_data$geom <- geom

@@ -15,6 +15,9 @@ A tibble with one row per \code{label} and a \code{geometry} list-column.
 Each nested element is a tibble with columns \code{view}, \code{x}, \code{y},
 \code{group} (disjoint polygon piece within a label/view), \code{subgroup}
 (ring within a piece; first = exterior, rest = holes).
+
+Internal conversion primitive. For the atlas-level public API use
+\code{\link[=as_polygon_atlas]{as_polygon_atlas()}} / \code{\link[=atlas_polygons]{atlas_polygons()}}.
 }
 \description{
 Extracts coordinates from an sf-backed atlas geometry table and returns a
@@ -22,8 +25,4 @@ nested tibble keyed by \code{label}. Each row carries a \code{geometry} list-col
 containing the per-view, per-ring point coordinates needed to render with
 \code{\link[ggplot2:geom_polygon]{ggplot2::geom_polygon()}} (using the \code{subgroup} aesthetic for holes).
 }
-\examples{
-\dontrun{
-polys <- sf_to_polygons(dk()$data$sf)
-}
-}
+\keyword{internal}

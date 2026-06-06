@@ -372,6 +372,78 @@ describe("atlas_region_remove", {
 })
 
 
+# cerebellar region ops (vertices + meshes) ----
+
+make_cerebellar_atlas <- function() {
+  sf_geom <- sf::st_sf(
+    label = c("lobule_I", "dentate"),
+    view = c("flatmap", "nuclei"),
+    geometry = sf::st_sfc(
+      make_polygon(),
+      sf::st_polygon(list(matrix(
+        c(2, 2, 4, 2, 4, 4, 2, 2),
+        ncol = 2,
+        byrow = TRUE
+      )))
+    )
+  )
+  core <- data.frame(
+    hemi = c(NA, NA),
+    region = c("lobule I", "dentate"),
+    label = c("lobule_I", "dentate"),
+    stringsAsFactors = FALSE
+  )
+  vertices <- data.frame(label = "lobule_I")
+  vertices$vertices <- list(1L:3L)
+  meshes <- data.frame(label = "dentate")
+  meshes$mesh <- list(list(
+    vertices = data.frame(x = 1:4, y = 1:4, z = 1:4),
+    faces = data.frame(i = 1L, j = 2L, k = 3L)
+  ))
+
+  ggseg_atlas(
+    atlas = "cb",
+    type = "cerebellar",
+    core = core,
+    data = ggseg_data_cerebellar(
+      geom = sf_geom,
+      vertices = vertices,
+      meshes = meshes
+    )
+  )
+}
+
+describe("cerebellar region ops preserve vertices + meshes", {
+  it("atlas_region_remove keeps deep-nuclei meshes and cerebellar type", {
+    cb <- make_cerebellar_atlas()
+    result <- atlas_region_remove(cb, "nonexistent")
+
+    expect_equal(atlas_type(result), "cerebellar")
+    expect_s3_class(result$data, "ggseg_data_cerebellar")
+    expect_true("dentate" %in% result$data$meshes$label)
+    expect_true("lobule_I" %in% result$data$vertices$label)
+  })
+
+  it("atlas_region_remove drops a removed structure from both 3D payloads", {
+    cb <- make_cerebellar_atlas()
+    result <- atlas_region_remove(cb, "dentate", match_on = "label")
+
+    expect_equal(atlas_type(result), "cerebellar")
+    expect_false("dentate" %in% result$data$meshes$label)
+    expect_true("lobule_I" %in% result$data$vertices$label)
+  })
+
+  it("atlas_region_keep keeps cerebellar type and the kept structure", {
+    cb <- make_cerebellar_atlas()
+    result <- atlas_region_keep(cb, "dentate", match_on = "label")
+
+    expect_equal(atlas_type(result), "cerebellar")
+    expect_true("dentate" %in% result$data$meshes$label)
+    expect_false("lobule_I" %in% result$data$vertices$label)
+  })
+})
+
+
 # atlas_region_contextual ----
 
 describe("atlas_region_contextual", {

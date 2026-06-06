@@ -99,13 +99,14 @@ atlas_geometry_type <- function(atlas) {
 #' @rdname atlas_geometry_type
 #' @export
 is_atlas_sf <- function(atlas) {
-  inherits(atlas_geom(atlas), "sf")
+  is_ggseg_atlas(atlas) && inherits(geom_from_data(atlas$data), "sf")
 }
 
 #' @rdname atlas_geometry_type
 #' @export
 is_atlas_polygon <- function(atlas) {
-  inherits(atlas_geom(atlas), "brain_polygons")
+  is_ggseg_atlas(atlas) &&
+    inherits(geom_from_data(atlas$data), "brain_polygons")
 }
 
 #' Get atlas data for 2D rendering

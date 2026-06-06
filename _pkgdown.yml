@@ -38,8 +38,6 @@ reference:
     contents:
       - as_polygon_atlas
       - as_sf_atlas
-      - polygons_to_sf
-      - sf_to_polygons
       - migrate_atlas_files
   - title: Atlas manipulation
     desc: |

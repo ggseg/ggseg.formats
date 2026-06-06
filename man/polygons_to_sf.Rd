@@ -14,6 +14,9 @@ of tibbles containing \code{view}, \code{x}, \code{y}, \code{group}, \code{subgr
 \value{
 An sf-class data frame with columns \code{label}, \code{view}, \code{geometry}
 (one row per label×view, geometry is MULTIPOLYGON).
+
+Internal conversion primitive. For the atlas-level public API use
+\code{\link[=as_sf_atlas]{as_sf_atlas()}} / \code{\link[=atlas_sf]{atlas_sf()}}.
 }
 \description{
 Inverse of \code{\link[=sf_to_polygons]{sf_to_polygons()}}. Uses \code{\link[sfheaders:sf_multipolygon]{sfheaders::sf_multipolygon()}} to build
@@ -22,3 +25,4 @@ system dependencies, so the conversion itself does not require a full sf
 installation. The returned object is an sf-class data frame, which downstream
 users would manipulate using sf.
 }
+\keyword{internal}

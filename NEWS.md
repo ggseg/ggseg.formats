@@ -33,9 +33,11 @@ Foundation work for the `sf-optional` milestone — see
   (`view`, `x`, `y`, `group`, `subgroup`). Renderable directly by
   `ggplot2::geom_polygon()` via the `subgroup` aesthetic (which handles holes
   through `grid::pathGrob` even-odd fill).
-- `sf_to_polygons()` and `polygons_to_sf()` round-trip atlas geometry losslessly.
-  The sf-side conversion uses `sfheaders` (pure Rcpp, no GDAL/GEOS/PROJ system
-  libraries), enabling wasm builds and air-gapped installation paths.
+- Geometry round-trips between sf and `brain_polygons` losslessly. The sf-side
+  conversion uses `sfheaders` (pure Rcpp, no GDAL/GEOS/PROJ system libraries),
+  enabling wasm builds and air-gapped installation paths. The low-level
+  converters are internal; the public API is the atlas-level `as_sf_atlas()` /
+  `as_polygon_atlas()` and the `atlas_sf()` / `atlas_polygons()` accessors.
 - `ggseg_data_cortical()`, `ggseg_data_subcortical()`, `ggseg_data_cerebellar()`,
   and `ggseg_data_tract()` now accept a `polygons =` argument alongside `sf =`.
   When only `sf` is supplied, the `polygons` slot is derived automatically; the

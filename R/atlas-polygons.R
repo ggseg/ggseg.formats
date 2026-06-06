@@ -14,11 +14,10 @@
 #'   Each nested element is a tibble with columns `view`, `x`, `y`,
 #'   `group` (disjoint polygon piece within a label/view), `subgroup`
 #'   (ring within a piece; first = exterior, rest = holes).
-#' @export
-#' @examples
-#' \dontrun{
-#' polys <- sf_to_polygons(dk()$data$sf)
-#' }
+#'
+#' Internal conversion primitive. For the atlas-level public API use
+#' [as_polygon_atlas()] / [atlas_polygons()].
+#' @keywords internal
 sf_to_polygons <- function(sf_data) {
   require_sf("sf_to_polygons()")
   if (!inherits(sf_data, "sf")) {
@@ -63,7 +62,10 @@ sf_to_polygons <- function(sf_data) {
 #'
 #' @return An sf-class data frame with columns `label`, `view`, `geometry`
 #'   (one row per label×view, geometry is MULTIPOLYGON).
-#' @export
+#'
+#' Internal conversion primitive. For the atlas-level public API use
+#' [as_sf_atlas()] / [atlas_sf()].
+#' @keywords internal
 polygons_to_sf <- function(polygons) {
   validate_polygons(polygons)
 
@@ -188,6 +190,11 @@ validate_geom <- function(geom) {
 #' @noRd
 resolve_geom <- function(geom = NULL, ..., .fn) {
   dots <- list(...)
+  if (!is.null(geom) && !is.null(dots$sf)) {
+    cli::cli_warn(
+      "Both {.arg geom} and {.arg sf} supplied; ignoring {.arg sf}."
+    )
+  }
   if (is.null(geom) && !is.null(dots$sf)) {
     lifecycle::deprecate_warn(
       "0.0.3.9001",
