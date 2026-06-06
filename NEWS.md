@@ -1,6 +1,6 @@
 # ggseg.formats
 
-## ggseg.formats 0.0.3.9001 (development)
+## ggseg.formats 0.0.2.9001 (development)
 
 ### Unified `geom` slot (breaking)
 

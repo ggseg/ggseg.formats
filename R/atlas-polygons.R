@@ -197,7 +197,7 @@ resolve_geom <- function(geom = NULL, ..., .fn) {
   }
   if (is.null(geom) && !is.null(dots$sf)) {
     lifecycle::deprecate_warn(
-      "0.0.3.9001",
+      "0.0.2.9001",
       sprintf("%s(sf)", .fn),
       sprintf("%s(geom)", .fn),
       details = "sf input is converted to polygons via `sf_to_polygons()`."
