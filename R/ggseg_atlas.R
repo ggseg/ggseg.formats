@@ -377,7 +377,7 @@ as.data.frame.ggseg_atlas <- function(x, ...) {
 #' @importFrom grDevices hcl
 #' @importFrom stats setNames
 #' @export
-plot.ggseg_atlas <- function(x, ...) {
+plot.ggseg_atlas <- function(x, show.legend = FALSE, ...) { # nolint: object_name_linter
   geom <- geom_from_data(x$data)
 
   if (is.null(geom)) {
@@ -398,8 +398,9 @@ plot.ggseg_atlas <- function(x, ...) {
   palette <- x$palette
 
   if (!is.null(palette)) {
+    matched <- all_labels %in% names(palette) & !is.na(palette[all_labels])
     fill_colors <- setNames(
-      ifelse(all_labels %in% names(palette), palette[all_labels], "#CCCCCC"),
+      ifelse(matched, palette[all_labels], "#CCCCCC"),
       all_labels
     )
   } else {
@@ -454,9 +455,7 @@ plot.ggseg_atlas <- function(x, ...) {
         na_row      <- data.frame(x = NA_real_, y = NA_real_)
         interleaved <- vector("list", 2L * n_rings - 1L)
         interleaved[seq(1L, 2L * n_rings - 1L, 2L)] <- ring_coords
-        interleaved[seq(2L, 2L * n_rings - 2L, 2L)] <- replicate(
-          n_rings - 1L, na_row, simplify = FALSE
-        )
+        interleaved[seq(2L, 2L * n_rings - 2L, 2L)] <- list(na_row)
         coords <- do.call(rbind, interleaved)
         polypath(coords$x, coords$y,
           col = col, border = "white", lwd = 0.3, rule = "evenodd"
