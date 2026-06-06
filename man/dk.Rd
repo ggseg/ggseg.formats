@@ -69,6 +69,7 @@ Cerebral Cortex, 14(1):11-22.
 
 Other ggseg_atlases: 
 \code{\link{aseg}()},
+\code{\link{suit}()},
 \code{\link{tracula}()}
 }
 \concept{cortical_atlases}

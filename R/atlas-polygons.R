@@ -119,37 +119,42 @@ validate_polygons <- function(polygons) {
     cli::cli_abort("{.field geometry} column must be a list-column.")
   }
 
-  if (anyDuplicated(polygons$label)) {
-    # nolint start: object_usage_linter
-    dup <- polygons$label[duplicated(polygons$label)]
-    # nolint end
+  dup_mask <- duplicated(polygons$label)
+  if (any(dup_mask)) {
     cli::cli_abort(c(
       "{.arg polygons} must have one row per {.field label}.",
-      "i" = "Duplicated: {.val {unique(dup)}}."
+      "i" = "Duplicated: {.val {unique(polygons$label[dup_mask])}}."
     ))
   }
 
   nested_required <- c("view", "x", "y", "group", "subgroup")
-  for (i in seq_len(nrow(polygons))) {
-    g <- polygons$geometry[[i]]
-    if (!is.data.frame(g)) {
-      cli::cli_abort(c(
-        "Each {.field geometry} entry must be a data.frame.",
-        "x" = "Element {i} ({polygons$label[i]}) is {.cls {class(g)[1]}}."
-      ))
-    }
-    miss_n <- setdiff(nested_required, names(g))
-    if (length(miss_n)) {
-      cli::cli_abort(c(
-        "Geometry tibble for {.val {polygons$label[i]}} missing columns:
-        {.field {miss_n}}."
-      ))
-    }
-    if (nrow(g) == 0) {
-      cli::cli_abort(
-        "Geometry tibble for {.val {polygons$label[i]}} is empty."
-      )
-    }
+  geoms <- polygons$geometry
+
+  not_df <- !vapply(geoms, is.data.frame, logical(1))
+  if (any(not_df)) {
+    cli::cli_abort(c(
+      "Each {.field geometry} entry must be a data.frame.",
+      "x" = "Not a data.frame for: {.val {polygons$label[not_df]}}."
+    ))
+  }
+
+  miss_cols <- vapply(
+    geoms,
+    function(g) length(setdiff(nested_required, names(g))) > 0L,
+    logical(1)
+  )
+  if (any(miss_cols)) {
+    cli::cli_abort(c(
+      "Each {.field geometry} tibble needs columns {.field {nested_required}}.",
+      "x" = "Missing columns for: {.val {polygons$label[miss_cols]}}."
+    ))
+  }
+
+  empty <- vapply(geoms, function(g) nrow(g) == 0L, logical(1))
+  if (any(empty)) {
+    cli::cli_abort(
+      "Geometry tibble is empty for: {.val {polygons$label[empty]}}."
+    )
   }
 
   out <- dplyr::as_tibble(polygons)

@@ -46,3 +46,11 @@ that are not on the cortical surface are stored as individual per-region
 meshes in \code{meshes}, following the same format as subcortical atlases.
 Their 2D sf geometries use views other than "flatmap" (e.g. "nuclei").
 }
+\examples{
+data <- ggseg_data_cerebellar(
+  vertices = data.frame(
+    label = c("lobule_I", "lobule_II"),
+    vertices = I(list(c(1L, 2L, 3L), c(4L, 5L, 6L)))
+  )
+)
+}

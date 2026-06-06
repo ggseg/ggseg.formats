@@ -170,3 +170,50 @@ aseg <- function() .aseg_atlas # nolint [object_usage_linter]
 #' plot(tracula())
 #' atlas_regions(tracula())
 tracula <- function() .tracula_atlas # nolint [object_usage_linter]
+
+
+#' SUIT Cerebellar Lobular Atlas
+#'
+#' Returns the SUIT cerebellar parcellation (Diedrichsen et al., 2009): the
+#' cerebellar cortex split into anatomical lobules plus the deep nuclei
+#' (dentate, interposed, fastigial).
+#'
+#' Surface lobules carry vertex indices into the shared SUIT cerebellar mesh
+#' (see [get_cerebellar_mesh()]); deep nuclei carry individual 3D meshes. The
+#' 2D geometry is stored in the sf-optional polygon (`geom`) representation, so
+#' the atlas renders with ggseg without requiring sf installed.
+#'
+#' @return A `ggseg_atlas` object with components:
+#' \describe{
+#'   \item{atlas}{Character. Atlas name ("suit")}
+#'   \item{type}{Character. Atlas type ("cerebellar")}
+#'   \item{palette}{Named character vector of colours for each region}
+#'   \item{data}{A `ggseg_data_cerebellar` object containing:
+#'     \describe{
+#'       \item{geom}{A `brain_polygons` table for 2D rendering}
+#'       \item{vertices}{Vertex indices for surface lobules}
+#'       \item{meshes}{Per-structure 3D meshes for the deep nuclei}
+#'     }
+#'   }
+#' }
+#'
+#' @references
+#' Diedrichsen J, Balsters JH, Flavell J, et al. (2009).
+#' A probabilistic MR atlas of the human cerebellum.
+#' NeuroImage, 46(1):39-46.
+#' \doi{10.1016/j.neuroimage.2009.01.045}
+#'
+#' @seealso
+#' [dk()] for cortical parcellation,
+#' [aseg()] for subcortical structures,
+#' [tracula()] for white-matter tracts,
+#' [ggseg_atlas()] for the atlas class constructor
+#'
+#' @family ggseg_atlases
+#' @family cerebellar_atlases
+#' @export
+#' @examples
+#' suit()
+#' atlas_regions(suit())
+#' atlas_geometry_type(suit())
+suit <- function() .suit_atlas # nolint [object_usage_linter]

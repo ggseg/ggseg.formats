@@ -16,8 +16,9 @@ is_atlas_polygon(atlas)
 \item{atlas}{a ggseg_atlas object}
 }
 \value{
-\code{atlas_geometry_type()} returns \code{"sf"}, \code{"polygon"}, or \code{NA}.
-\code{is_atlas_sf()} / \code{is_atlas_polygon()} return a logical scalar.
+\code{atlas_geometry_type()} returns \code{"sf"} or \code{"polygon"}, and errors if
+the atlas has no recognised 2D geometry. \code{is_atlas_sf()} /
+\code{is_atlas_polygon()} return a logical scalar (\code{FALSE} for non-atlases).
 }
 \description{
 Classify or test an atlas's 2D geometry

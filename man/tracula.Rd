@@ -48,7 +48,8 @@ Frontiers in Neuroinformatics, 5:23.
 
 Other ggseg_atlases: 
 \code{\link{aseg}()},
-\code{\link{dk}()}
+\code{\link{dk}()},
+\code{\link{suit}()}
 }
 \concept{ggseg_atlases}
 \concept{tract_atlases}
