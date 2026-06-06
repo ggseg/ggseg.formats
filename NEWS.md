@@ -39,7 +39,7 @@ Foundation work for the `sf-optional` milestone — see
 - New `brain_polygons` representation: a nested tibble keyed by `label`, with a
   `geometry` list-column containing per-view, per-ring point coordinates
   (`view`, `x`, `y`, `group`, `subgroup`). Renderable directly by
-  `ggplot2::geom_polygon()` via the `subgroup` aesthetic (which handles holes
+  `geom_polygon()` via the `subgroup` aesthetic (which handles holes
   through `grid::pathGrob` even-odd fill).
 - Geometry round-trips between sf and `brain_polygons` losslessly. The sf-side
   conversion uses `sfheaders` (pure Rcpp, no GDAL/GEOS/PROJ system libraries),
@@ -132,7 +132,7 @@ were previously embedded in `ggseg` and `ggseg3d`.
   `is_subcortical_atlas()`, `is_tract_atlas()`, `is_cerebellar_atlas()`.
 - Coercion with `as_ggseg_atlas()`, `as.data.frame()`, and `as.list()`
   methods.
-- `plot()` method for quick atlas visualisation via ggplot2.
+- `plot()` method for quick atlas visualisation using base R graphics.
 
 ### Accessors
 

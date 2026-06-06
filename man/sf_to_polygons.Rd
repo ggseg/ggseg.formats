@@ -24,6 +24,6 @@ Extracts coordinates from an sf-backed atlas geometry table and returns a
 nested tibble keyed by \code{label}. Each row carries a \code{geometry} list-column
 containing the per-view, per-ring point coordinates needed to render with
 \code{\link[graphics:polypath]{graphics::polypath()}} or
-\code{\link[ggplot2:geom_polygon]{ggplot2::geom_polygon()}} (using the \code{subgroup} aesthetic for holes).
+\code{geom_polygon()} (using the \code{subgroup} aesthetic for holes).
 }
 \keyword{internal}

@@ -30,24 +30,25 @@ knitr::opts_chunk$set(
 
 ggseg.formats provides the `ggseg_atlas` S3 class that powers the
 [ggseg](https://ggsegverse.github.io/ggseg/) ecosystem for 2D and 3D brain
-visualisation. It ships three bundled atlases, a set of accessor functions for
+visualisation. It ships four bundled atlases, a set of accessor functions for
 querying atlas contents, and a pipe-friendly manipulation API for subsetting,
 renaming, and enriching atlas objects.
 
 ## Bundled atlases
 
-The package includes three atlases covering the main atlas types:
+The package includes four atlases covering the main atlas types:
 
 - **dk** — Desikan-Killiany cortical parcellation (68 regions)
 - **aseg** — FreeSurfer automatic subcortical segmentation
 - **tracula** — TRACULA white matter tract atlas
+- **suit** — SUIT cerebellar lobular atlas
 
 ```{r}
 #| label: load
 library(ggseg.formats)
 ```
 
-```{r }
+```{r}
 #| label: plot-dk
 
 plot(dk())
@@ -62,6 +63,12 @@ plot(aseg())
 #| label: plot-tracula
 
 plot(tracula())
+```
+
+```{r}
+#| label: plot-suit
+
+plot(suit())
 ```
 
 ## Quick example
