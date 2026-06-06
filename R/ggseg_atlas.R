@@ -373,28 +373,107 @@ as.data.frame.ggseg_atlas <- function(x, ...) {
   sf::st_as_sf(result)
 }
 
-# nolint start
-#' @importFrom ggplot2 aes ggplot labs scale_fill_manual geom_sf
+#' @importFrom graphics mtext par plot.new plot.window polygon polypath title
+#' @importFrom grDevices hcl
 #' @importFrom stats setNames
 #' @export
-plot.ggseg_atlas <- function(x, show.legend = FALSE, ...) {
-  # nolint end: object_name_linter
-  require_sf("plot.ggseg_atlas()")
-  p <- ggplot(as.data.frame(x)) +
-    # nolint start [object_usage_linter]
-    geom_sf(
-      aes(fill = label),
-      show.legend = show.legend,
-      ...
-    ) +
-    # nolint end [object_name_linter]
-    labs(title = paste(x$atlas, x$type, "atlas"))
+plot.ggseg_atlas <- function(x, ...) {
+  geom <- geom_from_data(x$data)
 
-  if ("palette" %in% names(x)) {
-    p <- p +
-      scale_fill_manual(
-        values = x$palette
-      )
+  if (is.null(geom)) {
+    cli::cli_abort("Cannot plot: atlas has no 2D geometry.")
   }
-  p
+
+  # Convert sf geometry to the sf-free polygon representation
+  if (inherits(geom, "sf")) {
+    require_sf("plot.ggseg_atlas() with sf-backed atlas")
+    geom <- sf_to_polygons(geom)
+  }
+
+  flat <- polygons_unnest(geom)
+
+  # Resolve fill colours: palette wins, otherwise generate qualitative colours
+  all_labels <- unique(flat$label)
+  n_labels <- length(all_labels)
+  palette <- x$palette
+
+  if (!is.null(palette)) {
+    fill_colors <- setNames(
+      ifelse(all_labels %in% names(palette), palette[all_labels], "#CCCCCC"),
+      all_labels
+    )
+  } else {
+    fill_colors <- setNames(
+      grDevices::hcl(
+        h = seq(0, 360, length.out = n_labels + 1L)[seq_len(n_labels)],
+        c = 80,
+        l = 65
+      ),
+      all_labels
+    )
+  }
+
+  views <- unique(flat$view)
+  n_views <- length(views)
+
+  old_par <- par(
+    mfrow  = c(1L, n_views),
+    mar    = c(0.5, 0.5, 1.5, 0.5),
+    oma    = c(0, 0, 2, 0)
+  )
+  on.exit(par(old_par), add = TRUE)
+
+  # Shared coordinate extent so all panels use the same scale
+  xlim_all <- range(flat$x, na.rm = TRUE)
+  ylim_all <- range(flat$y, na.rm = TRUE)
+
+  for (v in views) {
+    view_flat <- flat[flat$view == v, , drop = FALSE]
+
+    plot.new()
+    plot.window(xlim = xlim_all, ylim = ylim_all, asp = 1)
+
+    for (lbl in unique(view_flat$label)) {
+      lbl_data <- view_flat[view_flat$label == lbl, , drop = FALSE]
+      col <- fill_colors[[lbl]]
+      if (is.null(col) || is.na(col)) col <- "#CCCCCC"
+
+      for (g in unique(lbl_data$group)) {
+        piece <- lbl_data[lbl_data$group == g, , drop = FALSE]
+        rings <- sort(unique(piece$subgroup))
+
+        if (length(rings) == 1L) {
+          ring_rows <- piece[piece$subgroup == rings[[1L]], ]
+          polygon(ring_rows$x, ring_rows$y,
+            col = col, border = "white", lwd = 0.3
+          )
+        } else {
+          # Exterior ring + holes: use polypath() with the even-odd fill rule
+          px <- numeric(0)
+          py <- numeric(0)
+          for (r in rings) {
+            ring_rows <- piece[piece$subgroup == r, ]
+            if (length(px) > 0L) {
+              px <- c(px, NA_real_)
+              py <- c(py, NA_real_)
+            }
+            px <- c(px, ring_rows$x)
+            py <- c(py, ring_rows$y)
+          }
+          polypath(px, py,
+            col = col, border = "white", lwd = 0.3, rule = "evenodd"
+          )
+        }
+      }
+    }
+
+    title(v, cex.main = 0.8)
+  }
+
+  mtext(
+    paste(x$atlas, x$type, "atlas"),
+    outer = TRUE, cex = 1, line = 0.5
+  )
+
+  invisible(x)
 }

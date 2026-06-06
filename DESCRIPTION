@@ -18,7 +18,6 @@ Depends:
 Imports:
     cli,
     dplyr,
-    ggplot2,
     lifecycle,
     rlang,
     sfheaders,
@@ -26,6 +25,7 @@ Imports:
 Suggests:
     covr,
     devtools,
+    ggplot2,
     here,
     knitr,
     rmarkdown,

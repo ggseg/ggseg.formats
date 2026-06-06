@@ -5,7 +5,8 @@
 #' Extracts coordinates from an sf-backed atlas geometry table and returns a
 #' nested tibble keyed by `label`. Each row carries a `geometry` list-column
 #' containing the per-view, per-ring point coordinates needed to render with
-#' [ggplot2::geom_polygon()] (using the `subgroup` aesthetic for holes).
+#' [graphics::polypath()] or [ggplot2::geom_polygon()] (using the `subgroup`
+#' aesthetic for holes).
 #'
 #' @param sf_data An sf-class data.frame with columns `label`, `view`,
 #'   `geometry` (sfc of MULTIPOLYGON).
