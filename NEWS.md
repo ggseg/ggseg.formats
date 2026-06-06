@@ -8,8 +8,11 @@
   shrinking the recursive dependency tree from 32 to 20 packages (also removes
   `tibble`, `pillar`, `purrr`, `stringi`, `stringr`, `tidyselect`, `generics`,
   `magrittr` and more). Returned data objects keep the `tbl_df`/`tbl` classes,
-  so they still print as tibbles when `tibble` is loaded and fall back to plain
-  `data.frame` printing otherwise.
+  so they still print as tibbles when `tibble` is available and fall back to
+  plain `data.frame` printing otherwise.
+- `print()` for a `ggseg_atlas` now shows the first 10 core rows by default
+  (atlases can have hundreds of regions); pass `n` to control how many rows
+  print, e.g. `print(dk(), n = 50)`.
 
 ### Bundled SUIT cerebellar atlas
 

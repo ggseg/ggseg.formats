@@ -534,6 +534,13 @@ atlas_region_keep <- function(atlas, pattern, match_on = c("region", "label")) {
 #'   atlas core.
 #' @export
 atlas_core_add <- function(atlas, data, by = "region") {
+  if (anyDuplicated(do.call(paste, c(data[by], sep = "\r")))) {
+    cli::cli_abort(c(
+      "{.arg data} must have unique {.field {by}} values.",
+      "i" = "Adding to atlas core may only add columns, never rows."
+    ))
+  }
+
   new_core <- df_left_join(atlas$core, data, by = by)
 
   ggseg_atlas(

@@ -1,18 +1,26 @@
 # Base-R replacements for the dplyr/tidyr verbs the package used to depend on.
 #
 # Returned objects are plain data.frames tagged with the `tbl_df`/`tbl`
-# classes. The package does not import tibble, but ggplot2 (an Import) loads
-# the tibble namespace, so `print.tbl_df` is registered at runtime and these
-# objects render as tibbles. Without tibble loaded, dispatch falls back to
-# `print.data.frame`.
+# classes. tibble is only a Suggests (reachable via ggplot2's own Suggests),
+# never a hard dependency, so it may be entirely absent at runtime. The classes
+# make these objects render as tibbles when tibble is available; print methods
+# that need tibble-only arguments (e.g. `n`) must guard on `has_tibble()` and
+# fall back to base `data.frame` printing otherwise.
+
+#' Is the optional tibble package available?
+#' @noRd
+#' @keywords internal
+has_tibble <- function() {
+  requireNamespace("tibble", quietly = TRUE)
+}
 
 #' Tag a data.frame with the tibble classes
 #' @noRd
 #' @keywords internal
-as_tbl <- function(x, extra_class = character()) {
+as_tbl <- function(x) {
   x <- as.data.frame(x, stringsAsFactors = FALSE)
   rownames(x) <- NULL
-  class(x) <- unique(c(extra_class, "tbl_df", "tbl", "data.frame"))
+  class(x) <- c("tbl_df", "tbl", "data.frame")
   x
 }
 

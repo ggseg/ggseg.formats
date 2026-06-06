@@ -203,7 +203,7 @@ validate_ggseg_atlas <- function(x) {
 
 #' @export
 #' @importFrom stats na.omit
-print.ggseg_atlas <- function(x, ...) {
+print.ggseg_atlas <- function(x, n = 10, ...) {
   data <- x$data
   geom <- geom_from_data(data)
   has_sf <- !is.null(geom)
@@ -259,7 +259,15 @@ print.ggseg_atlas <- function(x, ...) {
 
   cli::cli_rule()
 
-  print(as_tbl(x$core), n = nrow(x$core), ...)
+  core <- x$core
+  if (has_tibble()) {
+    print(tibble::as_tibble(core), n = n, ...)
+  } else {
+    print(utils::head(as.data.frame(core), n), ...)
+    if (nrow(core) > n) {
+      cli::cli_text("{.emph ... with {nrow(core) - n} more rows}")
+    }
+  }
 
   invisible(x)
 }
