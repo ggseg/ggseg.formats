@@ -73,6 +73,7 @@ Neuron, 33(3):341-355.
 
 Other ggseg_atlases: 
 \code{\link{dk}()},
+\code{\link{suit}()},
 \code{\link{tracula}()}
 }
 \concept{ggseg_atlases}

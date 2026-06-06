@@ -120,6 +120,14 @@ ggseg_data_subcortical <- function(geom = NULL, meshes = NULL, ...) {
 #'
 #' @return An object of class c("ggseg_data_cerebellar", "ggseg_atlas_data")
 #' @export
+#'
+#' @examples
+#' data <- ggseg_data_cerebellar(
+#'   vertices = data.frame(
+#'     label = c("lobule_I", "lobule_II"),
+#'     vertices = I(list(c(1L, 2L, 3L), c(4L, 5L, 6L)))
+#'   )
+#' )
 ggseg_data_cerebellar <- function(
   geom = NULL,
   vertices = NULL,

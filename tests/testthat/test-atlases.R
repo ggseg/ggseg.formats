@@ -66,3 +66,34 @@ describe("aseg atlas", {
     expect_s3_class(aseg()$data$sf, "sf")
   })
 })
+
+
+describe("suit atlas", {
+  it("is a valid cerebellar ggseg_atlas", {
+    expect_true(is_ggseg_atlas(suit()))
+    expect_equal(suit()$atlas, "suit")
+    expect_equal(suit()$type, "cerebellar")
+    expect_s3_class(suit()$data, "ggseg_data_cerebellar")
+  })
+
+  it("has required core columns and several regions", {
+    expect_true(all(c("hemi", "region", "label") %in% names(suit()$core)))
+    expect_gt(length(atlas_regions(suit())), 5)
+  })
+
+  it("stores 2D geometry as sf-optional polygons in the geom slot", {
+    expect_true(is_atlas_polygon(suit()))
+    expect_equal(atlas_geometry_type(suit()), "polygon")
+    expect_null(suit()$data$sf)
+    expect_s3_class(atlas_geom(suit()), "brain_polygons")
+  })
+
+  it("carries 3D vertices (lobules) and meshes (deep nuclei)", {
+    expect_true(!is.null(suit()$data$vertices))
+    expect_true(!is.null(suit()$data$meshes))
+  })
+
+  it("renders to sf on demand via atlas_sf()", {
+    expect_s3_class(atlas_sf(suit()), "sf")
+  })
+})

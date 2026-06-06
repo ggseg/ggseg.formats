@@ -49,6 +49,7 @@ reference:
       - dk
       - aseg
       - tracula
+      - suit
   - title: FreeSurfer I/O
     desc: Read FreeSurfer statistics files into R.
     contents:

@@ -2,6 +2,14 @@
 
 ## ggseg.formats 0.0.2.9001 (development)
 
+### Bundled SUIT cerebellar atlas
+
+- New `suit()` bundled atlas — the SUIT cerebellar parcellation (lobules + deep
+  nuclei) from ggsegSUIT, stored in the sf-optional polygon (`geom`) format with
+  3D vertices (lobules) and meshes (nuclei). ggseg.formats now ships one atlas of
+  each kind: `dk()` (cortical), `aseg()` (subcortical), `tracula()` (tract),
+  `suit()` (cerebellar).
+
 ### Unified `geom` slot (breaking)
 
 Atlas 2D geometry now lives in a single `atlas$data$geom` slot whose class
