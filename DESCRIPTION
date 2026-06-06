@@ -17,12 +17,10 @@ Depends:
     R (>= 4.1.0)
 Imports:
     cli,
-    dplyr,
     ggplot2,
     lifecycle,
     rlang,
-    sfheaders,
-    tidyr
+    sfheaders
 Suggests:
     covr,
     devtools,
@@ -32,6 +30,7 @@ Suggests:
     sf,
     spelling,
     testthat (>= 3.0.0),
+    tibble,
     vdiffr,
     withr
 VignetteBuilder: knitr

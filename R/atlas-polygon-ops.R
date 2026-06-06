@@ -32,7 +32,7 @@ order_view_groups <- function(group_key, group_order, centroid_x) {
 #' @noRd
 #' @keywords internal
 polygons_unnest <- function(polygons) {
-  tidyr::unnest(dplyr::as_tibble(polygons), cols = "geometry")
+  df_unnest(as_tbl(polygons), "geometry")
 }
 
 
@@ -47,7 +47,7 @@ polygons_renest <- function(flat) {
     return(NULL)
   }
   flat <- flat[, c("label", "view", "x", "y", "group", "subgroup")]
-  out <- tidyr::nest(dplyr::as_tibble(flat), geometry = -"label")
+  out <- df_nest(as_tbl(flat), "label", "geometry")
   structure(out, class = unique(c("brain_polygons", class(out))))
 }
 

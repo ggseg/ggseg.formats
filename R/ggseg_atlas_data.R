@@ -420,7 +420,7 @@ summarise_2d <- function(x) {
 #' @noRd
 #' @keywords internal
 print_mesh_summary <- function(meshes) {
-  summary_df <- dplyr::tibble(
+  summary_df <- as_tbl(data.frame(
     label = meshes$label,
     vertices = vapply(
       meshes$mesh,
@@ -435,8 +435,9 @@ print_mesh_summary <- function(meshes) {
         if (is.null(m)) 0L else nrow(m$faces)
       },
       integer(1)
-    )
-  )
+    ),
+    stringsAsFactors = FALSE
+  ))
   print(summary_df)
 }
 

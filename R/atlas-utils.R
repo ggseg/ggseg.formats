@@ -534,7 +534,7 @@ atlas_region_keep <- function(atlas, pattern, match_on = c("region", "label")) {
 #'   atlas core.
 #' @export
 atlas_core_add <- function(atlas, data, by = "region") {
-  new_core <- dplyr::left_join(atlas$core, data, by = by)
+  new_core <- df_left_join(atlas$core, data, by = by)
 
   ggseg_atlas(
     atlas = atlas$atlas,

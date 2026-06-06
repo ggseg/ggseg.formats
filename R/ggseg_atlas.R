@@ -259,7 +259,7 @@ print.ggseg_atlas <- function(x, ...) {
 
   cli::cli_rule()
 
-  print(dplyr::as_tibble(x$core), n = nrow(x$core), ...)
+  print(as_tbl(x$core), n = nrow(x$core), ...)
 
   invisible(x)
 }
@@ -278,7 +278,6 @@ as.list.ggseg_atlas <- function(x, ...) {
 
 
 #' @export
-#' @importFrom dplyr left_join select any_of
 as.data.frame.ggseg_atlas <- function(x, ...) {
   geom <- if (inherits(x$data, "ggseg_atlas_data")) {
     geom_from_data(x$data)

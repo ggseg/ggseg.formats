@@ -32,18 +32,19 @@ sf_to_polygons <- function(sf_data) {
   per_row <- lapply(seq_len(nrow(sf_data)), function(i) {
     geom <- sf_data$geometry[[i]]
     co <- sf::st_coordinates(geom)
-    dplyr::tibble(
+    as_tbl(data.frame(
       label = sf_data$label[i],
       view = sf_data$view[i],
       x = co[, "X"],
       y = co[, "Y"],
       group = as.integer(co[, "L2"]),
-      subgroup = as.integer(co[, "L1"])
-    )
+      subgroup = as.integer(co[, "L1"]),
+      stringsAsFactors = FALSE
+    ))
   })
 
-  combined <- dplyr::bind_rows(per_row)
-  out <- tidyr::nest(combined, geometry = -"label")
+  combined <- df_bind_rows(per_row)
+  out <- df_nest(combined, "label", "geometry")
   structure(out, class = c("brain_polygons", class(out)))
 }
 
@@ -69,7 +70,7 @@ sf_to_polygons <- function(sf_data) {
 polygons_to_sf <- function(polygons) {
   validate_polygons(polygons)
 
-  flat <- tidyr::unnest(polygons, cols = "geometry")
+  flat <- df_unnest(polygons, "geometry")
 
   feature_key <- paste(flat$label, flat$view, sep = "")
   flat$.feature_id <- as.integer(factor(
@@ -157,7 +158,7 @@ validate_polygons <- function(polygons) {
     )
   }
 
-  out <- dplyr::as_tibble(polygons)
+  out <- as_tbl(polygons)
   if (!inherits(out, "brain_polygons")) {
     out <- structure(out, class = c("brain_polygons", class(out)))
   }

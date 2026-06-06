@@ -2,6 +2,15 @@
 
 ## ggseg.formats 0.0.2.9001 (development)
 
+### Lighter dependency tree
+
+- Dropped the `dplyr` and `tidyr` Imports in favour of base-R equivalents,
+  shrinking the recursive dependency tree from 32 to 20 packages (also removes
+  `tibble`, `pillar`, `purrr`, `stringi`, `stringr`, `tidyselect`, `generics`,
+  `magrittr` and more). Returned data objects keep the `tbl_df`/`tbl` classes,
+  so they still print as tibbles when `tibble` is loaded and fall back to plain
+  `data.frame` printing otherwise.
+
 ### Bundled SUIT cerebellar atlas
 
 - New `suit()` bundled atlas — the SUIT cerebellar parcellation (lobules + deep

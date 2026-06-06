@@ -204,7 +204,7 @@ atlas_vertices <- function(atlas) {
     cli::cli_abort("Atlas does not contain vertices for 3D rendering.")
   }
 
-  result <- dplyr::left_join(atlas$data$vertices, atlas$core, by = "label")
+  result <- df_left_join(atlas$data$vertices, atlas$core, by = "label")
 
   if (!is.null(atlas$palette)) {
     result$colour <- unname(atlas$palette[result$label])
@@ -235,7 +235,7 @@ atlas_meshes <- function(atlas) {
     cli::cli_abort("Atlas does not contain meshes for 3D rendering.")
   }
 
-  result <- dplyr::left_join(atlas$data$meshes, atlas$core, by = "label")
+  result <- df_left_join(atlas$data$meshes, atlas$core, by = "label")
 
   if (!is.null(atlas$palette)) {
     result$colour <- unname(atlas$palette[result$label])
