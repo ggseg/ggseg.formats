@@ -216,35 +216,28 @@ reposition_flat <- function(flat, type = NULL, gap = 0.15, group_order = NULL) {
     (min(flat$x[idx]) + max(flat$x[idx])) / 2
   })
 
-  for (g in groups) {
-    idx <- which(group_key == g)
-    center_x <- (min(flat$x[idx]) + max(flat$x[idx])) / 2
-    center_y <- (min(flat$y[idx]) + max(flat$y[idx])) / 2
-    flat$x[idx] <- flat$x[idx] - center_x
-    flat$y[idx] <- flat$y[idx] - center_y
-  }
+  # `groups` always covers every value of `group_key`, so this factor has no
+  # NAs and the group-wise ops below stay vectorised over the (few) views.
+  gk <- factor(group_key, levels = groups)
 
-  widths <- numeric(length(groups))
-  half_widths <- numeric(length(groups))
-  max_height <- 0
-  for (i in seq_along(groups)) {
-    idx <- which(group_key == groups[i])
-    x_range <- range(flat$x[idx])
-    y_range <- range(flat$y[idx])
-    widths[i] <- diff(x_range)
-    half_widths[i] <- max(abs(x_range))
-    max_height <- max(max_height, max(abs(y_range)))
-  }
+  # Recentre each group on its own centroid.
+  cx <- (tapply(flat$x, gk, min) + tapply(flat$x, gk, max)) / 2
+  cy <- (tapply(flat$y, gk, min) + tapply(flat$y, gk, max)) / 2
+  flat$x <- flat$x - cx[gk]
+  flat$y <- flat$y - cy[gk]
+
+  # Per-group extents after centring; group order follows `groups`.
+  widths <- tapply(flat$x, gk, function(z) diff(range(z)))
+  half_widths <- tapply(flat$x, gk, function(z) max(abs(z)))
+  max_height <- max(abs(flat$y))
   gap_size <- max(widths) * gap
 
-  x_pos <- 0
-  for (i in seq_along(groups)) {
-    idx <- which(group_key == groups[i])
-    x_offset <- x_pos + half_widths[i]
-    flat$x[idx] <- flat$x[idx] + x_offset
-    flat$y[idx] <- flat$y[idx] + max_height
-    x_pos <- x_pos + widths[i] + gap_size
-  }
+  # Lay groups left-to-right: a group's centre sits at the running left edge
+  # (cumulative widths + gaps of the groups before it) plus its half-width.
+  left_edge <- cumsum(c(0, utils::head(widths + gap_size, -1)))
+  x_offset <- left_edge + half_widths
+  flat$x <- flat$x + x_offset[gk]
+  flat$y <- flat$y + max_height
 
   flat
 }

@@ -79,8 +79,9 @@ data_poly <- function(data) {
 #' Classify or test an atlas's 2D geometry
 #'
 #' @param atlas a ggseg_atlas object
-#' @return `atlas_geometry_type()` returns `"sf"`, `"polygon"`, or `NA`.
-#'   `is_atlas_sf()` / `is_atlas_polygon()` return a logical scalar.
+#' @return `atlas_geometry_type()` returns `"sf"` or `"polygon"`, and errors if
+#'   the atlas has no recognised 2D geometry. `is_atlas_sf()` /
+#'   `is_atlas_polygon()` return a logical scalar (`FALSE` for non-atlases).
 #' @export
 #' @examples
 #' atlas_geometry_type(dk())
@@ -92,7 +93,10 @@ atlas_geometry_type <- function(atlas) {
   } else if (inherits(geom, "brain_polygons")) {
     "polygon"
   } else {
-    NA_character_
+    cli::cli_abort(
+      "Atlas has no recognised 2D geometry
+       ({.cls sf} or {.cls brain_polygons})."
+    )
   }
 }
 

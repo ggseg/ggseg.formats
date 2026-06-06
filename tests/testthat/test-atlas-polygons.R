@@ -80,7 +80,7 @@ describe("polygons_to_sf()", {
 
   it("errors when polygons is malformed", {
     bad <- data.frame(label = "a", geometry = I(list(data.frame(x = 1))))
-    expect_error(polygons_to_sf(bad), "missing columns")
+    expect_error(polygons_to_sf(bad), "needs columns")
   })
 })
 
@@ -105,7 +105,7 @@ describe("validate_polygons()", {
       label = "a",
       geometry = list(dplyr::tibble(view = "x", x = 1, y = 1))
     )
-    expect_error(validate_polygons(bad), "missing columns")
+    expect_error(validate_polygons(bad), "needs columns")
   })
 })
 

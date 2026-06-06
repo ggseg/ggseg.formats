@@ -11,7 +11,7 @@
 #' @keywords internal
 #' @noRd
 require_sf <- function(what) {
-  if (!requireNamespace("sf", quietly = TRUE)) {
+  if (!rlang::is_installed("sf")) {
     cli::cli_abort(c(
       "{what} requires the {.pkg sf} package, which is not installed.",
       "i" = "Install with {.run install.packages(\"sf\")}, or use the
@@ -28,5 +28,5 @@ require_sf <- function(what) {
 #' @keywords internal
 #' @noRd
 has_sf <- function() {
-  requireNamespace("sf", quietly = TRUE)
+  rlang::is_installed("sf")
 }
