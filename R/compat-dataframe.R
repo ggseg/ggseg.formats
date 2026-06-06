@@ -2,10 +2,10 @@
 #
 # Returned objects are plain data.frames tagged with the `tbl_df`/`tbl`
 # classes. tibble is only a Suggests (reachable via ggplot2's own Suggests),
-# never a hard dependency, so it may be entirely absent at runtime. The classes
-# make these objects render as tibbles when tibble is available; print methods
-# that need tibble-only arguments (e.g. `n`) must guard on `has_tibble()` and
-# fall back to base `data.frame` printing otherwise.
+# never a hard dependency, so it may be entirely absent at runtime. `.onLoad`
+# soft-loads tibble when installed so these objects print as tibbles; print
+# methods that pass tibble-only arguments (e.g. `n`) must still guard on
+# `has_tibble()` and fall back to base `data.frame` printing otherwise.
 
 #' Is the optional tibble package available?
 #' @noRd
