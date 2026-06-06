@@ -433,39 +433,36 @@ plot.ggseg_atlas <- function(x, ...) {
     plot.new()
     plot.window(xlim = xlim_all, ylim = ylim_all, asp = 1)
 
-    for (lbl in unique(view_flat$label)) {
-      lbl_data <- view_flat[view_flat$label == lbl, , drop = FALSE]
+    # Collapse label × group loops: split once, then lapply over all pieces
+    piece_id <- paste(view_flat$label, view_flat$group, sep = "\r")
+    pieces   <- split(view_flat, piece_id)
+
+    invisible(lapply(pieces, function(piece) {
+      lbl <- piece$label[[1L]]
       col <- fill_colors[[lbl]]
       if (is.null(col) || is.na(col)) col <- "#CCCCCC"
 
-      for (g in unique(lbl_data$group)) {
-        piece <- lbl_data[lbl_data$group == g, , drop = FALSE]
-        rings <- sort(unique(piece$subgroup))
+      rings <- sort(unique(piece$subgroup))
 
-        if (length(rings) == 1L) {
-          ring_rows <- piece[piece$subgroup == rings[[1L]], ]
-          polygon(ring_rows$x, ring_rows$y,
-            col = col, border = "white", lwd = 0.3
-          )
-        } else {
-          # Exterior ring + holes: use polypath() with the even-odd fill rule
-          px <- numeric(0)
-          py <- numeric(0)
-          for (r in rings) {
-            ring_rows <- piece[piece$subgroup == r, ]
-            if (length(px) > 0L) {
-              px <- c(px, NA_real_)
-              py <- c(py, NA_real_)
-            }
-            px <- c(px, ring_rows$x)
-            py <- c(py, ring_rows$y)
-          }
-          polypath(px, py,
-            col = col, border = "white", lwd = 0.3, rule = "evenodd"
-          )
-        }
+      if (length(rings) == 1L) {
+        polygon(piece$x, piece$y, col = col, border = "white", lwd = 0.3)
+      } else {
+        # Build NA-separated coordinate vectors without an inner ring loop:
+        # split coords by subgroup, interleave a NA-row separator between rings
+        ring_coords <- split(piece[c("x", "y")], piece$subgroup)[as.character(rings)]
+        n_rings     <- length(rings)
+        na_row      <- data.frame(x = NA_real_, y = NA_real_)
+        interleaved <- vector("list", 2L * n_rings - 1L)
+        interleaved[seq(1L, 2L * n_rings - 1L, 2L)] <- ring_coords
+        interleaved[seq(2L, 2L * n_rings - 2L, 2L)] <- replicate(
+          n_rings - 1L, na_row, simplify = FALSE
+        )
+        coords <- do.call(rbind, interleaved)
+        polypath(coords$x, coords$y,
+          col = col, border = "white", lwd = 0.3, rule = "evenodd"
+        )
       }
-    }
+    }))
 
     title(v, cex.main = 0.8)
   }
