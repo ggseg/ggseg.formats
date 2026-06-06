@@ -24,8 +24,12 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::lintr, local::.
+          extra-packages: any::lintr, any::styler, local::.
           needs: lint
+
+      - name: Check tidyverse style
+        run: styler::style_pkg(dry = "fail")
+        shell: Rscript {0}
 
       - name: Lint
         run: lintr::lint_package()
