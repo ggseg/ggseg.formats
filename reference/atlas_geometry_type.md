@@ -20,8 +20,9 @@ is_atlas_polygon(atlas)
 
 ## Value
 
-`atlas_geometry_type()` returns `"sf"`, `"polygon"`, or `NA`.
-`is_atlas_sf()` / `is_atlas_polygon()` return a logical scalar.
+`atlas_geometry_type()` returns `"sf"` or `"polygon"`, and errors if the
+atlas has no recognised 2D geometry. `is_atlas_sf()` /
+`is_atlas_polygon()` return a logical scalar (`FALSE` for non-atlases).
 
 ## Examples
 

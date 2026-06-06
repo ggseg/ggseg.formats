@@ -78,6 +78,7 @@ for the atlas class constructor
 
 Other ggseg_atlases:
 [`aseg()`](https://ggsegverse.github.io/ggseg.formats/reference/aseg.md),
+[`suit()`](https://ggsegverse.github.io/ggseg.formats/reference/suit.md),
 [`tracula()`](https://ggsegverse.github.io/ggseg.formats/reference/tracula.md)
 
 ## Examples

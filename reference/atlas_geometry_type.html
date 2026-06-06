@@ -68,8 +68,9 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>atlas_geometry_type()</code> returns <code>"sf"</code>, <code>"polygon"</code>, or <code>NA</code>.
-<code>is_atlas_sf()</code> / <code>is_atlas_polygon()</code> return a logical scalar.</p>
+    <p><code>atlas_geometry_type()</code> returns <code>"sf"</code> or <code>"polygon"</code>, and errors if
+the atlas has no recognised 2D geometry. <code>is_atlas_sf()</code> /
+<code>is_atlas_polygon()</code> return a logical scalar (<code>FALSE</code> for non-atlases).</p>
     </div>
 
     <div class="section level2">

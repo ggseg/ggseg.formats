@@ -168,6 +168,8 @@ Ready-to-use atlases shipped with the package.
   : FreeSurfer Automatic Subcortical Segmentation Atlas
 - [`tracula()`](https://ggsegverse.github.io/ggseg.formats/reference/tracula.md)
   : TRACULA White Matter Tract Atlas
+- [`suit()`](https://ggsegverse.github.io/ggseg.formats/reference/suit.md)
+  : SUIT Cerebellar Lobular Atlas
 
 ## FreeSurfer I/O
 
