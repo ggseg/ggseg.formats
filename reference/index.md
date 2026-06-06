@@ -77,11 +77,19 @@ Convert old ggseg/ggseg3d atlases to the unified ggseg_atlas format.
 
 Query atlas contents without reaching into slots directly.
 
+- [`atlas_geom()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geom.md)
+  : Get the raw 2D geometry of an atlas
+- [`atlas_geometry_type()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geometry_type.md)
+  [`is_atlas_sf()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geometry_type.md)
+  [`is_atlas_polygon()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geometry_type.md)
+  : Classify or test an atlas's 2D geometry
 - [`atlas_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md)
   [`brain_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md)
   : Extract unique labels from an atlas
 - [`atlas_region_remove()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_region_contextual()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_region_op()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_context_remove()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_region_rename()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_region_keep()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_core_add()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
@@ -96,6 +104,8 @@ Query atlas contents without reaching into slots directly.
   : Get atlas meshes for 3D rendering
 - [`atlas_palette()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_palette.md)
   : Get atlas palette
+- [`atlas_polygons()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_polygons.md)
+  : Get atlas polygons for 2D rendering
 - [`atlas_regions()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_regions.md)
   [`brain_regions()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_regions.md)
   : Extract unique region names from an atlas
@@ -111,6 +121,23 @@ Query atlas contents without reaching into slots directly.
 - [`get_cerebellar_mesh()`](https://ggsegverse.github.io/ggseg.formats/reference/get_cerebellar_mesh.md)
   : Get SUIT cerebellar surface mesh
 
+## Geometry representation (sf-optional)
+
+Convert atlas 2D geometry between sf and the sf-optional
+`brain_polygons` representation stored in the single `geom` slot, and
+migrate atlas files.
+
+- [`as_polygon_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/as_polygon_atlas.md)
+  : Convert a ggseg atlas to the sf-optional polygon representation
+
+- [`as_sf_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/as_sf_atlas.md)
+  : Rehydrate a ggseg atlas into sf-backed form
+
+- [`migrate_atlas_files()`](https://ggsegverse.github.io/ggseg.formats/reference/migrate_atlas_files.md)
+  :
+
+  Migrate atlas `.rda` files to the sf-optional polygon format
+
 ## Atlas manipulation
 
 Pipe-friendly functions for subsetting regions, managing views, and
@@ -118,6 +145,8 @@ enriching metadata. All return a new `ggseg_atlas`.
 
 - [`atlas_region_remove()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_region_contextual()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_region_op()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_context_remove()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_region_rename()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_region_keep()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_core_add()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)

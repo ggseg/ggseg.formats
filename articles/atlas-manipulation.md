@@ -1,7 +1,13 @@
 # Customising brain atlases
 
 ``` r
+
 library(ggseg.formats)
+# The atlas-manipulation helpers shown here operate on sf-backed atlas
+# geometry. Since the sf-optional milestone, sf is a Suggests dependency,
+# so load it explicitly here.
+library(sf)
+#> Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE
 ```
 
 Say you are preparing a figure that focuses on the subcortical
@@ -30,6 +36,7 @@ The `pattern` argument is passed to
 so partial matches work:
 
 ``` r
+
 no_cc <- atlas_region_remove(dk(), "corpus callosum")
 "corpus callosum" %in% atlas_regions(no_cc)
 #> [1] FALSE
@@ -41,6 +48,7 @@ everything else into context geometry (sf is preserved for surface
 continuity, but non-matching regions leave core and palette):
 
 ``` r
+
 frontal <- atlas_region_keep(dk(), "frontal")
 atlas_regions(frontal)
 #> [1] "caudal middle frontal"  "frontal pole"           "lateral orbitofrontal" 
@@ -52,6 +60,7 @@ pattern matches against `"region"` (the default, human-readable name) or
 `"label"` (the unique identifier):
 
 ``` r
+
 lh_only <- atlas_region_keep(dk(), "^lh_", match_on = "label")
 head(atlas_labels(lh_only))
 #> [1] "lh_bankssts"                "lh_caudalanteriorcingulate"
@@ -68,6 +77,7 @@ does. It removes the region from core, palette, and 3D data but leaves
 the sf geometry in place:
 
 ``` r
+
 ctx <- atlas_region_contextual(aseg(), "ventricle")
 "lateral ventricle" %in% atlas_regions(ctx)
 #> [1] FALSE
@@ -85,6 +95,7 @@ changes the `region` column without touching `label` (so geometry links
 stay intact). Pass a fixed string:
 
 ``` r
+
 renamed <- atlas_region_rename(
   dk(),
   "banks of superior temporal sulcus",
@@ -97,6 +108,7 @@ renamed <- atlas_region_rename(
 Or pass a function for programmatic renaming:
 
 ``` r
+
 upper <- atlas_region_rename(dk(), ".*", toupper)
 head(atlas_regions(upper))
 #> [1] "BANKS OF SUPERIOR TEMPORAL SULCUS" "CAUDAL ANTERIOR CINGULATE"        
@@ -110,6 +122,7 @@ head(atlas_regions(upper))
 tells you what 2D views an atlas has:
 
 ``` r
+
 atlas_views(aseg())
 #> [1] "axial_3"   "axial_4"   "axial_5"   "axial_6"   "coronal_1" "coronal_2"
 #> [7] "sagittal"
@@ -121,6 +134,7 @@ and
 filter views by pattern. If you only want the sagittal slice:
 
 ``` r
+
 sag <- atlas_view_keep(aseg(), "sagittal")
 atlas_views(sag)
 #> [1] "sagittal"
@@ -129,6 +143,7 @@ atlas_views(sag)
 Or remove several views at once by passing a vector:
 
 ``` r
+
 fewer <- atlas_view_remove(aseg(), c("axial_3", "coronal_2"))
 atlas_views(fewer)
 #> [1] "axial_4"   "axial_5"   "axial_6"   "coronal_1" "sagittal"
@@ -143,6 +158,7 @@ removes region polygons below a minimum area threshold. Context polygons
 (those not in core) are never removed:
 
 ``` r
+
 cleaned <- atlas_view_remove_small(aseg(), min_area = 50)
 #> ℹ Removed 20 geometries below area 50
 ```
@@ -150,6 +166,7 @@ cleaned <- atlas_view_remove_small(aseg(), min_area = 50)
 You can scope the removal to specific views:
 
 ``` r
+
 cleaned_sag <- atlas_view_remove_small(
   aseg(),
   min_area = 50,
@@ -164,6 +181,7 @@ or 3D data. This is useful when a region’s 2D projection is misleading
 but you still want it in 3D:
 
 ``` r
+
 no_stem_sf <- atlas_view_remove_region(
   aseg(),
   "brain stem",
@@ -179,6 +197,7 @@ coordinates, which can leave awkward gaps.
 repositions views side-by-side with a configurable gap:
 
 ``` r
+
 trimmed <- aseg() |>
   atlas_view_keep(c("sagittal", "coronal_3", "axial_3")) |>
   atlas_view_gather()
@@ -191,6 +210,7 @@ lets you choose the left-to-right order and repositions at the same
 time. Views not mentioned in `order` are appended at the end:
 
 ``` r
+
 reordered <- aseg() |>
   atlas_view_keep(c("sagittal", "coronal_3", "axial_3")) |>
   atlas_view_reorder(c("axial_3", "sagittal", "coronal_3"))
@@ -207,6 +227,7 @@ per-region information. Here we add a custom network column to a handful
 of regions:
 
 ``` r
+
 network_info <- data.frame(
   region = c(
     "superior frontal",
@@ -240,6 +261,7 @@ Here is a realistic pipeline that prepares the `aseg` atlas for a
 compact two-view figure of deep grey matter structures:
 
 ``` r
+
 publication_aseg <- aseg() |>
   atlas_view_keep(c("sagittal", "coronal_3")) |>
   atlas_region_contextual("ventricle|choroid|white|cc") |>

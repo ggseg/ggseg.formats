@@ -1,0 +1,39 @@
+# Convert a ggseg atlas to the sf-optional polygon representation
+
+Sets the single `geom` slot to the `brain_polygons` representation,
+converting from sf if needed. The result renders identically via the
+`geom_polygon`-based path in ggseg, but no longer depends on the sf
+class machinery in `$data` — useful for wasm builds and air-gapped
+installs.
+
+## Usage
+
+``` r
+as_polygon_atlas(atlas)
+```
+
+## Arguments
+
+- atlas:
+
+  A `ggseg_atlas` (or legacy `brain_atlas`) object.
+
+## Value
+
+A `ggseg_atlas` whose `$data$geom` is a `brain_polygons` object.
+
+## Details
+
+Conversion is lossless, so a single representation is kept (no redundant
+sf alongside polygons). To rehydrate sf for geometric operations later,
+use
+[`as_sf_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/as_sf_atlas.md).
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+poly <- as_polygon_atlas(dk())
+is_atlas_polygon(poly) # TRUE
+} # }
+```

@@ -7,15 +7,18 @@ into the shared SUIT cerebellar surface mesh for 3D rendering.
 ## Usage
 
 ``` r
-ggseg_data_cerebellar(sf = NULL, vertices = NULL, meshes = NULL)
+ggseg_data_cerebellar(geom = NULL, vertices = NULL, meshes = NULL, ...)
 ```
 
 ## Arguments
 
-- sf:
+- geom:
 
-  sf data.frame with columns label, view, geometry for 2D rendering.
-  Surface regions use view "flatmap"; deep structures use other views.
+  2D geometry for rendering, stored in the single `geom` slot: either an
+  sf data.frame (columns `label`, `view`, `geometry`) or a
+  `brain_polygons` tibble (see
+  [`sf_to_polygons()`](https://ggsegverse.github.io/ggseg.formats/reference/sf_to_polygons.md)).
+  The class of `geom` determines the rendering path used downstream.
 
 - vertices:
 
@@ -32,6 +35,14 @@ ggseg_data_cerebellar(sf = NULL, vertices = NULL, meshes = NULL)
   are not on the cortical surface. Same format as
   [`ggseg_data_subcortical()`](https://ggsegverse.github.io/ggseg.formats/reference/ggseg_data_subcortical.md)
   meshes.
+
+- ...:
+
+  Captures a deprecated `sf` argument: if supplied it is converted to
+  the polygon representation via
+  [`sf_to_polygons()`](https://ggsegverse.github.io/ggseg.formats/reference/sf_to_polygons.md)
+  and a deprecation warning is issued. Prefer passing 2D geometry via
+  `geom`.
 
 ## Value
 

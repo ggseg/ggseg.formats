@@ -15,22 +15,26 @@ The package includes three atlases covering the main atlas types:
 - **tracula** — TRACULA white matter tract atlas
 
 ``` r
+
 library(ggseg.formats)
 ```
 
 ``` r
+
 plot(dk())
 ```
 
 ![](reference/figures/README-plot-dk-1.png)
 
 ``` r
+
 plot(aseg())
 ```
 
 ![](reference/figures/README-plot-aseg-1.png)
 
 ``` r
+
 plot(tracula())
 ```
 
@@ -42,6 +46,7 @@ Atlas objects are designed for exploration and customisation. You can
 query regions, filter views, and pipe operations together:
 
 ``` r
+
 aseg_small <- aseg() |>
   atlas_region_keep("hippocampus|amygdala|thalamus") |>
   atlas_view_keep("coronal_3|axial_3") |>
@@ -56,6 +61,7 @@ plot(aseg_small)
 Install from the ggsegverse r-universe:
 
 ``` r
+
 options(repos = c(
     ggsegverse = 'https://ggsegverse.r-universe.dev',
     CRAN = 'https://cloud.r-project.org'))
@@ -66,6 +72,7 @@ install.packages('ggseg.formats')
 Or install the development version from GitHub:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("ggsegverse/ggseg.formats")
 ```

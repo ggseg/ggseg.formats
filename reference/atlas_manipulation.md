@@ -7,7 +7,24 @@ Functions for modifying brain atlas objects. These cover three areas:
 ``` r
 atlas_region_remove(atlas, pattern, match_on = c("region", "label"))
 
-atlas_region_contextual(atlas, pattern, match_on = c("region", "label"))
+atlas_region_contextual(
+  atlas,
+  pattern,
+  match_on = c("region", "label"),
+  ignore.case = TRUE
+)
+
+atlas_region_op(
+  atlas,
+  x,
+  y,
+  action = c("difference", "intersection", "union", "symdifference"),
+  into,
+  match_on = c("label", "region"),
+  colour = NULL
+)
+
+atlas_context_remove(atlas)
 
 atlas_region_rename(atlas, pattern, replacement)
 
@@ -46,6 +63,32 @@ atlas_view_reorder(atlas, order, gap = 0.15)
 - match_on:
 
   Column to match against: `"region"` or `"label"`.
+
+- ignore.case:
+
+  For `atlas_region_contextual()`: passed to
+  [`grepl()`](https://rdrr.io/r/base/grep.html). Defaults to `TRUE` for
+  backwards compatibility, but note that a context pattern like
+  `"Thalamus"` then also matches focus labels such as `"hypothalamus"`;
+  set `FALSE` (and/or anchor the pattern) when that matters.
+
+- x, y:
+
+  For `atlas_region_op()`: patterns selecting the two operands.
+
+- action:
+
+  For `atlas_region_op()`: the boolean operation to apply.
+
+- into:
+
+  For `atlas_region_op()`: label for the result region.
+
+- colour:
+
+  For `atlas_region_op()`: optional fill for `into`. When supplied,
+  `into` is registered in core and palette; when `NULL`, the result is
+  contextual geometry only.
 
 - replacement:
 
@@ -91,9 +134,14 @@ Modified `ggseg_atlas` object
 - `atlas_region_contextual()`: keep geometry but remove from
   core/palette
 
+- `atlas_context_remove()`: drop all contextual sf geometry
+
 - `atlas_region_rename()`: rename regions in core
 
 - `atlas_region_keep()`: keep only matching regions
+
+- `atlas_region_op()`: combine two regions' geometry with a boolean op
+  (difference / intersection / union / symdifference)
 
 **View manipulation** modifies the 2D sf geometry data:
 
@@ -117,7 +165,32 @@ Modified `ggseg_atlas` object
 
 - `atlas_region_contextual()`: Keep geometry for visual context but
   remove from core, palette, and 3D data. Context geometries render grey
-  and don't appear in legends.
+  and don't appear in legends. Contextual rows are moved behind the
+  remaining core regions so focus regions draw on top where they overlap
+  in projection. Operates on whichever 2D representation the atlas
+  carries (`sf` and/or `polygons`), keeping both in sync, and needs no
+  `sf` for a polygon atlas.
+
+- `atlas_region_op()`: Combine two sets of region geometry with a vector
+  boolean operation (per view), writing the result to a new region
+  `into`. `x` and `y` are patterns matched against `match_on`; within
+  each view their matching geometries are unioned, then combined via
+  `action`: `"difference"` (x minus y, e.g. punching white matter out of
+  a cortex silhouette), `"intersection"`, `"union"`, or
+  `"symdifference"`. Inputs are left in place; any existing `into`
+  geometry is replaced. With a `colour`, `into` becomes a legended core
+  region; otherwise it stays contextual (grey) and is drawn behind the
+  core regions. Boolean ops need a geometry engine, so this is the one
+  manipulation helper that always requires `sf` installed; a
+  polygon-only atlas is rehydrated for the operation and the result is
+  returned in polygon form.
+
+- `atlas_context_remove()`: Drop all contextual sf geometry — every sf
+  row whose `label` is not present in `core`. Covers labels marked via
+  `atlas_region_contextual()` plus pipeline-generated outlines
+  (`cortex_`, `Background`, `unknown`). Remaining views are re-packed
+  via `atlas_view_gather()` so the plot focuses tightly on the labelled
+  regions.
 
 - `atlas_region_rename()`: Rename regions matching a pattern. Only
   affects the `region` column, not `label`. If `replacement` is a
@@ -130,15 +203,19 @@ Modified `ggseg_atlas` object
 - `atlas_core_add()`: Join additional metadata columns to atlas core.
 
 - `atlas_view_remove()`: Remove views matching pattern from sf data.
+  Remaining views are re-packed via `atlas_view_gather()` so the layout
+  stays tight.
 
 - `atlas_view_keep()`: Keep only views matching pattern.
 
 - `atlas_view_remove_region()`: Remove specific region geometry from sf
-  data only. Core, palette, and 3D data are unchanged.
+  data only. Core, palette, and 3D data are unchanged. Views are
+  re-packed via `atlas_view_gather()` in case any view shrank.
 
 - `atlas_view_remove_small()`: Remove region geometries below a minimum
   area threshold. Context geometries (labels not in core) are never
-  removed. Optionally scope to specific views.
+  removed. Optionally scope to specific views. Views are re-packed via
+  `atlas_view_gather()` in case any view shrank.
 
 - `atlas_view_gather()`: Reposition remaining views to close gaps after
   view removal.

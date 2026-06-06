@@ -1,6 +1,8 @@
 # Get atlas data for 2D rendering
 
-Returns sf data joined with core region info and palette colours.
+Returns sf data joined with core region info and palette colours. This
+is the interception point used by ggseg for plotting: it always returns
+sf geometry, converting from the polygon representation when needed.
 
 ## Usage
 

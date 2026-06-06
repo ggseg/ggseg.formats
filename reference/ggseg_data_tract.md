@@ -6,17 +6,20 @@ compactly; tube meshes are generated at render time for efficiency.
 ## Usage
 
 ``` r
-ggseg_data_tract(sf = NULL, centerlines = NULL, meshes = NULL, ...)
+ggseg_data_tract(geom = NULL, centerlines = NULL, meshes = NULL, ...)
 
 brain_data_tract(sf = NULL, centerlines = NULL, meshes = NULL, ...)
 ```
 
 ## Arguments
 
-- sf:
+- geom:
 
-  sf data.frame with columns label, view, geometry for 2D rendering.
-  Optional.
+  2D geometry for rendering, stored in the single `geom` slot: either an
+  sf data.frame (columns `label`, `view`, `geometry`) or a
+  `brain_polygons` tibble (see
+  [`sf_to_polygons()`](https://ggsegverse.github.io/ggseg.formats/reference/sf_to_polygons.md)).
+  The class of `geom` determines the rendering path used downstream.
 
 - centerlines:
 
@@ -35,8 +38,13 @@ brain_data_tract(sf = NULL, centerlines = NULL, meshes = NULL, ...)
 
 - ...:
 
-  Absorbs legacy fields (e.g. tube_radius, tube_segments) from old
+  Captures a deprecated `sf` argument (converted to polygons) and
+  absorbs legacy fields (e.g. tube_radius, tube_segments) from old
   cached atlas objects.
+
+- sf:
+
+  Deprecated. Pass 2D geometry via `geom` instead.
 
 ## Value
 
