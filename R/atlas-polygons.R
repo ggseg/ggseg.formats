@@ -89,9 +89,6 @@ polygons_to_sf <- function(polygons) {
   )
 
   out$.feature_id <- NULL
-  if (".feature_id" %in% names(out)) {
-    out$.feature_id <- NULL
-  }
 
   cols <- c("label", "view", "geometry")
   out <- out[, cols, drop = FALSE]

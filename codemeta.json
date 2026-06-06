@@ -3,7 +3,7 @@
   "@type": "SoftwareSourceCode",
   "identifier": "ggseg.formats",
   "description": "Provides the 'ggseg_atlas' S3 class used across the 'ggsegverse' ecosystem for 2D and 3D brain visualisation. Ships four bundled atlases ('Desikan-Killiany', 'FreeSurfer' 'aseg', 'TRACULA', 'SUIT') and functions for querying, subsetting, renaming, and enriching atlas objects. Also includes readers for 'FreeSurfer' statistics files.",
-  "name": "ggseg.formats: Brain Atlas Data Structures for the 'ggseg' Ecosystem",
+  "name": "ggseg.formats: Brain Atlas Data Structures for the 'ggsegverse' Ecosystem",
   "relatedLink": "https://ggsegverse.github.io/ggseg.formats/",
   "codeRepository": "https://github.com/ggsegverse/ggseg.formats",
   "issueTracker": "https://github.com/ggsegverse/ggseg.formats/issues",
@@ -108,6 +108,18 @@
     },
     {
       "@type": "SoftwareApplication",
+      "identifier": "sf",
+      "name": "sf",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=sf"
+    },
+    {
+      "@type": "SoftwareApplication",
       "identifier": "spelling",
       "name": "spelling",
       "provider": {
@@ -188,18 +200,6 @@
       "sameAs": "https://CRAN.R-project.org/package=rlang"
     },
     "6": {
-      "@type": "SoftwareApplication",
-      "identifier": "sf",
-      "name": "sf",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=sf"
-    },
-    "7": {
       "@type": "SoftwareApplication",
       "identifier": "tidyr",
       "name": "tidyr",
