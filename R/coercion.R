@@ -149,12 +149,13 @@ convert_legacy_brain_data <- function(x) {
     names(sf_data)[names(sf_data) == "side"] <- "view"
   }
 
-  core <- dplyr::distinct(
+  core <- df_distinct(
     sf::st_drop_geometry(sf_data[
       !is.na(sf_data$label),
       c("hemi", "region", "label"),
       drop = FALSE
-    ])
+    ]),
+    c("hemi", "region", "label")
   )
 
   palette <- if ("colour" %in% names(sf_data)) {

@@ -203,7 +203,7 @@ validate_ggseg_atlas <- function(x) {
 
 #' @export
 #' @importFrom stats na.omit
-print.ggseg_atlas <- function(x, ...) {
+print.ggseg_atlas <- function(x, n = 10, ...) {
   data <- x$data
   geom <- geom_from_data(data)
   has_sf <- !is.null(geom)
@@ -259,7 +259,11 @@ print.ggseg_atlas <- function(x, ...) {
 
   cli::cli_rule()
 
-  print(dplyr::as_tibble(x$core), n = nrow(x$core), ...)
+  core <- x$core
+  print(utils::head(as.data.frame(core), n), ...)
+  if (nrow(core) > n) {
+    cli::cli_text("{.emph ... with {nrow(core) - n} more rows}")
+  }
 
   invisible(x)
 }
@@ -278,7 +282,6 @@ as.list.ggseg_atlas <- function(x, ...) {
 
 
 #' @export
-#' @importFrom dplyr left_join select any_of
 as.data.frame.ggseg_atlas <- function(x, ...) {
   geom <- if (inherits(x$data, "ggseg_atlas_data")) {
     geom_from_data(x$data)

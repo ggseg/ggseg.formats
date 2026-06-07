@@ -9,7 +9,7 @@ describe("sf_to_polygons()", {
     expect_true(is.list(polys$geometry))
   })
 
-  it("nested geometry tibbles carry view, x, y, group, subgroup", {
+  it("nested geometry data.frams carry view, x, y, group, subgroup", {
     polys <- sf_to_polygons(dk()$data$sf)
     inner <- polys$geometry[[1]]
     expect_s3_class(inner, "tbl_df")
@@ -90,21 +90,17 @@ describe("validate_polygons()", {
   })
 
   it("rejects duplicated labels", {
-    bad <- dplyr::tibble(
-      label = c("a", "a"),
-      geometry = list(
-        dplyr::tibble(view = "x", x = 1, y = 1, group = 1L, subgroup = 1L),
-        dplyr::tibble(view = "x", x = 2, y = 2, group = 1L, subgroup = 1L)
-      )
+    bad <- data.frame(label = c("a", "a"), stringsAsFactors = FALSE)
+    bad$geometry <- list(
+      data.frame(view = "x", x = 1, y = 1, group = 1L, subgroup = 1L),
+      data.frame(view = "x", x = 2, y = 2, group = 1L, subgroup = 1L)
     )
     expect_error(validate_polygons(bad), "one row per")
   })
 
   it("rejects missing geometry columns", {
-    bad <- dplyr::tibble(
-      label = "a",
-      geometry = list(dplyr::tibble(view = "x", x = 1, y = 1))
-    )
+    bad <- data.frame(label = "a", stringsAsFactors = FALSE)
+    bad$geometry <- list(data.frame(view = "x", x = 1, y = 1))
     expect_error(validate_polygons(bad), "needs columns")
   })
 })
