@@ -57,8 +57,9 @@ sf_to_polygons <- function(sf_data) {
 #' installation. The returned object is an sf-class data frame, which downstream
 #' users would manipulate using sf.
 #'
-#' @param polygons A `brain_polygons` data.frame produced by [sf_to_polygons()] or
-#'   constructed directly: one row per `label`, with a `geometry` list-column
+#' @param polygons A `brain_polygons` data.frame produced by
+#'   [sf_to_polygons()] or constructed directly: one row per `label`, with a
+#'   `geometry` list-column
 #'   of data.frames containing `view`, `x`, `y`, `group`, `subgroup`.
 #'
 #' @return An sf-class data frame with columns `label`, `view`, `geometry`
@@ -146,7 +147,7 @@ validate_polygons <- function(polygons) {
   )
   if (any(miss_cols)) {
     cli::cli_abort(c(
-      "Each {.field geometry} data.frame needs columns {.field {nested_required}}.",
+      "Each {.field geometry} needs columns {.field {nested_required}}.",
       "x" = "Missing columns for: {.val {polygons$label[miss_cols]}}."
     ))
   }
