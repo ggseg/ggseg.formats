@@ -9,7 +9,7 @@
 #' @param path path to stats file
 #' @param rename logical. rename headers for ggseg compatibility
 #' @importFrom utils read.table
-#' @return tibble with stats information for subjects from FreeSurfer
+#' @return data.frame with stats information for subjects from FreeSurfer
 #' @export
 #' @examplesIf FALSE
 #' subj_dir <- "/path/to/freesurfer/7.2.0/subjects/"
@@ -43,7 +43,7 @@ read_freesurfer_stats <- function(path, rename = TRUE) {
 #'
 #' @param subjects_dir FreeSurfer subject directory
 #' @param atlas unique character combination identifying the atlas
-#' @return tibble with stats information for subjects from FreeSurfer
+#' @return data.frame with stats information for subjects from FreeSurfer
 #' @export
 #' @examplesIf FALSE
 #' subj_dir <- "/path/to/freesurfer/7.2.0/subjects/"
@@ -98,7 +98,7 @@ read_atlas_files <- function(subjects_dir, atlas) {
 #' @param measure which measure is the table of
 #' @param ... additional arguments to \code{read.table}
 #' @importFrom utils read.table
-#' @return tibble with stats information for subjects from FreeSurfer
+#' @return data.frame with stats information for subjects from FreeSurfer
 #' @export
 #' @examplesIf FALSE
 #' file_path <- "all_subj_aseg.txt"

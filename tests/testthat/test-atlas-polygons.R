@@ -9,7 +9,7 @@ describe("sf_to_polygons()", {
     expect_true(is.list(polys$geometry))
   })
 
-  it("nested geometry tibbles carry view, x, y, group, subgroup", {
+  it("nested geometry data.frams carry view, x, y, group, subgroup", {
     polys <- sf_to_polygons(dk()$data$sf)
     inner <- polys$geometry[[1]]
     expect_s3_class(inner, "tbl_df")

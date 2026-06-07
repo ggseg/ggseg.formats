@@ -260,13 +260,9 @@ print.ggseg_atlas <- function(x, n = 10, ...) {
   cli::cli_rule()
 
   core <- x$core
-  if (has_tibble()) {
-    print(tibble::as_tibble(core), n = n, ...)
-  } else {
-    print(utils::head(as.data.frame(core), n), ...)
-    if (nrow(core) > n) {
-      cli::cli_text("{.emph ... with {nrow(core) - n} more rows}")
-    }
+  print(utils::head(as.data.frame(core), n), ...)
+  if (nrow(core) > n) {
+    cli::cli_text("{.emph ... with {nrow(core) - n} more rows}")
   }
 
   invisible(x)

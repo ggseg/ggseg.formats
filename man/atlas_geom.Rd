@@ -15,7 +15,7 @@ geometry
 }
 \description{
 Returns the single 2D geometry object stored in \code{atlas$data$geom}, which is
-either an sf-class data frame or a \code{brain_polygons} tibble. Its class
+either an sf-class data frame or a \code{brain_polygons} data.frame. Its class
 determines which rendering path is used downstream.
 }
 \details{

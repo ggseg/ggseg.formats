@@ -7,9 +7,9 @@
 polygons_to_sf(polygons)
 }
 \arguments{
-\item{polygons}{A \code{brain_polygons} tibble produced by \code{\link[=sf_to_polygons]{sf_to_polygons()}} or
+\item{polygons}{A \code{brain_polygons} data.frame produced by \code{\link[=sf_to_polygons]{sf_to_polygons()}} or
 constructed directly: one row per \code{label}, with a \code{geometry} list-column
-of tibbles containing \code{view}, \code{x}, \code{y}, \code{group}, \code{subgroup}.}
+of data.frames containing \code{view}, \code{x}, \code{y}, \code{group}, \code{subgroup}.}
 }
 \value{
 An sf-class data frame with columns \code{label}, \code{view}, \code{geometry}

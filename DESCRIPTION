@@ -30,7 +30,6 @@ Suggests:
     sf,
     spelling,
     testthat (>= 3.0.0),
-    tibble,
     vdiffr,
     withr
 VignetteBuilder: knitr

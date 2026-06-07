@@ -12,7 +12,7 @@ read_freesurfer_stats(path, rename = TRUE)
 \item{rename}{logical. rename headers for ggseg compatibility}
 }
 \value{
-tibble with stats information for subjects from FreeSurfer
+data.frame with stats information for subjects from FreeSurfer
 }
 \description{
 FreeSurfer atlas stats files have a format

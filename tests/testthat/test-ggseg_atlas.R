@@ -26,24 +26,6 @@ describe("ggseg_atlas class", {
     expect_snapshot(print(dk()))
   })
 
-  it("print method does not error when tibble is unavailable", {
-    local_mocked_bindings(has_tibble = function() FALSE)
-    expect_no_error(capture.output(print(dk())))
-  })
-
-  it("limits printed core rows by n without tibble", {
-    local_mocked_bindings(has_tibble = function() FALSE)
-    few <- capture.output(print(dk(), n = 5))
-    many <- capture.output(print(dk(), n = 40))
-    expect_true(length(many) > length(few))
-  })
-
-  it("respects n with tibble available", {
-    skip_if_not_installed("tibble")
-    out <- capture.output(print(dk(), n = 3))
-    expect_true(any(grepl("more rows", out)))
-  })
-
   it("atlas_regions returns character vector", {
     regions <- atlas_regions(dk())
     expect_type(regions, "character")

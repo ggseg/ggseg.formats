@@ -3,15 +3,15 @@
 #' Convert an sf atlas geometry to the sf-optional polygon format
 #'
 #' Extracts coordinates from an sf-backed atlas geometry table and returns a
-#' nested tibble keyed by `label`. Each row carries a `geometry` list-column
+#' nested data.frame keyed by `label`. Each row carries a `geometry` list-column
 #' containing the per-view, per-ring point coordinates needed to render with
 #' [ggplot2::geom_polygon()] (using the `subgroup` aesthetic for holes).
 #'
 #' @param sf_data An sf-class data.frame with columns `label`, `view`,
 #'   `geometry` (sfc of MULTIPOLYGON).
 #'
-#' @return A tibble with one row per `label` and a `geometry` list-column.
-#'   Each nested element is a tibble with columns `view`, `x`, `y`,
+#' @return A data.frame with one row per `label` and a `geometry` list-column.
+#'   Each nested element is a data.frame with columns `view`, `x`, `y`,
 #'   `group` (disjoint polygon piece within a label/view), `subgroup`
 #'   (ring within a piece; first = exterior, rest = holes).
 #'
@@ -57,9 +57,9 @@ sf_to_polygons <- function(sf_data) {
 #' installation. The returned object is an sf-class data frame, which downstream
 #' users would manipulate using sf.
 #'
-#' @param polygons A `brain_polygons` tibble produced by [sf_to_polygons()] or
+#' @param polygons A `brain_polygons` data.frame produced by [sf_to_polygons()] or
 #'   constructed directly: one row per `label`, with a `geometry` list-column
-#'   of tibbles containing `view`, `x`, `y`, `group`, `subgroup`.
+#'   of data.frames containing `view`, `x`, `y`, `group`, `subgroup`.
 #'
 #' @return An sf-class data frame with columns `label`, `view`, `geometry`
 #'   (one row per label×view, geometry is MULTIPOLYGON).
@@ -102,7 +102,7 @@ polygons_to_sf <- function(polygons) {
 #' Validate a brain_polygons object
 #'
 #' @param polygons object to validate
-#' @return validated polygons (as tibble)
+#' @return validated polygons (as data.frame)
 #' @keywords internal
 #' @noRd
 validate_polygons <- function(polygons) {
@@ -146,7 +146,7 @@ validate_polygons <- function(polygons) {
   )
   if (any(miss_cols)) {
     cli::cli_abort(c(
-      "Each {.field geometry} tibble needs columns {.field {nested_required}}.",
+      "Each {.field geometry} data.frame needs columns {.field {nested_required}}.",
       "x" = "Missing columns for: {.val {polygons$label[miss_cols]}}."
     ))
   }
@@ -154,7 +154,7 @@ validate_polygons <- function(polygons) {
   empty <- vapply(geoms, function(g) nrow(g) == 0L, logical(1))
   if (any(empty)) {
     cli::cli_abort(
-      "Geometry tibble is empty for: {.val {polygons$label[empty]}}."
+      "Geometry data.frame is empty for: {.val {polygons$label[empty]}}."
     )
   }
 

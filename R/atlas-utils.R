@@ -225,10 +225,10 @@ atlas_region_remove <- function(
 #' 2D geometry is drawn in row order, so contextual (non-core) regions must
 #' come first to render behind the core regions they may overlap. Stable
 #' within each group, preserving existing view order. Works on either an sf
-#' data.frame (one row per label/view) or a `brain_polygons` tibble (one row
+#' data.frame (one row per label/view) or a `brain_polygons` data.frame (one row
 #' per label) — both carry a `label` column — so reordering needs no sf.
 #'
-#' @param geom An sf data.frame, a `brain_polygons` tibble, or NULL.
+#' @param geom An sf data.frame, a `brain_polygons` data.frame, or NULL.
 #' @param core_labels Character vector of labels still present in core.
 #' @return Reordered geometry of the same class, or NULL if `geom` is NULL.
 #' @noRd
