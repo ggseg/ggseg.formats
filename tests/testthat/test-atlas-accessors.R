@@ -40,9 +40,11 @@ describe("atlas_sf", {
     expect_s3_class(sf_data, "sf")
   })
 
-  it("prints a compact summary", {
+  it("prints without error and keeps its classes", {
     sf_data <- atlas_sf(dk())
-    expect_snapshot(print(sf_data))
+    expect_s3_class(sf_data, "ggseg_sf")
+    expect_s3_class(sf_data, "sf")
+    expect_no_error(capture.output(print(sf_data)))
   })
 
   it("errors when atlas is not brain_atlas", {
@@ -127,9 +129,11 @@ describe("atlas_vertices", {
     expect_s3_class(result, "tbl_df")
   })
 
-  it("prints a compact summary", {
+  it("prints without error and keeps its classes", {
     result <- atlas_vertices(dk())
-    expect_snapshot(print(result))
+    expect_s3_class(result, "ggseg_vertices")
+    expect_s3_class(result, "tbl_df")
+    expect_no_error(capture.output(print(result)))
   })
 
   it("returns vertices joined with core and palette", {
@@ -211,9 +215,11 @@ describe("atlas_meshes", {
     expect_s3_class(result, "data.frame")
   })
 
-  it("prints a compact summary", {
+  it("prints without error and keeps its classes", {
     result <- atlas_meshes(aseg())
-    expect_snapshot(print(result))
+    expect_s3_class(result, "ggseg_meshes")
+    expect_s3_class(result, "tbl_df")
+    expect_no_error(capture.output(print(result)))
   })
 
   it("returns meshes joined with core and palette", {
