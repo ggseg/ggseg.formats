@@ -19,10 +19,10 @@ polygons_to_sf(polygons)
 
 - polygons:
 
-  A `brain_polygons` tibble produced by
+  A `brain_polygons` data.frame produced by
   [`sf_to_polygons()`](https://ggsegverse.github.io/ggseg.formats/reference/sf_to_polygons.md)
   or constructed directly: one row per `label`, with a `geometry`
-  list-column of tibbles containing `view`, `x`, `y`, `group`,
+  list-column of data.frames containing `view`, `x`, `y`, `group`,
   `subgroup`.
 
 ## Value

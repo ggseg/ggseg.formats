@@ -239,19 +239,16 @@ dk() |>
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (vertices)
 #> ────────────────────────────────────────────────────────────────────────────────
-#> # A tibble: 12 × 4
-#>    hemi  region                 label                   lobe   
-#>    <chr> <chr>                  <chr>                   <chr>  
-#>  1 left  caudal middle frontal  lh_caudalmiddlefrontal  frontal
-#>  2 left  lateral orbitofrontal  lh_lateralorbitofrontal frontal
-#>  3 left  medial orbitofrontal   lh_medialorbitofrontal  frontal
-#>  4 left  rostral middle frontal lh_rostralmiddlefrontal frontal
-#>  5 left  superior frontal       lh_superiorfrontal      frontal
-#>  6 left  frontal pole           lh_frontalpole          frontal
-#>  7 right caudal middle frontal  rh_caudalmiddlefrontal  frontal
-#>  8 right lateral orbitofrontal  rh_lateralorbitofrontal frontal
-#>  9 right medial orbitofrontal   rh_medialorbitofrontal  frontal
+#>     hemi                 region                   label    lobe
+#> 1   left  caudal middle frontal  lh_caudalmiddlefrontal frontal
+#> 2   left  lateral orbitofrontal lh_lateralorbitofrontal frontal
+#> 3   left   medial orbitofrontal  lh_medialorbitofrontal frontal
+#> 4   left rostral middle frontal lh_rostralmiddlefrontal frontal
+#> 5   left       superior frontal      lh_superiorfrontal frontal
+#> 6   left           frontal pole          lh_frontalpole frontal
+#> 7  right  caudal middle frontal  rh_caudalmiddlefrontal frontal
+#> 8  right  lateral orbitofrontal rh_lateralorbitofrontal frontal
+#> 9  right   medial orbitofrontal  rh_medialorbitofrontal frontal
 #> 10 right rostral middle frontal rh_rostralmiddlefrontal frontal
-#> 11 right superior frontal       rh_superiorfrontal      frontal
-#> 12 right frontal pole           rh_frontalpole          frontal
+#> ... with 2 more rows
 ```

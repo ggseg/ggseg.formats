@@ -27,7 +27,7 @@ read_freesurfer_table(path, measure = NULL, ...)
 
 ## Value
 
-tibble with stats information for subjects from FreeSurfer
+data.frame with stats information for subjects from FreeSurfer
 
 ## Examples
 

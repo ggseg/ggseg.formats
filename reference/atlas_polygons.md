@@ -18,7 +18,7 @@ atlas_polygons(atlas)
 
 ## Value
 
-a `brain_polygons` tibble
+a `brain_polygons` data.frame
 
 ## Examples
 

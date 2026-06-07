@@ -1,7 +1,7 @@
 # Convert an sf atlas geometry to the sf-optional polygon format
 
 Extracts coordinates from an sf-backed atlas geometry table and returns
-a nested tibble keyed by `label`. Each row carries a `geometry`
+a nested data.frame keyed by `label`. Each row carries a `geometry`
 list-column containing the per-view, per-ring point coordinates needed
 to render with
 [`ggplot2::geom_polygon()`](https://ggplot2.tidyverse.org/reference/geom_polygon.html)
@@ -22,8 +22,8 @@ sf_to_polygons(sf_data)
 
 ## Value
 
-A tibble with one row per `label` and a `geometry` list-column. Each
-nested element is a tibble with columns `view`, `x`, `y`, `group`
+A data.frame with one row per `label` and a `geometry` list-column. Each
+nested element is a data.frame with columns `view`, `x`, `y`, `group`
 (disjoint polygon piece within a label/view), `subgroup` (ring within a
 piece; first = exterior, rest = holes).
 

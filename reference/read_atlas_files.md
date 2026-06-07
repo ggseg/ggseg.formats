@@ -22,7 +22,7 @@ read_atlas_files(subjects_dir, atlas)
 
 ## Value
 
-tibble with stats information for subjects from FreeSurfer
+data.frame with stats information for subjects from FreeSurfer
 
 ## Examples
 

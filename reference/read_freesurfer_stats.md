@@ -22,7 +22,7 @@ read_freesurfer_stats(path, rename = TRUE)
 
 ## Value
 
-tibble with stats information for subjects from FreeSurfer
+data.frame with stats information for subjects from FreeSurfer
 
 ## Examples
 

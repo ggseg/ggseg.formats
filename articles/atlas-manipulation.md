@@ -280,47 +280,18 @@ publication_aseg
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (meshes)
 #> ────────────────────────────────────────────────────────────────────────────────
-#> # A tibble: 38 × 4
-#>    hemi  region          label                   structure    
-#>    <chr> <chr>           <chr>                   <chr>        
-#>  1 left  Cerebellum      Left-Cerebellum-Cortex  cerebellum   
-#>  2 left  Cerebellum      Left-Cerebellum-Cortex  cerebellum   
-#>  3 left  Thalamus        Left-Thalamus           basal ganglia
-#>  4 left  Thalamus        Left-Thalamus           basal ganglia
-#>  5 left  Thalamus Proper Left-Thalamus           basal ganglia
-#>  6 left  Thalamus Proper Left-Thalamus           basal ganglia
-#>  7 left  Caudate         Left-Caudate            basal ganglia
-#>  8 left  Caudate         Left-Caudate            basal ganglia
-#>  9 left  Putamen         Left-Putamen            basal ganglia
-#> 10 left  Putamen         Left-Putamen            basal ganglia
-#> 11 left  Pallidum        Left-Pallidum           basal ganglia
-#> 12 left  Pallidum        Left-Pallidum           basal ganglia
-#> 13 NA    Brain Stem      Brain-Stem              brainstem    
-#> 14 left  Hippocampus     Left-Hippocampus        limbic       
-#> 15 left  Hippocampus     Left-Hippocampus        limbic       
-#> 16 left  Amygdala        Left-Amygdala           limbic       
-#> 17 left  Amygdala        Left-Amygdala           limbic       
-#> 18 left  ventraldc       Left-VentralDC          NA           
-#> 19 left  vessel          Left-vessel             NA           
-#> 20 right Cerebellum      Right-Cerebellum-Cortex cerebellum   
-#> 21 right Cerebellum      Right-Cerebellum-Cortex cerebellum   
-#> 22 right Thalamus        Right-Thalamus          basal ganglia
-#> 23 right Thalamus        Right-Thalamus          basal ganglia
-#> 24 right Thalamus Proper Right-Thalamus          basal ganglia
-#> 25 right Thalamus Proper Right-Thalamus          basal ganglia
-#> 26 right Caudate         Right-Caudate           basal ganglia
-#> 27 right Caudate         Right-Caudate           basal ganglia
-#> 28 right Putamen         Right-Putamen           basal ganglia
-#> 29 right Putamen         Right-Putamen           basal ganglia
-#> 30 right Pallidum        Right-Pallidum          basal ganglia
-#> 31 right Pallidum        Right-Pallidum          basal ganglia
-#> 32 right Hippocampus     Right-Hippocampus       limbic       
-#> 33 right Hippocampus     Right-Hippocampus       limbic       
-#> 34 right Amygdala        Right-Amygdala          limbic       
-#> 35 right Amygdala        Right-Amygdala          limbic       
-#> 36 right ventraldc       Right-VentralDC         NA           
-#> 37 right vessel          Right-vessel            NA           
-#> 38 NA    Optic Chiasm    Optic-Chiasm            other
+#>    hemi          region                  label     structure
+#> 1  left      Cerebellum Left-Cerebellum-Cortex    cerebellum
+#> 2  left      Cerebellum Left-Cerebellum-Cortex    cerebellum
+#> 3  left        Thalamus          Left-Thalamus basal ganglia
+#> 4  left        Thalamus          Left-Thalamus basal ganglia
+#> 5  left Thalamus Proper          Left-Thalamus basal ganglia
+#> 6  left Thalamus Proper          Left-Thalamus basal ganglia
+#> 7  left         Caudate           Left-Caudate basal ganglia
+#> 8  left         Caudate           Left-Caudate basal ganglia
+#> 9  left         Putamen           Left-Putamen basal ganglia
+#> 10 left         Putamen           Left-Putamen basal ganglia
+#> ... with 28 more rows
 ```
 
 Each function returns a valid `ggseg_atlas`, so you can inspect

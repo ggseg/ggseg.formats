@@ -1,8 +1,8 @@
 # Get the raw 2D geometry of an atlas
 
 Returns the single 2D geometry object stored in `atlas$data$geom`, which
-is either an sf-class data frame or a `brain_polygons` tibble. Its class
-determines which rendering path is used downstream.
+is either an sf-class data frame or a `brain_polygons` data.frame. Its
+class determines which rendering path is used downstream.
 
 ## Usage
 

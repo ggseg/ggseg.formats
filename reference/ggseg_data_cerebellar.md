@@ -16,7 +16,7 @@ ggseg_data_cerebellar(geom = NULL, vertices = NULL, meshes = NULL, ...)
 
   2D geometry for rendering, stored in the single `geom` slot: either an
   sf data.frame (columns `label`, `view`, `geometry`) or a
-  `brain_polygons` tibble (see
+  `brain_polygons` data.frame (see
   [`sf_to_polygons()`](https://ggsegverse.github.io/ggseg.formats/reference/sf_to_polygons.md)).
   The class of `geom` determines the rendering path used downstream.
 
