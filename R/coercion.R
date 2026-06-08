@@ -49,16 +49,16 @@ as_ggseg_atlas.brain_atlas <- function(x) {
     return(restamp_class(x))
   }
 
-  if (!is.null(x$core)) {
-    if (!is.null(x$sf) || !is.null(x$vertices) || !is.null(x$meshes)) {
-      return(convert_legacy_structure(x))
-    }
-    if (!is.null(x$data) && is.data.frame(x$data)) {
-      return(convert_legacy_brain_data(x))
-    }
+  has_legacy_slots <- !all(vapply(
+    list(x$sf, x$vertices, x$meshes),
+    is.null,
+    logical(1)
+  ))
+  if (!is.null(x$core) && has_legacy_slots) {
+    return(convert_legacy_structure(x))
   }
 
-  if (is.null(x$core) && !is.null(x$data) && is.data.frame(x$data)) {
+  if (!is.null(x$data) && is.data.frame(x$data)) {
     return(convert_legacy_brain_data(x))
   }
 

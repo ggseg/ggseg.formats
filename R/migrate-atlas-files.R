@@ -40,41 +40,8 @@ migrate_atlas_files <- function(path = "data", keep_sf = FALSE, quiet = FALSE) {
   }
 
   migrated <- character()
-
   for (f in rda_files) {
-    env <- new.env(parent = emptyenv())
-    nms <- load(f, envir = env)
-    changed <- FALSE
-
-    for (nm in nms) {
-      obj <- env[[nm]]
-      if (!is_atlas_for_migration(obj)) {
-        next
-      }
-      geom <- geom_from_data(obj$data)
-      if (is.null(geom)) {
-        next
-      }
-      target <- if (keep_sf) {
-        if (inherits(geom, "brain_polygons")) polygons_to_sf(geom) else geom
-      } else {
-        if (inherits(geom, "sf")) sf_to_polygons(geom) else geom
-      }
-      already_migrated <- identical(obj$data$geom, target) &&
-        is.null(obj$data$sf) &&
-        is.null(obj$data$polygons)
-      if (already_migrated) {
-        next
-      }
-      obj$data$geom <- target
-      obj$data$sf <- NULL
-      obj$data$polygons <- NULL
-      env[[nm]] <- obj
-      changed <- TRUE
-    }
-
-    if (changed) {
-      save(list = nms, file = f, envir = env, compress = "xz")
+    if (migrate_rda_file(f, keep_sf)) {
       migrated <- c(migrated, f)
       if (!quiet) {
         cli::cli_alert_success("Migrated {.file {basename(f)}}.")
@@ -87,6 +54,72 @@ migrate_atlas_files <- function(path = "data", keep_sf = FALSE, quiet = FALSE) {
   }
 
   invisible(migrated)
+}
+
+
+#' Geometry representation a migration should write
+#'
+#' `keep_sf` stores sf; otherwise `brain_polygons`. Geometry already in the
+#' target representation is returned unchanged.
+#' @noRd
+#' @keywords internal
+migration_target_geom <- function(geom, keep_sf) {
+  if (keep_sf) {
+    if (inherits(geom, "brain_polygons")) polygons_to_sf(geom) else geom
+  } else {
+    if (inherits(geom, "sf")) sf_to_polygons(geom) else geom
+  }
+}
+
+
+#' Migrate one loaded object to the single `geom` slot
+#'
+#' Returns the rewritten object, or `NULL` when the object is not a migratable
+#' atlas, has no 2D geometry, or is already in the target form.
+#' @noRd
+#' @keywords internal
+migrate_atlas_object <- function(obj, keep_sf) {
+  if (!is_atlas_for_migration(obj)) {
+    return(NULL)
+  }
+  geom <- geom_from_data(obj$data)
+  if (is.null(geom)) {
+    return(NULL)
+  }
+  target <- migration_target_geom(geom, keep_sf)
+  already_migrated <- identical(obj$data$geom, target) &&
+    is.null(obj$data$sf) &&
+    is.null(obj$data$polygons)
+  if (already_migrated) {
+    return(NULL)
+  }
+  obj$data$geom <- target
+  obj$data$sf <- NULL
+  obj$data$polygons <- NULL
+  obj
+}
+
+
+#' Migrate every atlas object in one `.rda` file in place
+#'
+#' Returns `TRUE` if the file was rewritten, `FALSE` if nothing changed.
+#' @noRd
+#' @keywords internal
+migrate_rda_file <- function(f, keep_sf) {
+  env <- new.env(parent = emptyenv())
+  nms <- load(f, envir = env)
+  changed <- FALSE
+  for (nm in nms) {
+    migrated <- migrate_atlas_object(env[[nm]], keep_sf)
+    if (!is.null(migrated)) {
+      env[[nm]] <- migrated
+      changed <- TRUE
+    }
+  }
+  if (changed) {
+    save(list = nms, file = f, envir = env, compress = "xz")
+  }
+  changed
 }
 
 

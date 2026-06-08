@@ -283,84 +283,11 @@ as.list.ggseg_atlas <- function(x, ...) {
 
 #' @export
 as.data.frame.ggseg_atlas <- function(x, ...) {
-  geom <- if (inherits(x$data, "ggseg_atlas_data")) {
-    geom_from_data(x$data)
-  } else {
-    NULL
-  }
-  has_2d_slot <- !is.null(geom) ||
-    inherits(x$data, "sf") ||
-    inherits(x$data, "data.frame")
-  if (!has_2d_slot) {
-    cli::cli_abort(
-      "Cannot convert ggseg_atlas to data.frame: no 2D geometry."
-    )
-  }
-  require_sf("as.data.frame.ggseg_atlas()")
-
-  sf_data <- if (!is.null(geom)) {
-    sf::st_as_sf(
-      if (inherits(geom, "brain_polygons")) {
-        polygons_to_sf(geom)
-      } else {
-        geom
-      }
-    )
-  } else if (inherits(x$data, "sf") || inherits(x$data, "data.frame")) {
-    sf::st_as_sf(x$data)
-  } else {
-    NULL
-  }
-
-  n <- if (!is.null(sf_data)) nrow(sf_data) else 0
-  if (is.null(n) || n == 0) {
-    cli::cli_abort(
-      "Cannot convert ggseg_atlas to data.frame: no 2D geometry."
-    )
-  }
-
-  if (!is.null(x$core)) {
-    has_sf_hemi <- "hemi" %in% names(sf_data)
-    if (has_sf_hemi) {
-      sf_data$.sf_hemi <- sf_data$hemi
-    }
-    core_cols <- c("hemi", "region")
-    sf_has_core <- any(core_cols %in% names(sf_data))
-    if (sf_has_core) {
-      sf_data[core_cols] <- NULL
-    }
-    result <- merge(sf_data, x$core, by = "label", all.x = TRUE)
-    if (has_sf_hemi) {
-      missing <- is.na(result$hemi) & !is.na(result$.sf_hemi)
-      if (any(missing)) {
-        result$hemi[missing] <- result$.sf_hemi[missing]
-      }
-      result$.sf_hemi <- NULL
-    }
-  } else {
-    result <- sf_data
-  }
+  sf_data <- as_sf_for_data_frame(x)
+  result <- merge_core_into_sf(sf_data, x$core)
 
   if (x$type == "cortical") {
-    if (!"hemi" %in% names(result)) {
-      result$hemi <- NA_character_
-    }
-    missing_hemi <- is.na(result$hemi)
-    if (any(missing_hemi)) {
-      result$hemi[missing_hemi] <- ifelse(
-        grepl("^lh[_.]", result$label[missing_hemi]),
-        "left",
-        ifelse(
-          grepl("^rh[_.]", result$label[missing_hemi]),
-          "right",
-          NA_character_
-        )
-      )
-    }
-    still_missing <- is.na(result$hemi)
-    if (any(still_missing)) {
-      result <- result[!still_missing, , drop = FALSE]
-    }
+    result <- infer_cortical_hemi(result)
   }
 
   result$atlas <- x$atlas
@@ -374,6 +301,103 @@ as.data.frame.ggseg_atlas <- function(x, ...) {
   result <- result[order(is_context, decreasing = TRUE), , drop = FALSE]
 
   sf::st_as_sf(result)
+}
+
+
+#' Resolve an atlas's 2D geometry to a non-empty sf data frame
+#'
+#' Used by [as.data.frame.ggseg_atlas()]. Aborts when there is no 2D geometry
+#' (or it is empty) and requires sf.
+#' @noRd
+#' @keywords internal
+as_sf_for_data_frame <- function(x) {
+  geom <- if (inherits(x$data, "ggseg_atlas_data")) {
+    geom_from_data(x$data)
+  } else {
+    NULL
+  }
+  has_2d_slot <- !is.null(geom) ||
+    inherits(x$data, "sf") ||
+    inherits(x$data, "data.frame")
+  if (!has_2d_slot) {
+    cli::cli_abort("Cannot convert ggseg_atlas to data.frame: no 2D geometry.")
+  }
+  require_sf("as.data.frame.ggseg_atlas()")
+
+  sf_data <- if (!is.null(geom)) {
+    sf::st_as_sf(
+      if (inherits(geom, "brain_polygons")) polygons_to_sf(geom) else geom
+    )
+  } else if (inherits(x$data, "sf") || inherits(x$data, "data.frame")) {
+    sf::st_as_sf(x$data)
+  } else {
+    NULL
+  }
+
+  n <- if (!is.null(sf_data)) nrow(sf_data) else 0
+  if (is.null(n) || n == 0) {
+    cli::cli_abort("Cannot convert ggseg_atlas to data.frame: no 2D geometry.")
+  }
+  sf_data
+}
+
+
+#' Merge atlas `core` metadata into the sf geometry by label
+#'
+#' Returns the sf data unchanged when `core` is `NULL`. Preserves an sf-side
+#' `hemi` column to fill gaps left by the join.
+#' @noRd
+#' @keywords internal
+merge_core_into_sf <- function(sf_data, core) {
+  if (is.null(core)) {
+    return(sf_data)
+  }
+  has_sf_hemi <- "hemi" %in% names(sf_data)
+  if (has_sf_hemi) {
+    sf_data$.sf_hemi <- sf_data$hemi
+  }
+  core_cols <- c("hemi", "region")
+  if (any(core_cols %in% names(sf_data))) {
+    sf_data[core_cols] <- NULL
+  }
+  result <- merge(sf_data, core, by = "label", all.x = TRUE)
+  if (has_sf_hemi) {
+    missing <- is.na(result$hemi) & !is.na(result$.sf_hemi)
+    if (any(missing)) {
+      result$hemi[missing] <- result$.sf_hemi[missing]
+    }
+    result$.sf_hemi <- NULL
+  }
+  result
+}
+
+
+#' Infer missing hemispheres from `lh`/`rh` label prefixes (cortical atlases)
+#'
+#' Rows whose hemisphere cannot be determined are dropped.
+#' @noRd
+#' @keywords internal
+infer_cortical_hemi <- function(result) {
+  if (!"hemi" %in% names(result)) {
+    result$hemi <- NA_character_
+  }
+  missing_hemi <- is.na(result$hemi)
+  if (any(missing_hemi)) {
+    result$hemi[missing_hemi] <- ifelse(
+      grepl("^lh[_.]", result$label[missing_hemi]),
+      "left",
+      ifelse(
+        grepl("^rh[_.]", result$label[missing_hemi]),
+        "right",
+        NA_character_
+      )
+    )
+  }
+  still_missing <- is.na(result$hemi)
+  if (any(still_missing)) {
+    result <- result[!still_missing, , drop = FALSE]
+  }
+  result
 }
 
 #' Resolve per-label fill colours for plotting

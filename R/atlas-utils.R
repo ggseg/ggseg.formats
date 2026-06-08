@@ -338,14 +338,7 @@ atlas_region_op <- function(
   }
 
   was_polygon_only <- is.null(data_sf(atlas$data))
-  sf_data <- data_sf(atlas$data)
-  if (is.null(sf_data)) {
-    poly <- data_poly(atlas$data)
-    if (is.null(poly)) {
-      cli::cli_abort("Atlas has no 2D geometry to operate on.")
-    }
-    sf_data <- polygons_to_sf(poly)
-  }
+  sf_data <- region_op_sf_data(atlas$data)
   geom_col <- attr(sf_data, "sf_column")
 
   label_for <- function(pattern) {
@@ -360,45 +353,24 @@ atlas_region_op <- function(
   x_labels <- label_for(x)
   y_labels <- label_for(y)
 
-  combine <- switch(
-    action,
-    difference = sf::st_difference,
-    intersection = sf::st_intersection,
-    union = function(a, b) sf::st_union(c(a, b)),
-    symdifference = sf::st_sym_difference
-  )
-
+  combine <- region_op_combine(action)
   template <- sf_data[sf_data$label %in% x_labels, , drop = FALSE][
     0,
     ,
     drop = FALSE
   ]
   result_rows <- lapply(unique(sf_data$view), function(v) {
-    in_view <- sf_data$view == v
-    gx <- sf_data[[geom_col]][in_view & sf_data$label %in% x_labels]
-    gy <- sf_data[[geom_col]][in_view & sf_data$label %in% y_labels]
-    if (length(gx) == 0) {
-      return(NULL)
-    }
-    gx <- sf::st_union(sf::st_make_valid(gx))
-    geom <- if (length(gy) > 0) {
-      combine(gx, sf::st_union(sf::st_make_valid(gy)))
-    } else if (action == "intersection") {
-      gx[0]
-    } else {
-      gx
-    }
-    geom <- sf::st_make_valid(geom)
-    if (length(geom) == 0 || all(sf::st_is_empty(geom))) {
-      return(NULL)
-    }
-    row <- template[1, , drop = FALSE]
-    row$label <- into
-    row$view <- v
-    geom <- sf::st_union(geom)
-    sf::st_crs(geom) <- sf::st_crs(sf_data)
-    sf::st_geometry(row) <- geom
-    row
+    region_op_view(
+      v,
+      sf_data,
+      geom_col,
+      x_labels,
+      y_labels,
+      combine,
+      action,
+      template,
+      into
+    )
   })
   result <- do.call(rbind, result_rows)
   if (is.null(result) || nrow(result) == 0) {
@@ -407,20 +379,9 @@ atlas_region_op <- function(
 
   new_sf <- rbind(sf_data[sf_data$label != into, , drop = FALSE], result)
 
-  new_core <- atlas$core
-  new_palette <- atlas$palette
-  if (!is.null(colour)) {
-    if (!into %in% new_core$label) {
-      core_row <- new_core[1, , drop = FALSE]
-      core_row[] <- NA
-      core_row$label <- into
-      if ("region" %in% names(core_row)) {
-        core_row$region <- into
-      }
-      new_core <- rbind(new_core, core_row)
-    }
-    new_palette[[into]] <- colour
-  }
+  meta <- add_op_region_meta(atlas$core, atlas$palette, into, colour)
+  new_core <- meta$core
+  new_palette <- meta$palette
 
   # Context regions (not in core) draw behind core regions; keep that order.
   new_sf <- order_context_behind(new_sf, new_core$label)
@@ -440,6 +401,102 @@ atlas_region_op <- function(
     ),
     class = class(atlas)
   )
+}
+
+
+#' sf geometry for a region op, rehydrating a polygon-only atlas
+#' @noRd
+#' @keywords internal
+region_op_sf_data <- function(data) {
+  sf_data <- data_sf(data)
+  if (is.null(sf_data)) {
+    poly <- data_poly(data)
+    if (is.null(poly)) {
+      cli::cli_abort("Atlas has no 2D geometry to operate on.")
+    }
+    sf_data <- polygons_to_sf(poly)
+  }
+  sf_data
+}
+
+
+#' Map a boolean action to its sf combiner
+#' @noRd
+#' @keywords internal
+region_op_combine <- function(action) {
+  switch(
+    action,
+    difference = sf::st_difference,
+    intersection = sf::st_intersection,
+    union = function(a, b) sf::st_union(c(a, b)),
+    symdifference = sf::st_sym_difference
+  )
+}
+
+
+#' Apply a boolean region op within a single view
+#'
+#' Returns a one-row sf result for view `v`, or `NULL` when there is no `x`
+#' geometry in the view or the op yields empty geometry.
+#' @noRd
+#' @keywords internal
+region_op_view <- function(
+  v,
+  sf_data,
+  geom_col,
+  x_labels,
+  y_labels,
+  combine,
+  action,
+  template,
+  into
+) {
+  in_view <- sf_data$view == v
+  gx <- sf_data[[geom_col]][in_view & sf_data$label %in% x_labels]
+  gy <- sf_data[[geom_col]][in_view & sf_data$label %in% y_labels]
+  if (length(gx) == 0) {
+    return(NULL)
+  }
+  gx <- sf::st_union(sf::st_make_valid(gx))
+  geom <- if (length(gy) > 0) {
+    combine(gx, sf::st_union(sf::st_make_valid(gy)))
+  } else if (action == "intersection") {
+    gx[0]
+  } else {
+    gx
+  }
+  geom <- sf::st_make_valid(geom)
+  if (length(geom) == 0 || all(sf::st_is_empty(geom))) {
+    return(NULL)
+  }
+  row <- template[1, , drop = FALSE]
+  row$label <- into
+  row$view <- v
+  geom <- sf::st_union(geom)
+  sf::st_crs(geom) <- sf::st_crs(sf_data)
+  sf::st_geometry(row) <- geom
+  row
+}
+
+
+#' Add a result region to `core`/`palette` when a colour is given
+#' @noRd
+#' @keywords internal
+add_op_region_meta <- function(core, palette, into, colour) {
+  if (is.null(colour)) {
+    return(list(core = core, palette = palette))
+  }
+  if (!into %in% core$label) {
+    core_row <- core[1, , drop = FALSE]
+    core_row[] <- NA
+    core_row$label <- into
+    if ("region" %in% names(core_row)) {
+      core_row$region <- into
+    }
+    core <- rbind(core, core_row)
+  }
+  palette[[into]] <- colour
+  list(core = core, palette = palette)
 }
 
 
@@ -770,18 +827,10 @@ atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
 #' @export
 atlas_view_gather <- function(atlas, gap = 0.15) {
   sf_data <- data_sf(atlas$data)
-  if (is.null(sf_data) || !inherits(sf_data, "sf") || nrow(sf_data) == 0) {
-    if (is.null(sf_data) && !is.null(data_poly(atlas$data))) {
-      new_poly <- reposition_polygons(
-        data_poly(atlas$data),
-        type = atlas$type,
-        gap = gap
-      )
-      return(set_atlas_polygons(atlas, new_poly))
-    }
-    if (is.null(sf_data) && is.null(data_poly(atlas$data))) {
-      cli::cli_warn("Atlas has no 2D geometry")
-    }
+  if (is.null(sf_data)) {
+    return(gather_without_sf(atlas, gap))
+  }
+  if (!inherits(sf_data, "sf") || nrow(sf_data) == 0) {
     return(atlas)
   }
 
@@ -791,6 +840,23 @@ atlas_view_gather <- function(atlas, gap = 0.15) {
   }
   new_data <- rebuild_atlas_data(atlas, new_sf)
   rebuild_atlas(atlas, new_data)
+}
+
+
+#' Gather an atlas that has no sf geometry
+#'
+#' Repositions the polygon representation when present; otherwise warns. Used
+#' by [atlas_view_gather()]. Returns the (possibly unchanged) atlas.
+#' @noRd
+#' @keywords internal
+gather_without_sf <- function(atlas, gap) {
+  poly <- data_poly(atlas$data)
+  if (!is.null(poly)) {
+    new_poly <- reposition_polygons(poly, type = atlas$type, gap = gap)
+    return(set_atlas_polygons(atlas, new_poly))
+  }
+  cli::cli_warn("Atlas has no 2D geometry")
+  atlas
 }
 
 
