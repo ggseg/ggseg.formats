@@ -868,7 +868,10 @@ describe("atlas_view_keep", {
   it("keeps multiple views with vector", {
     atlas <- make_multiview_atlas()
     result <- atlas_view_keep(atlas, c("axial_1", "sagittal"))
-    expect_identical(sort(unique(result$data$geom$view)), c("axial_1", "sagittal"))
+    expect_identical(
+      sort(unique(result$data$geom$view)),
+      c("axial_1", "sagittal")
+    )
   })
 
   it("warns when no views match", {
@@ -1243,7 +1246,10 @@ describe("subclass preservation", {
 
   it("bundled atlases have correct subclasses", {
     expect_identical(class(dk()), c("cortical_atlas", "ggseg_atlas", "list"))
-    expect_identical(class(aseg()), c("subcortical_atlas", "ggseg_atlas", "list"))
+    expect_identical(
+      class(aseg()),
+      c("subcortical_atlas", "ggseg_atlas", "list")
+    )
     expect_identical(class(tracula()), c("tract_atlas", "ggseg_atlas", "list"))
   })
 })
