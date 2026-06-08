@@ -66,7 +66,7 @@ validate_vertices <- function(vertices) {
     ))
   }
 
-  dplyr::as_tibble(vertices)
+  as_tbl(vertices)
 }
 
 

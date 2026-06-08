@@ -12,7 +12,7 @@ brain_data_tract(sf = NULL, centerlines = NULL, meshes = NULL, ...)
 \arguments{
 \item{geom}{2D geometry for rendering, stored in the single \code{geom} slot:
 either an sf data.frame (columns \code{label}, \code{view}, \code{geometry}) or a
-\code{brain_polygons} tibble (see \code{\link[=sf_to_polygons]{sf_to_polygons()}}). The class of \code{geom}
+\code{brain_polygons} data.frame (see \code{\link[=sf_to_polygons]{sf_to_polygons()}}). The class of \code{geom}
 determines the rendering path used downstream.}
 
 \item{centerlines}{data.frame with columns:

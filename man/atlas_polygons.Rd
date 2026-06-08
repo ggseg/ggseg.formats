@@ -10,7 +10,7 @@ atlas_polygons(atlas)
 \item{atlas}{a ggseg_atlas object}
 }
 \value{
-a \code{brain_polygons} tibble
+a \code{brain_polygons} data.frame
 }
 \description{
 Returns the \code{brain_polygons} representation of the atlas geometry,

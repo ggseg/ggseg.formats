@@ -29,7 +29,7 @@ atlas_palette <- function(name = "dk", ...) {
 #' Get the raw 2D geometry of an atlas
 #'
 #' Returns the single 2D geometry object stored in `atlas$data$geom`, which is
-#' either an sf-class data frame or a `brain_polygons` tibble. Its class
+#' either an sf-class data frame or a `brain_polygons` data.frame. Its class
 #' determines which rendering path is used downstream.
 #'
 #' For backward compatibility with released atlases built before the unified
@@ -163,7 +163,7 @@ atlas_sf <- function(atlas) {
 #' converting from sf when needed. The sf-optional counterpart to [atlas_sf()].
 #'
 #' @param atlas a ggseg_atlas object
-#' @return a `brain_polygons` tibble
+#' @return a `brain_polygons` data.frame
 #' @export
 #' @examples
 #' polys <- atlas_polygons(dk())
@@ -204,7 +204,7 @@ atlas_vertices <- function(atlas) {
     cli::cli_abort("Atlas does not contain vertices for 3D rendering.")
   }
 
-  result <- dplyr::left_join(atlas$data$vertices, atlas$core, by = "label")
+  result <- df_left_join(atlas$data$vertices, atlas$core, by = "label")
 
   if (!is.null(atlas$palette)) {
     result$colour <- unname(atlas$palette[result$label])
@@ -235,7 +235,7 @@ atlas_meshes <- function(atlas) {
     cli::cli_abort("Atlas does not contain meshes for 3D rendering.")
   }
 
-  result <- dplyr::left_join(atlas$data$meshes, atlas$core, by = "label")
+  result <- df_left_join(atlas$data$meshes, atlas$core, by = "label")
 
   if (!is.null(atlas$palette)) {
     result$colour <- unname(atlas$palette[result$label])

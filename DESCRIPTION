@@ -17,11 +17,9 @@ Depends:
     R (>= 4.1.0)
 Imports:
     cli,
-    dplyr,
     lifecycle,
     rlang,
-    sfheaders,
-    tidyr
+    sfheaders
 Suggests:
     covr,
     devtools,

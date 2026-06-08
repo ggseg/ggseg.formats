@@ -35,9 +35,7 @@
 #'
 #' @return A `ggseg_atlas` object.
 #' @export
-#' @importFrom dplyr case_when distinct
 #' @importFrom rlang %||%
-#' @importFrom tidyr unnest
 #'
 #' @examples
 #' \donttest{
@@ -154,10 +152,13 @@ extract_3d_data <- function(
   palette,
   sf_data
 ) {
-  dt <- tidyr::unnest(atlas_3d, ggseg_3d)
+  dt <- df_unnest(atlas_3d, "ggseg_3d")
 
   if (is.null(core)) {
-    core <- dplyr::distinct(dt[!is.na(dt$label), ], hemi, region, label)
+    core <- df_distinct(
+      dt[!is.na(dt$label), ],
+      c("hemi", "region", "label")
+    )
   }
   if (is.null(palette) && "colour" %in% names(dt)) {
     palette <- stats::setNames(dt$colour, dt$label)

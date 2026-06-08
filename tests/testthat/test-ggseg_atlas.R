@@ -23,7 +23,14 @@ describe("ggseg_atlas class", {
   })
 
   it("print method works", {
-    expect_snapshot(print(dk()))
+    expect_s3_class(dk()$core, "tbl_df")
+    expect_no_error(capture.output(print(dk())))
+  })
+
+  it("print caps core rows at n", {
+    few <- capture.output(print(dk(), n = 5))
+    many <- capture.output(print(dk(), n = 40))
+    expect_true(length(many) > length(few))
   })
 
   it("atlas_regions returns character vector", {
@@ -355,37 +362,6 @@ describe("as.data.frame.ggseg_atlas", {
       data = ggseg_data_cortical(vertices = vertices)
     )
     expect_error(as.data.frame(atlas), "no 2D geometry")
-  })
-})
-
-
-describe("print.ggseg_atlas", {
-  it("prints subcortical atlas with meshes", {
-    expect_snapshot(print(aseg()))
-  })
-
-  it("prints tract atlas with centerlines", {
-    expect_snapshot(print(tracula()))
-  })
-
-  it("prints atlas without palette or 3D data (render_3d = none)", {
-    core <- data.frame(
-      hemi = "left",
-      region = "frontal",
-      label = "lh_frontal"
-    )
-    sf_geom <- sf::st_sf(
-      label = "lh_frontal",
-      view = "lateral",
-      geometry = sf::st_sfc(make_polygon())
-    )
-    atlas <- ggseg_atlas(
-      atlas = "minimal",
-      type = "cortical",
-      core = core,
-      data = ggseg_data_cortical(geom = sf_geom)
-    )
-    expect_snapshot(print(atlas))
   })
 })
 

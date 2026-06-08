@@ -800,6 +800,27 @@ describe("atlas_core_add", {
     expect_equal(result$core$network[1], "DMN")
     expect_true(is.na(result$core$network[2]))
   })
+
+  it("never adds rows to core", {
+    atlas <- make_test_atlas()
+    meta <- data.frame(
+      region = c("frontal", "parietal"),
+      lobe = c("frontal", "parietal"),
+      stringsAsFactors = FALSE
+    )
+    result <- atlas_core_add(atlas, meta)
+    expect_equal(nrow(result$core), nrow(atlas$core))
+  })
+
+  it("errors when data has duplicate join keys", {
+    atlas <- make_test_atlas()
+    meta <- data.frame(
+      region = c("frontal", "frontal"),
+      lobe = c("a", "b"),
+      stringsAsFactors = FALSE
+    )
+    expect_error(atlas_core_add(atlas, meta), "unique")
+  })
 })
 
 

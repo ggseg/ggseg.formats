@@ -203,7 +203,7 @@ validate_ggseg_atlas <- function(x) {
 
 #' @export
 #' @importFrom stats na.omit
-print.ggseg_atlas <- function(x, ...) {
+print.ggseg_atlas <- function(x, n = 10, ...) {
   data <- x$data
   geom <- geom_from_data(data)
   has_sf <- !is.null(geom)
@@ -259,7 +259,11 @@ print.ggseg_atlas <- function(x, ...) {
 
   cli::cli_rule()
 
-  print(dplyr::as_tibble(x$core), n = nrow(x$core), ...)
+  core <- x$core
+  print(utils::head(as.data.frame(core), n), ...)
+  if (nrow(core) > n) {
+    cli::cli_text("{.emph ... with {nrow(core) - n} more rows}")
+  }
 
   invisible(x)
 }
@@ -278,7 +282,6 @@ as.list.ggseg_atlas <- function(x, ...) {
 
 
 #' @export
-#' @importFrom dplyr left_join select any_of
 as.data.frame.ggseg_atlas <- function(x, ...) {
   geom <- if (inherits(x$data, "ggseg_atlas_data")) {
     geom_from_data(x$data)
@@ -466,21 +469,22 @@ plot.ggseg_atlas <- function(x, ...) {
           )
         )
       } else {
-        # Build NA-separated coordinate vectors without an inner ring loop:
-        # split coords by subgroup, interleave a NA-row separator between rings
-        ring_coords <- split(piece[c("x", "y")], piece$subgroup)[as.character(
-          rings
-        )]
-        n_rings <- length(rings)
-        na_row <- data.frame(x = NA_real_, y = NA_real_)
-        interleaved <- vector("list", 2L * n_rings - 1L)
-        interleaved[seq(1L, 2L * n_rings - 1L, 2L)] <- ring_coords
-        interleaved[seq(2L, 2L * n_rings - 2L, 2L)] <- list(na_row)
-        coords <- do.call(rbind, interleaved)
+        # NA-separated rings; polypath cuts holes via the even-odd rule
+        rings_xy <- split(piece[c("x", "y")], piece$subgroup)[
+          as.character(rings)
+        ]
+        xs <- unlist(
+          lapply(rings_xy, function(r) c(r$x, NA_real_)),
+          use.names = FALSE
+        )
+        ys <- unlist(
+          lapply(rings_xy, function(r) c(r$y, NA_real_)),
+          use.names = FALSE
+        )
         do.call(
           polypath,
           c(
-            list(x = coords$x, y = coords$y),
+            list(x = xs[-length(xs)], y = ys[-length(ys)]),
             utils::modifyList(
               list(col = col, border = "white", lwd = 0.3, rule = "evenodd"),
               dots

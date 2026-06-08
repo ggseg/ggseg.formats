@@ -7,12 +7,10 @@ describe("plot.ggseg_atlas", {
     expect_no_error(plot(dk(), lwd = 0.5, border = "black"))
   })
 
-  it("plots aseg atlas", {
-    expect_no_error(plot(aseg()))
-  })
-
-  it("plots tracula atlas", {
-    expect_no_error(plot(tracula()))
+  it("plots atlases with holes without warning", {
+    # aseg/tracula carry multi-ring regions exercising the polypath branch
+    expect_no_warning(plot(aseg()))
+    expect_no_warning(plot(tracula()))
   })
 
   it("errors when atlas has no geometry", {
