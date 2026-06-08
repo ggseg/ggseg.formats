@@ -23,6 +23,6 @@ Internal conversion primitive. For the atlas-level public API use
 Extracts coordinates from an sf-backed atlas geometry table and returns a
 nested data.frame keyed by \code{label}. Each row carries a \code{geometry} list-column
 containing the per-view, per-ring point coordinates needed to render with
-\code{\link[ggplot2:geom_polygon]{ggplot2::geom_polygon()}} (using the \code{subgroup} aesthetic for holes).
+\code{\link[graphics:polypath]{graphics::polypath()}} (using the \code{subgroup} ring index for holes).
 }
 \keyword{internal}

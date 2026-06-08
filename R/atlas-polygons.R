@@ -5,7 +5,7 @@
 #' Extracts coordinates from an sf-backed atlas geometry table and returns a
 #' nested data.frame keyed by `label`. Each row carries a `geometry` list-column
 #' containing the per-view, per-ring point coordinates needed to render with
-#' [ggplot2::geom_polygon()] (using the `subgroup` aesthetic for holes).
+#' [graphics::polypath()] (using the `subgroup` ring index for holes).
 #'
 #' @param sf_data An sf-class data.frame with columns `label`, `view`,
 #'   `geometry` (sfc of MULTIPOLYGON).
@@ -33,10 +33,10 @@ sf_to_polygons <- function(sf_data) {
     geom <- sf_data$geometry[[i]]
     co <- sf::st_coordinates(geom)
     as_tbl(data.frame(
-      label = sf_data$label[i],
-      view = sf_data$view[i],
-      x = co[, "X"],
-      y = co[, "Y"],
+      label = unname(sf_data$label[i]),
+      view = unname(sf_data$view[i]),
+      x = unname(co[, "X"]),
+      y = unname(co[, "Y"]),
       group = as.integer(co[, "L2"]),
       subgroup = as.integer(co[, "L1"]),
       stringsAsFactors = FALSE
@@ -90,9 +90,6 @@ polygons_to_sf <- function(polygons) {
   )
 
   out$.feature_id <- NULL
-  if (".feature_id" %in% names(out)) {
-    out$.feature_id <- NULL
-  }
 
   cols <- c("label", "view", "geometry")
   out <- out[, cols, drop = FALSE]
