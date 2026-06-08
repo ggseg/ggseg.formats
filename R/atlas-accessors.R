@@ -250,7 +250,7 @@ atlas_meshes <- function(atlas) {
 print.ggseg_sf <- function(x, ...) {
   dims <- paste(nrow(x), "\u00d7", ncol(x)) # nolint [object_usage_linter]
   views <- if ("view" %in% names(x)) {
-    paste(unique(x$view), collapse = ", ")
+    toString(unique(x$view))
   }
   cli::cli_rule("{.cls ggseg_sf} data: {dims}")
   if (!is.null(views)) {

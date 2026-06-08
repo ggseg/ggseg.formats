@@ -2,20 +2,20 @@ describe("atlas_palette", {
   it("returns palette from dk atlas by name", {
     pal <- atlas_palette("dk")
     expect_type(pal, "character")
-    expect_true(length(pal) > 0)
+    expect_gt(length(pal), 0)
     expect_true(all(grepl("^#", pal)))
   })
 
   it("returns palette from aseg atlas by name", {
     pal <- atlas_palette("aseg")
     expect_type(pal, "character")
-    expect_true(length(pal) > 0)
+    expect_gt(length(pal), 0)
   })
 
   it("returns palette from atlas object directly", {
     pal <- atlas_palette(dk())
     expect_type(pal, "character")
-    expect_true(length(pal) > 0)
+    expect_gt(length(pal), 0)
   })
 
   it("errors when atlas not found", {
@@ -36,7 +36,7 @@ describe("atlas_sf", {
 
   it("has ggseg_sf as first class", {
     sf_data <- atlas_sf(dk())
-    expect_equal(class(sf_data)[1], "ggseg_sf")
+    expect_identical(class(sf_data)[1], "ggseg_sf")
     expect_s3_class(sf_data, "sf")
   })
 
@@ -125,7 +125,7 @@ describe("atlas_sf", {
 describe("atlas_vertices", {
   it("has ggseg_vertices as first class", {
     result <- atlas_vertices(dk())
-    expect_equal(class(result)[1], "ggseg_vertices")
+    expect_identical(class(result)[1], "ggseg_vertices")
     expect_s3_class(result, "tbl_df")
   })
 
@@ -160,7 +160,7 @@ describe("atlas_vertices", {
     expect_true("hemi" %in% names(result))
     expect_true("region" %in% names(result))
     expect_true("colour" %in% names(result))
-    expect_equal(result$colour, c("#FF0000", "#00FF00"))
+    expect_identical(result$colour, c("#FF0000", "#00FF00"))
   })
 
   it("errors for atlas without vertices", {
@@ -211,7 +211,7 @@ describe("atlas_vertices", {
 describe("atlas_meshes", {
   it("has ggseg_meshes as first class", {
     result <- atlas_meshes(aseg())
-    expect_equal(class(result)[1], "ggseg_meshes")
+    expect_identical(class(result)[1], "ggseg_meshes")
     expect_s3_class(result, "data.frame")
   })
 
@@ -243,7 +243,7 @@ describe("atlas_meshes", {
 
     expect_equal(nrow(result), 1)
     expect_true("colour" %in% names(result))
-    expect_equal(result$colour, "#FF0000")
+    expect_identical(result$colour, "#FF0000")
   })
 
   it("errors for atlas without meshes", {

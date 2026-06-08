@@ -42,8 +42,8 @@ describe("df_left_join", {
     y <- data.frame(label = c("a", "b"), value = c(1, 2))
     out <- df_left_join(x, y, by = "label")
     expect_s3_class(out, "tbl_df")
-    expect_equal(out$label, c("b", "a", "c"))
-    expect_equal(out$value, c(2, 1, NA))
+    expect_identical(out$label, c("b", "a", "c"))
+    expect_identical(out$value, c(2, 1, NA))
   })
 
   it("expands rows one-to-many when keys repeat in y", {
@@ -51,7 +51,7 @@ describe("df_left_join", {
     y <- data.frame(label = c("a", "a"), region = c("r1", "r2"))
     out <- df_left_join(x, y, by = "label")
     expect_equal(nrow(out), 2)
-    expect_equal(out$region, c("r1", "r2"))
+    expect_identical(out$region, c("r1", "r2"))
   })
 })
 
@@ -63,7 +63,7 @@ describe("df_bind_rows", {
     )
     expect_s3_class(out, "tbl_df")
     expect_named(out, c("subject", "v"))
-    expect_equal(out$subject, c("p", "q"))
+    expect_identical(out$subject, c("p", "q"))
   })
 
   it("returns an empty tibble for an empty list", {
