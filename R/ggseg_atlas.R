@@ -410,7 +410,104 @@ resolve_fill_colors <- function(labels, palette = NULL) {
   )
 }
 
-#' @importFrom graphics mtext par plot.new plot.window polygon polypath title
+#' Draw a single atlas polygon piece on the current device
+#'
+#' One contiguous region piece, keyed by label × view × group. A piece with a
+#' single ring is drawn with [graphics::polygon()]; a piece with holes (multiple
+#' `subgroup` rings) is drawn with [graphics::polypath()] using NA-separated
+#' rings and the even-odd rule. `dots` overrides the styling defaults so callers
+#' can pass e.g. `lwd` or `border` through `plot()`.
+#' @noRd
+#' @keywords internal
+draw_piece <- function(piece, col, dots = list()) {
+  rings <- sort(unique(piece$subgroup))
+
+  if (length(rings) == 1L) {
+    do.call(
+      polygon,
+      c(
+        list(x = piece$x, y = piece$y),
+        utils::modifyList(list(col = col, border = "white", lwd = 0.3), dots)
+      )
+    )
+    return(invisible())
+  }
+
+  rings_xy <- split(piece[c("x", "y")], piece$subgroup)[as.character(rings)]
+  xs <- unlist(
+    lapply(rings_xy, function(r) c(r$x, NA_real_)),
+    use.names = FALSE
+  )
+  ys <- unlist(
+    lapply(rings_xy, function(r) c(r$y, NA_real_)),
+    use.names = FALSE
+  )
+  do.call(
+    polypath,
+    c(
+      list(x = xs[-length(xs)], y = ys[-length(ys)]),
+      utils::modifyList(
+        list(col = col, border = "white", lwd = 0.3, rule = "evenodd"),
+        dots
+      )
+    )
+  )
+  invisible()
+}
+
+#' Partition coordinates into groups separated by empty gaps along one axis
+#'
+#' Returns a contiguous integer group id per element. A break is placed wherever
+#' the sorted values jump by more than `gap_frac` of the total span — i.e. an
+#' empty band wider than that fraction. Order of the input is preserved.
+#' @noRd
+#' @keywords internal
+gap_groups <- function(values, gap_frac) {
+  span <- diff(range(values))
+  if (span == 0) {
+    return(rep(1L, length(values)))
+  }
+  o <- order(values)
+  breaks <- cumsum(c(0L, diff(values[o]) > gap_frac * span))
+  out <- integer(length(values))
+  out[o] <- breaks + 1L
+  out
+}
+
+#' Assign each row to a display cell
+#'
+#' The atlas views are pre-positioned in one coordinate space, but a surface
+#' atlas still splits into spatially separate pieces within a view (e.g. the
+#' left and right hemispheres, drawn apart with empty space between). Within
+#' each view, rows are partitioned into cells by recursive gap-splitting in x
+#' then y, so each contiguous piece becomes its own panel. Returns a cell id
+#' per row, with order preserved.
+#' @noRd
+#' @keywords internal
+plot_cells <- function(flat, gap_frac = 0.12) {
+  ids <- integer(nrow(flat))
+  base <- 0L
+  for (v in unique(flat$view)) {
+    ix <- which(flat$view == v)
+    cell <- gap_groups(flat$x[ix], gap_frac)
+    for (axis in "y") {
+      refined <- integer(length(ix))
+      next_id <- 0L
+      for (cid in unique(cell)) {
+        within <- which(cell == cid)
+        sub <- gap_groups(flat[[axis]][ix][within], gap_frac)
+        refined[within] <- sub + next_id
+        next_id <- next_id + max(sub)
+      }
+      cell <- refined
+    }
+    ids[ix] <- cell + base
+    base <- base + max(cell)
+  }
+  ids
+}
+
+#' @importFrom graphics mtext par plot.new plot.window polygon polypath
 #' @export
 plot.ggseg_atlas <- function(x, ...) {
   geom <- geom_from_data(x$data)
@@ -429,80 +526,37 @@ plot.ggseg_atlas <- function(x, ...) {
   fill_colors <- resolve_fill_colors(flat$label, x$palette)
   dots <- list(...)
 
-  views <- unique(flat$view)
-  n_views <- length(views)
+  # One panel per spatially separate piece, arranged in a near-square grid so
+  # each gets enough room to read. This is a quick overview of the atlas, not a
+  # publication figure.
+  cell <- plot_cells(flat)
+  cells <- sort(unique(cell))
+  ncol <- ceiling(sqrt(length(cells)))
+  nrow <- ceiling(length(cells) / ncol)
 
   old_par <- par(
-    mfrow = c(1L, n_views),
-    mar = c(0.5, 0.5, 1.5, 0.5),
+    mfrow = c(nrow, ncol),
+    mar = c(0.3, 0.3, 0.3, 0.3),
     oma = c(0, 0, 2, 0)
   )
   on.exit(par(old_par), add = TRUE)
 
-  # Shared coordinate extent so all panels use the same scale
-  xlim_all <- range(flat$x, na.rm = TRUE)
-  ylim_all <- range(flat$y, na.rm = TRUE)
-
-  for (v in views) {
-    view_flat <- flat[flat$view == v, , drop = FALSE]
-
+  for (ci in cells) {
+    cf <- flat[cell == ci, , drop = FALSE]
     plot.new()
-    plot.window(xlim = xlim_all, ylim = ylim_all, asp = 1)
-
-    # Collapse label × group loops: split once, then lapply over all pieces
-    piece_id <- paste(view_flat$label, view_flat$group, sep = "\r")
-    pieces <- split(view_flat, piece_id)
-
-    invisible(lapply(pieces, function(piece) {
-      col <- fill_colors[[piece$label[[1L]]]]
-      rings <- sort(unique(piece$subgroup))
-
-      if (length(rings) == 1L) {
-        do.call(
-          polygon,
-          c(
-            list(x = piece$x, y = piece$y),
-            utils::modifyList(
-              list(col = col, border = "white", lwd = 0.3),
-              dots
-            )
-          )
-        )
-      } else {
-        # NA-separated rings; polypath cuts holes via the even-odd rule
-        rings_xy <- split(piece[c("x", "y")], piece$subgroup)[
-          as.character(rings)
-        ]
-        xs <- unlist(
-          lapply(rings_xy, function(r) c(r$x, NA_real_)),
-          use.names = FALSE
-        )
-        ys <- unlist(
-          lapply(rings_xy, function(r) c(r$y, NA_real_)),
-          use.names = FALSE
-        )
-        do.call(
-          polypath,
-          c(
-            list(x = xs[-length(xs)], y = ys[-length(ys)]),
-            utils::modifyList(
-              list(col = col, border = "white", lwd = 0.3, rule = "evenodd"),
-              dots
-            )
-          )
-        )
-      }
+    plot.window(
+      xlim = range(cf$x, na.rm = TRUE),
+      ylim = range(cf$y, na.rm = TRUE),
+      asp = 1
+    )
+    # `view` in the key keeps a region's per-view instances from being joined.
+    piece_id <- paste(cf$label, cf$view, cf$group, sep = "\r")
+    invisible(lapply(split(cf, piece_id), function(piece) {
+      draw_piece(piece, fill_colors[[piece$label[[1L]]]], dots)
     }))
-
-    title(v, cex.main = 0.8)
   }
 
-  mtext(
-    paste(x$atlas, x$type, "atlas"),
-    outer = TRUE,
-    cex = 1,
-    line = 0.5
-  )
+  mtext(paste(x$atlas, x$type, "atlas"), outer = TRUE, cex = 1, line = 0.5)
 
   invisible(x)
 }

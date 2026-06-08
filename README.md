@@ -1,5 +1,4 @@
 
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # ggseg.formats
@@ -7,6 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/ggsegverse/ggseg.formats/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ggsegverse/ggseg.formats/actions/workflows/R-CMD-check.yaml)
+[![code-quality](https://github.com/ggsegverse/ggseg.formats/actions/workflows/code-quality.yaml/badge.svg)](https://github.com/ggsegverse/ggseg.formats/actions/workflows/code-quality.yaml)
+[![test-coverage](https://github.com/ggsegverse/ggseg.formats/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/ggsegverse/ggseg.formats/actions/workflows/test-coverage.yaml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/ggseg.formats)](https://CRAN.R-project.org/package=ggseg.formats)
 [![Lifecycle:
@@ -15,8 +16,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <!-- badges: end -->
 
 ggseg.formats provides the `ggseg_atlas` S3 class that powers the
-[ggsegverse](https://ggsegverse.github.io/ggseg/) ecosystem for 2D and 3D
-brain visualisation. It ships four bundled atlases, a set of accessor
+[ggsegverse](https://ggsegverse.github.io/ggseg/) ecosystem for 2D and
+3D brain visualisation. It ships four bundled atlases, a set of accessor
 functions for querying atlas contents, and a pipe-friendly manipulation
 API for subsetting, renaming, and enriching atlas objects.
 
@@ -37,25 +38,25 @@ library(ggseg.formats)
 plot(dk())
 ```
 
-<img src="man/figures/README-plot-dk-1.png" style="width:100.0%" />
+<img src="man/figures/README-plot-dk-1.png" alt="" width="100%" />
 
 ``` r
 plot(aseg())
 ```
 
-<img src="man/figures/README-plot-aseg-1.png" style="width:100.0%" />
+<img src="man/figures/README-plot-aseg-1.png" alt="" width="100%" />
 
 ``` r
 plot(tracula())
 ```
 
-<img src="man/figures/README-plot-tracula-1.png" style="width:100.0%" />
+<img src="man/figures/README-plot-tracula-1.png" alt="" width="100%" />
 
 ``` r
 plot(suit())
 ```
 
-<img src="man/figures/README-plot-suit-1.png" style="width:100.0%" />
+<img src="man/figures/README-plot-suit-1.png" alt="" width="100%" />
 
 ## Quick example
 
@@ -70,7 +71,7 @@ aseg_small <- aseg() |>
 plot(aseg_small)
 ```
 
-<img src="man/figures/README-subset-aseg-1.png" style="width:100.0%" />
+<img src="man/figures/README-subset-aseg-1.png" alt="" width="100%" />
 
 ## Installation
 

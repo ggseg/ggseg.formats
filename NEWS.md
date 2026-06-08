@@ -9,8 +9,10 @@
 from Imports** — the package no longer depends on ggplot2 for its own plotting.
 
 - `plot()` now returns the atlas invisibly rather than a `ggplot` object; it is
-  called for its side effect (drawing one panel per view). Code that captured
-  the return value to add ggplot2 layers (`plot(atlas) + ...`) must be updated.
+  called for its side effect. Each spatially separate piece (e.g. a hemisphere
+  surface or a slice) is drawn in its own panel, arranged in a near-square grid
+  for a legible overview of the atlas. Code that captured the return value to
+  add ggplot2 layers (`plot(atlas) + ...`) must be updated.
 - The `show.legend` argument is removed; the base-R plot draws no legend. Extra
   arguments in `...` are forwarded to the underlying `polygon()` / `polypath()`
   primitives (e.g. `lwd`, `border`).

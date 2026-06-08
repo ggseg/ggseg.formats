@@ -13,6 +13,10 @@ describe("plot.ggseg_atlas", {
     expect_no_warning(plot(tracula()))
   })
 
+  it("plots a polygon-only (sf-free) atlas without warning", {
+    expect_no_warning(plot(suit()))
+  })
+
   it("errors when atlas has no geometry", {
     k <- dk()
     k$data$sf <- NULL
@@ -22,6 +26,43 @@ describe("plot.ggseg_atlas", {
   it("returns the atlas invisibly", {
     result <- plot(dk())
     expect_s3_class(result, "ggseg_atlas")
+  })
+})
+
+describe("gap_groups", {
+  it("keeps densely sampled contiguous values in a single group", {
+    vals <- seq(0, 10, by = 0.5)
+    expect_equal(gap_groups(vals, 0.2), rep(1L, length(vals)))
+  })
+
+  it("splits across an empty band wider than the fraction", {
+    # two clusters with a gap of 6 (60% of the span of 10)
+    vals <- c(seq(0, 2, by = 0.5), seq(8, 10, by = 0.5))
+    expect_equal(gap_groups(vals, 0.2), rep(1:2, each = 5))
+  })
+
+  it("preserves input order, not sorted order", {
+    expect_equal(gap_groups(c(100, 1, 101, 2), 0.2), c(2L, 1L, 2L, 1L))
+  })
+
+  it("returns one group when all values are equal", {
+    expect_equal(gap_groups(c(5, 5, 5), 0.2), c(1L, 1L, 1L))
+  })
+})
+
+describe("plot_cells", {
+  it("separates the two hemispheres of each surface view", {
+    flat <- polygons_unnest(atlas_polygons(dk()))
+    cells <- plot_cells(flat)
+    expect_length(cells, nrow(flat))
+    # 4 views x 2 hemispheres
+    expect_equal(length(unique(cells)), 8L)
+  })
+
+  it("keeps each slice view as a single cell for a subcortical atlas", {
+    flat <- polygons_unnest(atlas_polygons(aseg()))
+    cells <- plot_cells(flat)
+    expect_equal(length(unique(cells)), length(unique(flat$view)))
   })
 })
 
