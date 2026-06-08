@@ -392,11 +392,9 @@ resolve_fill_colors <- function(labels, palette = NULL) {
   labels <- unique(labels)
 
   if (!is.null(palette)) {
-    matched <- labels %in% names(palette) & !is.na(palette[labels])
-    return(stats::setNames(
-      ifelse(matched, palette[labels], "#CCCCCC"),
-      labels
-    ))
+    vals <- palette[labels]
+    matched <- labels %in% names(palette) & !is.na(vals)
+    return(stats::setNames(ifelse(matched, vals, "#CCCCCC"), labels))
   }
 
   n <- length(labels)
@@ -421,13 +419,14 @@ resolve_fill_colors <- function(labels, palette = NULL) {
 #' @keywords internal
 draw_piece <- function(piece, col, dots = list()) {
   rings <- sort(unique(piece$subgroup))
+  defaults <- list(col = col, border = "white", lwd = 0.3)
 
   if (length(rings) == 1L) {
     do.call(
       polygon,
       c(
         list(x = piece$x, y = piece$y),
-        utils::modifyList(list(col = col, border = "white", lwd = 0.3), dots)
+        utils::modifyList(defaults, dots)
       )
     )
     return(invisible())
@@ -446,10 +445,7 @@ draw_piece <- function(piece, col, dots = list()) {
     polypath,
     c(
       list(x = xs[-length(xs)], y = ys[-length(ys)]),
-      utils::modifyList(
-        list(col = col, border = "white", lwd = 0.3, rule = "evenodd"),
-        dots
-      )
+      utils::modifyList(c(defaults, list(rule = "evenodd")), dots)
     )
   )
   invisible()
@@ -474,14 +470,32 @@ gap_groups <- function(values, gap_frac) {
   out
 }
 
+#' Subdivide an existing grouping by gaps along one axis
+#'
+#' Splits each current group further wherever `values` has an empty band, and
+#' renumbers the result to contiguous ids. Order is preserved.
+#' @noRd
+#' @keywords internal
+refine_by_gaps <- function(cell, values, gap_frac) {
+  refined <- integer(length(cell))
+  next_id <- 0L
+  for (cid in unique(cell)) {
+    within <- which(cell == cid)
+    sub <- gap_groups(values[within], gap_frac)
+    refined[within] <- sub + next_id
+    next_id <- next_id + max(sub)
+  }
+  refined
+}
+
 #' Assign each row to a display cell
 #'
 #' The atlas views are pre-positioned in one coordinate space, but a surface
 #' atlas still splits into spatially separate pieces within a view (e.g. the
 #' left and right hemispheres, drawn apart with empty space between). Within
-#' each view, rows are partitioned into cells by recursive gap-splitting in x
-#' then y, so each contiguous piece becomes its own panel. Returns a cell id
-#' per row, with order preserved.
+#' each view, rows are partitioned into cells by gap-splitting along x then y,
+#' so each contiguous piece becomes its own panel. Returns a cell id per row,
+#' with order preserved.
 #' @noRd
 #' @keywords internal
 plot_cells <- function(flat, gap_frac = 0.12) {
@@ -489,17 +503,9 @@ plot_cells <- function(flat, gap_frac = 0.12) {
   base <- 0L
   for (v in unique(flat$view)) {
     ix <- which(flat$view == v)
-    cell <- gap_groups(flat$x[ix], gap_frac)
-    for (axis in "y") {
-      refined <- integer(length(ix))
-      next_id <- 0L
-      for (cid in unique(cell)) {
-        within <- which(cell == cid)
-        sub <- gap_groups(flat[[axis]][ix][within], gap_frac)
-        refined[within] <- sub + next_id
-        next_id <- next_id + max(sub)
-      }
-      cell <- refined
+    cell <- rep(1L, length(ix))
+    for (axis in c("x", "y")) {
+      cell <- refine_by_gaps(cell, flat[[axis]][ix], gap_frac)
     }
     ids[ix] <- cell + base
     base <- base + max(cell)
@@ -510,19 +516,7 @@ plot_cells <- function(flat, gap_frac = 0.12) {
 #' @importFrom graphics mtext par plot.new plot.window polygon polypath
 #' @export
 plot.ggseg_atlas <- function(x, ...) {
-  geom <- geom_from_data(x$data)
-
-  if (is.null(geom)) {
-    cli::cli_abort("Cannot plot: atlas has no 2D geometry.")
-  }
-
-  # Convert sf geometry to the sf-free polygon representation
-  if (inherits(geom, "sf")) {
-    require_sf("plot.ggseg_atlas() with sf-backed atlas")
-    geom <- sf_to_polygons(geom)
-  }
-
-  flat <- polygons_unnest(geom)
+  flat <- polygons_unnest(atlas_polygons(x))
   fill_colors <- resolve_fill_colors(flat$label, x$palette)
   dots <- list(...)
 
@@ -533,6 +527,7 @@ plot.ggseg_atlas <- function(x, ...) {
   cells <- sort(unique(cell))
   ncol <- ceiling(sqrt(length(cells)))
   nrow <- ceiling(length(cells) / ncol)
+  cell_tables <- split(flat, cell)
 
   old_par <- par(
     mfrow = c(nrow, ncol),
@@ -542,7 +537,7 @@ plot.ggseg_atlas <- function(x, ...) {
   on.exit(par(old_par), add = TRUE)
 
   for (ci in cells) {
-    cf <- flat[cell == ci, , drop = FALSE]
+    cf <- cell_tables[[as.character(ci)]]
     plot.new()
     plot.window(
       xlim = range(cf$x, na.rm = TRUE),
