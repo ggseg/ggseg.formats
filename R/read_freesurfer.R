@@ -18,10 +18,10 @@
 read_freesurfer_stats <- function(path, rename = TRUE) {
   headers <- readLines(path)
   headers <- headers[grepl("^#", headers)]
-  headers <- gsub("# ", "", headers)[length(headers)]
-  headers <- strsplit(headers, " ")[[1]]
+  headers <- gsub("# ", "", headers, fixed = TRUE)[length(headers)]
+  headers <- strsplit(headers, " ", fixed = TRUE)[[1]]
 
-  headers <- headers[!grepl("ColHeaders", headers)]
+  headers <- headers[!grepl("ColHeaders", headers, fixed = TRUE)]
   headers <- headers[headers != ""]
 
   data <- as_tbl(read.table(path, stringsAsFactors = FALSE))
@@ -111,17 +111,16 @@ read_freesurfer_table <- function(path, measure = NULL, ...) {
   dat <- data.frame(
     subject = rep(dat$subject, times = length(measure_cols)),
     label = rep(measure_cols, each = nrow(dat)),
-    value = unlist(dat[measure_cols], use.names = FALSE),
-    stringsAsFactors = FALSE
+    value = unlist(dat[measure_cols], use.names = FALSE)
   )
 
   if (!is.null(measure)) {
     dat$label <- gsub(paste0("_", measure), "", dat$label)
-    names(dat)[names(dat) %in% "value"] <- measure
+    names(dat)[names(dat) == "value"] <- measure
   }
 
-  if (any(grepl("\\.", dat$label))) {
-    dat$label <- gsub("\\.", "-", dat$label)
+  if (any(grepl(".", dat$label, fixed = TRUE))) {
+    dat$label <- gsub(".", "-", dat$label, fixed = TRUE)
   }
 
   as_tbl(dat)
@@ -133,7 +132,7 @@ read_freesurfer_table <- function(path, measure = NULL, ...) {
 #' @noRd
 #' @keywords internal
 find_subject_fromdir <- function(path) {
-  strsplit(path, "/")[[1]][2]
+  strsplit(path, "/", fixed = TRUE)[[1]][2]
 }
 
 #' helper function to easily grab hemisphere information from file path
@@ -142,5 +141,5 @@ find_subject_fromdir <- function(path) {
 #' @noRd
 #' @keywords internal
 find_hemi_fromfile <- function(path) {
-  strsplit(basename(path), "\\.")[[1]][1]
+  strsplit(basename(path), ".", fixed = TRUE)[[1]][1]
 }

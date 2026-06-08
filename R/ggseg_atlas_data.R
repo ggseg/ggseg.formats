@@ -244,8 +244,7 @@ meshes_to_centerlines <- function(meshes) {
     data.frame(
       label = meshes$label[i],
       points = I(list(metadata$centerline)),
-      tangents = I(list(metadata$tangents)),
-      stringsAsFactors = FALSE
+      tangents = I(list(metadata$tangents))
     )
   })
 
@@ -401,11 +400,10 @@ summarise_2d <- function(x) {
   kind <- if (inherits(src, "brain_polygons")) "polygons" else "sf"
   n_labels <- length(unique(src$label))
   if (kind == "sf") {
-    views <- paste0(unique(src$view), collapse = ", ")
+    views <- toString(unique(src$view))
   } else {
-    views <- paste0(
-      unique(unlist(lapply(src$geometry, function(g) g$view))),
-      collapse = ", "
+    views <- toString(
+      unique(unlist(lapply(src$geometry, function(g) g$view)))
     )
   }
   sprintf(
@@ -435,8 +433,7 @@ print_mesh_summary <- function(meshes) {
         if (is.null(m)) 0L else nrow(m$faces)
       },
       integer(1)
-    ),
-    stringsAsFactors = FALSE
+    )
   ))
   print(summary_df)
 }

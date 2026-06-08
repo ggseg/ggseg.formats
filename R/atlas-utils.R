@@ -33,7 +33,7 @@ get_uniq <- function(x, type) {
   type <- match.arg(type, c("label", "region"))
   x <- unique(x[[type]])
   x <- x[!is.na(x)]
-  x[order(x)]
+  sort(x)
 }
 
 #' Extract unique labels from an atlas
@@ -354,7 +354,7 @@ atlas_region_op <- function(
         !is.na(atlas$core$region)
       atlas$core$label[hit]
     } else {
-      unique(sf_data$label[grepl(pattern, sf_data$label, ignore.case = TRUE)])
+      unique(grep(pattern, sf_data$label, ignore.case = TRUE, value = TRUE))
     }
   }
   x_labels <- label_for(x)

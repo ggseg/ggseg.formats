@@ -228,8 +228,7 @@ try_infer_vertices <- function(atlas_3d, surface, brain_meshes, sf_data) {
   )
   if (!is.null(vertices_list)) {
     vertices_df <- data.frame(
-      label = names(vertices_list),
-      stringsAsFactors = FALSE
+      label = names(vertices_list)
     )
     vertices_df$vertices <- unname(vertices_list)
     cli::cli_inform(

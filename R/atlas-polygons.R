@@ -38,8 +38,7 @@ sf_to_polygons <- function(sf_data) {
       x = co[, "X"],
       y = co[, "Y"],
       group = as.integer(co[, "L2"]),
-      subgroup = as.integer(co[, "L1"]),
-      stringsAsFactors = FALSE
+      subgroup = as.integer(co[, "L1"])
     ))
   })
 
