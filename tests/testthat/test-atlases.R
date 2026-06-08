@@ -5,8 +5,8 @@ describe("dk atlas", {
   })
 
   it("has correct atlas name and type", {
-    expect_equal(dk()$atlas, "dk")
-    expect_equal(dk()$type, "cortical")
+    expect_identical(dk()$atlas, "dk")
+    expect_identical(dk()$type, "cortical")
   })
 
   it("has required core columns", {
@@ -30,7 +30,7 @@ describe("dk atlas", {
   })
 
   it("has sf geometry for 2D rendering", {
-    expect_true(!is.null(dk()$data$sf))
+    expect_false(is.null(dk()$data$sf))
     expect_s3_class(dk()$data$sf, "sf")
   })
 })
@@ -43,8 +43,8 @@ describe("aseg atlas", {
   })
 
   it("has correct atlas name and type", {
-    expect_equal(aseg()$atlas, "aseg")
-    expect_equal(aseg()$type, "subcortical")
+    expect_identical(aseg()$atlas, "aseg")
+    expect_identical(aseg()$type, "subcortical")
   })
 
   it("has required core columns", {
@@ -62,7 +62,7 @@ describe("aseg atlas", {
   })
 
   it("has sf geometry for 2D rendering", {
-    expect_true(!is.null(aseg()$data$sf))
+    expect_false(is.null(aseg()$data$sf))
     expect_s3_class(aseg()$data$sf, "sf")
   })
 })
@@ -71,8 +71,8 @@ describe("aseg atlas", {
 describe("suit atlas", {
   it("is a valid cerebellar ggseg_atlas", {
     expect_true(is_ggseg_atlas(suit()))
-    expect_equal(suit()$atlas, "suit")
-    expect_equal(suit()$type, "cerebellar")
+    expect_identical(suit()$atlas, "suit")
+    expect_identical(suit()$type, "cerebellar")
     expect_s3_class(suit()$data, "ggseg_data_cerebellar")
   })
 
@@ -83,14 +83,14 @@ describe("suit atlas", {
 
   it("stores 2D geometry as sf-optional polygons in the geom slot", {
     expect_true(is_atlas_polygon(suit()))
-    expect_equal(atlas_geometry_type(suit()), "polygon")
+    expect_identical(atlas_geometry_type(suit()), "polygon")
     expect_null(suit()$data$sf)
     expect_s3_class(atlas_geom(suit()), "brain_polygons")
   })
 
   it("carries 3D vertices (lobules) and meshes (deep nuclei)", {
-    expect_true(!is.null(suit()$data$vertices))
-    expect_true(!is.null(suit()$data$meshes))
+    expect_false(is.null(suit()$data$vertices))
+    expect_false(is.null(suit()$data$meshes))
   })
 
   it("renders to sf on demand via atlas_sf()", {

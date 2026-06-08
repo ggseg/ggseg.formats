@@ -61,8 +61,8 @@ describe("ggseg_data_cortical", {
     data <- ggseg_data_cortical(geom = sf_geom, vertices = vertices)
 
     expect_s3_class(data, "ggseg_data_cortical")
-    expect_true(!is.null(geom_from_data(data)))
-    expect_true(!is.null(data$vertices))
+    expect_false(is.null(geom_from_data(data)))
+    expect_false(is.null(data$vertices))
   })
 })
 
@@ -113,8 +113,8 @@ describe("ggseg_data_subcortical", {
     data <- ggseg_data_subcortical(geom = sf_geom, meshes = meshes)
 
     expect_s3_class(data, "ggseg_data_subcortical")
-    expect_true(!is.null(geom_from_data(data)))
-    expect_true(!is.null(data$meshes))
+    expect_false(is.null(geom_from_data(data)))
+    expect_false(is.null(data$meshes))
   })
 })
 
@@ -169,7 +169,7 @@ describe("ggseg_data_tract", {
     data <- ggseg_data_tract(geom = sf_geom)
 
     expect_s3_class(data, "ggseg_data_tract")
-    expect_true(!is.null(geom_from_data(data)))
+    expect_false(is.null(geom_from_data(data)))
   })
 
   it("creates ggseg_data_tract with centerlines directly", {
@@ -248,7 +248,7 @@ describe("compute_tangents", {
     data <- ggseg_data_tract(centerlines = centerlines)
     tangents <- data$centerlines$tangents[[1]]
 
-    expect_equal(tangents[1, ], c(1, 0, 0))
+    expect_identical(tangents[1, ], c(1, 0, 0))
     expect_equal(nrow(tangents), 3)
   })
 })
@@ -389,7 +389,7 @@ describe("ggseg_data_cerebellar", {
     data <- ggseg_data_cerebellar(geom = sf_geom)
 
     expect_s3_class(data, "ggseg_data_cerebellar")
-    expect_true(!is.null(geom_from_data(data)))
+    expect_false(is.null(geom_from_data(data)))
     expect_null(data$vertices)
   })
 
@@ -408,8 +408,8 @@ describe("ggseg_data_cerebellar", {
     )
 
     expect_s3_class(data, "ggseg_data_cerebellar")
-    expect_true(!is.null(geom_from_data(data)))
-    expect_true(!is.null(data$vertices))
+    expect_false(is.null(geom_from_data(data)))
+    expect_false(is.null(data$vertices))
   })
 
   it("errors when neither geom nor vertices provided", {
