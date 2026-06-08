@@ -4,8 +4,8 @@ Extracts coordinates from an sf-backed atlas geometry table and returns
 a nested data.frame keyed by `label`. Each row carries a `geometry`
 list-column containing the per-view, per-ring point coordinates needed
 to render with
-[`ggplot2::geom_polygon()`](https://ggplot2.tidyverse.org/reference/geom_polygon.html)
-(using the `subgroup` aesthetic for holes).
+[`graphics::polypath()`](https://rdrr.io/r/graphics/polypath.html)
+(using the `subgroup` ring index for holes).
 
 ## Usage
 

@@ -239,17 +239,15 @@ network_info <- data.frame(
 )
 enriched <- atlas_core_add(dk(), network_info)
 enriched$core[!is.na(enriched$core$network), c("region", "network")]
-#> # A tibble: 8 × 2
-#>   region              network     
-#>   <chr>               <chr>       
-#> 1 inferior parietal   default mode
-#> 2 posterior cingulate default mode
-#> 3 precuneus           default mode
-#> 4 superior frontal    default mode
-#> 5 inferior parietal   default mode
-#> 6 posterior cingulate default mode
-#> 7 precuneus           default mode
-#> 8 superior frontal    default mode
+#>                 region      network
+#> 8    inferior parietal default mode
+#> 23 posterior cingulate default mode
+#> 25           precuneus default mode
+#> 28    superior frontal default mode
+#> 43   inferior parietal default mode
+#> 58 posterior cingulate default mode
+#> 60           precuneus default mode
+#> 63    superior frontal default mode
 ```
 
 The `by` argument defaults to `"region"` but you can join on any shared

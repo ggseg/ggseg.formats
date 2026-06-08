@@ -14,13 +14,13 @@ Source:
 [`DESCRIPTION`](https://github.com/ggsegverse/ggseg.formats/blob/main/DESCRIPTION)
 
 Mowinckel A (2026). *ggseg.formats: Brain Atlas Data Structures for the
-'ggseg' Ecosystem*. R package version 0.0.2.9001,
+'ggsegverse' Ecosystem*. R package version 0.0.2.9002,
 <https://github.com/ggsegverse/ggseg.formats>.
 
     @Manual{,
-      title = {ggseg.formats: Brain Atlas Data Structures for the 'ggseg' Ecosystem},
+      title = {ggseg.formats: Brain Atlas Data Structures for the 'ggsegverse' Ecosystem},
       author = {Athanasia Mo Mowinckel},
       year = {2026},
-      note = {R package version 0.0.2.9001},
+      note = {R package version 0.0.2.9002},
       url = {https://github.com/ggsegverse/ggseg.formats},
     }

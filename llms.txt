@@ -1,18 +1,19 @@
 # ggseg.formats
 
 ggseg.formats provides the `ggseg_atlas` S3 class that powers the
-[ggseg](https://ggsegverse.github.io/ggseg/) ecosystem for 2D and 3D
-brain visualisation. It ships three bundled atlases, a set of accessor
+[ggsegverse](https://ggsegverse.github.io/ggseg/) ecosystem for 2D and
+3D brain visualisation. It ships four bundled atlases, a set of accessor
 functions for querying atlas contents, and a pipe-friendly manipulation
 API for subsetting, renaming, and enriching atlas objects.
 
 ## Bundled atlases
 
-The package includes three atlases covering the main atlas types:
+The package includes four atlases covering the main atlas types:
 
 - **dk** — Desikan-Killiany cortical parcellation (68 regions)
 - **aseg** — FreeSurfer automatic subcortical segmentation
 - **tracula** — TRACULA white matter tract atlas
+- **suit** — SUIT cerebellar lobular atlas
 
 ``` r
 
@@ -39,6 +40,13 @@ plot(tracula())
 ```
 
 ![](reference/figures/README-plot-tracula-1.png)
+
+``` r
+
+plot(suit())
+```
+
+![](reference/figures/README-plot-suit-1.png)
 
 ## Quick example
 

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Brain Atlas Data Structures for the ggseg Ecosystem • ggseg.formats</title>
+<title>Brain Atlas Data Structures for the ggsegverse Ecosystem • ggseg.formats</title>
 <script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/Inter-0.4.10/font.css" rel="stylesheet">
@@ -13,9 +13,9 @@
 <link href="deps/Montserrat-0.4.10/font.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Brain Atlas Data Structures for the ggseg Ecosystem">
-<meta name="description" content="Provides the ggseg_atlas S3 class used across the ggseg ecosystem for 2D and 3D brain visualisation. Ships three bundled atlases (Desikan-Killiany, FreeSurfer aseg, TRACULA) and functions for querying, subsetting, renaming, and enriching atlas objects. Also includes readers for FreeSurfer statistics files.">
-<meta property="og:description" content="Provides the ggseg_atlas S3 class used across the ggseg ecosystem for 2D and 3D brain visualisation. Ships three bundled atlases (Desikan-Killiany, FreeSurfer aseg, TRACULA) and functions for querying, subsetting, renaming, and enriching atlas objects. Also includes readers for FreeSurfer statistics files.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Brain Atlas Data Structures for the ggsegverse Ecosystem">
+<meta name="description" content="Provides the ggseg_atlas S3 class used across the ggsegverse ecosystem for 2D and 3D brain visualisation. Ships four bundled atlases (Desikan-Killiany, FreeSurfer aseg, TRACULA, SUIT) and functions for querying, subsetting, renaming, and enriching atlas objects. Also includes readers for FreeSurfer statistics files.">
+<meta property="og:description" content="Provides the ggseg_atlas S3 class used across the ggsegverse ecosystem for 2D and 3D brain visualisation. Ships four bundled atlases (Desikan-Killiany, FreeSurfer aseg, TRACULA, SUIT) and functions for querying, subsetting, renaming, and enriching atlas objects. Also includes readers for FreeSurfer statistics files.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ggseg.formats</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,11 +70,11 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>ggseg.formats provides the <code>ggseg_atlas</code> S3 class that powers the <a href="https://ggsegverse.github.io/ggseg/" class="external-link">ggseg</a> ecosystem for 2D and 3D brain visualisation. It ships three bundled atlases, a set of accessor functions for querying atlas contents, and a pipe-friendly manipulation API for subsetting, renaming, and enriching atlas objects.</p>
+<p>ggseg.formats provides the <code>ggseg_atlas</code> S3 class that powers the <a href="https://ggsegverse.github.io/ggseg/" class="external-link">ggsegverse</a> ecosystem for 2D and 3D brain visualisation. It ships four bundled atlases, a set of accessor functions for querying atlas contents, and a pipe-friendly manipulation API for subsetting, renaming, and enriching atlas objects.</p>
 <div class="section level2">
 <h2 id="bundled-atlases">Bundled atlases<a class="anchor" aria-label="anchor" href="#bundled-atlases"></a>
 </h2>
-<p>The package includes three atlases covering the main atlas types:</p>
+<p>The package includes four atlases covering the main atlas types:</p>
 <ul>
 <li>
 <strong>dk</strong> — Desikan-Killiany cortical parcellation (68 regions)</li>
@@ -82,43 +82,48 @@
 <strong>aseg</strong> — FreeSurfer automatic subcortical segmentation</li>
 <li>
 <strong>tracula</strong> — TRACULA white matter tract atlas</li>
+<li>
+<strong>suit</strong> — SUIT cerebellar lobular atlas</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ggsegverse/ggseg.formats" class="external-link">ggseg.formats</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="reference/dk.html">dk</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot-dk-1.png" style="width:100.0%"></p>
+<p><img src="reference/figures/README-plot-dk-1.png" alt="" width="100%"></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="reference/aseg.html">aseg</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot-aseg-1.png" style="width:100.0%"></p>
+<p><img src="reference/figures/README-plot-aseg-1.png" alt="" width="100%"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="reference/tracula.html">tracula</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot-tracula-1.png" style="width:100.0%"></p>
+<p><img src="reference/figures/README-plot-tracula-1.png" alt="" width="100%"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="reference/suit.html">suit</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-plot-suit-1.png" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="quick-example">Quick example<a class="anchor" aria-label="anchor" href="#quick-example"></a>
 </h2>
 <p>Atlas objects are designed for exploration and customisation. You can query regions, filter views, and pipe operations together:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aseg_small</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/aseg.html">aseg</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/atlas_manipulation.html">atlas_region_keep</a></span><span class="op">(</span><span class="st">"hippocampus|amygdala|thalamus"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/atlas_manipulation.html">atlas_view_keep</a></span><span class="op">(</span><span class="st">"coronal_3|axial_3"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/atlas_manipulation.html">atlas_view_gather</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">aseg_small</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-subset-aseg-1.png" style="width:100.0%"></p>
+<p><img src="reference/figures/README-subset-aseg-1.png" alt="" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>Install from the ggsegverse r-universe:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    ggsegverse <span class="op">=</span> <span class="st">'https://ggsegverse.r-universe.dev'</span>,</span>
 <span>    CRAN <span class="op">=</span> <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'ggseg.formats'</span><span class="op">)</span></span></code></pre></div>
 <p>Or install the development version from GitHub:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/install-deprecated.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ggsegverse/ggseg.formats"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -170,6 +175,8 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/ggsegverse/ggseg.formats/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/ggsegverse/ggseg.formats/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://github.com/ggsegverse/ggseg.formats/actions/workflows/code-quality.yaml" class="external-link"><img src="https://github.com/ggsegverse/ggseg.formats/actions/workflows/code-quality.yaml/badge.svg" alt="code-quality"></a></li>
+<li><a href="https://github.com/ggsegverse/ggseg.formats/actions/workflows/test-coverage.yaml" class="external-link"><img src="https://github.com/ggsegverse/ggseg.formats/actions/workflows/test-coverage.yaml/badge.svg" alt="test-coverage"></a></li>
 <li><a href="https://CRAN.R-project.org/package=ggseg.formats" class="external-link"><img src="https://www.r-pkg.org/badges/version/ggseg.formats" alt="CRAN status"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 <li><a href="https://github.com/ggsegverse/ggseg.formats/actions?query=workflow%3Apkgcheck" class="external-link"><img src="https://github.com/ggsegverse/ggseg.formats/workflows/pkgcheck/badge.svg" alt="pkgcheck"></a></li>
