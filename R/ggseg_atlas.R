@@ -373,11 +373,43 @@ as.data.frame.ggseg_atlas <- function(x, ...) {
   sf::st_as_sf(result)
 }
 
+#' Resolve per-label fill colours for plotting
+#'
+#' Palette entries win where present and non-NA; labels with no palette entry
+#' (or an `NA` entry) fall back to grey. With no palette at all, qualitative
+#' `hcl()` colours are generated across the label set. Pure and deterministic
+#' so the colour logic can be tested without a graphics device.
+#'
+#' @param labels Character vector of region labels (deduplicated internally).
+#' @param palette Optional named character vector of colours keyed by label.
+#' @return Named character vector of colours, one per unique label.
+#' @noRd
+#' @keywords internal
+resolve_fill_colors <- function(labels, palette = NULL) {
+  labels <- unique(labels)
+
+  if (!is.null(palette)) {
+    matched <- labels %in% names(palette) & !is.na(palette[labels])
+    return(stats::setNames(
+      ifelse(matched, palette[labels], "#CCCCCC"),
+      labels
+    ))
+  }
+
+  n <- length(labels)
+  stats::setNames(
+    grDevices::hcl(
+      h = seq(0, 360, length.out = n + 1L)[seq_len(n)],
+      c = 80,
+      l = 65
+    ),
+    labels
+  )
+}
+
 #' @importFrom graphics mtext par plot.new plot.window polygon polypath title
-#' @importFrom grDevices hcl
-#' @importFrom stats setNames
 #' @export
-plot.ggseg_atlas <- function(x, show.legend = FALSE, ...) { # nolint: object_name_linter
+plot.ggseg_atlas <- function(x, ...) {
   geom <- geom_from_data(x$data)
 
   if (is.null(geom)) {
@@ -391,36 +423,16 @@ plot.ggseg_atlas <- function(x, show.legend = FALSE, ...) { # nolint: object_nam
   }
 
   flat <- polygons_unnest(geom)
-
-  # Resolve fill colours: palette wins, otherwise generate qualitative colours
-  all_labels <- unique(flat$label)
-  n_labels <- length(all_labels)
-  palette <- x$palette
-
-  if (!is.null(palette)) {
-    matched <- all_labels %in% names(palette) & !is.na(palette[all_labels])
-    fill_colors <- setNames(
-      ifelse(matched, palette[all_labels], "#CCCCCC"),
-      all_labels
-    )
-  } else {
-    fill_colors <- setNames(
-      grDevices::hcl(
-        h = seq(0, 360, length.out = n_labels + 1L)[seq_len(n_labels)],
-        c = 80,
-        l = 65
-      ),
-      all_labels
-    )
-  }
+  fill_colors <- resolve_fill_colors(flat$label, x$palette)
+  dots <- list(...)
 
   views <- unique(flat$view)
   n_views <- length(views)
 
   old_par <- par(
-    mfrow  = c(1L, n_views),
-    mar    = c(0.5, 0.5, 1.5, 0.5),
-    oma    = c(0, 0, 2, 0)
+    mfrow = c(1L, n_views),
+    mar = c(0.5, 0.5, 1.5, 0.5),
+    oma = c(0, 0, 2, 0)
   )
   on.exit(par(old_par), add = TRUE)
 
@@ -436,29 +448,44 @@ plot.ggseg_atlas <- function(x, show.legend = FALSE, ...) { # nolint: object_nam
 
     # Collapse label × group loops: split once, then lapply over all pieces
     piece_id <- paste(view_flat$label, view_flat$group, sep = "\r")
-    pieces   <- split(view_flat, piece_id)
+    pieces <- split(view_flat, piece_id)
 
     invisible(lapply(pieces, function(piece) {
-      lbl <- piece$label[[1L]]
-      col <- fill_colors[[lbl]]
-      if (is.null(col) || is.na(col)) col <- "#CCCCCC"
-
+      col <- fill_colors[[piece$label[[1L]]]]
       rings <- sort(unique(piece$subgroup))
 
       if (length(rings) == 1L) {
-        polygon(piece$x, piece$y, col = col, border = "white", lwd = 0.3)
+        do.call(
+          polygon,
+          c(
+            list(x = piece$x, y = piece$y),
+            utils::modifyList(
+              list(col = col, border = "white", lwd = 0.3),
+              dots
+            )
+          )
+        )
       } else {
         # Build NA-separated coordinate vectors without an inner ring loop:
         # split coords by subgroup, interleave a NA-row separator between rings
-        ring_coords <- split(piece[c("x", "y")], piece$subgroup)[as.character(rings)]
-        n_rings     <- length(rings)
-        na_row      <- data.frame(x = NA_real_, y = NA_real_)
+        ring_coords <- split(piece[c("x", "y")], piece$subgroup)[as.character(
+          rings
+        )]
+        n_rings <- length(rings)
+        na_row <- data.frame(x = NA_real_, y = NA_real_)
         interleaved <- vector("list", 2L * n_rings - 1L)
         interleaved[seq(1L, 2L * n_rings - 1L, 2L)] <- ring_coords
         interleaved[seq(2L, 2L * n_rings - 2L, 2L)] <- list(na_row)
         coords <- do.call(rbind, interleaved)
-        polypath(coords$x, coords$y,
-          col = col, border = "white", lwd = 0.3, rule = "evenodd"
+        do.call(
+          polypath,
+          c(
+            list(x = coords$x, y = coords$y),
+            utils::modifyList(
+              list(col = col, border = "white", lwd = 0.3, rule = "evenodd"),
+              dots
+            )
+          )
         )
       }
     }))
@@ -468,7 +495,9 @@ plot.ggseg_atlas <- function(x, show.legend = FALSE, ...) { # nolint: object_nam
 
   mtext(
     paste(x$atlas, x$type, "atlas"),
-    outer = TRUE, cex = 1, line = 0.5
+    outer = TRUE,
+    cex = 1,
+    line = 0.5
   )
 
   invisible(x)

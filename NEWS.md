@@ -2,6 +2,20 @@
 
 ## ggseg.formats 0.0.2.9001 (development)
 
+### Base-R `plot()` (breaking)
+
+`plot.ggseg_atlas()` is reimplemented with base graphics
+(`graphics::polygon()` / `graphics::polypath()`), and **`ggplot2` is dropped
+from Imports** — the package no longer depends on ggplot2 for its own plotting.
+
+- `plot()` now returns the atlas invisibly rather than a `ggplot` object; it is
+  called for its side effect (drawing one panel per view). Code that captured
+  the return value to add ggplot2 layers (`plot(atlas) + ...`) must be updated.
+- The `show.legend` argument is removed; the base-R plot draws no legend. Extra
+  arguments in `...` are forwarded to the underlying `polygon()` / `polypath()`
+  primitives (e.g. `lwd`, `border`).
+- `vdiffr` is dropped from Suggests; the plot tests no longer snapshot SVG.
+
 ### Bundled SUIT cerebellar atlas
 
 - New `suit()` bundled atlas — the SUIT cerebellar parcellation (lobules + deep
@@ -132,7 +146,7 @@ were previously embedded in `ggseg` and `ggseg3d`.
   `is_subcortical_atlas()`, `is_tract_atlas()`, `is_cerebellar_atlas()`.
 - Coercion with `as_ggseg_atlas()`, `as.data.frame()`, and `as.list()`
   methods.
-- `plot()` method for quick atlas visualisation using base R graphics.
+- `plot()` method for quick atlas visualisation via ggplot2.
 
 ### Accessors
 
