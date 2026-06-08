@@ -513,20 +513,6 @@ plot_cells <- function(flat, gap_frac = 0.12) {
   ids
 }
 
-#' Plot a quick overview of an atlas
-#'
-#' Draws each spatially separate piece of the atlas (e.g. a hemisphere surface
-#' or an anatomical slice) in its own panel, arranged in a near-square grid.
-#' This is a base-graphics overview to see what an atlas is composed of, not a
-#' publication figure. Region fill follows the atlas `palette` when present,
-#' otherwise qualitative `grDevices::hcl()` colours are generated.
-#'
-#' @param x a `ggseg_atlas` object.
-#' @param ... graphical parameters forwarded to [graphics::polygon()] and
-#'   [graphics::polypath()] (e.g. `lwd`, `border`), overriding the defaults.
-#' @return The atlas `x`, invisibly. Called for the side effect of drawing.
-#' @examples
-#' plot(dk())
 #' @importFrom graphics mtext par plot.new plot.window polygon polypath
 #' @export
 plot.ggseg_atlas <- function(x, ...) {
