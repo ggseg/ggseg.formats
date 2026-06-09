@@ -275,17 +275,13 @@ validate_centerlines <- function(centerlines) {
     cli::cli_abort("{.arg points} must be a list-column of matrices")
   }
 
-  ok <- vapply(
-    centerlines$points,
-    function(pts) is.matrix(pts) && ncol(pts) == 3,
-    logical(1)
-  )
-  if (!all(ok)) {
-    i <- which(!ok)[1]
+  for (i in seq_len(nrow(centerlines))) {
     pts <- centerlines$points[[i]]
-    cli::cli_abort(
-      "points[[{i}]] must be an n x 3 matrix, got {class(pts)[1]}"
-    )
+    if (!is.matrix(pts) || ncol(pts) != 3) {
+      cli::cli_abort(
+        "points[[{i}]] must be an n x 3 matrix, got {class(pts)[1]}"
+      )
+    }
   }
 
   if (!"tangents" %in% names(centerlines)) {
