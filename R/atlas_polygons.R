@@ -1,3 +1,17 @@
+#' @export
+print.brain_polygons <- function(x, ...) {
+  cli::cli_h2("brain_polygons")
+  cli::cli_text("{.strong Labels:} {nrow(x)}")
+  if (nrow(x) > 0) {
+    # nolint start: object_usage_linter
+    views <- unique(unlist(lapply(x$geometry, function(g) unique(g$view))))
+    n_pts <- sum(vapply(x$geometry, nrow, integer(1)))
+    # nolint end
+    cli::cli_text("{.strong Views:} {paste(views, collapse = ', ')}")
+    cli::cli_text("{.strong Total points:} {n_pts}")
+  }
+  NextMethod()
+}
 # sf-optional atlas polygon format ----
 
 #' Convert an sf atlas geometry to the sf-optional polygon format
@@ -211,20 +225,4 @@ resolve_geom <- function(geom = NULL, ..., .fn) {
     return(NULL)
   }
   validate_geom(geom)
-}
-
-
-#' @export
-print.brain_polygons <- function(x, ...) {
-  cli::cli_h2("brain_polygons")
-  cli::cli_text("{.strong Labels:} {nrow(x)}")
-  if (nrow(x) > 0) {
-    # nolint start: object_usage_linter
-    views <- unique(unlist(lapply(x$geometry, function(g) unique(g$view))))
-    n_pts <- sum(vapply(x$geometry, nrow, integer(1)))
-    # nolint end
-    cli::cli_text("{.strong Views:} {paste(views, collapse = ', ')}")
-    cli::cli_text("{.strong Total points:} {n_pts}")
-  }
-  NextMethod()
 }

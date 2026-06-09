@@ -26,16 +26,6 @@ atlas_regions.data.frame <- function(x) {
   get_uniq(x, "region")
 }
 
-
-#' @keywords internal
-#' @noRd
-get_uniq <- function(x, type) {
-  type <- match.arg(type, c("label", "region"))
-  x <- unique(x[[type]])
-  x <- x[!is.na(x)]
-  sort(x)
-}
-
 #' Extract unique labels from an atlas
 #'
 #' @param x brain atlas
@@ -104,30 +94,6 @@ atlas_type.ggseg_atlas <- function(x) {
 #' @export
 atlas_type.brain_atlas <- function(x) {
   guess_type(x)
-}
-
-#' @noRd
-#' @keywords internal
-guess_type <- function(x) {
-  if ("type" %in% names(x) && !is.na(x$type[1])) {
-    return(unique(x$type))
-  }
-
-  cli::cli_warn("Atlas type not set, attempting to guess type.")
-
-  views <- if (is_ggseg_atlas(x) && !is.null(x$sf)) {
-    x$sf$view
-  } else if ("view" %in% names(x)) {
-    x$view
-  } else {
-    character(0)
-  }
-
-  if (any(grepl("medial|lateral", views))) {
-    "cortical"
-  } else {
-    "subcortical"
-  }
 }
 
 
@@ -220,31 +186,6 @@ atlas_region_remove <- function(
 }
 
 
-#' Move contextual geometry rows behind core rows
-#'
-#' 2D geometry is drawn in row order, so contextual (non-core) regions must
-#' come first to render behind the core regions they may overlap. Stable
-#' within each group, preserving existing view order. Works on either an sf
-#' data.frame (one row per label/view) or a `brain_polygons` data.frame (one row
-#' per label) — both carry a `label` column — so reordering needs no sf.
-#'
-#' @param geom An sf data.frame, a `brain_polygons` data.frame, or NULL.
-#' @param core_labels Character vector of labels still present in core.
-#' @return Reordered geometry of the same class, or NULL if `geom` is NULL.
-#' @noRd
-order_context_behind <- function(geom, core_labels) {
-  if (is.null(geom) || nrow(geom) == 0) {
-    return(geom)
-  }
-  is_core <- geom$label %in% core_labels
-  out <- geom[c(which(!is_core), which(is_core)), , drop = FALSE]
-  if (inherits(geom, "brain_polygons") && !inherits(out, "brain_polygons")) {
-    out <- structure(out, class = class(geom))
-  }
-  out
-}
-
-
 #' @describeIn atlas_manipulation Keep geometry for visual context but remove
 #'   from core, palette, and 3D data. Context geometries render grey and don't
 #'   appear in legends. Contextual rows are moved behind the remaining core
@@ -321,7 +262,7 @@ atlas_region_op <- function(
   x,
   y,
   action = c("difference", "intersection", "union", "symdifference"),
-  into,
+  into = NULL,
   match_on = c("label", "region"),
   colour = NULL
 ) {
@@ -333,7 +274,7 @@ atlas_region_op <- function(
   # original 2D format.
   require_sf("atlas_region_op()")
 
-  if (missing(into) || !is.character(into) || length(into) != 1) {
+  if (is.null(into) || !is.character(into) || length(into) != 1) {
     cli::cli_abort("{.arg into} must be a single label for the result region.")
   }
 
@@ -397,97 +338,6 @@ atlas_region_op <- function(
     ),
     class = class(atlas)
   )
-}
-
-
-#' sf geometry for a region op, rehydrating a polygon-only atlas
-#' Returns a list with the sf geometry and `was_polygon_only` (whether the
-#' atlas had no native sf and was rehydrated from polygons).
-#' @noRd
-#' @keywords internal
-region_op_sf_data <- function(data) {
-  sf_data <- data_sf(data)
-  was_polygon_only <- is.null(sf_data)
-  if (was_polygon_only) {
-    poly <- data_poly(data)
-    if (is.null(poly)) {
-      cli::cli_abort("Atlas has no 2D geometry to operate on.")
-    }
-    sf_data <- polygons_to_sf(poly)
-  }
-  list(sf_data = sf_data, was_polygon_only = was_polygon_only)
-}
-
-
-#' Map a boolean action to its sf combiner
-#' @noRd
-#' @keywords internal
-region_op_combine <- function(action) {
-  switch(
-    action,
-    difference = sf::st_difference,
-    intersection = sf::st_intersection,
-    union = function(a, b) sf::st_union(c(a, b)),
-    symdifference = sf::st_sym_difference
-  )
-}
-
-
-#' Apply a boolean region op within a single view
-#'
-#' `op` bundles the loop-invariant inputs assembled by [atlas_region_op()]:
-#' `sf_data`, `geom_col`, `x_labels`, `y_labels`, `combine`, `action`,
-#' `template`, `into`. Returns a one-row sf result for view `v`, or `NULL` when
-#' there is no `x` geometry in the view or the op yields empty geometry.
-#' @noRd
-#' @keywords internal
-region_op_view <- function(v, op) {
-  in_view <- op$sf_data$view == v
-  gx <- op$sf_data[[op$geom_col]][in_view & op$sf_data$label %in% op$x_labels]
-  gy <- op$sf_data[[op$geom_col]][in_view & op$sf_data$label %in% op$y_labels]
-  if (length(gx) == 0) {
-    return(NULL)
-  }
-  gx <- sf::st_union(sf::st_make_valid(gx))
-  geom <- if (length(gy) > 0) {
-    op$combine(gx, sf::st_union(sf::st_make_valid(gy)))
-  } else if (op$action == "intersection") {
-    gx[0]
-  } else {
-    gx
-  }
-  geom <- sf::st_make_valid(geom)
-  if (length(geom) == 0 || all(sf::st_is_empty(geom))) {
-    return(NULL)
-  }
-  row <- op$template[1, , drop = FALSE]
-  row$label <- op$into
-  row$view <- v
-  geom <- sf::st_union(geom)
-  sf::st_crs(geom) <- sf::st_crs(op$sf_data)
-  sf::st_geometry(row) <- geom
-  row
-}
-
-
-#' Add a result region to `core`/`palette` when a colour is given
-#' @noRd
-#' @keywords internal
-add_op_region_meta <- function(core, palette, into, colour) {
-  if (is.null(colour)) {
-    return(list(core = core, palette = palette))
-  }
-  if (!into %in% core$label) {
-    core_row <- core[1, , drop = FALSE]
-    core_row[] <- NA
-    core_row$label <- into
-    if ("region" %in% names(core_row)) {
-      core_row$region <- into
-    }
-    core <- rbind(core, core_row)
-  }
-  palette[[into]] <- colour
-  list(core = core, palette = palette)
 }
 
 
@@ -834,23 +684,6 @@ atlas_view_gather <- function(atlas, gap = 0.15) {
 }
 
 
-#' Gather an atlas that has no sf geometry
-#'
-#' Repositions the polygon representation when present; otherwise warns. Used
-#' by [atlas_view_gather()]. Returns the (possibly unchanged) atlas.
-#' @noRd
-#' @keywords internal
-gather_without_sf <- function(atlas, gap) {
-  poly <- data_poly(atlas$data)
-  if (!is.null(poly)) {
-    new_poly <- reposition_polygons(poly, type = atlas$type, gap = gap)
-    return(set_atlas_polygons(atlas, new_poly))
-  }
-  cli::cli_warn("Atlas has no 2D geometry")
-  atlas
-}
-
-
 #' @describeIn atlas_manipulation Reorder views and reposition. Views not
 #'   in `order` are appended at end.
 #' @export
@@ -913,6 +746,173 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
   )
   new_data <- rebuild_atlas_data(atlas, new_sf)
   rebuild_atlas(atlas, new_data)
+}
+
+
+#' @keywords internal
+#' @noRd
+get_uniq <- function(x, type) {
+  type <- match.arg(type, c("label", "region"))
+  x <- unique(x[[type]])
+  x <- x[!is.na(x)]
+  sort(x)
+}
+
+#' @noRd
+#' @keywords internal
+guess_type <- function(x) {
+  if ("type" %in% names(x) && !is.na(x$type[1])) {
+    return(unique(x$type))
+  }
+
+  cli::cli_warn("Atlas type not set, attempting to guess type.")
+
+  views <- if (is_ggseg_atlas(x) && !is.null(x$sf)) {
+    x$sf$view
+  } else if ("view" %in% names(x)) {
+    x$view
+  } else {
+    character(0)
+  }
+
+  if (any(grepl("medial|lateral", views))) {
+    "cortical"
+  } else {
+    "subcortical"
+  }
+}
+
+
+#' Move contextual geometry rows behind core rows
+#'
+#' 2D geometry is drawn in row order, so contextual (non-core) regions must
+#' come first to render behind the core regions they may overlap. Stable
+#' within each group, preserving existing view order. Works on either an sf
+#' data.frame (one row per label/view) or a `brain_polygons` data.frame (one row
+#' per label) — both carry a `label` column — so reordering needs no sf.
+#'
+#' @param geom An sf data.frame, a `brain_polygons` data.frame, or NULL.
+#' @param core_labels Character vector of labels still present in core.
+#' @return Reordered geometry of the same class, or NULL if `geom` is NULL.
+#' @noRd
+order_context_behind <- function(geom, core_labels) {
+  if (is.null(geom) || nrow(geom) == 0) {
+    return(geom)
+  }
+  is_core <- geom$label %in% core_labels
+  out <- geom[c(which(!is_core), which(is_core)), , drop = FALSE]
+  if (inherits(geom, "brain_polygons") && !inherits(out, "brain_polygons")) {
+    out <- structure(out, class = class(geom))
+  }
+  out
+}
+
+
+#' sf geometry for a region op, rehydrating a polygon-only atlas
+#' Returns a list with the sf geometry and `was_polygon_only` (whether the
+#' atlas had no native sf and was rehydrated from polygons).
+#' @noRd
+#' @keywords internal
+region_op_sf_data <- function(data) {
+  sf_data <- data_sf(data)
+  was_polygon_only <- is.null(sf_data)
+  if (was_polygon_only) {
+    poly <- data_poly(data)
+    if (is.null(poly)) {
+      cli::cli_abort("Atlas has no 2D geometry to operate on.")
+    }
+    sf_data <- polygons_to_sf(poly)
+  }
+  list(sf_data = sf_data, was_polygon_only = was_polygon_only)
+}
+
+
+#' Map a boolean action to its sf combiner
+#' @noRd
+#' @keywords internal
+region_op_combine <- function(action) {
+  switch(
+    action,
+    difference = sf::st_difference,
+    intersection = sf::st_intersection,
+    union = function(a, b) sf::st_union(c(a, b)),
+    symdifference = sf::st_sym_difference
+  )
+}
+
+
+#' Apply a boolean region op within a single view
+#'
+#' `op` bundles the loop-invariant inputs assembled by [atlas_region_op()]:
+#' `sf_data`, `geom_col`, `x_labels`, `y_labels`, `combine`, `action`,
+#' `template`, `into`. Returns a one-row sf result for view `v`, or `NULL` when
+#' there is no `x` geometry in the view or the op yields empty geometry.
+#' @noRd
+#' @keywords internal
+region_op_view <- function(v, op) {
+  in_view <- op$sf_data$view == v
+  gx <- op$sf_data[[op$geom_col]][in_view & op$sf_data$label %in% op$x_labels]
+  gy <- op$sf_data[[op$geom_col]][in_view & op$sf_data$label %in% op$y_labels]
+  if (length(gx) == 0) {
+    return(NULL)
+  }
+  gx <- sf::st_union(sf::st_make_valid(gx))
+  geom <- if (length(gy) > 0) {
+    op$combine(gx, sf::st_union(sf::st_make_valid(gy)))
+  } else if (op$action == "intersection") {
+    gx[0]
+  } else {
+    gx
+  }
+  geom <- sf::st_make_valid(geom)
+  if (length(geom) == 0 || all(sf::st_is_empty(geom))) {
+    return(NULL)
+  }
+  row <- op$template[1, , drop = FALSE]
+  row$label <- op$into
+  row$view <- v
+  geom <- sf::st_union(geom)
+  sf::st_crs(geom) <- sf::st_crs(op$sf_data)
+  sf::st_geometry(row) <- geom
+  row
+}
+
+
+#' Add a result region to `core`/`palette` when a colour is given
+#' @noRd
+#' @keywords internal
+add_op_region_meta <- function(core, palette, into, colour) {
+  if (is.null(colour)) {
+    return(list(core = core, palette = palette))
+  }
+  if (!into %in% core$label) {
+    core_row <- core[1, , drop = FALSE]
+    core_row[] <- NA
+    core_row$label <- into
+    if ("region" %in% names(core_row)) {
+      core_row$region <- into
+    }
+    core <- rbind(core, core_row)
+  }
+  palette[[into]] <- colour
+  list(core = core, palette = palette)
+}
+
+
+#' Gather an atlas that has no sf geometry
+#'
+#' Repositions the polygon representation when present; otherwise warns. Used
+#' by [atlas_view_gather()]. Returns the (possibly unchanged) atlas.
+#' @noRd
+#' @keywords internal
+gather_without_sf <- function(atlas, gap) {
+  poly <- data_poly(atlas$data)
+  if (!is.null(poly)) {
+    new_poly <- reposition_polygons(poly, type = atlas$type, gap = gap)
+    return(set_atlas_polygons(atlas, new_poly))
+  }
+  cli::cli_warn("Atlas has no 2D geometry")
+  atlas
 }
 
 

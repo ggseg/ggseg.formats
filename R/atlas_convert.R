@@ -103,6 +103,32 @@ convert_legacy_brain_atlas <- function(
 }
 
 
+#' @rdname convert_legacy_brain_atlas
+#' @export
+unify_legacy_atlases <- function(
+  atlas_2d = NULL,
+  atlas_3d = NULL,
+  atlas_name = NULL,
+  type = NULL,
+  surface = "inflated",
+  brain_meshes = NULL
+) {
+  lifecycle::deprecate_warn(
+    "0.1.0",
+    "unify_legacy_atlases()",
+    "convert_legacy_brain_atlas()"
+  )
+  convert_legacy_brain_atlas(
+    atlas_2d = atlas_2d,
+    atlas_3d = atlas_3d,
+    atlas_name = atlas_name,
+    type = type,
+    surface = surface,
+    brain_meshes = brain_meshes
+  )
+}
+
+
 #' @noRd
 #' @keywords internal
 validate_legacy_inputs <- function(has_2d, has_3d, atlas_2d, atlas_3d) {
@@ -288,32 +314,6 @@ build_atlas_data <- function(type, sf_data, vertices_df, meshes_df) {
     ),
     "tract" = ggseg_data_tract(geom = sf_data, meshes = meshes_df),
     ggseg_data_cortical(geom = sf_data, vertices = vertices_df)
-  )
-}
-
-
-#' @rdname convert_legacy_brain_atlas
-#' @export
-unify_legacy_atlases <- function(
-  atlas_2d = NULL,
-  atlas_3d = NULL,
-  atlas_name = NULL,
-  type = NULL,
-  surface = "inflated",
-  brain_meshes = NULL
-) {
-  lifecycle::deprecate_warn(
-    "0.1.0",
-    "unify_legacy_atlases()",
-    "convert_legacy_brain_atlas()"
-  )
-  convert_legacy_brain_atlas(
-    atlas_2d = atlas_2d,
-    atlas_3d = atlas_3d,
-    atlas_name = atlas_name,
-    type = type,
-    surface = surface,
-    brain_meshes = brain_meshes
   )
 }
 

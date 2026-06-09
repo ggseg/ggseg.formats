@@ -182,25 +182,6 @@ is_ggseg3d_atlas <- function(x) {
 }
 
 
-#' @keywords internal
-#' @noRd
-validate_ggseg_atlas <- function(x) {
-  tryCatch(
-    {
-      ggseg_atlas(
-        atlas = x$atlas,
-        type = x$type,
-        core = x$core,
-        data = x$data,
-        palette = x$palette
-      )
-      TRUE
-    },
-    error = function(e) FALSE
-  )
-}
-
-
 #' @export
 #' @importFrom stats na.omit
 print.ggseg_atlas <- function(x, n = 10, ...) {
@@ -301,6 +282,68 @@ as.data.frame.ggseg_atlas <- function(x, ...) {
   result <- result[order(is_context, decreasing = TRUE), , drop = FALSE]
 
   sf::st_as_sf(result)
+}
+
+#' @importFrom graphics mtext par plot.new plot.window polygon polypath
+#' @export
+plot.ggseg_atlas <- function(x, ...) {
+  flat <- polygons_unnest(atlas_polygons(x))
+  fill_colors <- resolve_fill_colors(flat$label, x$palette)
+  dots <- list(...)
+
+  # One panel per spatially separate piece, arranged in a near-square grid so
+  # each gets enough room to read. This is a quick overview of the atlas, not a
+  # publication figure.
+  cell <- plot_cells(flat)
+  cells <- sort(unique(cell))
+  ncol <- ceiling(sqrt(length(cells)))
+  nrow <- ceiling(length(cells) / ncol)
+  cell_tables <- split(flat, cell)
+
+  old_par <- par(
+    mfrow = c(nrow, ncol),
+    mar = c(0.3, 0.3, 0.3, 0.3),
+    oma = c(0, 0, 2, 0)
+  )
+  on.exit(par(old_par), add = TRUE)
+
+  for (ci in cells) {
+    cf <- cell_tables[[as.character(ci)]]
+    plot.new()
+    plot.window(
+      xlim = range(cf$x, na.rm = TRUE),
+      ylim = range(cf$y, na.rm = TRUE),
+      asp = 1
+    )
+    # `view` in the key keeps a region's per-view instances from being joined.
+    piece_id <- paste(cf$label, cf$view, cf$group, sep = "\r")
+    invisible(lapply(split(cf, piece_id), function(piece) {
+      draw_piece(piece, fill_colors[[piece$label[[1L]]]], dots)
+    }))
+  }
+
+  mtext(paste(x$atlas, x$type, "atlas"), outer = TRUE, cex = 1, line = 0.5)
+
+  invisible(x)
+}
+
+
+#' @keywords internal
+#' @noRd
+validate_ggseg_atlas <- function(x) {
+  tryCatch(
+    {
+      ggseg_atlas(
+        atlas = x$atlas,
+        type = x$type,
+        core = x$core,
+        data = x$data,
+        palette = x$palette
+      )
+      TRUE
+    },
+    error = function(e) FALSE
+  )
 }
 
 
@@ -535,47 +578,4 @@ plot_cells <- function(flat, gap_frac = 0.12) {
     base <- base + max(cell)
   }
   ids
-}
-
-#' @importFrom graphics mtext par plot.new plot.window polygon polypath
-#' @export
-plot.ggseg_atlas <- function(x, ...) {
-  flat <- polygons_unnest(atlas_polygons(x))
-  fill_colors <- resolve_fill_colors(flat$label, x$palette)
-  dots <- list(...)
-
-  # One panel per spatially separate piece, arranged in a near-square grid so
-  # each gets enough room to read. This is a quick overview of the atlas, not a
-  # publication figure.
-  cell <- plot_cells(flat)
-  cells <- sort(unique(cell))
-  ncol <- ceiling(sqrt(length(cells)))
-  nrow <- ceiling(length(cells) / ncol)
-  cell_tables <- split(flat, cell)
-
-  old_par <- par(
-    mfrow = c(nrow, ncol),
-    mar = c(0.3, 0.3, 0.3, 0.3),
-    oma = c(0, 0, 2, 0)
-  )
-  on.exit(par(old_par), add = TRUE)
-
-  for (ci in cells) {
-    cf <- cell_tables[[as.character(ci)]]
-    plot.new()
-    plot.window(
-      xlim = range(cf$x, na.rm = TRUE),
-      ylim = range(cf$y, na.rm = TRUE),
-      asp = 1
-    )
-    # `view` in the key keeps a region's per-view instances from being joined.
-    piece_id <- paste(cf$label, cf$view, cf$group, sep = "\r")
-    invisible(lapply(split(cf, piece_id), function(piece) {
-      draw_piece(piece, fill_colors[[piece$label[[1L]]]], dots)
-    }))
-  }
-
-  mtext(paste(x$atlas, x$type, "atlas"), outer = TRUE, cex = 1, line = 0.5)
-
-  invisible(x)
 }

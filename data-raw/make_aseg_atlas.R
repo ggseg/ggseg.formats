@@ -14,7 +14,7 @@
 # Run with: source("data-raw/make_aseg_atlas.R")
 
 library(dplyr)
-library(ggsegExtra) #nolint
+library(ggsegExtra) # nolint
 devtools::load_all()
 options(freesurfer.verbose = FALSE)
 future::plan(future::multicore())
