@@ -348,13 +348,10 @@ remap_palette_to_labels <- function(palette, core) {
     return(NULL)
   }
 
-  new_palette <- character(0)
-  for (region_name in names(palette)) {
+  new_palette <- unlist(lapply(names(palette), function(region_name) {
     labels <- core$label[!is.na(core$region) & core$region == region_name]
-    for (lbl in labels) {
-      new_palette[lbl] <- unname(palette[region_name])
-    }
-  }
+    stats::setNames(rep(unname(palette[region_name]), length(labels)), labels)
+  }))
   if (length(new_palette) == 0) NULL else new_palette
 }
 

@@ -987,12 +987,18 @@ reposition_views <- function(
   max_height <- max(vapply(ranges, function(r) max(abs(r$y_range)), numeric(1)))
   gap_size <- max(widths) * gap
 
-  x_pos <- 0
-  for (i in seq_along(view_data)) {
-    x_offset <- x_pos + half_widths[i]
-    view_data[[i]]$geometry <- view_data[[i]]$geometry + c(x_offset, max_height)
-    x_pos <- x_pos + widths[i] + gap_size
-  }
+  # Running x position of each view's left edge is a prefix sum of preceding
+  # widths plus gaps; offset each view to its packed centre.
+  x_left <- cumsum(c(0, widths + gap_size))[seq_along(view_data)]
+  x_offsets <- x_left + half_widths
+  view_data <- Map(
+    function(view, x_offset) {
+      view$geometry <- view$geometry + c(x_offset, max_height)
+      view
+    },
+    view_data,
+    x_offsets
+  )
 
   result <- do.call(rbind, view_data)
   sf::st_as_sf(result)
