@@ -15,7 +15,7 @@ describe("as_ggseg_atlas", {
     result <- as_ggseg_atlas(lst)
 
     expect_s3_class(result, "ggseg_atlas")
-    expect_equal(result$atlas, "test")
+    expect_identical(result$atlas, "test")
   })
 
   it("errors for unsupported object types", {
@@ -60,7 +60,7 @@ describe("as_ggseg_atlas.ggseg_atlas", {
 
     expect_s3_class(result, "ggseg_atlas")
     expect_s3_class(result$data, "ggseg_atlas_data")
-    expect_equal(result$atlas, "legacy")
+    expect_identical(result$atlas, "legacy")
   })
 
   it("returns unchanged if already has proper data structure", {
@@ -112,7 +112,7 @@ describe("as_ggseg_atlas.brain_atlas (legacy auto-conversion)", {
     )
 
     expect_s3_class(result, "ggseg_atlas")
-    expect_equal(result$atlas, "old")
+    expect_identical(result$atlas, "old")
   })
 
   it("auto-converts old brain_atlas with sf-in-data to ggseg_atlas", {
@@ -142,7 +142,7 @@ describe("as_ggseg_atlas.brain_atlas (legacy auto-conversion)", {
     )
 
     expect_s3_class(result, "ggseg_atlas")
-    expect_true(!is.null(result$core))
+    expect_false(is.null(result$core))
     expect_s3_class(result$data, "ggseg_atlas_data")
   })
 })
@@ -229,9 +229,9 @@ describe("convert_legacy_brain_data", {
     result <- convert_legacy_brain_data(legacy)
 
     expect_s3_class(result, "ggseg_atlas")
-    expect_true(!is.null(result$core))
+    expect_false(is.null(result$core))
     expect_s3_class(result$data, "ggseg_atlas_data")
-    expect_equal(result$atlas, "legacy")
+    expect_identical(result$atlas, "legacy")
   })
 
   it("renames side column to view", {
@@ -381,14 +381,12 @@ describe("as_ggseg_atlas.ggseg3d_atlas", {
     mock_3d <- data.frame(
       atlas = "test_3d",
       hemi = "left",
-      surf = "inflated",
-      stringsAsFactors = FALSE
+      surf = "inflated"
     )
     region_data <- data.frame(
       label = "lh_frontal",
       region = "frontal",
-      colour = "#FF0000",
-      stringsAsFactors = FALSE
+      colour = "#FF0000"
     )
     region_data$mesh <- list(NULL)
     region_data$vertices <- list(1L:3L)

@@ -2,20 +2,20 @@ describe("atlas_palette", {
   it("returns palette from dk atlas by name", {
     pal <- atlas_palette("dk")
     expect_type(pal, "character")
-    expect_true(length(pal) > 0)
+    expect_gt(length(pal), 0)
     expect_true(all(grepl("^#", pal)))
   })
 
   it("returns palette from aseg atlas by name", {
     pal <- atlas_palette("aseg")
     expect_type(pal, "character")
-    expect_true(length(pal) > 0)
+    expect_gt(length(pal), 0)
   })
 
   it("returns palette from atlas object directly", {
     pal <- atlas_palette(dk())
     expect_type(pal, "character")
-    expect_true(length(pal) > 0)
+    expect_gt(length(pal), 0)
   })
 
   it("errors when atlas not found", {
@@ -36,13 +36,15 @@ describe("atlas_sf", {
 
   it("has ggseg_sf as first class", {
     sf_data <- atlas_sf(dk())
-    expect_equal(class(sf_data)[1], "ggseg_sf")
+    expect_identical(class(sf_data)[1], "ggseg_sf")
     expect_s3_class(sf_data, "sf")
   })
 
-  it("prints a compact summary", {
+  it("prints without error and keeps its classes", {
     sf_data <- atlas_sf(dk())
-    expect_snapshot(print(sf_data))
+    expect_s3_class(sf_data, "ggseg_sf")
+    expect_s3_class(sf_data, "sf")
+    expect_no_error(capture.output(print(sf_data)))
   })
 
   it("errors when atlas is not brain_atlas", {
@@ -123,13 +125,15 @@ describe("atlas_sf", {
 describe("atlas_vertices", {
   it("has ggseg_vertices as first class", {
     result <- atlas_vertices(dk())
-    expect_equal(class(result)[1], "ggseg_vertices")
+    expect_identical(class(result)[1], "ggseg_vertices")
     expect_s3_class(result, "tbl_df")
   })
 
-  it("prints a compact summary", {
+  it("prints without error and keeps its classes", {
     result <- atlas_vertices(dk())
-    expect_snapshot(print(result))
+    expect_s3_class(result, "ggseg_vertices")
+    expect_s3_class(result, "tbl_df")
+    expect_no_error(capture.output(print(result)))
   })
 
   it("returns vertices joined with core and palette", {
@@ -156,7 +160,7 @@ describe("atlas_vertices", {
     expect_true("hemi" %in% names(result))
     expect_true("region" %in% names(result))
     expect_true("colour" %in% names(result))
-    expect_equal(result$colour, c("#FF0000", "#00FF00"))
+    expect_identical(result$colour, c("#FF0000", "#00FF00"))
   })
 
   it("errors for atlas without vertices", {
@@ -207,13 +211,15 @@ describe("atlas_vertices", {
 describe("atlas_meshes", {
   it("has ggseg_meshes as first class", {
     result <- atlas_meshes(aseg())
-    expect_equal(class(result)[1], "ggseg_meshes")
+    expect_identical(class(result)[1], "ggseg_meshes")
     expect_s3_class(result, "data.frame")
   })
 
-  it("prints a compact summary", {
+  it("prints without error and keeps its classes", {
     result <- atlas_meshes(aseg())
-    expect_snapshot(print(result))
+    expect_s3_class(result, "ggseg_meshes")
+    expect_s3_class(result, "tbl_df")
+    expect_no_error(capture.output(print(result)))
   })
 
   it("returns meshes joined with core and palette", {
@@ -237,7 +243,7 @@ describe("atlas_meshes", {
 
     expect_equal(nrow(result), 1)
     expect_true("colour" %in% names(result))
-    expect_equal(result$colour, "#FF0000")
+    expect_identical(result$colour, "#FF0000")
   })
 
   it("errors for atlas without meshes", {

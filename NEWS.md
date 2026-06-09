@@ -2,6 +2,34 @@
 
 ## ggseg.formats 0.0.2.9001 (development)
 
+### Base-R `plot()` (breaking)
+
+`plot.ggseg_atlas()` is reimplemented with base graphics
+(`graphics::polygon()` / `graphics::polypath()`), and **`ggplot2` is dropped
+from Imports** — the package no longer depends on ggplot2 for its own plotting.
+
+- `plot()` now returns the atlas invisibly rather than a `ggplot` object; it is
+  called for its side effect. Each spatially separate piece (e.g. a hemisphere
+  surface or a slice) is drawn in its own panel, arranged in a near-square grid
+  for a legible overview of the atlas. Code that captured the return value to
+  add ggplot2 layers (`plot(atlas) + ...`) must be updated.
+- The `show.legend` argument is removed; the base-R plot draws no legend. Extra
+  arguments in `...` are forwarded to the underlying `polygon()` / `polypath()`
+  primitives (e.g. `lwd`, `border`).
+- `vdiffr` is dropped from Suggests; the plot tests no longer snapshot SVG.
+
+### Lighter dependency tree
+
+- Dropped the `dplyr` and `tidyr` Imports in favour of base-R equivalents,
+  shrinking the recursive dependency tree from 32 to 20 packages (also removes
+  `tibble`, `pillar`, `purrr`, `stringi`, `stringr`, `tidyselect`, `generics`,
+  `magrittr` and more). Returned data objects keep the `tbl_df`/`tbl` classes
+  so they continue to integrate with `tibble`/`dplyr` workflows, but `tibble`
+  is no longer required at install time.
+- `print()` for a `ggseg_atlas` now shows the first 10 core rows by default
+  (atlases can have hundreds of regions); pass `n` to control how many rows
+  print, e.g. `print(dk(), n = 50)`.
+
 ### Bundled SUIT cerebellar atlas
 
 - New `suit()` bundled atlas — the SUIT cerebellar parcellation (lobules + deep
@@ -39,7 +67,7 @@ Foundation work for the `sf-optional` milestone — see
 - New `brain_polygons` representation: a nested tibble keyed by `label`, with a
   `geometry` list-column containing per-view, per-ring point coordinates
   (`view`, `x`, `y`, `group`, `subgroup`). Renderable directly by
-  `ggplot2::geom_polygon()` via the `subgroup` aesthetic (which handles holes
+  `geom_polygon()` via the `subgroup` aesthetic (which handles holes
   through `grid::pathGrob` even-odd fill).
 - Geometry round-trips between sf and `brain_polygons` losslessly. The sf-side
   conversion uses `sfheaders` (pure Rcpp, no GDAL/GEOS/PROJ system libraries),

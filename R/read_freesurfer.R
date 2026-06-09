@@ -8,9 +8,8 @@
 #'
 #' @param path path to stats file
 #' @param rename logical. rename headers for ggseg compatibility
-#' @importFrom dplyr rename as_tibble
 #' @importFrom utils read.table
-#' @return tibble with stats information for subjects from FreeSurfer
+#' @return data.frame with stats information for subjects from FreeSurfer
 #' @export
 #' @examplesIf FALSE
 #' subj_dir <- "/path/to/freesurfer/7.2.0/subjects/"
@@ -19,17 +18,17 @@
 read_freesurfer_stats <- function(path, rename = TRUE) {
   headers <- readLines(path)
   headers <- headers[grepl("^#", headers)]
-  headers <- gsub("# ", "", headers)[length(headers)]
-  headers <- strsplit(headers, " ")[[1]]
+  headers <- gsub("# ", "", headers, fixed = TRUE)[length(headers)]
+  headers <- strsplit(headers, " ", fixed = TRUE)[[1]]
 
-  headers <- headers[!grepl("ColHeaders", headers)]
+  headers <- headers[!grepl("ColHeaders", headers, fixed = TRUE)]
   headers <- headers[headers != ""]
 
-  data <- as_tibble(read.table(path, stringsAsFactors = FALSE))
+  data <- as_tbl(read.table(path, stringsAsFactors = FALSE))
   names(data) <- headers
 
   if (rename) {
-    data <- rename(data, label = StructName)
+    names(data)[names(data) == "StructName"] <- "label"
   }
 
   data
@@ -44,9 +43,7 @@ read_freesurfer_stats <- function(path, rename = TRUE) {
 #'
 #' @param subjects_dir FreeSurfer subject directory
 #' @param atlas unique character combination identifying the atlas
-#' @importFrom dplyr bind_rows
-#' @importFrom tidyr separate unite
-#' @return tibble with stats information for subjects from FreeSurfer
+#' @return data.frame with stats information for subjects from FreeSurfer
 #' @export
 #' @examplesIf FALSE
 #' subj_dir <- "/path/to/freesurfer/7.2.0/subjects/"
@@ -69,12 +66,19 @@ read_atlas_files <- function(subjects_dir, atlas) {
 
   if (all(hemi %in% c("rh", "lh"))) {
     names(stats) <- paste(subject, hemi, sep = "___")
-    stats <- bind_rows(stats, .id = "id")
-    stats <- separate(stats, id, c("subject", "hemi"), sep = "___")
-    stats <- unite(stats, label, hemi, label)
+    stats <- df_bind_rows(stats, .id = "id")
+    parts <- strsplit(stats$id, "___", fixed = TRUE)
+    stats$subject <- vapply(parts, `[`, character(1), 1L)
+    stats$label <- paste(
+      vapply(parts, `[`, character(1), 2L),
+      stats$label,
+      sep = "_"
+    )
+    stats$id <- NULL
+    stats <- as_tbl(stats[c("subject", setdiff(names(stats), "subject"))])
   } else {
     names(stats) <- subject
-    stats <- bind_rows(stats, .id = "subject")
+    stats <- df_bind_rows(stats, .id = "subject")
   }
 
   stats
@@ -93,10 +97,8 @@ read_atlas_files <- function(subjects_dir, atlas) {
 #' @param path path to the table file
 #' @param measure which measure is the table of
 #' @param ... additional arguments to \code{read.table}
-#' @importFrom tidyr gather
 #' @importFrom utils read.table
-#' @importFrom dplyr mutate
-#' @return tibble with stats information for subjects from FreeSurfer
+#' @return data.frame with stats information for subjects from FreeSurfer
 #' @export
 #' @examplesIf FALSE
 #' file_path <- "all_subj_aseg.txt"
@@ -105,18 +107,23 @@ read_freesurfer_table <- function(path, measure = NULL, ...) {
   dat <- read.table(path, header = TRUE, ...)
   names(dat)[1] <- "subject"
 
-  dat <- gather(dat, label, value, -subject)
+  measure_cols <- setdiff(names(dat), "subject")
+  dat <- data.frame(
+    subject = rep(dat$subject, times = length(measure_cols)),
+    label = rep(measure_cols, each = nrow(dat)),
+    value = unlist(dat[measure_cols], use.names = FALSE)
+  )
 
   if (!is.null(measure)) {
-    dat <- mutate(dat, label = gsub(paste0("_", measure), "", label))
-    names(dat)[names(dat) %in% "value"] <- measure
+    dat$label <- gsub(paste0("_", measure), "", dat$label)
+    names(dat)[names(dat) == "value"] <- measure
   }
 
-  if (any(grepl("\\.", dat$label))) {
-    dat$label <- gsub("\\.", "-", dat$label)
+  if (any(grepl(".", dat$label, fixed = TRUE))) {
+    dat$label <- gsub(".", "-", dat$label, fixed = TRUE)
   }
 
-  as_tibble(dat)
+  as_tbl(dat)
 }
 
 
@@ -125,7 +132,7 @@ read_freesurfer_table <- function(path, measure = NULL, ...) {
 #' @noRd
 #' @keywords internal
 find_subject_fromdir <- function(path) {
-  strsplit(path, "/")[[1]][2]
+  strsplit(path, "/", fixed = TRUE)[[1]][2]
 }
 
 #' helper function to easily grab hemisphere information from file path
@@ -134,5 +141,5 @@ find_subject_fromdir <- function(path) {
 #' @noRd
 #' @keywords internal
 find_hemi_fromfile <- function(path) {
-  strsplit(basename(path), "\\.")[[1]][1]
+  strsplit(basename(path), ".", fixed = TRUE)[[1]][1]
 }

@@ -49,16 +49,18 @@ as_ggseg_atlas.brain_atlas <- function(x) {
     return(restamp_class(x))
   }
 
-  if (!is.null(x$core)) {
-    if (!is.null(x$sf) || !is.null(x$vertices) || !is.null(x$meshes)) {
-      return(convert_legacy_structure(x))
-    }
-    if (!is.null(x$data) && is.data.frame(x$data)) {
-      return(convert_legacy_brain_data(x))
-    }
+  has_legacy_slots <- any(
+    !vapply(
+      list(x$sf, x$vertices, x$meshes),
+      is.null,
+      logical(1)
+    )
+  )
+  if (!is.null(x$core) && has_legacy_slots) {
+    return(convert_legacy_structure(x))
   }
 
-  if (is.null(x$core) && !is.null(x$data) && is.data.frame(x$data)) {
+  if (!is.null(x$data) && is.data.frame(x$data)) {
     return(convert_legacy_brain_data(x))
   }
 
@@ -149,12 +151,13 @@ convert_legacy_brain_data <- function(x) {
     names(sf_data)[names(sf_data) == "side"] <- "view"
   }
 
-  core <- dplyr::distinct(
+  core <- df_distinct(
     sf::st_drop_geometry(sf_data[
       !is.na(sf_data$label),
       c("hemi", "region", "label"),
       drop = FALSE
-    ])
+    ]),
+    c("hemi", "region", "label")
   )
 
   palette <- if ("colour" %in% names(sf_data)) {

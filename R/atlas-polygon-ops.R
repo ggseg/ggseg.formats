@@ -32,7 +32,7 @@ order_view_groups <- function(group_key, group_order, centroid_x) {
 #' @noRd
 #' @keywords internal
 polygons_unnest <- function(polygons) {
-  tidyr::unnest(dplyr::as_tibble(polygons), cols = "geometry")
+  df_unnest(as_tbl(polygons), "geometry")
 }
 
 
@@ -47,7 +47,7 @@ polygons_renest <- function(flat) {
     return(NULL)
   }
   flat <- flat[, c("label", "view", "x", "y", "group", "subgroup")]
-  out <- tidyr::nest(dplyr::as_tibble(flat), geometry = -"label")
+  out <- df_nest(as_tbl(flat), "label", "geometry")
   structure(out, class = unique(c("brain_polygons", class(out))))
 }
 
@@ -141,20 +141,22 @@ polygon_geometry_areas <- function(flat) {
     seq_len(nrow(lv)),
     function(k) {
       sub <- flat[flat$label == lv$label[k] & flat$view == lv$view[k], ]
-      total <- 0
-      for (g in unique(sub$group)) {
-        piece <- sub[sub$group == g, ]
-        rings <- unique(piece$subgroup)
-        ext <- min(rings)
-        holes <- setdiff(rings, ext)
-        a_holes <- sum(vapply(
-          holes,
-          function(r) ring_area_of(piece, r),
-          numeric(1)
-        ))
-        total <- total + ring_area_of(piece, ext) - a_holes
-      }
-      total
+      sum(vapply(
+        unique(sub$group),
+        function(g) {
+          piece <- sub[sub$group == g, ]
+          rings <- unique(piece$subgroup)
+          ext <- min(rings)
+          holes <- setdiff(rings, ext)
+          a_holes <- sum(vapply(
+            holes,
+            function(r) ring_area_of(piece, r),
+            numeric(1)
+          ))
+          ring_area_of(piece, ext) - a_holes
+        },
+        numeric(1)
+      ))
     },
     numeric(1)
   )

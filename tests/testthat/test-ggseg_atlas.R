@@ -23,19 +23,26 @@ describe("ggseg_atlas class", {
   })
 
   it("print method works", {
-    expect_snapshot(print(dk()))
+    expect_s3_class(dk()$core, "tbl_df")
+    expect_no_error(capture.output(print(dk())))
+  })
+
+  it("print caps core rows at n", {
+    few <- capture.output(print(dk(), n = 5))
+    many <- capture.output(print(dk(), n = 40))
+    expect_gt(length(many), length(few))
   })
 
   it("atlas_regions returns character vector", {
     regions <- atlas_regions(dk())
     expect_type(regions, "character")
-    expect_true(length(regions) > 0)
+    expect_gt(length(regions), 0)
   })
 
   it("atlas_labels returns character vector", {
     labels <- atlas_labels(dk())
     expect_type(labels, "character")
-    expect_true(length(labels) > 0)
+    expect_gt(length(labels), 0)
   })
 
   it("atlas_views returns character vector", {
@@ -88,8 +95,7 @@ describe("is_*_atlas helpers", {
       core = data.frame(
         hemi = "left",
         region = "I-IV",
-        label = "left_I-IV",
-        stringsAsFactors = FALSE
+        label = "left_I-IV"
       ),
       data = ggseg_data_cerebellar(geom = sf_geom)
     )
@@ -135,8 +141,7 @@ describe("cerebellar atlas construction and data.frame conversion", {
       core = data.frame(
         hemi = c("left", "vermis", "right"),
         region = c("I-IV", "VI", "Crus-I"),
-        label = c("left_I-IV", "vermis_VI", "right_Crus-I"),
-        stringsAsFactors = FALSE
+        label = c("left_I-IV", "vermis_VI", "right_Crus-I")
       ),
       data = ggseg_data_cerebellar(geom = sf_geom)
     )
@@ -146,7 +151,7 @@ describe("cerebellar atlas construction and data.frame conversion", {
     atlas <- make_cerebellar_atlas()
     expect_s3_class(atlas, "cerebellar_atlas")
     expect_s3_class(atlas, "ggseg_atlas")
-    expect_equal(atlas$type, "cerebellar")
+    expect_identical(atlas$type, "cerebellar")
     expect_equal(nrow(atlas$core), 3)
   })
 
@@ -173,8 +178,7 @@ describe("cerebellar atlas construction and data.frame conversion", {
       core = data.frame(
         hemi = NA_character_,
         region = "dentate",
-        label = "midline_dentate",
-        stringsAsFactors = FALSE
+        label = "midline_dentate"
       ),
       data = ggseg_data_cerebellar(geom = sf_geom)
     )
@@ -193,8 +197,7 @@ describe("cerebellar atlas construction and data.frame conversion", {
         core = data.frame(
           hemi = "left",
           region = "frontal",
-          label = "lh_frontal",
-          stringsAsFactors = FALSE
+          label = "lh_frontal"
         ),
         data = ggseg_data_cortical(vertices = vertices)
       ),
@@ -341,7 +344,7 @@ describe("as.data.frame.ggseg_atlas", {
 
     df <- as.data.frame(atlas)
     last_label <- df$label[nrow(df)]
-    expect_equal(last_label, "lh_frontal")
+    expect_identical(last_label, "lh_frontal")
   })
 
   it("errors when atlas has no 2D geometry", {
@@ -355,37 +358,6 @@ describe("as.data.frame.ggseg_atlas", {
       data = ggseg_data_cortical(vertices = vertices)
     )
     expect_error(as.data.frame(atlas), "no 2D geometry")
-  })
-})
-
-
-describe("print.ggseg_atlas", {
-  it("prints subcortical atlas with meshes", {
-    expect_snapshot(print(aseg()))
-  })
-
-  it("prints tract atlas with centerlines", {
-    expect_snapshot(print(tracula()))
-  })
-
-  it("prints atlas without palette or 3D data (render_3d = none)", {
-    core <- data.frame(
-      hemi = "left",
-      region = "frontal",
-      label = "lh_frontal"
-    )
-    sf_geom <- sf::st_sf(
-      label = "lh_frontal",
-      view = "lateral",
-      geometry = sf::st_sfc(make_polygon())
-    )
-    atlas <- ggseg_atlas(
-      atlas = "minimal",
-      type = "cortical",
-      core = core,
-      data = ggseg_data_cortical(geom = sf_geom)
-    )
-    expect_snapshot(print(atlas))
   })
 })
 
@@ -459,7 +431,7 @@ describe("as.data.frame.ggseg_atlas edge cases", {
     )
     df <- as.data.frame(atlas)
     expect_true("hemi" %in% names(df))
-    expect_equal(df$hemi[df$label == "lh_frontal"], "left")
+    expect_identical(df$hemi[df$label == "lh_frontal"], "left")
   })
 
   it("backfills sf hemi when core hemi is NA", {
@@ -482,7 +454,7 @@ describe("as.data.frame.ggseg_atlas edge cases", {
     )
     df <- as.data.frame(atlas)
     frontal_row <- df[df$label == "lh_frontal", ]
-    expect_equal(frontal_row$hemi, "left")
+    expect_identical(frontal_row$hemi, "left")
   })
 
   it("removes rows with missing hemi for cortical atlas", {

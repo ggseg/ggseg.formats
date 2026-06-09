@@ -66,7 +66,7 @@ validate_vertices <- function(vertices) {
     ))
   }
 
-  dplyr::as_tibble(vertices)
+  as_tbl(vertices)
 }
 
 
@@ -91,58 +91,13 @@ validate_meshes <- function(meshes, tract = FALSE) {
     cli::cli_abort("{.field mesh} column must be a list-column.")
   }
 
-  empty_labels <- character(0)
+  is_empty <- vapply(
+    seq_len(nrow(meshes)),
+    function(i) validate_one_mesh(meshes$mesh[[i]], meshes$label[i], tract),
+    logical(1)
+  )
 
-  for (i in seq_len(nrow(meshes))) {
-    mesh <- meshes$mesh[[i]]
-    label <- meshes$label[i]
-
-    if (is.null(mesh)) {
-      empty_labels <- c(empty_labels, label)
-      next
-    }
-
-    if (!is.list(mesh) || !all(c("vertices", "faces") %in% names(mesh))) {
-      cli::cli_abort(
-        "Mesh for {.val {label}} needs {.field vertices} and {.field faces}."
-      )
-    }
-
-    if (
-      !is.data.frame(mesh$vertices) ||
-        !all(c("x", "y", "z") %in% names(mesh$vertices))
-    ) {
-      cli::cli_abort(c(
-        "Mesh vertices for {.val {label}} must be a data.frame.",
-        "i" = "Required columns: {.field x}, {.field y}, {.field z}."
-      ))
-    }
-
-    if (nrow(mesh$vertices) == 0) {
-      empty_labels <- c(empty_labels, label)
-      next
-    }
-
-    if (
-      !is.data.frame(mesh$faces) ||
-        !all(c("i", "j", "k") %in% names(mesh$faces))
-    ) {
-      cli::cli_abort(c(
-        "Mesh faces for {.val {label}} must be a data.frame.",
-        "i" = "Required columns: {.field i}, {.field j}, {.field k}."
-      ))
-    }
-
-    if (nrow(mesh$faces) == 0) {
-      empty_labels <- c(empty_labels, label)
-      next
-    }
-
-    if (tract && !is.null(mesh$metadata)) {
-      validate_tract_metadata(mesh$metadata, label)
-    }
-  }
-
+  empty_labels <- meshes$label[is_empty]
   if (length(empty_labels) > 0) {
     cli::cli_abort(c(
       "All mesh entries must contain data.",
@@ -151,6 +106,65 @@ validate_meshes <- function(meshes, tract = FALSE) {
   }
 
   meshes
+}
+
+
+#' Validate a single mesh entry
+#'
+#' Aborts on a structurally invalid mesh. Returns `TRUE` when the mesh is empty
+#' (`NULL`, or no vertices/faces) so the caller can collect empty labels, and
+#' `FALSE` when it carries data.
+#' @noRd
+#' @keywords internal
+validate_one_mesh <- function(mesh, label, tract) {
+  if (is.null(mesh)) {
+    return(TRUE)
+  }
+
+  if (!is.list(mesh) || !all(c("vertices", "faces") %in% names(mesh))) {
+    cli::cli_abort(
+      "Mesh for {.val {label}} needs {.field vertices} and {.field faces}."
+    )
+  }
+
+  if (mesh_geometry_empty(mesh, label)) {
+    return(TRUE)
+  }
+
+  if (tract && !is.null(mesh$metadata)) {
+    validate_tract_metadata(mesh$metadata, label)
+  }
+
+  FALSE
+}
+
+
+#' Validate a mesh's vertices and faces sub-tables
+#'
+#' Aborts on a malformed sub-table. Returns `TRUE` if either table has no rows
+#' (so the caller treats the mesh as empty).
+#' @noRd
+#' @keywords internal
+mesh_geometry_empty <- function(mesh, label) {
+  validate_mesh_part(mesh$vertices, label, "vertices", c("x", "y", "z"))
+  if (nrow(mesh$vertices) == 0) {
+    return(TRUE)
+  }
+  validate_mesh_part(mesh$faces, label, "faces", c("i", "j", "k"))
+  nrow(mesh$faces) == 0
+}
+
+
+#' A mesh sub-table must be a data.frame containing `cols`
+#' @noRd
+#' @keywords internal
+validate_mesh_part <- function(part, label, kind, cols) {
+  if (!is.data.frame(part) || !all(cols %in% names(part))) {
+    cli::cli_abort(c(
+      "Mesh {kind} for {.val {label}} must be a data.frame.",
+      "i" = "Required columns: {.field {cols}}."
+    ))
+  }
 }
 
 

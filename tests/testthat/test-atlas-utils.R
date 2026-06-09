@@ -29,8 +29,7 @@ make_test_atlas <- function() {
   core <- data.frame(
     hemi = c("left", "left", "right"),
     region = c("frontal", "parietal", "frontal"),
-    label = c("lh_frontal", "lh_parietal", "rh_frontal"),
-    stringsAsFactors = FALSE
+    label = c("lh_frontal", "lh_parietal", "rh_frontal")
   )
   palette <- c(
     lh_frontal = "#FF0000",
@@ -114,8 +113,7 @@ make_multiview_atlas <- function() {
       c("frontal", "parietal", "temporal", "occipital", "insula"),
       2
     ),
-    label = core_labels,
-    stringsAsFactors = FALSE
+    label = core_labels
   )
 
   palette <- setNames(
@@ -193,8 +191,7 @@ make_cortical_hemi_atlas <- function() {
   core <- data.frame(
     hemi = c("left", "left", "right", "right"),
     region = c("frontal", "parietal", "frontal", "parietal"),
-    label = c(lh_labels, rh_labels),
-    stringsAsFactors = FALSE
+    label = c(lh_labels, rh_labels)
   )
 
   palette <- c(
@@ -220,7 +217,7 @@ describe("atlas_regions", {
   it("extracts sorted unique regions from brain_atlas", {
     atlas <- make_test_atlas()
     result <- atlas_regions(atlas)
-    expect_equal(result, c("frontal", "parietal"))
+    expect_identical(result, c("frontal", "parietal"))
   })
 
   it("excludes context-only geometry (labels in sf but not in core)", {
@@ -232,7 +229,7 @@ describe("atlas_regions", {
   it("works with data.frame", {
     df <- data.frame(region = c("frontal", "parietal", "frontal"))
     result <- atlas_regions(df)
-    expect_equal(result, c("frontal", "parietal"))
+    expect_identical(result, c("frontal", "parietal"))
   })
 
   it("works with ggseg_atlas", {
@@ -250,7 +247,7 @@ describe("atlas_labels", {
   it("extracts sorted unique labels from brain_atlas", {
     atlas <- make_test_atlas()
     result <- atlas_labels(atlas)
-    expect_equal(result, c("lh_frontal", "lh_parietal", "rh_frontal"))
+    expect_identical(result, c("lh_frontal", "lh_parietal", "rh_frontal"))
   })
 
   it("excludes NA labels", {
@@ -267,7 +264,7 @@ describe("atlas_labels", {
       core = core,
       data = ggseg_data_cortical(vertices = vertices)
     )
-    expect_equal(atlas_labels(atlas), "lh_frontal")
+    expect_identical(atlas_labels(atlas), "lh_frontal")
   })
 })
 
@@ -278,13 +275,13 @@ describe("atlas_views", {
   it("returns unique view names", {
     atlas <- make_multiview_atlas()
     result <- atlas_views(atlas)
-    expect_equal(result, c("axial_1", "axial_2", "sagittal"))
+    expect_identical(result, c("axial_1", "axial_2", "sagittal"))
   })
 
   it("reads views from polygons when sf is absent", {
     atlas <- make_test_atlas()
     atlas$data$sf <- NULL
-    expect_equal(atlas_views(atlas), c("lateral", "medial"))
+    expect_identical(atlas_views(atlas), c("lateral", "medial"))
   })
 
   it("returns NULL when no 2D data", {
@@ -300,7 +297,7 @@ describe("atlas_views", {
 describe("atlas_type", {
   it("returns type from brain_atlas", {
     atlas <- make_test_atlas()
-    expect_equal(atlas_type(atlas), "cortical")
+    expect_identical(atlas_type(atlas), "cortical")
   })
 })
 
@@ -310,7 +307,7 @@ describe("atlas_type", {
 describe("get_uniq", {
   it("returns sorted unique values excluding NA", {
     df <- data.frame(region = c("c", "a", "b", NA, "a"), label = 1:5)
-    expect_equal(ggseg.formats:::get_uniq(df, "region"), c("a", "b", "c"))
+    expect_identical(ggseg.formats:::get_uniq(df, "region"), c("a", "b", "c"))
   })
 
   it("errors with invalid type", {
@@ -328,7 +325,7 @@ describe("guess_type", {
       result <- ggseg.formats:::guess_type(df),
       "attempting to guess"
     )
-    expect_equal(result, "cortical")
+    expect_identical(result, "cortical")
   })
 
   it("guesses subcortical when no medial/lateral views", {
@@ -337,7 +334,7 @@ describe("guess_type", {
       result <- ggseg.formats:::guess_type(df),
       "attempting to guess"
     )
-    expect_equal(result, "subcortical")
+    expect_identical(result, "subcortical")
   })
 })
 
@@ -390,8 +387,7 @@ make_cerebellar_atlas <- function() {
   core <- data.frame(
     hemi = c(NA, NA),
     region = c("lobule I", "dentate"),
-    label = c("lobule_I", "dentate"),
-    stringsAsFactors = FALSE
+    label = c("lobule_I", "dentate")
   )
   vertices <- data.frame(label = "lobule_I")
   vertices$vertices <- list(1L:3L)
@@ -418,7 +414,7 @@ describe("cerebellar region ops preserve vertices + meshes", {
     cb <- make_cerebellar_atlas()
     result <- atlas_region_remove(cb, "nonexistent")
 
-    expect_equal(atlas_type(result), "cerebellar")
+    expect_identical(atlas_type(result), "cerebellar")
     expect_s3_class(result$data, "ggseg_data_cerebellar")
     expect_true("dentate" %in% result$data$meshes$label)
     expect_true("lobule_I" %in% result$data$vertices$label)
@@ -428,7 +424,7 @@ describe("cerebellar region ops preserve vertices + meshes", {
     cb <- make_cerebellar_atlas()
     result <- atlas_region_remove(cb, "dentate", match_on = "label")
 
-    expect_equal(atlas_type(result), "cerebellar")
+    expect_identical(atlas_type(result), "cerebellar")
     expect_false("dentate" %in% result$data$meshes$label)
     expect_true("lobule_I" %in% result$data$vertices$label)
   })
@@ -437,7 +433,7 @@ describe("cerebellar region ops preserve vertices + meshes", {
     cb <- make_cerebellar_atlas()
     result <- atlas_region_keep(cb, "dentate", match_on = "label")
 
-    expect_equal(atlas_type(result), "cerebellar")
+    expect_identical(atlas_type(result), "cerebellar")
     expect_true("dentate" %in% result$data$meshes$label)
     expect_false("lobule_I" %in% result$data$vertices$label)
   })
@@ -466,7 +462,7 @@ describe("atlas_region_contextual", {
     atlas <- make_test_atlas()
     result <- atlas_region_contextual(atlas, "^lh_f", match_on = "label")
     expect_equal(nrow(result$core), 2)
-    expect_equal(result$core$label, c("lh_parietal", "rh_frontal"))
+    expect_identical(result$core$label, c("lh_parietal", "rh_frontal"))
   })
 
   it("draws contextual sf rows before remaining core rows", {
@@ -475,8 +471,8 @@ describe("atlas_region_contextual", {
     sf <- result$data$geom
     is_core <- sf$label %in% result$core$label
     # the demoted region (lh_parietal) was in the middle; it must now lead
-    expect_equal(sf$label[1], "lh_parietal")
-    expect_true(max(which(!is_core)) < min(which(is_core)))
+    expect_identical(sf$label[1], "lh_parietal")
+    expect_lt(max(which(!is_core)), min(which(is_core)))
   })
 
   it("matches case-insensitively by default", {
@@ -489,7 +485,7 @@ describe("atlas_region_contextual", {
     atlas <- make_test_atlas()
     result <- atlas_region_contextual(atlas, "FRONTAL", ignore.case = FALSE)
     # no region matches the upper-case pattern, so nothing is demoted
-    expect_equal(nrow(result$core), nrow(atlas$core))
+    expect_identical(nrow(result$core), nrow(atlas$core))
   })
 
   it("keeps sf and polygons in sync after demoting a region", {
@@ -514,7 +510,7 @@ describe("atlas_region_contextual", {
     expect_true("lh_parietal" %in% result$data$geom$label)
     expect_false("lh_parietal" %in% result$core$label)
     is_core <- result$data$geom$label %in% result$core$label
-    expect_true(max(which(!is_core)) < min(which(is_core)))
+    expect_lt(max(which(!is_core)), min(which(is_core)))
   })
 })
 
@@ -541,8 +537,7 @@ describe("atlas_region_op", {
     core <- data.frame(
       hemi = c(NA, NA),
       region = c("cortex", "wm"),
-      label = c("cortex", "wm"),
-      stringsAsFactors = FALSE
+      label = c("cortex", "wm")
     )
     ggseg_atlas(
       atlas = "op",
@@ -576,8 +571,8 @@ describe("atlas_region_op", {
       action = "difference",
       into = "ribbon"
     )
-    expect_equal(holes_of(r, "ribbon"), 1)
-    expect_equal(area_of(r, "ribbon"), 100 - 16)
+    expect_identical(holes_of(r, "ribbon"), 1)
+    expect_identical(area_of(r, "ribbon"), 100 - 16)
   })
 
   it("intersection keeps only the overlap", {
@@ -588,7 +583,7 @@ describe("atlas_region_op", {
       action = "intersection",
       into = "ov"
     )
-    expect_equal(area_of(r, "ov"), 16)
+    expect_identical(area_of(r, "ov"), 16)
   })
 
   it("union merges both operands", {
@@ -599,7 +594,7 @@ describe("atlas_region_op", {
       action = "union",
       into = "both"
     )
-    expect_equal(area_of(r, "both"), 100)
+    expect_identical(area_of(r, "both"), 100)
   })
 
   it("leaves the input regions in place", {
@@ -636,7 +631,7 @@ describe("atlas_region_op", {
       colour = "#123456"
     )
     expect_true("ribbon" %in% r$core$label)
-    expect_equal(r$palette[["ribbon"]], "#123456")
+    expect_identical(r$palette[["ribbon"]], "#123456")
   })
 
   it("draws a contextual result behind core regions", {
@@ -649,7 +644,7 @@ describe("atlas_region_op", {
     )
     sf <- r$data$geom
     is_core <- sf$label %in% r$core$label
-    expect_true(max(which(!is_core)) < min(which(is_core)))
+    expect_lt(max(which(!is_core)), min(which(is_core)))
   })
 
   it("writes the result into the polygons slot too", {
@@ -680,7 +675,7 @@ describe("atlas_region_op", {
 
     rehydrated <- as_sf_atlas(r)
     g <- rehydrated$data$geom$geometry[rehydrated$data$geom$label == "ribbon"]
-    expect_equal(as.numeric(sum(sf::st_area(g))), 100 - 16)
+    expect_identical(as.numeric(sum(sf::st_area(g))), 100 - 16)
   })
 
   it("matches sf-backed and polygon-only results", {
@@ -705,7 +700,7 @@ describe("atlas_region_op", {
     poly_area <- as.numeric(sum(sf::st_area(
       poly_sf$geometry[poly_sf$label == "ov"]
     )))
-    expect_equal(sf_area, poly_area)
+    expect_identical(sf_area, poly_area)
   })
 })
 
@@ -729,7 +724,7 @@ describe("atlas_region_rename", {
   it("does not modify labels", {
     atlas <- make_test_atlas()
     result <- atlas_region_rename(atlas, "frontal", "prefrontal")
-    expect_equal(result$core$label, atlas$core$label)
+    expect_identical(result$core$label, atlas$core$label)
   })
 
   it("preserves NA regions", {
@@ -750,13 +745,13 @@ describe("atlas_region_keep", {
 
     expect_equal(nrow(result$core), 2)
     expect_true(all(result$core$region == "frontal"))
-    expect_equal(length(result$palette), 2)
+    expect_length(result$palette, 2)
   })
 
   it("preserves sf geometry for surface continuity", {
     atlas <- make_test_atlas()
     result <- atlas_region_keep(atlas, "frontal")
-    expect_equal(nrow(result$data$geom), nrow(atlas$data$geom))
+    expect_identical(nrow(result$data$geom), nrow(atlas$data$geom))
   })
 
   it("filters 3D data", {
@@ -780,25 +775,42 @@ describe("atlas_core_add", {
     atlas <- make_test_atlas()
     meta <- data.frame(
       region = c("frontal", "parietal"),
-      lobe = c("frontal", "parietal"),
-      stringsAsFactors = FALSE
+      lobe = c("frontal", "parietal")
     )
     result <- atlas_core_add(atlas, meta)
     expect_true("lobe" %in% names(result$core))
-    expect_equal(result$core$lobe, c("frontal", "parietal", "frontal"))
+    expect_identical(result$core$lobe, c("frontal", "parietal", "frontal"))
   })
 
   it("joins by custom column", {
     atlas <- make_test_atlas()
     meta <- data.frame(
       label = c("lh_frontal"),
-      network = "DMN",
-      stringsAsFactors = FALSE
+      network = "DMN"
     )
     result <- atlas_core_add(atlas, meta, by = "label")
     expect_true("network" %in% names(result$core))
-    expect_equal(result$core$network[1], "DMN")
+    expect_identical(result$core$network[1], "DMN")
     expect_true(is.na(result$core$network[2]))
+  })
+
+  it("never adds rows to core", {
+    atlas <- make_test_atlas()
+    meta <- data.frame(
+      region = c("frontal", "parietal"),
+      lobe = c("frontal", "parietal")
+    )
+    result <- atlas_core_add(atlas, meta)
+    expect_identical(nrow(result$core), nrow(atlas$core))
+  })
+
+  it("errors when data has duplicate join keys", {
+    atlas <- make_test_atlas()
+    meta <- data.frame(
+      region = c("frontal", "frontal"),
+      lobe = c("a", "b")
+    )
+    expect_error(atlas_core_add(atlas, meta), "unique")
   })
 })
 
@@ -816,7 +828,7 @@ describe("atlas_view_remove", {
   it("removes multiple views with vector", {
     atlas <- make_multiview_atlas()
     result <- atlas_view_remove(atlas, c("axial_1", "axial_2"))
-    expect_equal(unique(result$data$geom$view), "sagittal")
+    expect_identical(unique(result$data$geom$view), "sagittal")
   })
 
   it("warns when no 2D data", {
@@ -850,13 +862,16 @@ describe("atlas_view_keep", {
   it("keeps only matching views", {
     atlas <- make_multiview_atlas()
     result <- atlas_view_keep(atlas, "sagittal")
-    expect_equal(unique(result$data$geom$view), "sagittal")
+    expect_identical(unique(result$data$geom$view), "sagittal")
   })
 
   it("keeps multiple views with vector", {
     atlas <- make_multiview_atlas()
     result <- atlas_view_keep(atlas, c("axial_1", "sagittal"))
-    expect_equal(sort(unique(result$data$geom$view)), c("axial_1", "sagittal"))
+    expect_identical(
+      sort(unique(result$data$geom$view)),
+      c("axial_1", "sagittal")
+    )
   })
 
   it("warns when no views match", {
@@ -892,7 +907,7 @@ describe("atlas_view_remove_region", {
     atlas$data$geom$label[1] <- NA
     n_na <- sum(is.na(atlas$data$geom$label))
     result <- atlas_view_remove_region(atlas, "insula")
-    expect_equal(sum(is.na(result$data$geom$label)), n_na)
+    expect_identical(sum(is.na(result$data$geom$label)), n_na)
   })
 
   it("preserves context geometry labels", {
@@ -914,7 +929,7 @@ describe("atlas_view_remove_small", {
       "Removed"
     )
     n_after <- nrow(result$data$geom)
-    expect_true(n_after < n_before)
+    expect_lt(n_after, n_before)
   })
 
   it("never removes context geometries", {
@@ -943,7 +958,7 @@ describe("atlas_view_remove_small", {
       "Removed"
     )
 
-    expect_true(nrow(result_axial$data$geom) >= nrow(result_all$data$geom))
+    expect_gte(nrow(result_axial$data$geom), nrow(result_all$data$geom))
   })
 
   it("preserves core and palette", {
@@ -952,8 +967,8 @@ describe("atlas_view_remove_small", {
       result <- atlas_view_remove_small(atlas, min_area = 2),
       "Removed"
     )
-    expect_equal(result$core, atlas$core)
-    expect_equal(result$palette, atlas$palette)
+    expect_identical(result$core, atlas$core)
+    expect_identical(result$palette, atlas$palette)
   })
 
   it("warns when no 2D data", {
@@ -978,7 +993,7 @@ describe("atlas_view_remove_small", {
       flat <- polygons_unnest(p)
       length(unique(paste(flat$label, flat$view)))
     }
-    expect_true(n_geoms(result$data$geom) < nrow(atlas$data$geom))
+    expect_lt(n_geoms(result$data$geom), nrow(atlas$data$geom))
   })
 })
 
@@ -992,7 +1007,7 @@ describe("atlas_view_gather", {
     result <- atlas_view_gather(trimmed)
 
     expect_s3_class(result$data$geom, "sf")
-    expect_equal(
+    expect_identical(
       sort(unique(result$data$geom$view)),
       sort(unique(trimmed$data$geom$view))
     )
@@ -1057,7 +1072,7 @@ describe("atlas_view_reorder", {
     result <- atlas_view_reorder(atlas, c("sagittal", "axial_2", "axial_1"))
 
     views_in_order <- unique(result$data$geom$view)
-    expect_equal(views_in_order, c("sagittal", "axial_2", "axial_1"))
+    expect_identical(views_in_order, c("sagittal", "axial_2", "axial_1"))
   })
 
   it("appends unspecified views at end", {
@@ -1065,14 +1080,14 @@ describe("atlas_view_reorder", {
     result <- atlas_view_reorder(atlas, c("sagittal"))
 
     views_in_order <- unique(result$data$geom$view)
-    expect_equal(views_in_order[1], "sagittal")
-    expect_equal(length(views_in_order), 3)
+    expect_identical(views_in_order[1], "sagittal")
+    expect_length(views_in_order, 3)
   })
 
   it("appends all current views when given only nonexistent ones", {
     atlas <- make_multiview_atlas()
     result <- atlas_view_reorder(atlas, "nonexistent")
-    expect_equal(length(unique(result$data$geom$view)), 3)
+    expect_length(unique(result$data$geom$view), 3)
   })
 
   it("reorders cortical views with hemi sub-groups", {
@@ -1080,12 +1095,12 @@ describe("atlas_view_reorder", {
     result <- atlas_view_reorder(atlas, c("medial", "lateral"))
 
     views_in_order <- unique(result$data$geom$view)
-    expect_equal(views_in_order, c("medial", "lateral"))
+    expect_identical(views_in_order, c("medial", "lateral"))
 
     sf <- result$data$geom
     medial_bbox <- sf::st_bbox(sf[sf$view == "medial", ])
     lateral_bbox <- sf::st_bbox(sf[sf$view == "lateral", ])
-    expect_true(medial_bbox["xmax"] < lateral_bbox["xmin"])
+    expect_lt(medial_bbox["xmax"], lateral_bbox["xmin"])
   })
 })
 
@@ -1109,7 +1124,7 @@ describe("view operations on polygon-only atlases", {
     poly <- as_polygon_atlas(make_multiview_atlas())
     result <- atlas_view_keep(poly, "axial_1")
     expect_null(result$data$sf)
-    expect_equal(poly_views(result), "axial_1")
+    expect_identical(poly_views(result), "axial_1")
   })
 
   it("atlas_view_remove_region drops a region's geometry without sf", {
@@ -1160,7 +1175,7 @@ describe("as.data.frame context ordering", {
     non_ctx_positions <- which(!is_ctx)
 
     if (length(ctx_positions) > 0 && length(non_ctx_positions) > 0) {
-      expect_true(max(ctx_positions) < min(non_ctx_positions))
+      expect_lt(max(ctx_positions), min(non_ctx_positions))
     }
   })
 
@@ -1230,9 +1245,12 @@ describe("subclass preservation", {
   })
 
   it("bundled atlases have correct subclasses", {
-    expect_equal(class(dk()), c("cortical_atlas", "ggseg_atlas", "list"))
-    expect_equal(class(aseg()), c("subcortical_atlas", "ggseg_atlas", "list"))
-    expect_equal(class(tracula()), c("tract_atlas", "ggseg_atlas", "list"))
+    expect_identical(class(dk()), c("cortical_atlas", "ggseg_atlas", "list"))
+    expect_identical(
+      class(aseg()),
+      c("subcortical_atlas", "ggseg_atlas", "list")
+    )
+    expect_identical(class(tracula()), c("tract_atlas", "ggseg_atlas", "list"))
   })
 })
 
@@ -1243,7 +1261,7 @@ describe("deprecated wrappers", {
       result <- brain_regions(dk())
     )
     expect_type(result, "character")
-    expect_true(length(result) > 0)
+    expect_gt(length(result), 0)
   })
 
   it("brain_labels() warns and returns labels", {
@@ -1251,7 +1269,7 @@ describe("deprecated wrappers", {
       result <- brain_labels(dk())
     )
     expect_type(result, "character")
-    expect_true(length(result) > 0)
+    expect_gt(length(result), 0)
   })
 
   it("brain_views() warns and returns views", {
@@ -1336,7 +1354,7 @@ describe("atlas_view_keep", {
     atlas <- make_multiview_atlas()
     result <- atlas_view_keep(atlas, "axial_1")
     views <- atlas_views(result)
-    expect_equal(views, "axial_1")
+    expect_identical(views, "axial_1")
   })
 
   it("warns when no views match", {
@@ -1380,7 +1398,7 @@ describe("atlas_view_reorder", {
     atlas <- make_multiview_atlas()
     result <- atlas_view_reorder(atlas, c("sagittal"))
     views <- atlas_views(result)
-    expect_equal(views[1], "sagittal")
+    expect_identical(views[1], "sagittal")
   })
 
   it("warns when sf has no rows (empty views)", {
@@ -1546,7 +1564,7 @@ describe("guess_type edge cases", {
       result <- guess_type(x),
       "Atlas type not set"
     )
-    expect_equal(result, "subcortical")
+    expect_identical(result, "subcortical")
   })
 
   it("returns subcortical when no view info at all", {
@@ -1555,7 +1573,7 @@ describe("guess_type edge cases", {
       result <- guess_type(x),
       "Atlas type not set"
     )
-    expect_equal(result, "subcortical")
+    expect_identical(result, "subcortical")
   })
 
   it("reads views from x$sf$view for ggseg_atlas with legacy sf field", {
@@ -1581,7 +1599,7 @@ describe("guess_type edge cases", {
       result <- guess_type(atlas),
       "Atlas type not set"
     )
-    expect_equal(result, "cortical")
+    expect_identical(result, "cortical")
   })
 })
 
@@ -1592,7 +1610,7 @@ describe("brain_atlas S3 method dispatch", {
     class(atlas) <- c("brain_atlas", "list")
     result <- atlas_regions(atlas)
     expect_type(result, "character")
-    expect_true(length(result) > 0)
+    expect_gt(length(result), 0)
   })
 
   it("atlas_labels works on brain_atlas class", {
@@ -1600,14 +1618,14 @@ describe("brain_atlas S3 method dispatch", {
     class(atlas) <- c("brain_atlas", "list")
     result <- atlas_labels(atlas)
     expect_type(result, "character")
-    expect_true(length(result) > 0)
+    expect_gt(length(result), 0)
   })
 
   it("atlas_type works on brain_atlas class", {
     atlas <- dk()
     class(atlas) <- c("brain_atlas", "list")
     result <- atlas_type(atlas)
-    expect_equal(result, "cortical")
+    expect_identical(result, "cortical")
   })
 })
 

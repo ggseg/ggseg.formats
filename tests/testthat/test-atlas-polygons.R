@@ -4,12 +4,12 @@ describe("sf_to_polygons()", {
 
     expect_s3_class(polys, "brain_polygons")
     expect_s3_class(polys, "tbl_df")
-    expect_equal(nrow(polys), length(unique(dk()$data$sf$label)))
+    expect_identical(nrow(polys), length(unique(dk()$data$sf$label)))
     expect_named(polys, c("label", "geometry"))
     expect_true(is.list(polys$geometry))
   })
 
-  it("nested geometry tibbles carry view, x, y, group, subgroup", {
+  it("nested geometry data.frams carry view, x, y, group, subgroup", {
     polys <- sf_to_polygons(dk()$data$sf)
     inner <- polys$geometry[[1]]
     expect_s3_class(inner, "tbl_df")
@@ -29,7 +29,7 @@ describe("sf_to_polygons()", {
       integer(1)
     ))
     n_poly <- sum(vapply(polys$geometry, nrow, integer(1)))
-    expect_equal(n_sf, n_poly)
+    expect_identical(n_sf, n_poly)
   })
 
   it("errors on non-sf input", {
@@ -52,7 +52,7 @@ describe("polygons_to_sf()", {
     o1 <- order(key1)
     a0 <- as.numeric(sf::st_area(sf0$geometry[o0]))
     a1 <- as.numeric(sf::st_area(sf1$geometry[o1]))
-    expect_equal(a0, a1)
+    expect_identical(a0, a1)
   })
 
   it("preserves holes through the round-trip", {
@@ -69,13 +69,13 @@ describe("polygons_to_sf()", {
 
     polys <- sf_to_polygons(sf_in)
     holey_nested <- polys$geometry[polys$label == "holey"][[1]]
-    expect_equal(sort(unique(holey_nested$subgroup)), c(1L, 2L))
+    expect_identical(sort(unique(holey_nested$subgroup)), c(1L, 2L))
 
     sf_out <- polygons_to_sf(polys)
     holey_area <- as.numeric(sf::st_area(
       sf_out$geometry[sf_out$label == "holey"]
     ))
-    expect_equal(holey_area, 100 - 36)
+    expect_identical(holey_area, 100 - 36)
   })
 
   it("errors when polygons is malformed", {
@@ -90,21 +90,17 @@ describe("validate_polygons()", {
   })
 
   it("rejects duplicated labels", {
-    bad <- dplyr::tibble(
-      label = c("a", "a"),
-      geometry = list(
-        dplyr::tibble(view = "x", x = 1, y = 1, group = 1L, subgroup = 1L),
-        dplyr::tibble(view = "x", x = 2, y = 2, group = 1L, subgroup = 1L)
-      )
+    bad <- data.frame(label = c("a", "a"), stringsAsFactors = FALSE)
+    bad$geometry <- list(
+      data.frame(view = "x", x = 1, y = 1, group = 1L, subgroup = 1L),
+      data.frame(view = "x", x = 2, y = 2, group = 1L, subgroup = 1L)
     )
     expect_error(validate_polygons(bad), "one row per")
   })
 
   it("rejects missing geometry columns", {
-    bad <- dplyr::tibble(
-      label = "a",
-      geometry = list(dplyr::tibble(view = "x", x = 1, y = 1))
-    )
+    bad <- data.frame(label = "a", stringsAsFactors = FALSE)
+    bad$geometry <- list(data.frame(view = "x", x = 1, y = 1))
     expect_error(validate_polygons(bad), "needs columns")
   })
 })

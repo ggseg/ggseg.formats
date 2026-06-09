@@ -16,8 +16,7 @@ describe("gather/reorder layout is representation-independent", {
   core <- data.frame(
     hemi = c("left", "right"),
     region = c("a", "a"),
-    label = c("lh_a", "rh_a"),
-    stringsAsFactors = FALSE
+    label = c("lh_a", "rh_a")
   )
   mk_atlas <- function(geom) {
     ggseg_atlas(
@@ -71,10 +70,10 @@ describe("gather/reorder layout is representation-independent", {
     }
     # lateral sits left of medial in the source, so both halves of lateral
     # precede both halves of medial after gathering.
-    expect_equal(
+    expect_identical(
       layout_order(sf_atlas),
       c("left lateral", "right lateral", "left medial", "right medial")
     )
-    expect_equal(layout_order(sf_atlas), layout_order(poly_atlas))
+    expect_identical(layout_order(sf_atlas), layout_order(poly_atlas))
   })
 })

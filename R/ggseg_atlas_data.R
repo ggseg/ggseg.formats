@@ -244,8 +244,7 @@ meshes_to_centerlines <- function(meshes) {
     data.frame(
       label = meshes$label[i],
       points = I(list(metadata$centerline)),
-      tangents = I(list(metadata$tangents)),
-      stringsAsFactors = FALSE
+      tangents = I(list(metadata$tangents))
     )
   })
 
@@ -298,20 +297,29 @@ validate_centerlines <- function(centerlines) {
 #' @keywords internal
 compute_tangents <- function(points) {
   n <- nrow(points)
-  tangents <- matrix(0, nrow = n, ncol = 3)
 
-  for (i in seq_len(n)) {
-    if (i == 1) {
-      tangent <- points[2, ] - points[1, ]
-    } else if (i == n) {
-      tangent <- points[n, ] - points[n - 1, ]
-    } else {
-      tangent <- points[i + 1, ] - points[i - 1, ]
-    }
-    norm <- sqrt(sum(tangent^2))
-    tangents[i, ] <- if (norm > 0) tangent / norm else c(1, 0, 0)
+  # Finite differences: forward at the first point, backward at the last,
+  # central in between.
+  diffs <- matrix(0, nrow = n, ncol = 3)
+  diffs[1, ] <- points[2, ] - points[1, ]
+  diffs[n, ] <- points[n, ] - points[n - 1, ]
+  if (n > 2) {
+    mid <- 2:(n - 1)
+    diffs[mid, ] <- points[mid + 1, , drop = FALSE] -
+      points[mid - 1, , drop = FALSE]
   }
 
+  norms <- sqrt(rowSums(diffs^2))
+  tangents <- diffs / norms
+  degenerate <- norms == 0
+  if (any(degenerate)) {
+    tangents[degenerate, ] <- matrix(
+      c(1, 0, 0),
+      nrow = sum(degenerate),
+      ncol = 3,
+      byrow = TRUE
+    )
+  }
   tangents
 }
 
@@ -401,11 +409,10 @@ summarise_2d <- function(x) {
   kind <- if (inherits(src, "brain_polygons")) "polygons" else "sf"
   n_labels <- length(unique(src$label))
   if (kind == "sf") {
-    views <- paste0(unique(src$view), collapse = ", ")
+    views <- toString(unique(src$view))
   } else {
-    views <- paste0(
-      unique(unlist(lapply(src$geometry, function(g) g$view))),
-      collapse = ", "
+    views <- toString(
+      unique(unlist(lapply(src$geometry, function(g) g$view)))
     )
   }
   sprintf(
@@ -420,7 +427,7 @@ summarise_2d <- function(x) {
 #' @noRd
 #' @keywords internal
 print_mesh_summary <- function(meshes) {
-  summary_df <- dplyr::tibble(
+  summary_df <- as_tbl(data.frame(
     label = meshes$label,
     vertices = vapply(
       meshes$mesh,
@@ -436,7 +443,7 @@ print_mesh_summary <- function(meshes) {
       },
       integer(1)
     )
-  )
+  ))
   print(summary_df)
 }
 
