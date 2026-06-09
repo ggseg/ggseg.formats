@@ -348,13 +348,10 @@ remap_palette_to_labels <- function(palette, core) {
     return(NULL)
   }
 
-  new_palette <- character(0)
-  for (region_name in names(palette)) {
+  new_palette <- unlist(lapply(names(palette), function(region_name) {
     labels <- core$label[!is.na(core$region) & core$region == region_name]
-    for (lbl in labels) {
-      new_palette[lbl] <- unname(palette[region_name])
-    }
-  }
+    stats::setNames(rep(unname(palette[region_name]), length(labels)), labels)
+  }))
   if (length(new_palette) == 0) NULL else new_palette
 }
 
@@ -384,63 +381,86 @@ infer_vertices_from_meshes <- function(
   vertices_list <- list()
 
   for (hemi in c("left", "right")) {
-    hemi_short <- hemi_map[hemi]
     brain_mesh <- get_brain_mesh(
-      hemisphere = hemi_short,
+      hemisphere = hemi_map[hemi],
       surface = surface,
       brain_meshes = brain_meshes
     )
     if (is.null(brain_mesh)) {
       next
     }
-
-    brain_coords <- as.matrix(brain_mesh$vertices)
-    brain_keys <- paste(
-      round(brain_coords[, 1], 4),
-      round(brain_coords[, 2], 4),
-      round(brain_coords[, 3], 4)
-    )
-    brain_index <- stats::setNames(
-      seq_len(nrow(brain_coords)) - 1L,
-      brain_keys
-    )
-
     row_idx <- which(atlas_3d$hemi == hemi & atlas_3d$surf == surface)
     if (length(row_idx) == 0) {
       next
     }
-
     ggseg <- atlas_3d$ggseg_3d[[row_idx]]
     if (!"mesh" %in% names(ggseg)) {
       next
     }
 
-    for (i in seq_len(nrow(ggseg))) {
-      m <- ggseg$mesh[[i]]
-      if (is.null(m)) {
-        next
-      }
-
-      if ("vb" %in% names(m)) {
-        region_coords <- cbind(m$vb[1, ], m$vb[2, ], m$vb[3, ])
-      } else if ("vertices" %in% names(m) && !is.null(m$vertices)) {
-        region_coords <- as.matrix(m$vertices)
-      } else {
-        next
-      }
-
-      region_keys <- paste(
-        round(region_coords[, 1], 4),
-        round(region_coords[, 2], 4),
-        round(region_coords[, 3], 4)
-      )
-      matched <- brain_index[region_keys]
-      matched <- unique(unname(matched[!is.na(matched)]))
-      if (length(matched) > 0) {
-        vertices_list[[ggseg$label[i]]] <- as.integer(matched)
-      }
-    }
+    matched_list <- match_ggseg_vertices(ggseg, mesh_vertex_index(brain_mesh))
+    vertices_list[names(matched_list)] <- matched_list
   }
 
   if (length(vertices_list) == 0) NULL else vertices_list
+}
+
+
+#' Coordinate-key -> 0-based vertex index lookup for a surface mesh
+#' @noRd
+#' @keywords internal
+mesh_vertex_index <- function(brain_mesh) {
+  coords <- as.matrix(brain_mesh$vertices)
+  keys <- coord_keys(coords)
+  stats::setNames(seq_len(nrow(coords)) - 1L, keys)
+}
+
+
+#' Rounded "x y z" coordinate keys for a 3-column coordinate matrix
+#' @noRd
+#' @keywords internal
+coord_keys <- function(coords) {
+  paste(
+    round(coords[, 1], 4),
+    round(coords[, 2], 4),
+    round(coords[, 3], 4)
+  )
+}
+
+
+#' Region vertex coordinates from a mesh (rgl `vb` or a vertices data.frame)
+#'
+#' Returns a 3-column matrix, or `NULL` if the mesh carries no usable vertices.
+#' @noRd
+#' @keywords internal
+region_coords_from_mesh <- function(m) {
+  if ("vb" %in% names(m)) {
+    cbind(m$vb[1, ], m$vb[2, ], m$vb[3, ])
+  } else if ("vertices" %in% names(m) && !is.null(m$vertices)) {
+    as.matrix(m$vertices)
+  } else {
+    NULL
+  }
+}
+
+
+#' Match each region's mesh vertices to brain-surface vertex indices
+#'
+#' Returns a named list mapping region `label` to integer vertex indices.
+#' @noRd
+#' @keywords internal
+match_ggseg_vertices <- function(ggseg, brain_index) {
+  out <- list()
+  for (i in seq_len(nrow(ggseg))) {
+    region_coords <- region_coords_from_mesh(ggseg$mesh[[i]])
+    if (is.null(region_coords)) {
+      next
+    }
+    matched <- brain_index[coord_keys(region_coords)]
+    matched <- unique(unname(matched[!is.na(matched)]))
+    if (length(matched) > 0) {
+      out[[ggseg$label[i]]] <- as.integer(matched)
+    }
+  }
+  out
 }

@@ -141,20 +141,22 @@ polygon_geometry_areas <- function(flat) {
     seq_len(nrow(lv)),
     function(k) {
       sub <- flat[flat$label == lv$label[k] & flat$view == lv$view[k], ]
-      total <- 0
-      for (g in unique(sub$group)) {
-        piece <- sub[sub$group == g, ]
-        rings <- unique(piece$subgroup)
-        ext <- min(rings)
-        holes <- setdiff(rings, ext)
-        a_holes <- sum(vapply(
-          holes,
-          function(r) ring_area_of(piece, r),
-          numeric(1)
-        ))
-        total <- total + ring_area_of(piece, ext) - a_holes
-      }
-      total
+      sum(vapply(
+        unique(sub$group),
+        function(g) {
+          piece <- sub[sub$group == g, ]
+          rings <- unique(piece$subgroup)
+          ext <- min(rings)
+          holes <- setdiff(rings, ext)
+          a_holes <- sum(vapply(
+            holes,
+            function(r) ring_area_of(piece, r),
+            numeric(1)
+          ))
+          ring_area_of(piece, ext) - a_holes
+        },
+        numeric(1)
+      ))
     },
     numeric(1)
   )

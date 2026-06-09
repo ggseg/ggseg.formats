@@ -297,20 +297,29 @@ validate_centerlines <- function(centerlines) {
 #' @keywords internal
 compute_tangents <- function(points) {
   n <- nrow(points)
-  tangents <- matrix(0, nrow = n, ncol = 3)
 
-  for (i in seq_len(n)) {
-    if (i == 1) {
-      tangent <- points[2, ] - points[1, ]
-    } else if (i == n) {
-      tangent <- points[n, ] - points[n - 1, ]
-    } else {
-      tangent <- points[i + 1, ] - points[i - 1, ]
-    }
-    norm <- sqrt(sum(tangent^2))
-    tangents[i, ] <- if (norm > 0) tangent / norm else c(1, 0, 0)
+  # Finite differences: forward at the first point, backward at the last,
+  # central in between.
+  diffs <- matrix(0, nrow = n, ncol = 3)
+  diffs[1, ] <- points[2, ] - points[1, ]
+  diffs[n, ] <- points[n, ] - points[n - 1, ]
+  if (n > 2) {
+    mid <- 2:(n - 1)
+    diffs[mid, ] <- points[mid + 1, , drop = FALSE] -
+      points[mid - 1, , drop = FALSE]
   }
 
+  norms <- sqrt(rowSums(diffs^2))
+  tangents <- diffs / norms
+  degenerate <- norms == 0
+  if (any(degenerate)) {
+    tangents[degenerate, ] <- matrix(
+      c(1, 0, 0),
+      nrow = sum(degenerate),
+      ncol = 3,
+      byrow = TRUE
+    )
+  }
   tangents
 }
 
