@@ -337,9 +337,9 @@ atlas_region_op <- function(
     cli::cli_abort("{.arg into} must be a single label for the result region.")
   }
 
-  was_polygon_only <- is.null(data_sf(atlas$data))
-  sf_data <- region_op_sf_data(atlas$data)
-  geom_col <- attr(sf_data, "sf_column")
+  resolved <- region_op_sf_data(atlas$data)
+  sf_data <- resolved$sf_data
+  was_polygon_only <- resolved$was_polygon_only
 
   label_for <- function(pattern) {
     if (match_on == "region") {
@@ -353,25 +353,21 @@ atlas_region_op <- function(
   x_labels <- label_for(x)
   y_labels <- label_for(y)
 
-  combine <- region_op_combine(action)
-  template <- sf_data[sf_data$label %in% x_labels, , drop = FALSE][
-    0,
-    ,
-    drop = FALSE
-  ]
-  result_rows <- lapply(unique(sf_data$view), function(v) {
-    region_op_view(
-      v,
-      sf_data,
-      geom_col,
-      x_labels,
-      y_labels,
-      combine,
-      action,
-      template,
-      into
-    )
-  })
+  op <- list(
+    sf_data = sf_data,
+    geom_col = attr(sf_data, "sf_column"),
+    x_labels = x_labels,
+    y_labels = y_labels,
+    combine = region_op_combine(action),
+    action = action,
+    template = sf_data[sf_data$label %in% x_labels, , drop = FALSE][
+      0,
+      ,
+      drop = FALSE
+    ],
+    into = into
+  )
+  result_rows <- lapply(unique(sf_data$view), function(v) region_op_view(v, op))
   result <- do.call(rbind, result_rows)
   if (is.null(result) || nrow(result) == 0) {
     cli::cli_abort("{.arg action} produced no geometry for {.val {into}}.")
@@ -405,18 +401,21 @@ atlas_region_op <- function(
 
 
 #' sf geometry for a region op, rehydrating a polygon-only atlas
+#' Returns a list with the sf geometry and `was_polygon_only` (whether the
+#' atlas had no native sf and was rehydrated from polygons).
 #' @noRd
 #' @keywords internal
 region_op_sf_data <- function(data) {
   sf_data <- data_sf(data)
-  if (is.null(sf_data)) {
+  was_polygon_only <- is.null(sf_data)
+  if (was_polygon_only) {
     poly <- data_poly(data)
     if (is.null(poly)) {
       cli::cli_abort("Atlas has no 2D geometry to operate on.")
     }
     sf_data <- polygons_to_sf(poly)
   }
-  sf_data
+  list(sf_data = sf_data, was_polygon_only = was_polygon_only)
 }
 
 
@@ -436,31 +435,23 @@ region_op_combine <- function(action) {
 
 #' Apply a boolean region op within a single view
 #'
-#' Returns a one-row sf result for view `v`, or `NULL` when there is no `x`
-#' geometry in the view or the op yields empty geometry.
+#' `op` bundles the loop-invariant inputs assembled by [atlas_region_op()]:
+#' `sf_data`, `geom_col`, `x_labels`, `y_labels`, `combine`, `action`,
+#' `template`, `into`. Returns a one-row sf result for view `v`, or `NULL` when
+#' there is no `x` geometry in the view or the op yields empty geometry.
 #' @noRd
 #' @keywords internal
-region_op_view <- function(
-  v,
-  sf_data,
-  geom_col,
-  x_labels,
-  y_labels,
-  combine,
-  action,
-  template,
-  into
-) {
-  in_view <- sf_data$view == v
-  gx <- sf_data[[geom_col]][in_view & sf_data$label %in% x_labels]
-  gy <- sf_data[[geom_col]][in_view & sf_data$label %in% y_labels]
+region_op_view <- function(v, op) {
+  in_view <- op$sf_data$view == v
+  gx <- op$sf_data[[op$geom_col]][in_view & op$sf_data$label %in% op$x_labels]
+  gy <- op$sf_data[[op$geom_col]][in_view & op$sf_data$label %in% op$y_labels]
   if (length(gx) == 0) {
     return(NULL)
   }
   gx <- sf::st_union(sf::st_make_valid(gx))
   geom <- if (length(gy) > 0) {
-    combine(gx, sf::st_union(sf::st_make_valid(gy)))
-  } else if (action == "intersection") {
+    op$combine(gx, sf::st_union(sf::st_make_valid(gy)))
+  } else if (op$action == "intersection") {
     gx[0]
   } else {
     gx
@@ -469,11 +460,11 @@ region_op_view <- function(
   if (length(geom) == 0 || all(sf::st_is_empty(geom))) {
     return(NULL)
   }
-  row <- template[1, , drop = FALSE]
-  row$label <- into
+  row <- op$template[1, , drop = FALSE]
+  row$label <- op$into
   row$view <- v
   geom <- sf::st_union(geom)
-  sf::st_crs(geom) <- sf::st_crs(sf_data)
+  sf::st_crs(geom) <- sf::st_crs(op$sf_data)
   sf::st_geometry(row) <- geom
   row
 }
