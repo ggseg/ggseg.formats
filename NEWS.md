@@ -4,6 +4,9 @@
 
 ### Internal & tooling
 
+- Added a package hex logo: the brain as atlas data — dk lobes traced as a
+  sparse "connect-the-dots" network of vertices and edges, in a plum take on
+  the ggsegverse house style. Reproducible via `data-raw/make_hex.R`.
 - The package now passes the full `goodpractice` + tidyverse check suite as a
   CI hard gate, at 100% line coverage. Formatting is enforced with `air` and
   linting with `lintr`.
