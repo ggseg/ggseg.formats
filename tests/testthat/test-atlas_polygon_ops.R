@@ -39,13 +39,13 @@ describe("polygons_drop_pattern()", {
 
 describe("polygon_ring_area()", {
   it("computes the unit-square area as 1", {
-    expect_equal(polygon_ring_area(c(0, 1, 1, 0), c(0, 0, 1, 1)), 1)
+    expect_identical(polygon_ring_area(c(0, 1, 1, 0), c(0, 0, 1, 1)), 1)
   })
 
   it("is independent of vertex orientation", {
     ccw <- polygon_ring_area(c(0, 1, 1, 0), c(0, 0, 1, 1))
     cw <- polygon_ring_area(c(0, 0, 1, 1), c(0, 1, 1, 0))
-    expect_equal(ccw, cw)
+    expect_identical(ccw, cw)
   })
 
   it("returns 0 for a degenerate ring", {

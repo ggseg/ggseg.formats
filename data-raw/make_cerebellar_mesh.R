@@ -53,7 +53,7 @@ cli::cli_alert_info("{length(boundary_edges)} boundary edges found")
 # ── Trace boundary loop ──────────────────────────────────────────────
 adj <- list()
 for (be in boundary_edges) {
-  verts <- as.integer(strsplit(be, "_")[[1]])
+  verts <- as.integer(strsplit(be, "_", fixed = TRUE)[[1]])
   v1 <- as.character(verts[1])
   v2 <- as.character(verts[2])
   adj[[v1]] <- c(adj[[v1]], verts[2])

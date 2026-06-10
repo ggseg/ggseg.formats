@@ -3,8 +3,8 @@ describe("read_freesurfer_stats()", {
     aseg_file <- test_path("data/bert/stats/aseg.stats")
     aseg_stats <- read_freesurfer_stats(aseg_file)
 
-    expect_identical(
-      names(aseg_stats),
+    expect_named(
+      aseg_stats,
       c(
         "Index",
         "SegId",
@@ -18,13 +18,13 @@ describe("read_freesurfer_stats()", {
         "normRange"
       )
     )
-    expect_equal(nrow(aseg_stats), 45)
+    expect_identical(nrow(aseg_stats), 45L)
   })
 
   it("reads aseg.stats file without renaming when rename = FALSE", {
     aseg_file <- test_path("data/bert/stats/aseg.stats")
-    expect_identical(
-      names(read_freesurfer_stats(aseg_file, FALSE)),
+    expect_named(
+      read_freesurfer_stats(aseg_file, FALSE),
       c(
         "Index",
         "SegId",
@@ -44,8 +44,8 @@ describe("read_freesurfer_stats()", {
     dkt_file <- test_path("data/bert/stats/lh.aparc.stats")
     dkt_stats <- read_freesurfer_stats(dkt_file)
 
-    expect_identical(
-      names(dkt_stats),
+    expect_named(
+      dkt_stats,
       c(
         "label",
         "NumVert",
@@ -59,13 +59,13 @@ describe("read_freesurfer_stats()", {
         "CurvInd"
       )
     )
-    expect_equal(nrow(dkt_stats), 34)
+    expect_identical(nrow(dkt_stats), 34L)
   })
 
   it("reads aparc.stats file without renaming when rename = FALSE", {
     dkt_file <- test_path("data/bert/stats/lh.aparc.stats")
-    expect_identical(
-      names(read_freesurfer_stats(dkt_file, FALSE)),
+    expect_named(
+      read_freesurfer_stats(dkt_file, FALSE),
       c(
         "StructName",
         "NumVert",
@@ -86,8 +86,8 @@ describe("read_atlas_files()", {
   it("reads all aparc stats files from subjects directory", {
     dat <- read_atlas_files(test_path("data"), "aparc")
 
-    expect_identical(
-      names(dat),
+    expect_named(
+      dat,
       c(
         "subject",
         "label",
@@ -102,7 +102,7 @@ describe("read_atlas_files()", {
         "CurvInd"
       )
     )
-    expect_equal(nrow(dat), 68)
+    expect_identical(nrow(dat), 68L)
   })
 
   it("combines hemispheres with correct label prefixes", {
@@ -130,8 +130,8 @@ describe("read_freesurfer_table()", {
     file <- test_path("data/aparc.volume.table")
     dat <- read_freesurfer_table(file)
 
-    expect_identical(names(dat), c("subject", "label", "value"))
-    expect_equal(nrow(dat), 36)
+    expect_named(dat, c("subject", "label", "value"))
+    expect_identical(nrow(dat), 36L)
     expect_true(any(grepl("volume$", dat$label)))
   })
 
@@ -139,7 +139,7 @@ describe("read_freesurfer_table()", {
     file <- test_path("data/aparc.volume.table")
     dat <- read_freesurfer_table(file, measure = "volume")
 
-    expect_identical(names(dat), c("subject", "label", "volume"))
+    expect_named(dat, c("subject", "label", "volume"))
     expect_false(any(grepl("volume$", dat$label)))
   })
 
@@ -155,8 +155,8 @@ describe("read_freesurfer_table()", {
 
     dat <- read_freesurfer_table(tmp)
 
-    expect_false(any(grepl("\\.", dat$label)))
-    expect_true(all(grepl("-", dat$label)))
+    expect_false(any(grepl(".", dat$label, fixed = TRUE)))
+    expect_true(all(grepl("-", dat$label, fixed = TRUE)))
     expect_identical(dat$label, c("roi-one", "roi-two"))
 
     unlink(tmp)
@@ -178,7 +178,7 @@ describe("read_atlas_files() with aseg", {
 
 describe("find_subject_fromdir", {
   it("extracts subject from path", {
-    result <- ggseg.formats:::find_subject_fromdir("/bert/stats/aseg.stats")
+    result <- find_subject_fromdir("/bert/stats/aseg.stats")
     expect_identical(result, "bert")
   })
 })
@@ -186,17 +186,17 @@ describe("find_subject_fromdir", {
 
 describe("find_hemi_fromfile", {
   it("extracts hemisphere from lh file", {
-    result <- ggseg.formats:::find_hemi_fromfile("/path/to/lh.aparc.stats")
+    result <- find_hemi_fromfile("/path/to/lh.aparc.stats")
     expect_identical(result, "lh")
   })
 
   it("extracts hemisphere from rh file", {
-    result <- ggseg.formats:::find_hemi_fromfile("/path/to/rh.aparc.stats")
+    result <- find_hemi_fromfile("/path/to/rh.aparc.stats")
     expect_identical(result, "rh")
   })
 
   it("extracts first element for non-hemispheric files", {
-    result <- ggseg.formats:::find_hemi_fromfile("/path/to/aseg.stats")
+    result <- find_hemi_fromfile("/path/to/aseg.stats")
     expect_identical(result, "aseg")
   })
 })

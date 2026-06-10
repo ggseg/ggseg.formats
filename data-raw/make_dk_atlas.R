@@ -31,8 +31,7 @@ fsaverage5_dir <- file.path(subjects_dir, "fsaverage5")
 if (!dir.exists(fsaverage5_dir)) {
   cli::cli_abort(c(
     "fsaverage5 not found",
-    "i" = "Expected: {.path {fsaverage5_dir}}",
-    "i" = "Ensure FreeSurfer is properly installed"
+    "i" = "Expected {.path {fsaverage5_dir}}; ensure FreeSurfer is installed"
   ))
 }
 

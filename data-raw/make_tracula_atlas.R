@@ -26,8 +26,7 @@ tract_dir <- file.path(fs_dir, "trctrain", "hcp", "mgh_1017", "mni")
 if (!dir.exists(tract_dir)) {
   cli::cli_abort(c(
     "TRACULA training data not found",
-    "i" = "Expected: {.path {tract_dir}}",
-    "i" = "Ensure FreeSurfer is installed with trctrain data"
+    "i" = "Expected {.path {tract_dir}}; needs FreeSurfer trctrain data"
   ))
 }
 
@@ -66,12 +65,14 @@ normalize_label <- function(x) {
     tools::file_path_sans_ext()
 }
 
+tracula_meta_keyed <- tracula_metadata |>
+  mutate(label_key = normalize_label(label)) |>
+  select(label_key, region_pretty = region, group)
+
 core_with_meta <- tracula_raw$core |>
   mutate(label_key = normalize_label(label)) |>
   left_join(
-    tracula_metadata |>
-      mutate(label_key = normalize_label(label)) |>
-      select(label_key, region_pretty = region, group),
+    tracula_meta_keyed,
     by = "label_key"
   ) |>
   mutate(region = coalesce(region_pretty, region)) |>

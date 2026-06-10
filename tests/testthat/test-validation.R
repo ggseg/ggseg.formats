@@ -369,7 +369,7 @@ describe("validate_data_labels", {
     })
     core <- data.frame(
       hemi = rep("left", 10),
-      region = gsub("lh_", "", labels),
+      region = gsub("lh_", "", labels, fixed = TRUE),
       label = labels
     )
 
@@ -393,14 +393,14 @@ describe("validate_tract_metadata", {
       centerline = matrix(1:30, ncol = 3)
     )
     expect_warning(
-      ggseg.formats:::validate_tract_metadata(metadata, "cst_left"),
+      validate_tract_metadata(metadata, "cst_left"),
       "missing"
     )
   })
 
   it("warns when metadata is not a list", {
     expect_warning(
-      ggseg.formats:::validate_tract_metadata("not a list", "bad_tract"),
+      validate_tract_metadata("not a list", "bad_tract"),
       "should be a list"
     )
   })
@@ -420,7 +420,7 @@ describe("validate_meshes calls validate_tract_metadata", {
       )
     ))
 
-    result <- ggseg.formats:::validate_meshes(meshes, tract = TRUE)
-    expect_equal(nrow(result), 1)
+    result <- validate_meshes(meshes, tract = TRUE)
+    expect_identical(nrow(result), 1L)
   })
 })

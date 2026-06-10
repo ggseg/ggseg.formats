@@ -349,7 +349,7 @@ validate_ggseg_atlas <- function(x) {
 
 #' Resolve an atlas's 2D geometry to a non-empty sf data frame
 #'
-#' Used by [as.data.frame.ggseg_atlas()]. Aborts when there is no 2D geometry
+#' Used by `as.data.frame.ggseg_atlas()`. Aborts when there is no 2D geometry
 #' (or it is empty) and requires sf.
 #' @noRd
 #' @keywords internal
@@ -426,14 +426,9 @@ infer_cortical_hemi <- function(result) {
   }
   missing_hemi <- is.na(result$hemi)
   if (any(missing_hemi)) {
-    result$hemi[missing_hemi] <- ifelse(
-      grepl("^lh[_.]", result$label[missing_hemi]),
-      "left",
-      ifelse(
-        grepl("^rh[_.]", result$label[missing_hemi]),
-        "right",
-        NA_character_
-      )
+    result$hemi[missing_hemi] <- hemi_from_label(
+      result$label[missing_hemi],
+      default = NA_character_
     )
   }
   still_missing <- is.na(result$hemi)

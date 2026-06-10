@@ -49,8 +49,8 @@ as_ggseg_atlas.brain_atlas <- function(x) {
     return(restamp_class(x))
   }
 
-  has_legacy_slots <- any(
-    !vapply(
+  has_legacy_slots <- !all(
+    vapply(
       list(x$sf, x$vertices, x$meshes),
       is.null,
       logical(1)

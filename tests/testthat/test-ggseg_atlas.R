@@ -15,7 +15,7 @@ describe("ggseg_atlas class", {
 
   it("as.data.frame returns sf data", {
     df <- as.data.frame(dk())
-    expect_true(inherits(df, "data.frame"))
+    expect_s3_class(df, "data.frame")
     expect_true("geometry" %in% names(df))
     expect_true("region" %in% names(df))
     expect_true("hemi" %in% names(df))
@@ -54,7 +54,7 @@ describe("ggseg_atlas class", {
   it("aseg atlas works", {
     expect_true(is_ggseg_atlas(aseg()))
     df <- as.data.frame(aseg())
-    expect_true(inherits(df, "data.frame"))
+    expect_s3_class(df, "data.frame")
   })
 })
 
@@ -152,7 +152,7 @@ describe("cerebellar atlas construction and data.frame conversion", {
     expect_s3_class(atlas, "cerebellar_atlas")
     expect_s3_class(atlas, "ggseg_atlas")
     expect_identical(atlas$type, "cerebellar")
-    expect_equal(nrow(atlas$core), 3)
+    expect_identical(nrow(atlas$core), 3L)
   })
 
   it("as.data.frame preserves vermis hemisphere", {
@@ -161,7 +161,7 @@ describe("cerebellar atlas construction and data.frame conversion", {
     expect_true("vermis" %in% df$hemi)
     expect_true("left" %in% df$hemi)
     expect_true("right" %in% df$hemi)
-    expect_equal(nrow(df), 3)
+    expect_identical(nrow(df), 3L)
   })
 
   it("as.data.frame does not filter NA hemi for cerebellar", {
@@ -183,7 +183,7 @@ describe("cerebellar atlas construction and data.frame conversion", {
       data = ggseg_data_cerebellar(geom = sf_geom)
     )
     df <- as.data.frame(atlas)
-    expect_equal(nrow(df), 1)
+    expect_identical(nrow(df), 1L)
     expect_true(is.na(df$hemi[1]))
   })
 
@@ -405,7 +405,7 @@ describe("as.data.frame.ggseg_atlas edge cases", {
   it("maps palette colours to result", {
     df <- as.data.frame(dk())
     expect_true("colour" %in% names(df))
-    expect_true(any(!is.na(df$colour)))
+    expect_true(!all(is.na(df$colour)))
   })
 
   it("handles sf with hemi column via core merge", {
@@ -526,7 +526,7 @@ describe("as.data.frame with legacy data structure", {
       class = c("cortical_atlas", "ggseg_atlas", "list")
     )
     df <- as.data.frame(atlas)
-    expect_true(inherits(df, "data.frame"))
+    expect_s3_class(df, "data.frame")
     expect_true("lh_frontal" %in% df$label)
   })
 
@@ -547,7 +547,7 @@ describe("as.data.frame with legacy data structure", {
       class = c("subcortical_atlas", "ggseg_atlas", "list")
     )
     df <- as.data.frame(atlas)
-    expect_true(inherits(df, "data.frame"))
+    expect_s3_class(df, "data.frame")
     expect_true("lh_frontal" %in% df$label)
   })
 })

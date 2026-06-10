@@ -16,3 +16,5 @@
 ^codemeta\.json$
 ^man-roxygen$
 ^dev$
+^\.lintr$
+\.DS_Store$

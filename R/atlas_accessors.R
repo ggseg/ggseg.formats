@@ -232,6 +232,7 @@ print.ggseg_sf <- function(x, ...) {
     cli::cli_text("Views: {views}")
   }
   NextMethod()
+  invisible(x)
 }
 
 #' @export
@@ -248,6 +249,7 @@ print.ggseg_vertices <- function(x, ...) {
     )
   }
   NextMethod()
+  invisible(x)
 }
 
 #' @export

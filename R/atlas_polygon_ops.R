@@ -205,11 +205,7 @@ polygons_remove_small <- function(
 reposition_flat <- function(flat, type = NULL, gap = 0.15, group_order = NULL) {
   group_key <- flat$view
   if (identical(type, "cortical")) {
-    hemi <- ifelse(
-      grepl("^lh[_.]", flat$label),
-      "left",
-      ifelse(grepl("^rh[_.]", flat$label), "right", "")
-    )
+    hemi <- hemi_from_label(flat$label)
     group_key <- paste(hemi, flat$view)
   }
 
@@ -267,11 +263,7 @@ reorder_polygons <- function(polygons, order, type = NULL, gap = 0.15) {
   order <- order[order %in% current_views]
 
   if (identical(type, "cortical")) {
-    hemi <- ifelse(
-      grepl("^lh[_.]", flat$label),
-      "left",
-      ifelse(grepl("^rh[_.]", flat$label), "right", "")
-    )
+    hemi <- hemi_from_label(flat$label)
     group_order <- unlist(lapply(order, function(v) {
       hemis <- intersect(c("left", "right", ""), unique(hemi[flat$view == v]))
       paste(hemis, v)

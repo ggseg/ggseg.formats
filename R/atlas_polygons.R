@@ -11,6 +11,7 @@ print.brain_polygons <- function(x, ...) {
     cli::cli_text("{.strong Total points:} {n_pts}")
   }
   NextMethod()
+  invisible(x)
 }
 # sf-optional atlas polygon format ----
 
@@ -32,6 +33,7 @@ print.brain_polygons <- function(x, ...) {
 #' Internal conversion primitive. For the atlas-level public API use
 #' [as_polygon_atlas()] / [atlas_polygons()].
 #' @keywords internal
+#' @rdname sf_to_polygons
 sf_to_polygons <- function(sf_data) {
   require_sf("sf_to_polygons()")
   if (!inherits(sf_data, "sf")) {
@@ -81,12 +83,13 @@ sf_to_polygons <- function(sf_data) {
 #' Internal conversion primitive. For the atlas-level public API use
 #' [as_sf_atlas()] / [atlas_sf()].
 #' @keywords internal
+#' @rdname polygons_to_sf
 polygons_to_sf <- function(polygons) {
   validate_polygons(polygons)
 
   flat <- df_unnest(polygons, "geometry")
 
-  feature_key <- paste(flat$label, flat$view, sep = "")
+  feature_key <- paste(flat$label, flat$view, sep = "\x1f")
   flat$.feature_id <- as.integer(factor(
     feature_key,
     levels = unique(feature_key)
@@ -162,7 +165,7 @@ validate_polygons <- function(polygons) {
     ))
   }
 
-  empty <- vapply(geoms, function(g) nrow(g) == 0L, logical(1))
+  empty <- vapply(geoms, nrow, integer(1)) == 0L
   if (any(empty)) {
     cli::cli_abort(
       "Geometry data.frame is empty for: {.val {polygons$label[empty]}}."

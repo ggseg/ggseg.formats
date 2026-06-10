@@ -308,7 +308,7 @@ atlas_region_op <- function(
     ],
     into = into
   )
-  result_rows <- lapply(unique(sf_data$view), function(v) region_op_view(v, op))
+  result_rows <- lapply(unique(sf_data$view), region_op_view, op)
   result <- do.call(rbind, result_rows)
   if (is.null(result) || nrow(result) == 0) {
     cli::cli_abort("{.arg action} produced no geometry for {.val {into}}.")
@@ -722,11 +722,7 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
   }
 
   group_order <- if (atlas$type == "cortical") {
-    hemi <- ifelse(
-      grepl("^lh[_.]", sf_data$label),
-      "left",
-      ifelse(grepl("^rh[_.]", sf_data$label), "right", "")
-    )
+    hemi <- hemi_from_label(sf_data$label)
     unlist(lapply(order, function(v) {
       hemis <- intersect(
         c("left", "right", ""),
@@ -944,11 +940,7 @@ reposition_views <- function(
   group_key <- sf_obj$view
 
   if (identical(type, "cortical")) {
-    hemi <- ifelse(
-      grepl("^lh[_.]", sf_obj$label),
-      "left",
-      ifelse(grepl("^rh[_.]", sf_obj$label), "right", "")
-    )
+    hemi <- hemi_from_label(sf_obj$label)
     group_key <- paste(hemi, sf_obj$view)
   }
 
@@ -1080,4 +1072,18 @@ rebuild_atlas <- function(atlas, new_data) {
       "list"
     )
   )
+}
+
+
+#' Classify hemisphere from an `lh_`/`rh_` label prefix
+#'
+#' Shared by the reposition/reorder helpers, which group cortical geometry by
+#' hemisphere. Labels matching neither prefix get `default`.
+#' @noRd
+#' @keywords internal
+hemi_from_label <- function(label, default = "") {
+  out <- rep(default, length(label))
+  out[grepl("^lh[_.]", label)] <- "left"
+  out[grepl("^rh[_.]", label)] <- "right"
+  out
 }

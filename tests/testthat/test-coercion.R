@@ -151,8 +151,8 @@ describe("as_ggseg_atlas.brain_atlas (legacy auto-conversion)", {
 describe("as_ggseg_atlas.list", {
   it("converts legacy list with separate sf field", {
     sf_geom <- sf::st_sf(
-      label = c("lh_frontal"),
-      view = c("lateral"),
+      label = "lh_frontal",
+      view = "lateral",
       geometry = sf::st_sfc(
         make_polygon()
       )
@@ -263,10 +263,10 @@ describe("convert_legacy_brain_data", {
 
   it("handles legacy atlas without colour column", {
     sf_geom <- sf::st_sf(
-      hemi = c("left"),
-      region = c("frontal"),
-      label = c("lh_frontal"),
-      view = c("lateral"),
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal",
+      view = "lateral",
       geometry = sf::st_sfc(
         make_polygon()
       )

@@ -307,11 +307,11 @@ describe("atlas_type", {
 describe("get_uniq", {
   it("returns sorted unique values excluding NA", {
     df <- data.frame(region = c("c", "a", "b", NA, "a"), label = 1:5)
-    expect_identical(ggseg.formats:::get_uniq(df, "region"), c("a", "b", "c"))
+    expect_identical(get_uniq(df, "region"), c("a", "b", "c"))
   })
 
   it("errors with invalid type", {
-    expect_error(ggseg.formats:::get_uniq(data.frame(), "invalid"))
+    expect_error(get_uniq(data.frame(), "invalid"))
   })
 })
 
@@ -322,7 +322,7 @@ describe("guess_type", {
   it("guesses cortical from medial/lateral views", {
     df <- data.frame(type = NA, view = c("medial", "lateral"))
     expect_warning(
-      result <- ggseg.formats:::guess_type(df),
+      result <- guess_type(df),
       "attempting to guess"
     )
     expect_identical(result, "cortical")
@@ -331,7 +331,7 @@ describe("guess_type", {
   it("guesses subcortical when no medial/lateral views", {
     df <- data.frame(type = NA, view = c("axial", "sagittal"))
     expect_warning(
-      result <- ggseg.formats:::guess_type(df),
+      result <- guess_type(df),
       "attempting to guess"
     )
     expect_identical(result, "subcortical")
@@ -357,14 +357,14 @@ describe("atlas_region_remove", {
     result <- atlas_region_remove(atlas, "^lh_f", match_on = "label")
 
     expect_false("lh_frontal" %in% result$core$label)
-    expect_equal(nrow(result$core), 2)
+    expect_identical(nrow(result$core), 2L)
   })
 
   it("preserves NA regions in core", {
     atlas <- make_test_atlas()
     atlas$core$region[1] <- NA
     result <- atlas_region_remove(atlas, "nonexistent")
-    expect_equal(nrow(result$core), 3)
+    expect_identical(nrow(result$core), 3L)
   })
 })
 
@@ -461,7 +461,7 @@ describe("atlas_region_contextual", {
   it("matches on label when specified", {
     atlas <- make_test_atlas()
     result <- atlas_region_contextual(atlas, "^lh_f", match_on = "label")
-    expect_equal(nrow(result$core), 2)
+    expect_identical(nrow(result$core), 2L)
     expect_identical(result$core$label, c("lh_parietal", "rh_frontal"))
   })
 
@@ -478,7 +478,7 @@ describe("atlas_region_contextual", {
   it("matches case-insensitively by default", {
     atlas <- make_test_atlas()
     result <- atlas_region_contextual(atlas, "FRONTAL")
-    expect_false(any(grepl("frontal", result$core$region)))
+    expect_false(any(grepl("frontal", result$core$region, fixed = TRUE)))
   })
 
   it("respects ignore.case = FALSE", {
@@ -743,7 +743,7 @@ describe("atlas_region_keep", {
     atlas <- make_test_atlas()
     result <- atlas_region_keep(atlas, "frontal")
 
-    expect_equal(nrow(result$core), 2)
+    expect_identical(nrow(result$core), 2L)
     expect_true(all(result$core$region == "frontal"))
     expect_length(result$palette, 2)
   })
@@ -757,13 +757,13 @@ describe("atlas_region_keep", {
   it("filters 3D data", {
     atlas <- make_test_atlas()
     result <- atlas_region_keep(atlas, "frontal")
-    expect_equal(nrow(result$data$vertices), 2)
+    expect_identical(nrow(result$data$vertices), 2L)
   })
 
   it("matches on label", {
     atlas <- make_test_atlas()
     result <- atlas_region_keep(atlas, "^lh_", match_on = "label")
-    expect_equal(nrow(result$core), 2)
+    expect_identical(nrow(result$core), 2L)
   })
 })
 
@@ -785,7 +785,7 @@ describe("atlas_core_add", {
   it("joins by custom column", {
     atlas <- make_test_atlas()
     meta <- data.frame(
-      label = c("lh_frontal"),
+      label = "lh_frontal",
       network = "DMN"
     )
     result <- atlas_core_add(atlas, meta, by = "label")
@@ -1030,11 +1030,9 @@ describe("atlas_view_gather", {
     # each hemi+view group occupies a disjoint horizontal band (packed left
     # to right with gaps); the exact ordering is representation-dependent.
     flat <- polygons_unnest(result$data$geom)
-    hemi <- ifelse(
-      grepl("^lh", flat$label),
-      "left",
-      ifelse(grepl("^rh", flat$label), "right", "")
-    )
+    hemi <- rep("", nrow(flat))
+    hemi[grepl("^lh", flat$label)] <- "left"
+    hemi[grepl("^rh", flat$label)] <- "right"
     groups <- split(seq_len(nrow(flat)), paste(hemi, flat$view))
     ranges <- lapply(groups, function(idx) range(flat$x[idx]))
     ordered <- ranges[order(vapply(ranges, `[`, numeric(1), 1))]
@@ -1077,7 +1075,7 @@ describe("atlas_view_reorder", {
 
   it("appends unspecified views at end", {
     atlas <- make_multiview_atlas()
-    result <- atlas_view_reorder(atlas, c("sagittal"))
+    result <- atlas_view_reorder(atlas, "sagittal")
 
     views_in_order <- unique(result$data$geom$view)
     expect_identical(views_in_order[1], "sagittal")
@@ -1185,7 +1183,7 @@ describe("as.data.frame context ordering", {
     atlas$data$geom <- atlas$data$geom[keep, ]
     df <- as.data.frame(atlas)
     expect_s3_class(df, "sf")
-    expect_equal(nrow(df), 3)
+    expect_identical(nrow(df), 3L)
   })
 })
 
@@ -1245,12 +1243,21 @@ describe("subclass preservation", {
   })
 
   it("bundled atlases have correct subclasses", {
-    expect_identical(class(dk()), c("cortical_atlas", "ggseg_atlas", "list"))
-    expect_identical(
-      class(aseg()),
-      c("subcortical_atlas", "ggseg_atlas", "list")
+    expect_s3_class(
+      dk(),
+      c("cortical_atlas", "ggseg_atlas", "list"),
+      exact = TRUE
     )
-    expect_identical(class(tracula()), c("tract_atlas", "ggseg_atlas", "list"))
+    expect_s3_class(
+      aseg(),
+      c("subcortical_atlas", "ggseg_atlas", "list"),
+      exact = TRUE
+    )
+    expect_s3_class(
+      tracula(),
+      c("tract_atlas", "ggseg_atlas", "list"),
+      exact = TRUE
+    )
   })
 })
 
@@ -1396,7 +1403,7 @@ describe("atlas_view_reorder", {
 
   it("appends unmentioned views to end of order", {
     atlas <- make_multiview_atlas()
-    result <- atlas_view_reorder(atlas, c("sagittal"))
+    result <- atlas_view_reorder(atlas, "sagittal")
     views <- atlas_views(result)
     expect_identical(views[1], "sagittal")
   })
@@ -1405,7 +1412,7 @@ describe("atlas_view_reorder", {
     atlas <- make_multiview_atlas()
     atlas$data$geom <- atlas$data$geom[0, ]
     expect_warning(
-      atlas_view_reorder(atlas, c("lateral")),
+      atlas_view_reorder(atlas, "lateral"),
       "No matching views"
     )
   })
@@ -1502,7 +1509,7 @@ describe("atlas_view_remove_region matching by region", {
 describe("atlas_view_reorder with nonexistent views", {
   it("appends unmatched order entries but still reorders", {
     atlas <- make_test_atlas()
-    result <- atlas_view_reorder(atlas, c("nonexistent"))
+    result <- atlas_view_reorder(atlas, "nonexistent")
     expect_s3_class(result, "ggseg_atlas")
   })
 })
@@ -1649,6 +1656,6 @@ describe("atlas_region_remove with no sf data", {
     )
     result <- atlas_region_remove(atlas, "frontal")
     expect_null(result$data$sf)
-    expect_equal(nrow(result$core), 1)
+    expect_identical(nrow(result$core), 1L)
   })
 })

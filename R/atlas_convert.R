@@ -290,10 +290,9 @@ extract_2d_data <- function(atlas_2d) {
       c("i" = "Using existing vertex data from 2D atlas.")
     )
   } else {
-    cli::cli_inform(c(
-      "i" = "Created atlas from 2D only.",
-      "i" = "3D rendering will not be available without vertex data."
-    ))
+    cli::cli_inform(
+      "i" = "Created atlas from 2D only; 3D rendering needs vertex data."
+    )
   }
   list(core = NULL, palette = NULL, vertices = vertices, meshes = NULL)
 }
@@ -337,7 +336,7 @@ has_vertex_data <- function(dt) {
   if (!("vertices" %in% names(dt))) {
     return(FALSE)
   }
-  !all(vapply(dt$vertices, function(v) length(v) == 0, logical(1)))
+  !all(vapply(dt$vertices, length, integer(1)) == 0)
 }
 
 

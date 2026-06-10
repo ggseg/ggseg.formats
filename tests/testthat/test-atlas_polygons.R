@@ -6,7 +6,7 @@ describe("sf_to_polygons()", {
     expect_s3_class(polys, "tbl_df")
     expect_identical(nrow(polys), length(unique(dk()$data$sf$label)))
     expect_named(polys, c("label", "geometry"))
-    expect_true(is.list(polys$geometry))
+    expect_type(polys$geometry, "list")
   })
 
   it("nested geometry data.frams carry view, x, y, group, subgroup", {

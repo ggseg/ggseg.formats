@@ -85,7 +85,7 @@ describe("atlas_sf", {
     result <- atlas_sf(atlas)
 
     expect_s3_class(result, "sf")
-    expect_equal(nrow(result), 2)
+    expect_identical(nrow(result), 2L)
     expect_true("hemi" %in% names(result))
     expect_true("region" %in% names(result))
     expect_true("colour" %in% names(result))
@@ -93,10 +93,10 @@ describe("atlas_sf", {
 
   it("removes hemi/region from sf before merge", {
     sf_geom <- sf::st_sf(
-      label = c("lh_frontal"),
-      hemi = c("left"),
-      region = c("frontal"),
-      view = c("lateral"),
+      label = "lh_frontal",
+      hemi = "left",
+      region = "frontal",
+      view = "lateral",
       geometry = sf::st_sfc(
         make_polygon()
       )
@@ -156,7 +156,7 @@ describe("atlas_vertices", {
 
     result <- atlas_vertices(atlas)
 
-    expect_equal(nrow(result), 2)
+    expect_identical(nrow(result), 2L)
     expect_true("hemi" %in% names(result))
     expect_true("region" %in% names(result))
     expect_true("colour" %in% names(result))
@@ -241,7 +241,7 @@ describe("atlas_meshes", {
 
     result <- atlas_meshes(atlas)
 
-    expect_equal(nrow(result), 1)
+    expect_identical(nrow(result), 1L)
     expect_true("colour" %in% names(result))
     expect_identical(result$colour, "#FF0000")
   })
