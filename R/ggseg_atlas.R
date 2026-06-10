@@ -36,43 +36,7 @@
 ggseg_atlas <- function(atlas, type, core, data, palette = NULL) {
   type <- match.arg(type, c("cortical", "subcortical", "tract", "cerebellar"))
 
-  if (length(atlas) != 1 || !is.character(atlas)) {
-    cli::cli_abort(
-      "{.arg atlas} must be a single character string, not {length(atlas)}."
-    )
-  }
-
-  if (!is.data.frame(core)) {
-    cli::cli_abort("{.arg core} must be a data.frame.")
-  }
-
-  required_core <- c("region", "label")
-  missing_core <- setdiff(required_core, names(core))
-  if (length(missing_core) > 0) {
-    cli::cli_abort(
-      "{.arg core} must contain columns: {.field {missing_core}}."
-    )
-  }
-
-  if (
-    !inherits(data, "ggseg_atlas_data") &&
-      !inherits(data, "brain_atlas_data")
-  ) {
-    cli::cli_abort(c(
-      "{.arg data} must be a {.cls ggseg_atlas_data} object.",
-      "i" = "Use {.fn ggseg_data_cortical}, {.fn ggseg_data_subcortical},
-      {.fn ggseg_data_tract}, or {.fn ggseg_data_cerebellar}."
-    ))
-  }
-
-  expected_new <- paste0("ggseg_data_", type)
-  expected_old <- paste0("brain_data_", type)
-  if (!inherits(data, expected_new) && !inherits(data, expected_old)) {
-    cli::cli_abort(c(
-      "Atlas type {.val {type}} requires {.cls {expected_new}}.",
-      "x" = "Got {.cls {class(data)[1]}}."
-    ))
-  }
+  validate_ggseg_atlas_inputs(atlas, core, data, type)
 
   data <- validate_data_labels(data, core, check_sf = TRUE)
 
@@ -191,52 +155,9 @@ print.ggseg_atlas <- function(x, n = 10, ...) {
   has_3d <- !is.null(data$vertices) ||
     !is.null(data$meshes) ||
     !is.null(data$centerlines)
-  has_palette <- !is.null(x$palette) # nolint: object_usage_linter
-  n_regions <- length(stats::na.omit(unique(x$core$region))) # nolint
-  hemis <- paste0(unique(x$core$hemi), collapse = ", ") # nolint
 
-  cli::cli_h1("{x$atlas} ggseg atlas")
-
-  cli::cli_text("{.strong Type: {x$type}}")
-  cli::cli_text("{.strong Regions:} {n_regions}")
-  cli::cli_text("{.strong Hemispheres:} {hemis}")
-
-  if (has_sf) {
-    geom_views <- if (inherits(geom, "brain_polygons")) {
-      unique(polygons_unnest(geom)$view)
-    } else {
-      unique(geom$view)
-    }
-    views <- paste0(geom_views, collapse = ", ") # nolint
-    cli::cli_text("{.strong Views:} {views}")
-  }
-
-  check <- function(val) {
-    # nolint: object_usage_linter
-    if (val) {
-      cli::col_green(cli::symbol$tick)
-    } else {
-      cli::col_red(cli::symbol$cross)
-    }
-  }
-
-  cli::cli_text("{.strong Palette:} {check(has_palette)}")
-
-  # nolint start: object_usage_linter
-  render_3d <- if (!is.null(data$centerlines)) {
-    # nolint end
-    "centerlines"
-  } else if (!is.null(data$meshes)) {
-    "meshes"
-  } else if (!is.null(data$vertices)) {
-    "vertices"
-  } else {
-    "none"
-  }
-  ggseg_status <- check(has_sf) # nolint: object_usage_linter
-  ggseg3d_status <- check(has_3d) # nolint: object_usage_linter
-  cli::cli_text("{.strong Rendering:} {ggseg_status} ggseg")
-  cli::cli_text("             {ggseg3d_status} ggseg3d ({render_3d})")
+  print_atlas_summary(x, geom, has_sf)
+  print_atlas_rendering(x, data, has_sf, has_3d)
 
   cli::cli_rule()
 
@@ -573,4 +494,122 @@ plot_cells <- function(flat, gap_frac = 0.12) {
     base <- base + max(cell)
   }
   ids
+}
+
+#' Validate constructor inputs for [ggseg_atlas()]
+#'
+#' Checks `atlas`, `core`, and `data` for type, required columns, and the
+#' expected `ggseg_data_*`/`brain_data_*` class for `type`. Aborts on the first
+#' violation; returns invisibly when all checks pass.
+#' @noRd
+#' @keywords internal
+validate_ggseg_atlas_inputs <- function(atlas, core, data, type) {
+  if (length(atlas) != 1 || !is.character(atlas)) {
+    cli::cli_abort(
+      "{.arg atlas} must be a single character string, not {length(atlas)}."
+    )
+  }
+
+  if (!is.data.frame(core)) {
+    cli::cli_abort("{.arg core} must be a data.frame.")
+  }
+
+  required_core <- c("region", "label")
+  missing_core <- setdiff(required_core, names(core))
+  if (length(missing_core) > 0) {
+    cli::cli_abort(
+      "{.arg core} must contain columns: {.field {missing_core}}."
+    )
+  }
+
+  if (
+    !inherits(data, "ggseg_atlas_data") &&
+      !inherits(data, "brain_atlas_data")
+  ) {
+    cli::cli_abort(c(
+      "{.arg data} must be a {.cls ggseg_atlas_data} object.",
+      "i" = "Use {.fn ggseg_data_cortical}, {.fn ggseg_data_subcortical},
+      {.fn ggseg_data_tract}, or {.fn ggseg_data_cerebellar}."
+    ))
+  }
+
+  expected_new <- paste0("ggseg_data_", type)
+  expected_old <- paste0("brain_data_", type)
+  if (!inherits(data, expected_new) && !inherits(data, expected_old)) {
+    cli::cli_abort(c(
+      "Atlas type {.val {type}} requires {.cls {expected_new}}.",
+      "x" = "Got {.cls {class(data)[1]}}."
+    ))
+  }
+
+  invisible()
+}
+
+#' Print the header and summary block for a ggseg atlas
+#'
+#' Emits the title, type, region count, hemispheres, and (when 2D geometry is
+#' present) the available views. Side-effecting; returns invisibly.
+#' @noRd
+#' @keywords internal
+print_atlas_summary <- function(x, geom, has_sf) {
+  n_regions <- length(stats::na.omit(unique(x$core$region))) # nolint
+  hemis <- paste0(unique(x$core$hemi), collapse = ", ") # nolint
+
+  cli::cli_h1("{x$atlas} ggseg atlas")
+
+  cli::cli_text("{.strong Type: {x$type}}")
+  cli::cli_text("{.strong Regions:} {n_regions}")
+  cli::cli_text("{.strong Hemispheres:} {hemis}")
+
+  if (has_sf) {
+    geom_views <- if (inherits(geom, "brain_polygons")) {
+      unique(polygons_unnest(geom)$view)
+    } else {
+      unique(geom$view)
+    }
+    views <- paste0(geom_views, collapse = ", ") # nolint
+    cli::cli_text("{.strong Views:} {views}")
+  }
+
+  invisible()
+}
+
+#' Print the palette and rendering-support block for a ggseg atlas
+#'
+#' Emits palette presence plus ggseg (2D) and ggseg3d (3D) rendering status,
+#' noting which 3D geometry slot is available. Side-effecting; returns
+#' invisibly.
+#' @noRd
+#' @keywords internal
+print_atlas_rendering <- function(x, data, has_sf, has_3d) {
+  has_palette <- !is.null(x$palette) # nolint: object_usage_linter
+
+  check <- function(val) {
+    # nolint: object_usage_linter
+    if (val) {
+      cli::col_green(cli::symbol$tick)
+    } else {
+      cli::col_red(cli::symbol$cross)
+    }
+  }
+
+  cli::cli_text("{.strong Palette:} {check(has_palette)}")
+
+  # nolint start: object_usage_linter
+  render_3d <- if (!is.null(data$centerlines)) {
+    # nolint end
+    "centerlines"
+  } else if (!is.null(data$meshes)) {
+    "meshes"
+  } else if (!is.null(data$vertices)) {
+    "vertices"
+  } else {
+    "none"
+  }
+  ggseg_status <- check(has_sf) # nolint: object_usage_linter
+  ggseg3d_status <- check(has_3d) # nolint: object_usage_linter
+  cli::cli_text("{.strong Rendering:} {ggseg_status} ggseg")
+  cli::cli_text("             {ggseg3d_status} ggseg3d ({render_3d})")
+
+  invisible()
 }

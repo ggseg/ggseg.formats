@@ -282,34 +282,10 @@ atlas_region_op <- function(
   sf_data <- resolved$sf_data
   was_polygon_only <- resolved$was_polygon_only
 
-  label_for <- function(pattern) {
-    if (match_on == "region") {
-      hit <- grepl(pattern, atlas$core$region, ignore.case = TRUE) &
-        !is.na(atlas$core$region)
-      atlas$core$label[hit]
-    } else {
-      unique(grep(pattern, sf_data$label, ignore.case = TRUE, value = TRUE))
-    }
-  }
-  x_labels <- label_for(x)
-  y_labels <- label_for(y)
+  x_labels <- region_op_labels(x, atlas$core, sf_data, match_on)
+  y_labels <- region_op_labels(y, atlas$core, sf_data, match_on)
 
-  op <- list(
-    sf_data = sf_data,
-    geom_col = attr(sf_data, "sf_column"),
-    x_labels = x_labels,
-    y_labels = y_labels,
-    combine = region_op_combine(action),
-    action = action,
-    template = sf_data[sf_data$label %in% x_labels, , drop = FALSE][
-      0,
-      ,
-      drop = FALSE
-    ],
-    into = into
-  )
-  result_rows <- lapply(unique(sf_data$view), region_op_view, op)
-  result <- do.call(rbind, result_rows)
+  result <- region_op_result(sf_data, x_labels, y_labels, action, into)
   if (is.null(result) || nrow(result) == 0) {
     cli::cli_abort("{.arg action} produced no geometry for {.val {into}}.")
   }
@@ -558,29 +534,7 @@ atlas_view_remove_region <- function(
   match_on <- match.arg(match_on)
 
   if (is.null(data_sf(atlas$data))) {
-    if (is.null(data_poly(atlas$data))) {
-      cli::cli_warn("Atlas has no 2D geometry, nothing to remove")
-      return(atlas)
-    }
-    poly_labels <- data_poly(atlas$data)$label
-    if (match_on == "region") {
-      hit <- grepl(pattern, atlas$core$region, ignore.case = TRUE) &
-        !is.na(atlas$core$region)
-      drop_labels <- atlas$core$label[hit]
-    } else {
-      drop_labels <- poly_labels[
-        grepl(pattern, poly_labels, ignore.case = TRUE)
-      ]
-    }
-    new_poly <- polygons_remove_region(
-      data_poly(atlas$data),
-      drop_labels,
-      views = views
-    )
-    if (is.null(new_poly)) {
-      cli::cli_warn("All region geometries removed, 2D geometry will be NULL")
-    }
-    return(atlas_view_gather(set_atlas_polygons(atlas, new_poly)))
+    return(view_remove_region_poly(atlas, pattern, match_on, views))
   }
 
   require_sf("atlas_view_remove_region()")
@@ -689,21 +643,7 @@ atlas_view_gather <- function(atlas, gap = 0.15) {
 #' @export
 atlas_view_reorder <- function(atlas, order, gap = 0.15) {
   if (is.null(data_sf(atlas$data))) {
-    if (is.null(data_poly(atlas$data))) {
-      cli::cli_warn("Atlas has no 2D geometry")
-      return(atlas)
-    }
-    current_views <- unique(polygons_unnest(data_poly(atlas$data))$view)
-    if (!any(order %in% current_views)) {
-      cli::cli_warn("No matching views found in order specification")
-    }
-    new_poly <- reorder_polygons(
-      data_poly(atlas$data),
-      order,
-      type = atlas$type,
-      gap = gap
-    )
-    return(set_atlas_polygons(atlas, new_poly))
+    return(view_reorder_poly(atlas, order, gap))
   }
 
   sf_data <- data_sf(atlas$data)
@@ -721,18 +661,7 @@ atlas_view_reorder <- function(atlas, order, gap = 0.15) {
     return(atlas)
   }
 
-  group_order <- if (atlas$type == "cortical") {
-    hemi <- hemi_from_label(sf_data$label)
-    unlist(lapply(order, function(v) {
-      hemis <- intersect(
-        c("left", "right", ""),
-        unique(hemi[sf_data$view == v])
-      )
-      paste(hemis, v)
-    }))
-  } else {
-    order
-  }
+  group_order <- view_reorder_group_order(sf_data, order, atlas$type)
 
   new_sf <- reposition_views(
     sf_data,
@@ -954,43 +883,10 @@ reposition_views <- function(
   )
 
   view_data <- lapply(groups, function(g) {
-    idx <- group_key == g
-    sf_obj[idx, ]
+    center_view_geometry(sf_obj[group_key == g, ])
   })
 
-  view_data <- lapply(view_data, function(df) {
-    bbox <- sf::st_bbox(df$geometry)
-    center_x <- (bbox["xmin"] + bbox["xmax"]) / 2
-    center_y <- (bbox["ymin"] + bbox["ymax"]) / 2
-    df$geometry <- df$geometry - c(center_x, center_y)
-    df
-  })
-
-  ranges <- lapply(view_data, function(df) {
-    coords <- sf::st_coordinates(df$geometry)
-    list(
-      x_range = range(coords[, 1]),
-      y_range = range(coords[, 2])
-    )
-  })
-
-  widths <- vapply(ranges, function(r) diff(r$x_range), numeric(1))
-  half_widths <- vapply(ranges, function(r) max(abs(r$x_range)), numeric(1))
-  max_height <- max(vapply(ranges, function(r) max(abs(r$y_range)), numeric(1)))
-  gap_size <- max(widths) * gap
-
-  # Running x position of each view's left edge is a prefix sum of preceding
-  # widths plus gaps; offset each view to its packed centre.
-  x_left <- cumsum(c(0, widths + gap_size))[seq_along(view_data)]
-  x_offsets <- x_left + half_widths
-  view_data <- Map(
-    function(view, x_offset) {
-      view$geometry <- view$geometry + c(x_offset, max_height)
-      view
-    },
-    view_data,
-    x_offsets
-  )
+  view_data <- pack_views_horizontally(view_data, gap)
 
   result <- do.call(rbind, view_data)
   sf::st_as_sf(result)
@@ -1086,4 +982,174 @@ hemi_from_label <- function(label, default = "") {
   out[grepl("^lh[_.]", label)] <- "left"
   out[grepl("^rh[_.]", label)] <- "right"
   out
+}
+
+
+#' Resolve an `atlas_region_op()` operand pattern to labels
+#'
+#' Region matches use the core `region` column; label matches grep the sf
+#' labels directly. Extracted from [atlas_region_op()].
+#' @noRd
+#' @keywords internal
+region_op_labels <- function(pattern, core, sf_data, match_on) {
+  if (match_on == "region") {
+    hit <- grepl(pattern, core$region, ignore.case = TRUE) &
+      !is.na(core$region)
+    core$label[hit]
+  } else {
+    unique(grep(pattern, sf_data$label, ignore.case = TRUE, value = TRUE))
+  }
+}
+
+
+#' Build the combined-geometry rows for an `atlas_region_op()`
+#'
+#' Bundles the loop-invariant op inputs and runs `region_op_view()` across
+#' every view, returning the row-bound sf result (or NULL when empty).
+#' Extracted from [atlas_region_op()].
+#' @noRd
+#' @keywords internal
+region_op_result <- function(sf_data, x_labels, y_labels, action, into) {
+  op <- list(
+    sf_data = sf_data,
+    geom_col = attr(sf_data, "sf_column"),
+    x_labels = x_labels,
+    y_labels = y_labels,
+    combine = region_op_combine(action),
+    action = action,
+    template = sf_data[sf_data$label %in% x_labels, , drop = FALSE][
+      0,
+      ,
+      drop = FALSE
+    ],
+    into = into
+  )
+  result_rows <- lapply(unique(sf_data$view), region_op_view, op)
+  do.call(rbind, result_rows)
+}
+
+
+#' Remove region geometry from a polygon-only atlas
+#'
+#' The sf-free branch of [atlas_view_remove_region()]: resolves labels to
+#' drop, removes them from the polygon representation, and re-packs views.
+#' @noRd
+#' @keywords internal
+view_remove_region_poly <- function(atlas, pattern, match_on, views) {
+  if (is.null(data_poly(atlas$data))) {
+    cli::cli_warn("Atlas has no 2D geometry, nothing to remove")
+    return(atlas)
+  }
+  poly_labels <- data_poly(atlas$data)$label
+  if (match_on == "region") {
+    hit <- grepl(pattern, atlas$core$region, ignore.case = TRUE) &
+      !is.na(atlas$core$region)
+    drop_labels <- atlas$core$label[hit]
+  } else {
+    drop_labels <- poly_labels[grepl(pattern, poly_labels, ignore.case = TRUE)]
+  }
+  new_poly <- polygons_remove_region(
+    data_poly(atlas$data),
+    drop_labels,
+    views = views
+  )
+  if (is.null(new_poly)) {
+    cli::cli_warn("All region geometries removed, 2D geometry will be NULL")
+  }
+  atlas_view_gather(set_atlas_polygons(atlas, new_poly))
+}
+
+
+#' Reorder views on a polygon-only atlas
+#'
+#' The sf-free branch of [atlas_view_reorder()]: warns when no requested view
+#' matches, then reorders and re-packs the polygon representation.
+#' @noRd
+#' @keywords internal
+view_reorder_poly <- function(atlas, order, gap) {
+  if (is.null(data_poly(atlas$data))) {
+    cli::cli_warn("Atlas has no 2D geometry")
+    return(atlas)
+  }
+  current_views <- unique(polygons_unnest(data_poly(atlas$data))$view)
+  if (!any(order %in% current_views)) {
+    cli::cli_warn("No matching views found in order specification")
+  }
+  new_poly <- reorder_polygons(
+    data_poly(atlas$data),
+    order,
+    type = atlas$type,
+    gap = gap
+  )
+  set_atlas_polygons(atlas, new_poly)
+}
+
+
+#' Expand a requested view order into reposition group keys
+#'
+#' For cortical atlases the packed groups are hemi+view, so each requested
+#' view expands into its present hemispheres in left/right order. Other types
+#' use the view order as-is. Extracted from [atlas_view_reorder()].
+#' @noRd
+#' @keywords internal
+view_reorder_group_order <- function(sf_data, order, type) {
+  if (type != "cortical") {
+    return(order)
+  }
+  hemi <- hemi_from_label(sf_data$label)
+  unlist(lapply(order, function(v) {
+    hemis <- intersect(
+      c("left", "right", ""),
+      unique(hemi[sf_data$view == v])
+    )
+    paste(hemis, v)
+  }))
+}
+
+
+#' Centre a single view's geometry on the origin
+#'
+#' Shifts a view's sf rows so their bounding-box centre sits at `(0, 0)`,
+#' the per-group step of `reposition_views()`.
+#' @noRd
+#' @keywords internal
+center_view_geometry <- function(df) {
+  bbox <- sf::st_bbox(df$geometry)
+  center_x <- (bbox["xmin"] + bbox["xmax"]) / 2
+  center_y <- (bbox["ymin"] + bbox["ymax"]) / 2
+  df$geometry <- df$geometry - c(center_x, center_y)
+  df
+}
+
+
+#' Pack origin-centred views left-to-right with a proportional gap
+#'
+#' Takes the centred per-view sf data from `reposition_views()` and offsets
+#' each so the views sit side by side, top-aligned, separated by `gap` times
+#' the widest view's width.
+#' @noRd
+#' @keywords internal
+pack_views_horizontally <- function(view_data, gap) {
+  ranges <- lapply(view_data, function(df) {
+    coords <- sf::st_coordinates(df$geometry)
+    list(x_range = range(coords[, 1]), y_range = range(coords[, 2]))
+  })
+
+  widths <- vapply(ranges, function(r) diff(r$x_range), numeric(1))
+  half_widths <- vapply(ranges, function(r) max(abs(r$x_range)), numeric(1))
+  max_height <- max(vapply(ranges, function(r) max(abs(r$y_range)), numeric(1)))
+  gap_size <- max(widths) * gap
+
+  # Running x position of each view's left edge is a prefix sum of preceding
+  # widths plus gaps; offset each view to its packed centre.
+  x_left <- cumsum(c(0, widths + gap_size))[seq_along(view_data)]
+  x_offsets <- x_left + half_widths
+  Map(
+    function(view, x_offset) {
+      view$geometry <- view$geometry + c(x_offset, max_height)
+      view
+    },
+    view_data,
+    x_offsets
+  )
 }
