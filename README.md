@@ -7,7 +7,7 @@
 
 [![R-CMD-check](https://github.com/ggsegverse/ggseg.formats/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ggsegverse/ggseg.formats/actions/workflows/R-CMD-check.yaml)
 [![code-quality](https://github.com/ggsegverse/ggseg.formats/actions/workflows/code-quality.yaml/badge.svg)](https://github.com/ggsegverse/ggseg.formats/actions/workflows/code-quality.yaml)
-[![test-coverage](https://github.com/ggsegverse/ggseg.formats/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/ggsegverse/ggseg.formats/actions/workflows/test-coverage.yaml)
+[![coverage](https://raw.githubusercontent.com/ggsegverse/ggseg.formats/coverage/badges/coverage.svg)](https://github.com/ggsegverse/ggseg.formats/actions/workflows/test-coverage.yaml)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/ggseg.formats)](https://CRAN.R-project.org/package=ggseg.formats)
 [![Lifecycle:
