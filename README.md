@@ -12,7 +12,6 @@
 status](https://www.r-pkg.org/badges/version/ggseg.formats)](https://CRAN.R-project.org/package=ggseg.formats)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![pkgcheck](https://github.com/ggsegverse/ggseg.formats/workflows/pkgcheck/badge.svg)](https://github.com/ggsegverse/ggseg.formats/actions?query=workflow%3Apkgcheck)
 <!-- badges: end -->
 
 ggseg.formats provides the `ggseg_atlas` S3 class that powers the
