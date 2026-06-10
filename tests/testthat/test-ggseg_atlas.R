@@ -469,17 +469,17 @@ describe("plot.ggseg_atlas", {
 describe("print.ggseg_atlas rendering branches", {
   it("prints a tract atlas (centerlines)", {
     out <- capture.output(print(tracula()), type = "message")
-    expect_true(any(grepl("centerlines", out)))
+    expect_true(any(grepl("centerlines", out, fixed = TRUE)))
   })
 
   it("prints a subcortical atlas (meshes)", {
     out <- capture.output(print(aseg()), type = "message")
-    expect_true(any(grepl("meshes", out)))
+    expect_true(any(grepl("meshes", out, fixed = TRUE)))
   })
 
   it("prints a cortical atlas (vertices)", {
     out <- capture.output(print(dk()), type = "message")
-    expect_true(any(grepl("vertices", out)))
+    expect_true(any(grepl("vertices", out, fixed = TRUE)))
   })
 
   it("prints an atlas with no 3D geometry as none", {
@@ -500,13 +500,13 @@ describe("print.ggseg_atlas rendering branches", {
       data = ggseg_data_cerebellar(geom = sf_geom)
     )
     out <- capture.output(print(atlas), type = "message")
-    expect_true(any(grepl("none", out)))
+    expect_true(any(grepl("none", out, fixed = TRUE)))
   })
 
   it("prints a polygon atlas summary with views", {
     poly_atlas <- as_polygon_atlas(dk())
     out <- capture.output(print(poly_atlas), type = "message")
-    expect_true(any(grepl("Views", out)))
+    expect_true(any(grepl("Views", out, fixed = TRUE)))
   })
 })
 
@@ -576,7 +576,7 @@ describe("as.data.frame.ggseg_atlas edge cases", {
   it("maps palette colours to result", {
     df <- as.data.frame(dk())
     expect_true("colour" %in% names(df))
-    expect_true(!all(is.na(df$colour)))
+    expect_false(all(is.na(df$colour)))
   })
 
   it("handles sf with hemi column via core merge", {

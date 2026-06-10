@@ -260,7 +260,8 @@ validate_3d_data_labels <- function(data, core_labels) {
 #' Validate 2D (sf/polygon) label coverage against core
 #'
 #' Aborts when coverage is below 80 percent and warns below 90 percent.
-#' Coverage is relaxed because 2D projections cannot always capture every region.
+#' Coverage is relaxed because 2D projections cannot always capture every
+#' region.
 #' @keywords internal
 #' @noRd
 validate_sf_coverage <- function(data, core_labels, n_core) {

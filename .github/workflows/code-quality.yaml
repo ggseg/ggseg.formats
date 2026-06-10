@@ -61,27 +61,25 @@ jobs:
       - name: Check Good Practice
         id: gp
         run: |
-          checks <- c(
-            setdiff(
-              goodpractice::all_checks(),
-              c(
-                'no_import_package_as_a_whole',
-                'examples_dontrun',
-                'examples_all_nonrunnable'
-              )
-            ),
-            goodpractice::tidyverse_checks()
+          # All goodpractice + tidyverse checks gate this job. Only
+          # strings_as_factors_linter is excluded: the package Depends on
+          # R (>= 4.1.0), where stringsAsFactors already defaults to FALSE,
+          # so its pre-4.0 concern does not apply.
+          checks <- setdiff(
+            union(goodpractice::all_checks(), goodpractice::tidyverse_checks()),
+            "lintr_strings_as_factors_linter"
           )
 
           gp_result <- goodpractice::gp(checks = checks)
 
           writeLines(capture.output(print(gp_result)), "gp-results.txt")
-          all_passed <- length(goodpractice::failed_checks(gp_result)) == 0
-          if (!all_passed) {
-            cat("status=failure\n", file = Sys.getenv("GITHUB_OUTPUT"), append = TRUE)
-          } else {
-            cat("status=success\n", file = Sys.getenv("GITHUB_OUTPUT"), append = TRUE)
-          }
+          failed <- goodpractice::failed_checks(gp_result)
+          status <- if (length(failed) == 0) "success" else "failure"
+          cat(
+            sprintf("status=%s\n", status),
+            file = Sys.getenv("GITHUB_OUTPUT"),
+            append = TRUE
+          )
         shell: Rscript {0}
 
       - name: Comment on PR
@@ -109,3 +107,10 @@ jobs:
               repo: context.repo.repo,
               body: body
             });
+
+      - name: Enforce good practice
+        if: steps.gp.outputs.status == 'failure'
+        run: |
+          echo "::error::goodpractice checks failed — see gp-results above."
+          cat gp-results.txt
+          exit 1

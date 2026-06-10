@@ -79,7 +79,7 @@ describe("polygons_remove_small()", {
     )
     kept <- polygons_unnest(res$polygons)
     expect_false(any(kept$view == view))
-    expect_true(res$n_removed > 0L)
+    expect_gt(res$n_removed, 0L)
   })
 
   it("removes scoped small geometry via atlas_view_remove_small()", {
