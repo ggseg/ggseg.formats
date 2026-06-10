@@ -1,5 +1,13 @@
 # ggseg.formats
 
+## ggseg.formats 0.0.2.9003 (development)
+
+### Internal & tooling
+
+- The package now passes the full `goodpractice` + tidyverse check suite as a
+  CI hard gate, at 100% line coverage. Formatting is enforced with `air` and
+  linting with `lintr`.
+
 ## ggseg.formats 0.0.2.9001 (development)
 
 ### Base-R `plot()` (breaking)
