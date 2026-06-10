@@ -156,7 +156,7 @@ print.ggseg_atlas <- function(x, n = 10, ...) {
     !is.null(data$meshes) ||
     !is.null(data$centerlines)
 
-  print_atlas_summary(x, geom, has_sf)
+  print_atlas_summary(x, has_sf)
   print_atlas_rendering(x, data, has_sf, has_3d)
 
   cli::cli_rule()
@@ -373,7 +373,7 @@ resolve_fill_colors <- function(labels, palette = NULL) {
 
   if (!is.null(palette)) {
     vals <- palette[labels]
-    matched <- labels %in% names(palette) & !is.na(vals)
+    matched <- !is.na(vals)
     return(stats::setNames(ifelse(matched, vals, "#CCCCCC"), labels))
   }
 
@@ -548,7 +548,7 @@ validate_ggseg_atlas_inputs <- function(atlas, core, data, type) {
 #' present) the available views. Side-effecting; returns invisibly.
 #' @noRd
 #' @keywords internal
-print_atlas_summary <- function(x, geom, has_sf) {
+print_atlas_summary <- function(x, has_sf) {
   n_regions <- length(stats::na.omit(unique(x$core$region))) # nolint
   hemis <- paste0(unique(x$core$hemi), collapse = ", ") # nolint
 
@@ -559,12 +559,7 @@ print_atlas_summary <- function(x, geom, has_sf) {
   cli::cli_text("{.strong Hemispheres:} {hemis}")
 
   if (has_sf) {
-    geom_views <- if (inherits(geom, "brain_polygons")) {
-      unique(polygons_unnest(geom)$view)
-    } else {
-      unique(geom$view)
-    }
-    views <- paste0(geom_views, collapse = ", ") # nolint
+    views <- paste0(atlas_views(x), collapse = ", ") # nolint
     cli::cli_text("{.strong Views:} {views}")
   }
 

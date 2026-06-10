@@ -728,14 +728,7 @@ order_context_behind <- function(geom, core_labels) {
     return(geom)
   }
   is_core <- geom$label %in% core_labels
-  out <- geom[c(which(!is_core), which(is_core)), , drop = FALSE]
-  # nocov start: `[` preserves the brain_polygons class for both tbl- and
-  # data.frame-backed geometry, so this restore guards a case R cannot produce.
-  if (inherits(geom, "brain_polygons") && !inherits(out, "brain_polygons")) {
-    out <- structure(out, class = class(geom))
-  }
-  # nocov end
-  out
+  geom[c(which(!is_core), which(is_core)), , drop = FALSE]
 }
 
 
@@ -1099,7 +1092,7 @@ view_reorder_poly <- function(atlas, order, gap) {
 #' @noRd
 #' @keywords internal
 view_reorder_group_order <- function(sf_data, order, type) {
-  if (type != "cortical") {
+  if (!identical(type, "cortical")) {
     return(order)
   }
   hemi <- hemi_from_label(sf_data$label)

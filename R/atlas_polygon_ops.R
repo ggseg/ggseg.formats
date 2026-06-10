@@ -262,15 +262,7 @@ reorder_polygons <- function(polygons, order, type = NULL, gap = 0.15) {
   order <- c(order, setdiff(current_views, order))
   order <- order[order %in% current_views]
 
-  if (identical(type, "cortical")) {
-    hemi <- hemi_from_label(flat$label)
-    group_order <- unlist(lapply(order, function(v) {
-      hemis <- intersect(c("left", "right", ""), unique(hemi[flat$view == v]))
-      paste(hemis, v)
-    }))
-  } else {
-    group_order <- order
-  }
+  group_order <- view_reorder_group_order(flat, order, type)
 
   polygons_renest(reposition_flat(
     flat,
