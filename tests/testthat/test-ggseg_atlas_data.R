@@ -307,6 +307,22 @@ describe("print methods", {
     expect_no_error(capture.output(print(data)))
   })
 
+  it("summarises brain_polygons geometry in the 2D view listing", {
+    sf_geom <- sf::st_sf(
+      label = "lh_frontal",
+      view = "lateral",
+      geometry = sf::st_sfc(make_polygon())
+    )
+    polygons <- sf_to_polygons(sf_geom)
+    expect_s3_class(polygons, "brain_polygons")
+
+    data <- ggseg_data_cortical(geom = polygons)
+    expect_s3_class(geom_from_data(data), "brain_polygons")
+    expect_match(summarise_2d(data), "polygons")
+    expect_match(summarise_2d(data), "lateral")
+    expect_no_error(capture.output(print(data)))
+  })
+
   it("prints ggseg_data_subcortical without sf", {
     meshes <- data.frame(label = "hippocampus")
     meshes$mesh <- list(list(

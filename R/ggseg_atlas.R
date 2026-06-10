@@ -292,14 +292,11 @@ as_sf_for_data_frame <- function(x) {
     sf::st_as_sf(
       if (inherits(geom, "brain_polygons")) polygons_to_sf(geom) else geom
     )
-  } else if (inherits(x$data, "sf") || inherits(x$data, "data.frame")) {
-    sf::st_as_sf(x$data)
   } else {
-    NULL
+    sf::st_as_sf(x$data)
   }
 
-  n <- if (!is.null(sf_data)) nrow(sf_data) else 0
-  if (is.null(n) || n == 0) {
+  if (nrow(sf_data) == 0) {
     cli::cli_abort("Cannot convert ggseg_atlas to data.frame: no 2D geometry.")
   }
   sf_data

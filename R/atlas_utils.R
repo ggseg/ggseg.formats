@@ -630,9 +630,12 @@ atlas_view_gather <- function(atlas, gap = 0.15) {
   }
 
   new_sf <- reposition_views(sf_data, type = atlas$type, gap = gap)
+  # nocov start: reposition_views always returns sf for non-empty sf input;
+  # this guards a broken contract and cannot be reached in normal use.
   if (is.null(new_sf) || !inherits(new_sf, "sf")) {
     return(atlas)
   }
+  # nocov end
   new_data <- rebuild_atlas_data(atlas, new_sf)
   rebuild_atlas(atlas, new_data)
 }
@@ -726,9 +729,12 @@ order_context_behind <- function(geom, core_labels) {
   }
   is_core <- geom$label %in% core_labels
   out <- geom[c(which(!is_core), which(is_core)), , drop = FALSE]
+  # nocov start: `[` preserves the brain_polygons class for both tbl- and
+  # data.frame-backed geometry, so this restore guards a case R cannot produce.
   if (inherits(geom, "brain_polygons") && !inherits(out, "brain_polygons")) {
     out <- structure(out, class = class(geom))
   }
+  # nocov end
   out
 }
 

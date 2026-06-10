@@ -362,6 +362,177 @@ describe("as.data.frame.ggseg_atlas", {
 })
 
 
+describe("as.list.ggseg_atlas", {
+  it("returns the five atlas components", {
+    out <- as.list(dk())
+    expect_type(out, "list")
+    expect_identical(
+      sort(names(out)),
+      sort(c("atlas", "type", "palette", "core", "data"))
+    )
+    expect_identical(out$atlas, dk()$atlas)
+    expect_identical(out$type, "cortical")
+  })
+})
+
+
+describe("plot.ggseg_atlas", {
+  it("plots a cortical sf atlas without error", {
+    pdf(NULL)
+    on.exit(dev.off(), add = TRUE)
+    expect_no_error(plot(dk()))
+  })
+
+  it("plots a subcortical atlas without error", {
+    pdf(NULL)
+    on.exit(dev.off(), add = TRUE)
+    expect_no_error(plot(aseg()))
+  })
+
+  it("plots a tract atlas without error", {
+    pdf(NULL)
+    on.exit(dev.off(), add = TRUE)
+    expect_no_error(plot(tracula()))
+  })
+
+  it("plots a cerebellar atlas without error", {
+    pdf(NULL)
+    on.exit(dev.off(), add = TRUE)
+    expect_no_error(plot(suit()))
+  })
+
+  it("draws polygons with holes via polypath", {
+    theta <- seq(0, 2 * pi, length.out = 60)
+    outer <- cbind(10 * cos(theta), 10 * sin(theta))
+    outer[60, ] <- outer[1, ]
+    inner <- cbind(3 * cos(rev(theta)), 3 * sin(rev(theta)))
+    inner[60, ] <- inner[1, ]
+    donut <- sf::st_polygon(list(outer, inner))
+    sf_geom <- sf::st_sf(
+      label = "lh_frontal",
+      view = "lateral",
+      geometry = sf::st_sfc(donut)
+    )
+    core <- data.frame(
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal"
+    )
+    atlas <- ggseg_atlas(
+      atlas = "test",
+      type = "cortical",
+      core = core,
+      data = ggseg_data_cortical(
+        geom = sf_geom,
+        vertices = data.frame(label = "lh_frontal", vertices = I(list(1L:3L)))
+      )
+    )
+    pdf(NULL)
+    on.exit(dev.off(), add = TRUE)
+    expect_no_error(plot(atlas))
+  })
+
+  it("forwards styling overrides through dots", {
+    pdf(NULL)
+    on.exit(dev.off(), add = TRUE)
+    expect_no_error(plot(dk(), border = "black", lwd = 1))
+  })
+
+  it("plots an atlas with no palette using generated colours", {
+    sf_geom <- sf::st_sf(
+      label = c("lh_frontal", "rh_parietal"),
+      view = c("lateral", "lateral"),
+      geometry = sf::st_sfc(
+        make_poly(c(0, 0, 1, 0, 1, 1, 0, 0)),
+        make_poly(c(5, 0, 6, 0, 6, 1, 5, 0))
+      )
+    )
+    core <- data.frame(
+      hemi = c("left", "right"),
+      region = c("frontal", "parietal"),
+      label = c("lh_frontal", "rh_parietal")
+    )
+    atlas <- ggseg_atlas(
+      atlas = "test",
+      type = "subcortical",
+      core = core,
+      data = ggseg_data_subcortical(geom = sf_geom)
+    )
+    expect_null(atlas$palette)
+    pdf(NULL)
+    on.exit(dev.off(), add = TRUE)
+    expect_no_error(plot(atlas))
+  })
+})
+
+
+describe("print.ggseg_atlas rendering branches", {
+  it("prints a tract atlas (centerlines)", {
+    out <- capture.output(print(tracula()), type = "message")
+    expect_true(any(grepl("centerlines", out)))
+  })
+
+  it("prints a subcortical atlas (meshes)", {
+    out <- capture.output(print(aseg()), type = "message")
+    expect_true(any(grepl("meshes", out)))
+  })
+
+  it("prints a cortical atlas (vertices)", {
+    out <- capture.output(print(dk()), type = "message")
+    expect_true(any(grepl("vertices", out)))
+  })
+
+  it("prints an atlas with no 3D geometry as none", {
+    sf_geom <- sf::st_sf(
+      label = "lh_frontal",
+      view = "lateral",
+      geometry = sf::st_sfc(make_poly(c(0, 0, 1, 0, 1, 1, 0, 0)))
+    )
+    core <- data.frame(
+      hemi = "left",
+      region = "frontal",
+      label = "lh_frontal"
+    )
+    atlas <- ggseg_atlas(
+      atlas = "test",
+      type = "cerebellar",
+      core = core,
+      data = ggseg_data_cerebellar(geom = sf_geom)
+    )
+    out <- capture.output(print(atlas), type = "message")
+    expect_true(any(grepl("none", out)))
+  })
+
+  it("prints a polygon atlas summary with views", {
+    poly_atlas <- as_polygon_atlas(dk())
+    out <- capture.output(print(poly_atlas), type = "message")
+    expect_true(any(grepl("Views", out)))
+  })
+})
+
+
+describe("as_sf_for_data_frame empty geometry", {
+  it("errors when raw sf data has zero rows", {
+    empty_sf <- sf::st_sf(
+      label = character(0),
+      view = character(0),
+      geometry = sf::st_sfc()
+    )
+    atlas <- structure(
+      list(
+        atlas = "test",
+        type = "subcortical",
+        palette = NULL,
+        core = NULL,
+        data = empty_sf
+      ),
+      class = c("subcortical_atlas", "ggseg_atlas", "list")
+    )
+    expect_error(as.data.frame(atlas), "no 2D geometry")
+  })
+})
+
+
 describe("is_ggseg3d_atlas", {
   it("returns TRUE for data.frame with ggseg_3d column", {
     x <- data.frame(ggseg_3d = 1)

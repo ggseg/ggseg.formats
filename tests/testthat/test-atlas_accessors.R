@@ -28,6 +28,39 @@ describe("atlas_palette", {
   })
 })
 
+describe("atlas_geom", {
+  it("errors for non-ggseg_atlas input", {
+    expect_error(atlas_geom(list()), "must be a")
+  })
+})
+
+describe("atlas_geometry_type", {
+  it("returns 'sf' for an sf atlas", {
+    expect_identical(atlas_geometry_type(dk()), "sf")
+  })
+
+  it("errors when the atlas has no recognised 2D geometry", {
+    core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
+    vertices <- data.frame(label = "lh_frontal")
+    vertices$vertices <- list(1L:3L)
+
+    atlas <- ggseg_atlas(
+      atlas = "a",
+      type = "cortical",
+      core = core,
+      data = ggseg_data_cortical(vertices = vertices)
+    )
+
+    expect_error(atlas_geometry_type(atlas), "no recognised 2D geometry")
+  })
+})
+
+describe("atlas_polygons", {
+  it("errors for non-ggseg_atlas input", {
+    expect_error(atlas_polygons(list()), "must be a")
+  })
+})
+
 describe("atlas_sf", {
   it("returns sf data from atlas", {
     sf_data <- atlas_sf(dk())

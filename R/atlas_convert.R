@@ -268,7 +268,7 @@ extract_2d_data <- function(atlas_2d) {
     )
   } else {
     cli::cli_inform(
-      "i" = "Created atlas from 2D only; 3D rendering needs vertex data."
+      c("i" = "Created atlas from 2D only; 3D rendering needs vertex data.")
     )
   }
   list(core = NULL, palette = NULL, vertices = vertices, meshes = NULL)

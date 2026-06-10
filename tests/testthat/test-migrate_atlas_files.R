@@ -45,4 +45,40 @@ describe("migrate_atlas_files()", {
 
     expect_identical(migrate_atlas_files(dir, quiet = TRUE), character())
   })
+
+  it("reports migrated files when quiet = FALSE", {
+    dir <- withr::local_tempdir()
+    atlas <- dk()
+    save(atlas, file = file.path(dir, "atlas.rda"))
+
+    expect_message(migrate_atlas_files(dir, quiet = FALSE), "Migrated")
+  })
+
+  it("reports skipped files when quiet = FALSE", {
+    dir <- withr::local_tempdir()
+    x <- 1:3
+    save(x, file = file.path(dir, "notatlas.rda"))
+
+    expect_message(
+      migrate_atlas_files(dir, quiet = FALSE),
+      "nothing to migrate"
+    )
+  })
+})
+
+describe("migrate_atlas_object()", {
+  it("returns NULL for an atlas without 2D geometry", {
+    core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
+    vertices <- data.frame(label = "lh_frontal")
+    vertices$vertices <- list(1L:3L)
+
+    atlas <- ggseg_atlas(
+      atlas = "a",
+      type = "cortical",
+      core = core,
+      data = ggseg_data_cortical(vertices = vertices)
+    )
+
+    expect_null(migrate_atlas_object(atlas, keep_sf = FALSE))
+  })
 })

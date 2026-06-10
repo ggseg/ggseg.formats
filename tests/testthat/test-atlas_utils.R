@@ -1659,3 +1659,439 @@ describe("atlas_region_remove with no sf data", {
     expect_identical(nrow(result$core), 1L)
   })
 })
+
+
+# coverage backfill for atlas_utils.R ----
+
+describe("atlas_region_op edge cases", {
+  make_sq <- function(x, y, s = 2) {
+    sf::st_polygon(list(matrix(
+      c(x, y, x + s, y, x + s, y + s, x, y + s, x, y),
+      ncol = 2,
+      byrow = TRUE
+    )))
+  }
+
+  make_simple_op_atlas <- function() {
+    sf_geom <- sf::st_sf(
+      label = c("cortex", "wm"),
+      view = c("v1", "v1"),
+      geometry = sf::st_sfc(make_sq(0, 0, 10), make_sq(3, 3, 4))
+    )
+    core <- data.frame(
+      hemi = c(NA, NA),
+      region = c("cortex", "wm"),
+      label = c("cortex", "wm")
+    )
+    ggseg_atlas(
+      atlas = "op",
+      type = "subcortical",
+      palette = c(cortex = "#aaaaaa", wm = "#bbbbbb"),
+      core = core,
+      data = ggseg_data_subcortical(geom = sf_geom, meshes = NULL)
+    )
+  }
+
+  it("errors when into is not a single label", {
+    expect_error(
+      atlas_region_op(
+        make_simple_op_atlas(),
+        "cortex",
+        "wm",
+        action = "union",
+        into = c("a", "b")
+      ),
+      "must be a single label",
+      fixed = TRUE
+    )
+  })
+
+  it("errors when the op produces no geometry", {
+    expect_error(
+      atlas_region_op(
+        make_simple_op_atlas(),
+        "cortex",
+        "cortex",
+        action = "difference",
+        into = "empty"
+      ),
+      "produced no geometry",
+      fixed = TRUE
+    )
+  })
+
+  it("computes a symmetric difference", {
+    r <- atlas_region_op(
+      make_simple_op_atlas(),
+      "cortex",
+      "wm",
+      action = "symdifference",
+      into = "sd"
+    )
+    expect_true("sd" %in% r$data$geom$label)
+  })
+
+  it("matches operands on the region column", {
+    r <- atlas_region_op(
+      make_simple_op_atlas(),
+      "cortex",
+      "wm",
+      action = "union",
+      into = "u",
+      match_on = "region"
+    )
+    expect_true("u" %in% r$data$geom$label)
+  })
+
+  it("errors when an atlas has no 2D geometry to operate on", {
+    atlas <- make_simple_op_atlas()
+    atlas$data$geom <- NULL
+    expect_error(
+      atlas_region_op(atlas, "cortex", "wm", action = "union", into = "u"),
+      "no 2D geometry",
+      fixed = TRUE
+    )
+  })
+
+  it("skips views with no x geometry but keeps views with both", {
+    sf_geom <- sf::st_sf(
+      label = c("a", "b", "b"),
+      view = c("v1", "v1", "v2"),
+      geometry = sf::st_sfc(make_sq(0, 0), make_sq(1, 1), make_sq(0, 0))
+    )
+    core <- data.frame(
+      hemi = c(NA, NA),
+      region = c("a", "b"),
+      label = c("a", "b")
+    )
+    atlas <- ggseg_atlas(
+      atlas = "op",
+      type = "subcortical",
+      palette = c(a = "#aaaaaa", b = "#bbbbbb"),
+      core = core,
+      data = ggseg_data_subcortical(geom = sf_geom, meshes = NULL)
+    )
+    r <- atlas_region_op(atlas, "a", "b", action = "union", into = "u")
+    expect_identical(unique(r$data$geom$view[r$data$geom$label == "u"]), "v1")
+  })
+
+  it("intersects per view, dropping views with only x", {
+    sf_geom <- sf::st_sf(
+      label = c("a", "b", "a"),
+      view = c("v1", "v1", "v2"),
+      geometry = sf::st_sfc(make_sq(0, 0), make_sq(1, 1), make_sq(0, 0))
+    )
+    core <- data.frame(
+      hemi = c(NA, NA),
+      region = c("a", "b"),
+      label = c("a", "b")
+    )
+    atlas <- ggseg_atlas(
+      atlas = "op",
+      type = "subcortical",
+      palette = c(a = "#aaaaaa", b = "#bbbbbb"),
+      core = core,
+      data = ggseg_data_subcortical(geom = sf_geom, meshes = NULL)
+    )
+    r <- atlas_region_op(atlas, "a", "b", action = "intersection", into = "ix")
+    expect_identical(unique(r$data$geom$view[r$data$geom$label == "ix"]), "v1")
+  })
+})
+
+
+describe("atlas_context_remove edge cases", {
+  make_sq <- function(x, y, s = 2) {
+    sf::st_polygon(list(matrix(
+      c(x, y, x + s, y, x + s, y + s, x, y + s, x, y),
+      ncol = 2,
+      byrow = TRUE
+    )))
+  }
+
+  it("returns the atlas unchanged when there is no 2D geometry", {
+    core <- data.frame(hemi = NA, region = "a", label = "a")
+    vertices <- data.frame(label = "a")
+    vertices$vertices <- list(1L:3L)
+    atlas <- ggseg_atlas(
+      atlas = "t",
+      type = "cortical",
+      palette = c(a = "#aaaaaa"),
+      core = core,
+      data = ggseg_data_cortical(vertices = vertices)
+    )
+    expect_identical(atlas_context_remove(atlas), atlas)
+  })
+
+  it("drops contextual sf rows whose label is not in core", {
+    sf_geom <- sf::st_sf(
+      label = c("a", "b", "ctx"),
+      view = c("v1", "v1", "v1"),
+      geometry = sf::st_sfc(make_sq(0, 0), make_sq(3, 3), make_sq(6, 6))
+    )
+    core <- data.frame(
+      hemi = c(NA, NA, NA),
+      region = c("a", "b", "c"),
+      label = c("a", "b", "ctx")
+    )
+    atlas <- ggseg_atlas(
+      atlas = "t",
+      type = "subcortical",
+      palette = c(a = "#aaaaaa", b = "#bbbbbb", ctx = "#cccccc"),
+      core = core,
+      data = ggseg_data_subcortical(geom = sf_geom, meshes = NULL)
+    )
+    contextual <- atlas_region_contextual(atlas, "c")
+    expect_true("ctx" %in% contextual$data$geom$label)
+    expect_false("ctx" %in% contextual$core$label)
+
+    result <- atlas_context_remove(contextual)
+    expect_false("ctx" %in% result$data$geom$label)
+    expect_setequal(unique(result$data$geom$label), result$core$label)
+  })
+})
+
+
+describe("atlas_views on a polygon atlas", {
+  it("returns view names from polygon geometry", {
+    poly <- as_polygon_atlas(dk())
+    expect_setequal(atlas_views(poly), atlas_views(dk()))
+  })
+})
+
+
+describe("polygon-only view removal and keeping", {
+  it("removes views and warns when all views removed", {
+    poly <- as_polygon_atlas(dk())
+    result <- atlas_view_remove(poly, "lateral")
+    expect_null(result$data$sf)
+    expect_false("lateral" %in% atlas_views(result))
+    expect_true("medial" %in% atlas_views(result))
+
+    expect_warning(
+      expect_warning(
+        atlas_view_remove(poly, ".*"),
+        "All views removed",
+        fixed = TRUE
+      ),
+      "no 2D geometry",
+      fixed = TRUE
+    )
+  })
+
+  it("warns when no views match on keep", {
+    poly <- as_polygon_atlas(dk())
+    expect_warning(
+      atlas_view_keep(poly, "zzz_nope"),
+      "No views matched",
+      fixed = TRUE
+    )
+  })
+})
+
+
+describe("atlas_region_contextual on a polygon atlas", {
+  it("keeps brain_polygons geometry and reorders context behind core", {
+    poly <- as_polygon_atlas(dk())
+    region <- unique(dk()$core$region)[1]
+    result <- atlas_region_contextual(poly, region)
+    expect_null(result$data$sf)
+    expect_s3_class(result$data$geom, "brain_polygons")
+    expect_false(region %in% result$core$region)
+  })
+})
+
+
+describe("atlas_view_gather sf early returns", {
+  make_sq <- function(x, y, s = 2) {
+    sf::st_polygon(list(matrix(
+      c(x, y, x + s, y, x + s, y + s, x, y + s, x, y),
+      ncol = 2,
+      byrow = TRUE
+    )))
+  }
+
+  it("returns the atlas unchanged when sf data has zero rows", {
+    sf_geom <- sf::st_sf(
+      label = "a",
+      view = "v1",
+      geometry = sf::st_sfc(make_sq(0, 0))
+    )
+    core <- data.frame(hemi = NA, region = "a", label = "a")
+    atlas <- ggseg_atlas(
+      atlas = "x",
+      type = "subcortical",
+      palette = c(a = "#aaaaaa"),
+      core = core,
+      data = ggseg_data_subcortical(geom = sf_geom, meshes = NULL)
+    )
+    atlas$data$geom <- atlas$data$geom[0, , drop = FALSE]
+    expect_identical(atlas_view_gather(atlas), atlas)
+  })
+
+  it("casts a mixed-geometry sfc to multipolygon before packing", {
+    geom <- sf::st_sfc(
+      make_sq(0, 0),
+      sf::st_multipolygon(list(list(matrix(
+        c(2, 2, 3, 2, 3, 3, 2, 2),
+        ncol = 2,
+        byrow = TRUE
+      ))))
+    )
+    expect_s3_class(geom, "sfc_GEOMETRY")
+    sf_geom <- sf::st_sf(
+      label = c("a", "b"),
+      view = c("v1", "v2"),
+      geometry = geom
+    )
+    core <- data.frame(
+      hemi = c(NA, NA),
+      region = c("a", "b"),
+      label = c("a", "b")
+    )
+    atlas <- ggseg_atlas(
+      atlas = "x",
+      type = "subcortical",
+      palette = c(a = "#aaaaaa", b = "#bbbbbb"),
+      core = core,
+      data = ggseg_data_subcortical(geom = sf_geom, meshes = NULL)
+    )
+    result <- atlas_view_gather(atlas)
+    expect_s3_class(result$data$geom, "sf")
+  })
+})
+
+
+describe("reposition_views early returns", {
+  it("returns the input when it is neither sf nor data.frame", {
+    expect_identical(reposition_views(1L:5L), 1L:5L)
+  })
+
+  it("returns the input when it has zero rows", {
+    empty <- data.frame(label = character(0), view = character(0))
+    expect_identical(reposition_views(empty), empty)
+  })
+})
+
+
+describe("rebuild_data_with_geom on a cerebellar atlas", {
+  it("preserves vertices and meshes after region removal", {
+    result <- atlas_region_remove(suit(), "I_IV")
+    expect_s3_class(result$data, "ggseg_data_cerebellar")
+    expect_false("I_IV" %in% result$core$region)
+    expect_false(is.null(result$data$vertices))
+    expect_false(is.null(result$data$meshes))
+  })
+})
+
+
+describe("view_remove_region_poly removing all geometry", {
+  it("warns when all region geometries are removed", {
+    poly <- as_polygon_atlas(dk())
+    expect_warning(
+      expect_warning(
+        atlas_view_remove_region(poly, ".*", match_on = "label"),
+        "All region geometries removed",
+        fixed = TRUE
+      ),
+      "no 2D geometry",
+      fixed = TRUE
+    )
+  })
+})
+
+
+describe("view_reorder_poly with no matching views", {
+  it("warns and still returns a polygon atlas", {
+    poly <- as_polygon_atlas(dk())
+    expect_warning(
+      result <- atlas_view_reorder(poly, "zzz_nope"),
+      "No matching views",
+      fixed = TRUE
+    )
+    expect_null(result$data$sf)
+  })
+})
+
+
+describe("view_reorder_group_order across atlas types", {
+  it("returns the order unchanged for a non-cortical sf atlas", {
+    views <- atlas_views(aseg())
+    result <- atlas_view_reorder(aseg(), views[2])
+    expect_s3_class(result$data, "ggseg_data_subcortical")
+    expect_identical(unique(result$data$geom$view)[1], views[2])
+  })
+
+  it("expands a partial order into hemi groups for a cortical atlas", {
+    result <- atlas_view_reorder(dk(), "lateral")
+    expect_identical(unique(result$data$geom$view)[1], "lateral")
+  })
+})
+
+describe("order_context_behind()", {
+  it("returns the geometry unchanged when it is NULL or empty", {
+    expect_null(order_context_behind(NULL, character(0)))
+    poly <- atlas_polygons(as_polygon_atlas(dk()))
+    empty <- poly[0, , drop = FALSE]
+    expect_identical(nrow(order_context_behind(empty, "lh_x")), 0L)
+  })
+
+  it("restores the brain_polygons class after reordering", {
+    poly <- atlas_polygons(as_polygon_atlas(dk()))
+    out <- order_context_behind(poly, poly$label[1:2])
+    expect_s3_class(out, "brain_polygons")
+  })
+
+  it("restores the class when a plain-data.frame backing drops it", {
+    plain <- structure(
+      data.frame(label = c("a", "b"), x = c(0, 1)),
+      class = c("brain_polygons", "data.frame")
+    )
+    out <- order_context_behind(plain, "a")
+    expect_s3_class(out, "brain_polygons")
+  })
+})
+
+describe("atlas_region_op() difference with no second operand", {
+  it("returns the first operand's geometry when y matches nothing", {
+    region <- unique(dk()$core$region)[1]
+    res <- atlas_region_op(
+      dk(),
+      x = region,
+      y = "zzz_no_such_region",
+      action = "difference",
+      into = "op_result",
+      match_on = "region"
+    )
+    expect_s3_class(res, "ggseg_atlas")
+    expect_true("op_result" %in% atlas_sf(res)$label)
+  })
+})
+
+describe("rebuild_data_with_geom() cerebellar vertices-only branch", {
+  it("rebuilds a cerebellar atlas that has vertices but no meshes", {
+    sf_geom <- sf::st_sf(
+      label = c("left_lobule", "right_lobule"),
+      view = c("lateral", "lateral"),
+      geometry = sf::st_sfc(make_polygon(), make_polygon2())
+    )
+    core <- data.frame(
+      hemi = c("left", "right"),
+      region = c("lobule", "lobule"),
+      label = c("left_lobule", "right_lobule")
+    )
+    vertices <- data.frame(label = c("left_lobule", "right_lobule"))
+    vertices$vertices <- list(1:3, 4:6)
+
+    cb <- ggseg_atlas(
+      atlas = "mini_cb",
+      type = "cerebellar",
+      core = core,
+      data = ggseg_data_cerebellar(geom = sf_geom, vertices = vertices)
+    )
+
+    res <- atlas_region_remove(cb, "left", match_on = "label")
+    expect_s3_class(res$data, "ggseg_data_cerebellar")
+    expect_null(res$data$meshes)
+    expect_false("left_lobule" %in% atlas_labels(res))
+  })
+})

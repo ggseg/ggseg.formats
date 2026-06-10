@@ -36,6 +36,18 @@ describe("validate_sf", {
     expect_s3_class(geom_from_data(data), "sf")
   })
 
+  it("coerces a data.frame with sfc geometry to sf", {
+    geom <- sf::st_sfc(make_polygon())
+    df <- as.data.frame(
+      sf::st_sf(label = "test", view = "lateral", geometry = geom)
+    )
+    expect_false(inherits(df, "sf"))
+
+    out <- validate_sf(df)
+
+    expect_s3_class(out, "sf")
+  })
+
   it("errors when geometry is empty", {
     withr::local_options(lifecycle_verbosity = "quiet")
     sf_bad <- sf::st_sf(
