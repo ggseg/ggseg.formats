@@ -97,7 +97,8 @@ hex_args <- list(
   h_color = border
 )
 
-do.call(sticker, c(list(p, filename = "man/figures/logo.svg"), hex_args))
+# PNG only: hexSticker's svglite output mis-sizes the package-name font, so we
+# do not ship a logo.svg (matching the rest of the ggsegverse).
 do.call(sticker, c(list(p, filename = "man/figures/logo.png"), hex_args))
 
 # Favicons: realfavicongenerator.net (used by pkgdown::build_favicons) is
