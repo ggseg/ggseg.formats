@@ -22,6 +22,13 @@ machinery in \verb{$data} — useful for wasm builds and air-gapped installs.
 Conversion is lossless, so a single representation is kept (no redundant
 sf alongside polygons). To rehydrate sf for geometric operations later,
 use \code{\link[=as_sf_atlas]{as_sf_atlas()}}.
+
+This doubles as the backward-compatible path for sf-optional installs: a
+lite-only ggseg that meets a still-sf-backed atlas converts it on the fly
+when sf is installed. When sf is not installed the geometry cannot be read,
+so the call aborts with a pointer to \code{\link[=migrate_atlas_files]{migrate_atlas_files()}} — which the
+atlas maintainer runs once (on a machine with sf) to ship the package in the
+polygon format.
 }
 \examples{
 \dontrun{
