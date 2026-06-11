@@ -2,6 +2,14 @@
 
 ## ggseg.formats 0.0.2.9003 (development)
 
+### Bug fixes
+
+- `atlas_sf()` no longer re-sorts geometry rows alphabetically by `label`. The
+  underlying `merge()` defaulted to `sort = TRUE`, which discarded the
+  context-behind-core draw order established by the manipulation helpers, so
+  contextual regions could draw on top of focus regions. The ordering is now
+  preserved and re-applied after the join, matching `as.data.frame()`.
+
 ### sf-optional migration
 
 - New vignette `vignette("migrating-atlases")` — a three-line recipe for

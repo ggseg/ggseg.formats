@@ -122,7 +122,13 @@ atlas_sf <- function(atlas) {
     sf_data[core_cols] <- NULL
   }
 
-  result <- merge(sf_data, atlas$core, by = "label", all.x = TRUE)
+  # `sort = FALSE` keeps the geometry's row order; the default re-sorts by
+  # `label`, which would discard the context-behind-core draw order that
+  # `order_context_behind()` establishes upstream. Re-apply that ordering
+  # afterwards so contextual rows draw behind the core regions, mirroring
+  # `as.data.frame.ggseg_atlas()`.
+  result <- merge(sf_data, atlas$core, by = "label", all.x = TRUE, sort = FALSE)
+  result <- order_context_behind(result, atlas$core$label)
 
   if (!is.null(atlas$palette)) {
     result$colour <- unname(atlas$palette[result$label])
