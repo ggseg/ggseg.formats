@@ -1,6 +1,6 @@
 # ggseg.formats
 
-## ggseg.formats 0.0.2.9003 (development)
+## ggseg.formats 0.0.2.9004 (development)
 
 ### Bug fixes
 
