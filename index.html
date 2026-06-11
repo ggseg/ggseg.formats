@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Brain Atlas Data Structures for the ggsegverse Ecosystem • ggseg.formats</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/Inter-0.4.10/font.css" rel="stylesheet">
@@ -16,6 +21,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Brain Atlas Data Structures for the ggsegverse Ecosystem">
 <meta name="description" content="Provides the ggseg_atlas S3 class used across the ggsegverse ecosystem for 2D and 3D brain visualisation. Ships four bundled atlases (Desikan-Killiany, FreeSurfer aseg, TRACULA, SUIT) and functions for querying, subsetting, renaming, and enriching atlas objects. Also includes readers for FreeSurfer statistics files.">
 <meta property="og:description" content="Provides the ggseg_atlas S3 class used across the ggsegverse ecosystem for 2D and 3D brain visualisation. Ships four bundled atlases (Desikan-Killiany, FreeSurfer aseg, TRACULA, SUIT) and functions for querying, subsetting, renaming, and enriching atlas objects. Also includes readers for FreeSurfer statistics files.">
+<meta property="og:image" content="https://ggsegverse.github.io/ggseg.formats/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -27,7 +33,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ggseg.formats</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.2.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,8 +72,10 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="ggsegformats">ggseg.formats<a class="anchor" aria-label="anchor" href="#ggsegformats"></a>
-</h1></div>
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="ggsegformats-">ggseg.formats <a class="anchor" aria-label="anchor" href="#ggsegformats-"></a>
+</h1>
+</div>
 <!-- badges: start -->
 
 <p>ggseg.formats provides the <code>ggseg_atlas</code> S3 class that powers the <a href="https://ggsegverse.github.io/ggseg/" class="external-link">ggsegverse</a> ecosystem for 2D and 3D brain visualisation. It ships four bundled atlases, a set of accessor functions for querying atlas contents, and a pipe-friendly manipulation API for subsetting, renaming, and enriching atlas objects.</p>
@@ -176,10 +184,9 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/ggsegverse/ggseg.formats/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/ggsegverse/ggseg.formats/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://github.com/ggsegverse/ggseg.formats/actions/workflows/code-quality.yaml" class="external-link"><img src="https://github.com/ggsegverse/ggseg.formats/actions/workflows/code-quality.yaml/badge.svg" alt="code-quality"></a></li>
-<li><a href="https://github.com/ggsegverse/ggseg.formats/actions/workflows/test-coverage.yaml" class="external-link"><img src="https://github.com/ggsegverse/ggseg.formats/actions/workflows/test-coverage.yaml/badge.svg" alt="test-coverage"></a></li>
+<li><a href="https://github.com/ggsegverse/ggseg.formats/actions/workflows/test-coverage.yaml" class="external-link"><img src="https://raw.githubusercontent.com/ggsegverse/ggseg.formats/coverage/badges/coverage.svg" alt="coverage"></a></li>
 <li><a href="https://CRAN.R-project.org/package=ggseg.formats" class="external-link"><img src="https://www.r-pkg.org/badges/version/ggseg.formats" alt="CRAN status"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
-<li><a href="https://github.com/ggsegverse/ggseg.formats/actions?query=workflow%3Apkgcheck" class="external-link"><img src="https://github.com/ggsegverse/ggseg.formats/workflows/pkgcheck/badge.svg" alt="pkgcheck"></a></li>
 </ul>
 </div>
 

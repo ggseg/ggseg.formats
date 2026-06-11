@@ -19,7 +19,7 @@ atlas_region_op(
   x,
   y,
   action = c("difference", "intersection", "union", "symdifference"),
-  into,
+  into = NULL,
   match_on = c("label", "region"),
   colour = NULL
 )
