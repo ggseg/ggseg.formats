@@ -488,14 +488,13 @@ describe("atlas_region_contextual", {
     expect_identical(nrow(result$core), nrow(atlas$core))
   })
 
-  it("keeps sf and polygons in sync after demoting a region", {
+  it("retains every geometry row after demoting a region", {
     atlas <- make_test_atlas()
     result <- atlas_region_contextual(atlas, "parietal")
-    expect_setequal(
-      unique(result$data$geom$label),
-      result$data$geom$label
-    )
-    # the demoted region keeps its geometry in both representations
+    # demoting only moves rows behind core; no geometry is dropped or added
+    expect_setequal(result$data$geom$label, atlas$data$geom$label)
+    expect_identical(nrow(result$data$geom), nrow(atlas$data$geom))
+    # the demoted region keeps its geometry
     expect_true("lh_parietal" %in% result$data$geom$label)
   })
 
@@ -655,8 +654,8 @@ describe("atlas_region_op", {
       action = "difference",
       into = "ribbon"
     )
-    expect_true("ribbon" %in% r$data$geom$label)
-    expect_setequal(r$data$geom$label, r$data$geom$label)
+    # the result region is added alongside the untouched operands
+    expect_setequal(r$data$geom$label, c("cortex", "wm", "ribbon"))
   })
 
   it("operates on a polygon-only atlas and stays polygon-only", {
@@ -1583,7 +1582,7 @@ describe("guess_type edge cases", {
     expect_identical(result, "subcortical")
   })
 
-  it("reads views from x$sf$view for ggseg_atlas with legacy sf field", {
+  it("reads views from the modern $data$geom slot for a ggseg_atlas", {
     sf_geom <- sf::st_sf(
       label = "lh_frontal",
       view = "lateral",
@@ -1600,10 +1599,29 @@ describe("guess_type edge cases", {
       core = core,
       data = ggseg_data_cortical(geom = sf_geom)
     )
-    atlas$sf <- sf_geom
+    # no legacy $sf slot: the view must be read from $data$geom
     atlas$type <- NULL
     expect_warning(
       result <- guess_type(atlas),
+      "Atlas type not set"
+    )
+    expect_identical(result, "cortical")
+  })
+
+  it("falls back to the legacy bare $sf slot when $data is not unified", {
+    legacy <- structure(
+      list(
+        atlas = "old",
+        sf = sf::st_sf(
+          label = "lh_frontal",
+          view = "lateral",
+          geometry = sf::st_sfc(make_polygon())
+        )
+      ),
+      class = "brain_atlas"
+    )
+    expect_warning(
+      result <- guess_type(legacy),
       "Atlas type not set"
     )
     expect_identical(result, "cortical")

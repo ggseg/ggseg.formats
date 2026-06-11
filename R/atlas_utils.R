@@ -695,7 +695,12 @@ guess_type <- function(x) {
 
   cli::cli_warn("Atlas type not set, attempting to guess type.")
 
-  views <- if (is_ggseg_atlas(x) && !is.null(x$sf)) {
+  # Modern atlases keep 2D geometry in `$data` (sf or polygons); `atlas_views()`
+  # reads either. Fall back to the legacy bare `$sf` slot, then to a plain
+  # data.frame's own `view` column.
+  views <- if (inherits(x$data, "ggseg_atlas_data")) {
+    atlas_views(x)
+  } else if (!is.null(x$sf)) {
     x$sf$view
   } else if ("view" %in% names(x)) {
     x$view

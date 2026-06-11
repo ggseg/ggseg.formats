@@ -60,8 +60,12 @@ read_atlas_files <- function(subjects_dir, atlas) {
 
   stats <- lapply(stats_files, read_freesurfer_stats)
 
-  subject <- gsub(subjects_dir, "", stats_files)
-  subject <- vapply(subject, find_subject_fromdir, character(1))
+  # Strip the `subjects_dir` prefix by length (not as a regex) so paths
+  # containing regex metacharacters are handled, then take the first path
+  # component — the subject directory — independent of a trailing slash.
+  prefix <- sub("/+$", "", subjects_dir)
+  rel <- substring(stats_files, nchar(prefix) + 1L)
+  subject <- vapply(rel, find_subject_fromdir, character(1))
   hemi <- vapply(stats_files, find_hemi_fromfile, character(1))
 
   if (all(hemi %in% c("rh", "lh"))) {
@@ -132,7 +136,9 @@ read_freesurfer_table <- function(path, measure = NULL, ...) {
 #' @noRd
 #' @keywords internal
 find_subject_fromdir <- function(path) {
-  strsplit(path, "/", fixed = TRUE)[[1]][2]
+  parts <- strsplit(path, "/", fixed = TRUE)[[1]]
+  parts <- parts[parts != ""]
+  parts[1]
 }
 
 #' helper function to easily grab hemisphere information from file path

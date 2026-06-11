@@ -152,6 +152,40 @@ describe("atlas_sf", {
     expect_true("hemi" %in% names(result))
     expect_true("region" %in% names(result))
   })
+
+  it("draws contextual rows before core rows (not re-sorted by label)", {
+    sf_geom <- sf::st_sf(
+      label = c("lh_zzz", "lh_aaa", "lh_ctx"),
+      view = "lateral",
+      geometry = sf::st_sfc(
+        make_polygon(),
+        make_polygon2(),
+        make_polygon(c(4, 0, 5, 0, 5, 1, 4, 0))
+      )
+    )
+    core <- data.frame(
+      hemi = "left",
+      region = c("zzz", "aaa"),
+      label = c("lh_zzz", "lh_aaa")
+    )
+    atlas <- ggseg_atlas(
+      atlas = "test",
+      type = "cortical",
+      core = core,
+      data = ggseg_data_cortical(geom = sf_geom)
+    )
+
+    # lh_zzz demoted to context: it plus the pipeline outline lh_ctx must lead
+    # the remaining core region lh_aaa so focus regions draw on top.
+    demoted <- atlas_region_contextual(atlas, "zzz", match_on = "region")
+    result <- atlas_sf(demoted)
+
+    is_core <- result$label %in% demoted$core$label
+    expect_lt(max(which(!is_core)), min(which(is_core)))
+    # alphabetical order (lh_aaa, lh_ctx, lh_zzz) would put a core row first;
+    # guard against a regression to the merge() default sort.
+    expect_false(identical(result$label, sort(result$label)))
+  })
 })
 
 
