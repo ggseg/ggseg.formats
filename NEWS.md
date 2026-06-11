@@ -24,6 +24,12 @@
   message instead of interpolating the whole object into "Could not find
   atlas".
 
+### Breaking changes
+
+- `atlas_palette()` now takes a `ggseg_atlas` object only (its first argument
+  is `atlas`). Looking an atlas up by name string (e.g. `atlas_palette("dk")`)
+  is no longer supported — pass the atlas, e.g. `atlas_palette(dk())`.
+
 ### Documentation & internals
 
 - Corrected the package-level help page: the title and `?ggseg.formats` alias
