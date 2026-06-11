@@ -31,6 +31,11 @@ describe("as_polygon_atlas()", {
 
     expect_error(as_polygon_atlas(atlas), "no 2D geometry")
   })
+
+  it("points sf-backed atlases at migrate_atlas_files() when sf is missing", {
+    local_mocked_bindings(has_sf = function() FALSE)
+    expect_error(as_polygon_atlas(dk()), "migrate_atlas_files")
+  })
 })
 
 describe("as_sf_atlas()", {

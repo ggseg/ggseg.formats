@@ -2,6 +2,15 @@
 
 ## ggseg.formats 0.0.2.9003 (development)
 
+### sf-optional migration
+
+- New vignette `vignette("migrating-atlases")` — a three-line recipe for
+  downstream atlas-package maintainers to migrate their `data/*.rda` to the
+  sf-optional polygon format with `migrate_atlas_files()`.
+- `as_polygon_atlas()` now aborts with an actionable message naming
+  `migrate_atlas_files()` when it meets a still-sf-backed atlas on an install
+  where `sf` is not available, instead of a generic "sf is required" error.
+
 ### Internal & tooling
 
 - Added a package hex logo: the brain as atlas data — dk lobes traced as a

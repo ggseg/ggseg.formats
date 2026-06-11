@@ -11,6 +11,13 @@
 #' sf alongside polygons). To rehydrate sf for geometric operations later,
 #' use [as_sf_atlas()].
 #'
+#' This doubles as the backward-compatible path for sf-optional installs: a
+#' lite-only ggseg that meets a still-sf-backed atlas converts it on the fly
+#' when sf is installed. When sf is not installed the geometry cannot be read,
+#' so the call aborts with a pointer to [migrate_atlas_files()] — which the
+#' atlas maintainer runs once (on a machine with sf) to ship the package in the
+#' polygon format.
+#'
 #' @param atlas A `ggseg_atlas` (or legacy `brain_atlas`) object.
 #'
 #' @return A `ggseg_atlas` whose `$data$geom` is a `brain_polygons` object.
@@ -33,6 +40,17 @@ as_polygon_atlas <- function(atlas) {
     ))
   }
   if (!inherits(geom, "brain_polygons")) {
+    if (!has_sf()) {
+      cli::cli_abort(c(
+        "Cannot convert an sf-backed atlas to the polygon format without the
+         {.pkg sf} package.",
+        "i" = "Install {.pkg sf} to convert on the fly with
+               {.run install.packages(\"sf\")}.",
+        "i" = "Atlas maintainers: run {.fn ggseg.formats::migrate_atlas_files}
+               over the package {.path data/} directory once to ship atlases in
+               the sf-optional polygon format."
+      ))
+    }
     geom <- sf_to_polygons(geom)
   }
 
