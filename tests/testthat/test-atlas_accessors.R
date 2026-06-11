@@ -1,30 +1,17 @@
 describe("atlas_palette", {
-  it("returns palette from dk atlas by name", {
-    pal <- atlas_palette("dk")
+  it("returns the palette from an atlas object", {
+    pal <- atlas_palette(dk())
     expect_type(pal, "character")
     expect_gt(length(pal), 0)
     expect_true(all(grepl("^#", pal)))
   })
 
-  it("returns palette from aseg atlas by name", {
-    pal <- atlas_palette("aseg")
-    expect_type(pal, "character")
-    expect_gt(length(pal), 0)
+  it("errors when given an atlas name string instead of an object", {
+    expect_error(atlas_palette("dk"), "must be a.*ggseg_atlas")
   })
 
-  it("returns palette from atlas object directly", {
-    pal <- atlas_palette(dk())
-    expect_type(pal, "character")
-    expect_gt(length(pal), 0)
-  })
-
-  it("errors when atlas not found", {
-    expect_error(atlas_palette("nonexistent_atlas"), "Could not find atlas")
-  })
-
-  it("errors when object is not a ggseg_atlas", {
-    my_df <- data.frame(x = 1)
-    expect_error(atlas_palette(my_df), "Could not find atlas")
+  it("errors when the object is not an atlas", {
+    expect_error(atlas_palette(data.frame(x = 1)), "must be a.*ggseg_atlas")
   })
 })
 

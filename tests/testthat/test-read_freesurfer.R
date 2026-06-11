@@ -143,6 +143,24 @@ describe("read_freesurfer_table()", {
     expect_false(any(grepl("volume$", dat$label)))
   })
 
+  it("strips the measure only from the end, not mid-label", {
+    tmp <- tempfile(fileext = ".table")
+    # `_area` appears twice in the first column; only the trailing one is the
+    # measure suffix. A global (or regex) strip would also remove the mid one.
+    writeLines(
+      c(
+        "subject\tx_area_y_area\tlh_area",
+        "bert\t1\t2"
+      ),
+      tmp
+    )
+
+    dat <- read_freesurfer_table(tmp, measure = "area")
+
+    expect_setequal(dat$label, c("x_area_y", "lh"))
+    unlink(tmp)
+  })
+
   it("replaces dots with hyphens in labels", {
     tmp <- tempfile(fileext = ".table")
     writeLines(

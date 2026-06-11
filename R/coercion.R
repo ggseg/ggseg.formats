@@ -129,7 +129,7 @@ as_brain_atlas <- function(x) {
 #' @keywords internal
 #' @noRd
 convert_legacy_brain_data <- function(x) {
-  if (!inherits(x, "brain_atlas") && !inherits(x, "ggseg_atlas")) {
+  if (!is_atlas_class(x)) {
     cli::cli_abort(
       "{.arg x} must be a {.cls brain_atlas} or {.cls ggseg_atlas}."
     )

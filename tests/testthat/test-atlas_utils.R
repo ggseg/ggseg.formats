@@ -1,8 +1,3 @@
-make_polygon <- function() {
-  coords <- c(0, 0, 1, 0, 1, 1, 0, 0)
-  sf::st_polygon(list(matrix(coords, ncol = 2, byrow = TRUE)))
-}
-
 make_test_atlas <- function() {
   sf_geom <- sf::st_sf(
     label = c("lh_frontal", "lh_parietal", "rh_frontal", "lh_unknown"),

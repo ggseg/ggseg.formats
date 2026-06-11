@@ -4,11 +4,10 @@
 \alias{atlas_palette}
 \title{Get atlas palette}
 \usage{
-atlas_palette(name = "dk", ...)
+atlas_palette(atlas, ...)
 }
 \arguments{
-\item{name}{Character name of atlas (e.g., "dk", "aseg") or a
-ggseg_atlas object}
+\item{atlas}{a \code{ggseg_atlas} object}
 
 \item{...}{Additional arguments (unused)}
 }

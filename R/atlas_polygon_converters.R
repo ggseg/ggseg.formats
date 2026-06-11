@@ -28,7 +28,7 @@
 #' is_atlas_polygon(poly) # TRUE
 #' }
 as_polygon_atlas <- function(atlas) {
-  if (!inherits(atlas, "ggseg_atlas") && !inherits(atlas, "brain_atlas")) {
+  if (!is_atlas_class(atlas)) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas} object.")
   }
 
@@ -86,7 +86,7 @@ as_polygon_atlas <- function(atlas) {
 #' st_buffer(atlas_geom(atlas)$geometry[[1]], dist = 2)
 #' }
 as_sf_atlas <- function(atlas) {
-  if (!inherits(atlas, "ggseg_atlas") && !inherits(atlas, "brain_atlas")) {
+  if (!is_atlas_class(atlas)) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas} object.")
   }
 

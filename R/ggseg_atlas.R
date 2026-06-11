@@ -95,8 +95,7 @@ brain_atlas <- function(atlas, type, core, data, palette = NULL) {
 #' is_subcortical_atlas(aseg())
 #' is_tract_atlas(tracula())
 is_ggseg_atlas <- function(x) {
-  (inherits(x, "ggseg_atlas") || inherits(x, "brain_atlas")) &&
-    validate_ggseg_atlas(x)
+  is_atlas_class(x) && validate_ggseg_atlas(x)
 }
 
 #' @rdname is_ggseg_atlas
@@ -246,6 +245,17 @@ plot.ggseg_atlas <- function(x, ...) {
   mtext(paste(x$atlas, x$type, "atlas"), outer = TRUE, cex = 1, line = 0.5)
 
   invisible(x)
+}
+
+
+#' Lightweight class check for atlas-classed objects
+#'
+#' `TRUE` when `x` carries the `ggseg_atlas` or legacy `brain_atlas` class
+#' tag, without the structural revalidation that [is_ggseg_atlas()] performs.
+#' @noRd
+#' @keywords internal
+is_atlas_class <- function(x) {
+  inherits(x, "ggseg_atlas") || inherits(x, "brain_atlas")
 }
 
 

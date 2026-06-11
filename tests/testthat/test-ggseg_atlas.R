@@ -378,26 +378,22 @@ describe("as.list.ggseg_atlas", {
 
 describe("plot.ggseg_atlas", {
   it("plots a cortical sf atlas without error", {
-    pdf(NULL)
-    on.exit(dev.off(), add = TRUE)
+    local_null_pdf()
     expect_no_error(plot(dk()))
   })
 
   it("plots a subcortical atlas without error", {
-    pdf(NULL)
-    on.exit(dev.off(), add = TRUE)
+    local_null_pdf()
     expect_no_error(plot(aseg()))
   })
 
   it("plots a tract atlas without error", {
-    pdf(NULL)
-    on.exit(dev.off(), add = TRUE)
+    local_null_pdf()
     expect_no_error(plot(tracula()))
   })
 
   it("plots a cerebellar atlas without error", {
-    pdf(NULL)
-    on.exit(dev.off(), add = TRUE)
+    local_null_pdf()
     expect_no_error(plot(suit()))
   })
 
@@ -427,14 +423,12 @@ describe("plot.ggseg_atlas", {
         vertices = data.frame(label = "lh_frontal", vertices = I(list(1L:3L)))
       )
     )
-    pdf(NULL)
-    on.exit(dev.off(), add = TRUE)
+    local_null_pdf()
     expect_no_error(plot(atlas))
   })
 
   it("forwards styling overrides through dots", {
-    pdf(NULL)
-    on.exit(dev.off(), add = TRUE)
+    local_null_pdf()
     expect_no_error(plot(dk(), border = "black", lwd = 1))
   })
 
@@ -459,8 +453,7 @@ describe("plot.ggseg_atlas", {
       data = ggseg_data_subcortical(geom = sf_geom)
     )
     expect_null(atlas$palette)
-    pdf(NULL)
-    on.exit(dev.off(), add = TRUE)
+    local_null_pdf()
     expect_no_error(plot(atlas))
   })
 })

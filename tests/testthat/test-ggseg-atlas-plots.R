@@ -1,19 +1,23 @@
 describe("plot.ggseg_atlas", {
   it("plots dk atlas", {
+    local_null_pdf()
     expect_no_error(plot(dk()))
   })
 
   it("forwards ... to the underlying graphics primitives", {
+    local_null_pdf()
     expect_no_error(plot(dk(), lwd = 0.5, border = "black"))
   })
 
   it("plots atlases with holes without warning", {
+    local_null_pdf()
     # aseg/tracula carry multi-ring regions exercising the polypath branch
     expect_no_warning(plot(aseg()))
     expect_no_warning(plot(tracula()))
   })
 
   it("plots a polygon-only (sf-free) atlas without warning", {
+    local_null_pdf()
     expect_no_warning(plot(suit()))
   })
 
@@ -24,6 +28,7 @@ describe("plot.ggseg_atlas", {
   })
 
   it("returns the atlas invisibly", {
+    local_null_pdf()
     result <- plot(dk())
     expect_s3_class(result, "ggseg_atlas")
   })

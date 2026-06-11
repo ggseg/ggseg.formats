@@ -180,8 +180,7 @@ atlas_type(aseg())
 atlas_type(tracula())
 ```
 
-`atlas_palette()` retrieves the colour palette. You can pass the atlas object
-directly or its name as a string:
+`atlas_palette()` retrieves the colour palette from an atlas object:
 
 ```{r}
 #| label: atlas-palette

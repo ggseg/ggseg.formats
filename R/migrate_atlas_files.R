@@ -130,7 +130,7 @@ migrate_rda_file <- function(f, keep_sf) {
 #' @noRd
 #' @keywords internal
 is_atlas_for_migration <- function(x) {
-  (inherits(x, "ggseg_atlas") || inherits(x, "brain_atlas")) &&
+  is_atlas_class(x) &&
     is.list(x) &&
     !is.null(x$data) &&
     is.list(x$data)
