@@ -19,11 +19,20 @@ df_distinct <- function(df, cols) {
 #'
 #' Replicates dplyr's one-to-many semantics: each row of `x` is repeated once
 #' per matching row of `y` (in `y`'s order), and unmatched `x` rows are kept
-#' once with `NA` in the added columns.
+#' once with `NA` in the added columns. Callers are expected to share only the
+#' `by` columns; any other shared name is suffixed `.y` rather than silently
+#' overwriting `x`, with a warning.
 #' @noRd
 #' @keywords internal
 df_left_join <- function(x, y, by) {
   add <- setdiff(names(y), by)
+  collide <- intersect(add, names(x))
+  if (length(collide) > 0) {
+    cli::cli_warn(c(
+      "{.arg y} has non-key columns that collide with {.arg x}: {collide}.",
+      "i" = "Keeping {.arg x}; {.arg y}'s copies are suffixed {.field .y}."
+    ))
+  }
   xkey <- do.call(paste, c(x[by], sep = "\r"))
   ykey <- do.call(paste, c(y[by], sep = "\r"))
   matches <- lapply(xkey, function(k) which(ykey == k))
@@ -34,12 +43,16 @@ df_left_join <- function(x, y, by) {
   ))
   out <- x[rep(seq_len(nrow(x)), reps), , drop = FALSE]
   for (col in add) {
-    out[[col]] <- y[[col]][yidx]
+    target <- if (col %in% collide) paste0(col, ".y") else col
+    out[[target]] <- y[[col]][yidx]
   }
   as_tbl(out)
 }
 
 #' Row-bind a list of data.frames, optionally adding an id column from names
+#'
+#' Frames with differing columns are reconciled to their union (missing values
+#' filled with `NA`) with a warning, rather than erroring as `rbind()` would.
 #' @noRd
 #' @keywords internal
 df_bind_rows <- function(dfs, .id = NULL) {
@@ -48,15 +61,35 @@ df_bind_rows <- function(dfs, .id = NULL) {
     return(as_tbl(data.frame()))
   }
   if (!is.null(.id)) {
-    nm <- names(dfs)
+    if (is.null(names(dfs))) {
+      cli::cli_abort("{.arg .id} requires a named list of data.frames.")
+    }
     dfs <- Map(
       function(d, n) {
         d[[.id]] <- rep(n, nrow(d))
         d[c(.id, setdiff(names(d), .id))]
       },
       dfs,
-      nm
+      names(dfs)
     )
+  }
+  all_cols <- Reduce(union, lapply(dfs, names))
+  ragged <- !all(vapply(
+    dfs,
+    function(d) setequal(names(d), all_cols),
+    logical(1)
+  ))
+  if (ragged) {
+    cli::cli_warn(
+      "Row-binding data.frames with differing columns; gaps filled with NA."
+    )
+    dfs <- lapply(dfs, function(d) {
+      miss <- setdiff(all_cols, names(d))
+      if (length(miss) > 0) {
+        d[miss] <- NA
+      }
+      d[all_cols]
+    })
   }
   as_tbl(do.call(rbind, dfs))
 }

@@ -53,6 +53,17 @@ describe("df_left_join", {
     expect_identical(nrow(out), 2L)
     expect_identical(out$region, c("r1", "r2"))
   })
+
+  it("suffixes colliding non-key columns with .y and warns", {
+    x <- data.frame(label = "a", value = 1)
+    y <- data.frame(label = "a", value = 99)
+    expect_warning(
+      out <- df_left_join(x, y, by = "label"),
+      "collide"
+    )
+    expect_identical(out$value, 1)
+    expect_identical(out$value.y, 99)
+  })
 })
 
 describe("df_bind_rows", {
@@ -68,6 +79,23 @@ describe("df_bind_rows", {
 
   it("returns an empty tibble for an empty list", {
     expect_identical(nrow(df_bind_rows(list())), 0L)
+  })
+
+  it("unions differing columns and fills gaps with NA, with a warning", {
+    expect_warning(
+      out <- df_bind_rows(list(data.frame(a = 1, b = 2), data.frame(a = 3))),
+      "differing columns"
+    )
+    expect_setequal(names(out), c("a", "b"))
+    expect_identical(out$a, c(1, 3))
+    expect_identical(out$b, c(2, NA))
+  })
+
+  it("aborts when .id is requested for an unnamed list", {
+    expect_error(
+      df_bind_rows(list(data.frame(v = 1), data.frame(v = 2)), .id = "id"),
+      "named list"
+    )
   })
 })
 
