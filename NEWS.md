@@ -17,6 +17,20 @@
   prefix by length rather than as a regular expression, so directories
   containing regex metacharacters (or a trailing slash) no longer yield the
   wrong subject.
+- `read_freesurfer_table(measure = )` strips the `_<measure>` suffix literally
+  from the end of each label instead of with an unanchored regex, so a label
+  that contains the measure mid-string is no longer over-stripped.
+- `atlas_palette()` given a non-atlas object now errors with a class-specific
+  message instead of interpolating the whole object into "Could not find
+  atlas".
+
+### Documentation & internals
+
+- Corrected the package-level help page: the title and `?ggseg.formats` alias
+  are now derived from `DESCRIPTION` (previously titled "Plot brain
+  segmentations with ggplot" and aliased as `ggseg`).
+- Dropped the vestigial `utils::globalVariables()` registration, which no
+  longer referenced any global used by the package.
 
 ### sf-optional migration
 

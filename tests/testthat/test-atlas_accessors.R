@@ -22,9 +22,9 @@ describe("atlas_palette", {
     expect_error(atlas_palette("nonexistent_atlas"), "Could not find atlas")
   })
 
-  it("errors when object is not a ggseg_atlas", {
+  it("errors with a class-specific message when object is not an atlas", {
     my_df <- data.frame(x = 1)
-    expect_error(atlas_palette(my_df), "Could not find atlas")
+    expect_error(atlas_palette(my_df), "must be a.*ggseg_atlas")
   })
 })
 

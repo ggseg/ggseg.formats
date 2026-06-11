@@ -12,17 +12,23 @@
 #' atlas_palette(aseg())
 #' atlas_palette(dk())
 atlas_palette <- function(name = "dk", ...) {
-  atlas <- if (is.character(name)) {
-    tryCatch(match.fun(name)(), error = function(e) {
+  if (is.character(name)) {
+    atlas <- tryCatch(match.fun(name)(), error = function(e) {
       cli::cli_abort("Could not find atlas {.val {name}}.")
     })
-  } else {
-    name
+    if (!inherits(atlas, "ggseg_atlas") && !inherits(atlas, "brain_atlas")) {
+      cli::cli_abort("Could not find atlas {.val {name}}.")
+    }
+    return(atlas$palette)
   }
-  if (!inherits(atlas, "ggseg_atlas") && !inherits(atlas, "brain_atlas")) {
-    cli::cli_abort("Could not find atlas {.val {name}}.")
+
+  if (!inherits(name, "ggseg_atlas") && !inherits(name, "brain_atlas")) {
+    cli::cli_abort(
+      "{.arg name} must be a {.cls ggseg_atlas} or an atlas name string,
+       not a {.cls {class(name)[1]}}."
+    )
   }
-  atlas$palette
+  name$palette
 }
 
 

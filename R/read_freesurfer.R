@@ -119,7 +119,16 @@ read_freesurfer_table <- function(path, measure = NULL, ...) {
   )
 
   if (!is.null(measure)) {
-    dat$label <- gsub(paste0("_", measure), "", dat$label)
+    # the measure is a trailing `_<measure>` suffix on the column name; strip
+    # it literally from the end so a label containing the measure mid-string
+    # (or a measure with regex metacharacters) is not over-stripped.
+    suffix <- paste0("_", measure)
+    has_suffix <- endsWith(dat$label, suffix)
+    dat$label[has_suffix] <- substr(
+      dat$label[has_suffix],
+      1L,
+      nchar(dat$label[has_suffix]) - nchar(suffix)
+    )
     names(dat)[names(dat) == "value"] <- measure
   }
 
