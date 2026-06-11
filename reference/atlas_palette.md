@@ -5,14 +5,14 @@ Retrieves the colour palette from a brain atlas.
 ## Usage
 
 ``` r
-atlas_palette(name = "dk", ...)
+atlas_palette(atlas, ...)
 ```
 
 ## Arguments
 
-- name:
+- atlas:
 
-  Character name of atlas (e.g., "dk", "aseg") or a ggseg_atlas object
+  a `ggseg_atlas` object
 
 - ...:
 

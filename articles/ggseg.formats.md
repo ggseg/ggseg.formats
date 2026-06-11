@@ -275,8 +275,7 @@ atlas_type(tracula())
 ```
 
 [`atlas_palette()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_palette.md)
-retrieves the colour palette. You can pass the atlas object directly or
-its name as a string:
+retrieves the colour palette from an atlas object:
 
 ``` r
 
