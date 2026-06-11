@@ -53,7 +53,7 @@ cli::cli_alert_info("{length(boundary_edges)} boundary edges found")
 # ── Trace boundary loop ──────────────────────────────────────────────
 adj <- list()
 for (be in boundary_edges) {
-  verts <- as.integer(strsplit(be, "_")[[1]])
+  verts <- as.integer(strsplit(be, "_", fixed = TRUE)[[1]])
   v1 <- as.character(verts[1])
   v2 <- as.character(verts[2])
   adj[[v1]] <- c(adj[[v1]], verts[2])
@@ -71,7 +71,9 @@ for (i in 2:length(loop)) {
   current <- loop[i - 1L]
   neighbors <- adj[[as.character(current)]]
   nxt <- neighbors[!visited[neighbors + 1L]]
-  if (length(nxt) == 0) break
+  if (length(nxt) == 0) {
+    break
+  }
   loop[i] <- nxt[1]
   visited[nxt[1] + 1L] <- TRUE
 }
@@ -108,7 +110,6 @@ for (ci in seq_len(n_loop)) {
 all_faces <- rbind(faces, cap_faces)
 
 cli::cli_alert_success(
-
   "Capped mesh: {nrow(new_vertices)} vertices, {nrow(all_faces)} faces"
 )
 

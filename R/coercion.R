@@ -49,8 +49,8 @@ as_ggseg_atlas.brain_atlas <- function(x) {
     return(restamp_class(x))
   }
 
-  has_legacy_slots <- any(
-    !vapply(
+  has_legacy_slots <- !all(
+    vapply(
       list(x$sf, x$vertices, x$meshes),
       is.null,
       logical(1)
@@ -140,32 +140,11 @@ convert_legacy_brain_data <- function(x) {
   }
 
   require_sf("convert_legacy_brain_data()")
-  sf_data <- x$data
-  class(sf_data) <- setdiff(
-    class(sf_data),
-    c("brain_data", "ggseg_atlas", "brain_atlas")
-  )
+  sf_data <- normalize_legacy_sf(x$data)
   type <- x$type %||% "cortical"
 
-  if ("side" %in% names(sf_data) && !"view" %in% names(sf_data)) {
-    names(sf_data)[names(sf_data) == "side"] <- "view"
-  }
-
-  core <- df_distinct(
-    sf::st_drop_geometry(sf_data[
-      !is.na(sf_data$label),
-      c("hemi", "region", "label"),
-      drop = FALSE
-    ]),
-    c("hemi", "region", "label")
-  )
-
-  palette <- if ("colour" %in% names(sf_data)) {
-    pal <- stats::setNames(sf_data$colour, sf_data$label)
-    pal[!is.na(names(pal)) & !duplicated(names(pal))]
-  } else {
-    NULL
-  }
+  core <- legacy_core_from_sf(sf_data)
+  palette <- legacy_palette_from_sf(sf_data)
 
   data <- switch(
     type,
@@ -233,4 +212,46 @@ restamp_class <- function(x) {
       "list"
     )
   )
+}
+
+
+#' Strip legacy classes from sf data and rename `side` to `view`
+#' @noRd
+#' @keywords internal
+normalize_legacy_sf <- function(sf_data) {
+  class(sf_data) <- setdiff(
+    class(sf_data),
+    c("brain_data", "ggseg_atlas", "brain_atlas")
+  )
+  if ("side" %in% names(sf_data) && !"view" %in% names(sf_data)) {
+    names(sf_data)[names(sf_data) == "side"] <- "view"
+  }
+  sf_data
+}
+
+
+#' Distinct hemi/region/label core table from legacy sf data
+#' @noRd
+#' @keywords internal
+legacy_core_from_sf <- function(sf_data) {
+  df_distinct(
+    sf::st_drop_geometry(sf_data[
+      !is.na(sf_data$label),
+      c("hemi", "region", "label"),
+      drop = FALSE
+    ]),
+    c("hemi", "region", "label")
+  )
+}
+
+
+#' Label-keyed colour palette from legacy sf data, or NULL
+#' @noRd
+#' @keywords internal
+legacy_palette_from_sf <- function(sf_data) {
+  if (!("colour" %in% names(sf_data))) {
+    return(NULL)
+  }
+  pal <- stats::setNames(sf_data$colour, sf_data$label)
+  pal[!is.na(names(pal)) & !duplicated(names(pal))]
 }

@@ -7,16 +7,16 @@ describe("get_brain_mesh", {
     expect_true("faces" %in% names(mesh))
     expect_gt(nrow(mesh$vertices), 0)
     expect_gt(nrow(mesh$faces), 0)
-    expect_equal(ncol(mesh$vertices), 3)
-    expect_equal(ncol(mesh$faces), 3)
+    expect_identical(ncol(mesh$vertices), 3L)
+    expect_identical(ncol(mesh$faces), 3L)
   })
 
   it("returns inflated mesh for rh", {
     mesh <- get_brain_mesh(hemisphere = "rh", surface = "inflated")
 
     expect_false(is.null(mesh))
-    expect_equal(nrow(mesh$vertices), 10242)
-    expect_equal(nrow(mesh$faces), 20480)
+    expect_identical(nrow(mesh$vertices), 10242L)
+    expect_identical(nrow(mesh$faces), 20480L)
   })
 
   it("returns both hemispheres with same vertex count", {
@@ -97,8 +97,8 @@ describe("get_cerebellar_mesh", {
     expect_false(is.null(mesh))
     expect_true("vertices" %in% names(mesh))
     expect_true("faces" %in% names(mesh))
-    expect_equal(nrow(mesh$vertices), 30013)
-    expect_equal(nrow(mesh$faces), 57665)
+    expect_identical(nrow(mesh$vertices), 30013L)
+    expect_identical(nrow(mesh$faces), 57665L)
   })
 
   it("has 0-based face indices", {

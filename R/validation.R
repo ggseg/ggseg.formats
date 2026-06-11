@@ -220,6 +220,23 @@ validate_data_labels <- function(data, core, check_sf = FALSE) {
   core_labels <- core$label[!is.na(core$label)]
   n_core <- length(core_labels)
 
+  validate_3d_data_labels(data, core_labels)
+
+  if (isTRUE(check_sf) && n_core > 0) {
+    validate_sf_coverage(data, core_labels, n_core)
+  }
+
+  data
+}
+
+
+#' Validate 3D source labels (vertices, meshes, centerlines) against core
+#'
+#' Every core label must have a corresponding entry in each present 3D source.
+#' Aborts via [cli::cli_abort()] when any are missing.
+#' @keywords internal
+#' @noRd
+validate_3d_data_labels <- function(data, core_labels) {
   has_vertices <- !is.null(data$vertices)
   has_meshes <- !is.null(data$meshes)
 
@@ -236,38 +253,50 @@ validate_data_labels <- function(data, core, check_sf = FALSE) {
     validate_3d_labels(data$centerlines$label, core_labels, "centerlines")
   }
 
-  if (isTRUE(check_sf) && n_core > 0) {
-    twod_source <- geom_from_data(data)
-    # nolint start: object_usage_linter
-    twod_kind <- if (inherits(twod_source, "brain_polygons")) {
-      "polygons"
-    } else {
-      "sf"
-    }
-    # nolint end
+  invisible(data)
+}
 
-    if (!is.null(twod_source)) {
-      twod_labels <- unique(twod_source$label[!is.na(twod_source$label)])
-      missing <- setdiff(core_labels, twod_labels)
-      coverage <- 1 - length(missing) / n_core
 
-      if (coverage < 0.8) {
-        cli::cli_abort(c(
-          "{twod_kind} covers only {.strong {round(coverage * 100)}%} of core
-          labels (minimum 80%).",
-          "i" = "Missing from {twod_kind}: {.val {missing}}."
-        ))
-      } else if (coverage < 0.9) {
-        cli::cli_warn(c(
-          "{twod_kind} covers only {.strong {round(coverage * 100)}%} of core
-          labels.",
-          "i" = "Missing from {twod_kind}: {.val {missing}}."
-        ))
-      }
-    }
+#' Validate 2D (sf/polygon) label coverage against core
+#'
+#' Aborts when coverage is below 80 percent and warns below 90 percent.
+#' Coverage is relaxed because 2D projections cannot always capture every
+#' region.
+#' @keywords internal
+#' @noRd
+validate_sf_coverage <- function(data, core_labels, n_core) {
+  twod_source <- geom_from_data(data)
+  if (is.null(twod_source)) {
+    return(invisible(data))
   }
 
-  data
+  # nolint start: object_usage_linter
+  twod_kind <- if (inherits(twod_source, "brain_polygons")) {
+    "polygons"
+  } else {
+    "sf"
+  }
+  # nolint end
+
+  twod_labels <- unique(twod_source$label[!is.na(twod_source$label)])
+  missing <- setdiff(core_labels, twod_labels)
+  coverage <- 1 - length(missing) / n_core
+
+  if (coverage < 0.8) {
+    cli::cli_abort(c(
+      "{twod_kind} covers only {.strong {round(coverage * 100)}%} of core
+      labels (minimum 80%).",
+      "i" = "Missing from {twod_kind}: {.val {missing}}."
+    ))
+  } else if (coverage < 0.9) {
+    cli::cli_warn(c(
+      "{twod_kind} covers only {.strong {round(coverage * 100)}%} of core
+      labels.",
+      "i" = "Missing from {twod_kind}: {.val {missing}}."
+    ))
+  }
+
+  invisible(data)
 }
 
 

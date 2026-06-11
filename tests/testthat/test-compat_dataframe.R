@@ -4,7 +4,7 @@ describe("as_tbl", {
     expect_s3_class(out, "tbl_df")
     expect_s3_class(out, "tbl")
     expect_s3_class(out, "data.frame")
-    expect_identical(class(out), c("tbl_df", "tbl", "data.frame"))
+    expect_s3_class(out, c("tbl_df", "tbl", "data.frame"), exact = TRUE)
   })
 
   it("resets row names", {
@@ -17,8 +17,8 @@ describe("as_tbl", {
     df <- data.frame(label = "a")
     df$geometry <- list(data.frame(x = 1:2))
     out <- as_tbl(df)
-    expect_true(is.list(out$geometry))
-    expect_equal(nrow(out$geometry[[1]]), 2)
+    expect_type(out$geometry, "list")
+    expect_identical(nrow(out$geometry[[1]]), 2L)
   })
 })
 
@@ -31,7 +31,7 @@ describe("df_distinct", {
     )
     out <- df_distinct(df, c("hemi", "region"))
     expect_s3_class(out, "tbl_df")
-    expect_equal(nrow(out), 2)
+    expect_identical(nrow(out), 2L)
     expect_named(out, c("hemi", "region"))
   })
 })
@@ -50,8 +50,19 @@ describe("df_left_join", {
     x <- data.frame(label = "a")
     y <- data.frame(label = c("a", "a"), region = c("r1", "r2"))
     out <- df_left_join(x, y, by = "label")
-    expect_equal(nrow(out), 2)
+    expect_identical(nrow(out), 2L)
     expect_identical(out$region, c("r1", "r2"))
+  })
+
+  it("suffixes colliding non-key columns with .y and warns", {
+    x <- data.frame(label = "a", value = 1)
+    y <- data.frame(label = "a", value = 99)
+    expect_warning(
+      out <- df_left_join(x, y, by = "label"),
+      "collide"
+    )
+    expect_identical(out$value, 1)
+    expect_identical(out$value.y, 99)
   })
 })
 
@@ -67,7 +78,24 @@ describe("df_bind_rows", {
   })
 
   it("returns an empty tibble for an empty list", {
-    expect_equal(nrow(df_bind_rows(list())), 0)
+    expect_identical(nrow(df_bind_rows(list())), 0L)
+  })
+
+  it("unions differing columns and fills gaps with NA, with a warning", {
+    expect_warning(
+      out <- df_bind_rows(list(data.frame(a = 1, b = 2), data.frame(a = 3))),
+      "differing columns"
+    )
+    expect_setequal(names(out), c("a", "b"))
+    expect_identical(out$a, c(1, 3))
+    expect_identical(out$b, c(2, NA))
+  })
+
+  it("aborts when .id is requested for an unnamed list", {
+    expect_error(
+      df_bind_rows(list(data.frame(v = 1), data.frame(v = 2)), .id = "id"),
+      "named list"
+    )
   })
 })
 
@@ -80,12 +108,12 @@ describe("df_nest / df_unnest", {
     )
     nested <- df_nest(flat, "label", "geometry")
     expect_s3_class(nested, "tbl_df")
-    expect_equal(nrow(nested), 2)
-    expect_true(is.list(nested$geometry))
+    expect_identical(nrow(nested), 2L)
+    expect_type(nested$geometry, "list")
     expect_s3_class(nested$geometry[[1]], "tbl_df")
 
     back <- df_unnest(nested, "geometry")
-    expect_equal(nrow(back), 3)
+    expect_identical(nrow(back), 3L)
     expect_setequal(names(back), names(flat))
   })
 })

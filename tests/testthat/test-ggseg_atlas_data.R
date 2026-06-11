@@ -7,7 +7,7 @@ describe("ggseg_data_cortical", {
 
     expect_s3_class(data, "ggseg_data_cortical")
     expect_s3_class(data, "ggseg_atlas_data")
-    expect_equal(nrow(data$vertices), 2)
+    expect_identical(nrow(data$vertices), 2L)
   })
 
   it("errors when vertices is missing", {
@@ -49,8 +49,8 @@ describe("ggseg_data_cortical", {
 
   it("creates ggseg_data_cortical with both sf and vertices", {
     sf_geom <- sf::st_sf(
-      label = c("lh_frontal"),
-      view = c("lateral"),
+      label = "lh_frontal",
+      view = "lateral",
       geometry = sf::st_sfc(
         make_polygon()
       )
@@ -79,7 +79,7 @@ describe("ggseg_data_subcortical", {
 
     expect_s3_class(data, "ggseg_data_subcortical")
     expect_s3_class(data, "ggseg_atlas_data")
-    expect_equal(nrow(data$meshes), 1)
+    expect_identical(nrow(data$meshes), 1L)
   })
 
   it("errors when meshes is missing", {
@@ -98,8 +98,8 @@ describe("ggseg_data_subcortical", {
 
   it("creates ggseg_data_subcortical with both sf and meshes", {
     sf_geom <- sf::st_sf(
-      label = c("hippocampus"),
-      view = c("axial"),
+      label = "hippocampus",
+      view = "axial",
       geometry = sf::st_sfc(
         make_polygon()
       )
@@ -136,7 +136,7 @@ describe("ggseg_data_tract", {
 
     expect_s3_class(data, "ggseg_data_tract")
     expect_s3_class(data, "ggseg_atlas_data")
-    expect_equal(nrow(data$centerlines), 1)
+    expect_identical(nrow(data$centerlines), 1L)
   })
 
   it("errors when no geom or centerlines provided", {
@@ -159,8 +159,8 @@ describe("ggseg_data_tract", {
 
   it("creates ggseg_data_tract with sf geometry", {
     sf_geom <- sf::st_sf(
-      label = c("cst_left"),
-      view = c("sagittal"),
+      label = "cst_left",
+      view = "sagittal",
       geometry = sf::st_sfc(
         make_polygon()
       )
@@ -182,7 +182,7 @@ describe("ggseg_data_tract", {
     data <- ggseg_data_tract(centerlines = centerlines)
 
     expect_s3_class(data, "ggseg_data_tract")
-    expect_equal(nrow(data$centerlines), 1)
+    expect_identical(nrow(data$centerlines), 1L)
   })
 
   it("computes tangents when not provided", {
@@ -194,7 +194,7 @@ describe("ggseg_data_tract", {
 
     expect_true("tangents" %in% names(data$centerlines))
     expect_true(is.matrix(data$centerlines$tangents[[1]]))
-    expect_equal(ncol(data$centerlines$tangents[[1]]), 3)
+    expect_identical(ncol(data$centerlines$tangents[[1]]), 3L)
   })
 })
 
@@ -237,7 +237,7 @@ describe("compute_tangents", {
     data <- ggseg_data_tract(centerlines = centerlines)
     tangents <- data$centerlines$tangents[[1]]
 
-    expect_equal(nrow(tangents), 2)
+    expect_identical(nrow(tangents), 2L)
   })
 
   it("handles zero-length tangent vectors", {
@@ -249,7 +249,7 @@ describe("compute_tangents", {
     tangents <- data$centerlines$tangents[[1]]
 
     expect_identical(tangents[1, ], c(1, 0, 0))
-    expect_equal(nrow(tangents), 3)
+    expect_identical(nrow(tangents), 3L)
   })
 })
 
@@ -304,6 +304,22 @@ describe("print methods", {
 
     data <- ggseg_data_cortical(vertices = vertices)
     expect_s3_class(data, "ggseg_atlas_data")
+    expect_no_error(capture.output(print(data)))
+  })
+
+  it("summarises brain_polygons geometry in the 2D view listing", {
+    sf_geom <- sf::st_sf(
+      label = "lh_frontal",
+      view = "lateral",
+      geometry = sf::st_sfc(make_polygon())
+    )
+    polygons <- sf_to_polygons(sf_geom)
+    expect_s3_class(polygons, "brain_polygons")
+
+    data <- ggseg_data_cortical(geom = polygons)
+    expect_s3_class(geom_from_data(data), "brain_polygons")
+    expect_match(summarise_2d(data), "polygons")
+    expect_match(summarise_2d(data), "lateral")
     expect_no_error(capture.output(print(data)))
   })
 
@@ -376,7 +392,7 @@ describe("ggseg_data_cerebellar", {
 
     expect_s3_class(data, "ggseg_data_cerebellar")
     expect_s3_class(data, "ggseg_atlas_data")
-    expect_equal(nrow(data$vertices), 1)
+    expect_identical(nrow(data$vertices), 1L)
   })
 
   it("creates ggseg_data_cerebellar with sf", {
@@ -486,7 +502,7 @@ describe("print_mesh_summary with NULL mesh entries", {
       )
     )
     expect_output(
-      ggseg.formats:::print_mesh_summary(meshes),
+      print_mesh_summary(meshes),
       "region1"
     )
   })

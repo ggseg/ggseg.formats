@@ -36,6 +36,18 @@ describe("validate_sf", {
     expect_s3_class(geom_from_data(data), "sf")
   })
 
+  it("coerces a data.frame with sfc geometry to sf", {
+    geom <- sf::st_sfc(make_polygon())
+    df <- as.data.frame(
+      sf::st_sf(label = "test", view = "lateral", geometry = geom)
+    )
+    expect_false(inherits(df, "sf"))
+
+    out <- validate_sf(df)
+
+    expect_s3_class(out, "sf")
+  })
+
   it("errors when geometry is empty", {
     withr::local_options(lifecycle_verbosity = "quiet")
     sf_bad <- sf::st_sf(
@@ -369,7 +381,7 @@ describe("validate_data_labels", {
     })
     core <- data.frame(
       hemi = rep("left", 10),
-      region = gsub("lh_", "", labels),
+      region = gsub("lh_", "", labels, fixed = TRUE),
       label = labels
     )
 
@@ -393,14 +405,14 @@ describe("validate_tract_metadata", {
       centerline = matrix(1:30, ncol = 3)
     )
     expect_warning(
-      ggseg.formats:::validate_tract_metadata(metadata, "cst_left"),
+      validate_tract_metadata(metadata, "cst_left"),
       "missing"
     )
   })
 
   it("warns when metadata is not a list", {
     expect_warning(
-      ggseg.formats:::validate_tract_metadata("not a list", "bad_tract"),
+      validate_tract_metadata("not a list", "bad_tract"),
       "should be a list"
     )
   })
@@ -420,7 +432,7 @@ describe("validate_meshes calls validate_tract_metadata", {
       )
     ))
 
-    result <- ggseg.formats:::validate_meshes(meshes, tract = TRUE)
-    expect_equal(nrow(result), 1)
+    result <- validate_meshes(meshes, tract = TRUE)
+    expect_identical(nrow(result), 1L)
   })
 })

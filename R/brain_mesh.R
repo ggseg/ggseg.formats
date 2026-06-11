@@ -38,8 +38,7 @@ get_brain_mesh <- function(
 
   cli::cli_abort(c(
     "Surface {.val {surface}} not available in {.pkg ggseg.formats}.",
-    "i" = "Install {.pkg ggseg3d} for pial/white/semi-inflated surfaces.",
-    "i" = "Or provide custom meshes via {.arg brain_meshes}."
+    "i" = "Install {.pkg ggseg3d}, or pass custom {.arg brain_meshes}."
   ))
 }
 

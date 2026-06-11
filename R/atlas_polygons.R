@@ -1,3 +1,18 @@
+#' @export
+print.brain_polygons <- function(x, ...) {
+  cli::cli_h2("brain_polygons")
+  cli::cli_text("{.strong Labels:} {nrow(x)}")
+  if (nrow(x) > 0) {
+    # nolint start: object_usage_linter
+    views <- unique(unlist(lapply(x$geometry, function(g) unique(g$view))))
+    n_pts <- sum(vapply(x$geometry, nrow, integer(1)))
+    # nolint end
+    cli::cli_text("{.strong Views:} {paste(views, collapse = ', ')}")
+    cli::cli_text("{.strong Total points:} {n_pts}")
+  }
+  NextMethod()
+  invisible(x)
+}
 # sf-optional atlas polygon format ----
 
 #' Convert an sf atlas geometry to the sf-optional polygon format
@@ -18,6 +33,7 @@
 #' Internal conversion primitive. For the atlas-level public API use
 #' [as_polygon_atlas()] / [atlas_polygons()].
 #' @keywords internal
+#' @rdname sf_to_polygons
 sf_to_polygons <- function(sf_data) {
   require_sf("sf_to_polygons()")
   if (!inherits(sf_data, "sf")) {
@@ -67,12 +83,13 @@ sf_to_polygons <- function(sf_data) {
 #' Internal conversion primitive. For the atlas-level public API use
 #' [as_sf_atlas()] / [atlas_sf()].
 #' @keywords internal
+#' @rdname polygons_to_sf
 polygons_to_sf <- function(polygons) {
   validate_polygons(polygons)
 
   flat <- df_unnest(polygons, "geometry")
 
-  feature_key <- paste(flat$label, flat$view, sep = "")
+  feature_key <- paste(flat$label, flat$view, sep = "\x1f")
   flat$.feature_id <- as.integer(factor(
     feature_key,
     levels = unique(feature_key)
@@ -125,35 +142,7 @@ validate_polygons <- function(polygons) {
     ))
   }
 
-  nested_required <- c("view", "x", "y", "group", "subgroup")
-  geoms <- polygons$geometry
-
-  not_df <- !vapply(geoms, is.data.frame, logical(1))
-  if (any(not_df)) {
-    cli::cli_abort(c(
-      "Each {.field geometry} entry must be a data.frame.",
-      "x" = "Not a data.frame for: {.val {polygons$label[not_df]}}."
-    ))
-  }
-
-  miss_cols <- vapply(
-    geoms,
-    function(g) length(setdiff(nested_required, names(g))) > 0L,
-    logical(1)
-  )
-  if (any(miss_cols)) {
-    cli::cli_abort(c(
-      "Each {.field geometry} needs columns {.field {nested_required}}.",
-      "x" = "Missing columns for: {.val {polygons$label[miss_cols]}}."
-    ))
-  }
-
-  empty <- vapply(geoms, function(g) nrow(g) == 0L, logical(1))
-  if (any(empty)) {
-    cli::cli_abort(
-      "Geometry data.frame is empty for: {.val {polygons$label[empty]}}."
-    )
-  }
+  validate_polygon_geoms(polygons)
 
   out <- as_tbl(polygons)
   if (!inherits(out, "brain_polygons")) {
@@ -214,17 +203,42 @@ resolve_geom <- function(geom = NULL, ..., .fn) {
 }
 
 
-#' @export
-print.brain_polygons <- function(x, ...) {
-  cli::cli_h2("brain_polygons")
-  cli::cli_text("{.strong Labels:} {nrow(x)}")
-  if (nrow(x) > 0) {
-    # nolint start: object_usage_linter
-    views <- unique(unlist(lapply(x$geometry, function(g) unique(g$view))))
-    n_pts <- sum(vapply(x$geometry, nrow, integer(1)))
-    # nolint end
-    cli::cli_text("{.strong Views:} {paste(views, collapse = ', ')}")
-    cli::cli_text("{.strong Total points:} {n_pts}")
+#' Validate the nested geometry list-column of a brain_polygons object
+#'
+#' Each entry must be a non-empty data.frame carrying the per-ring columns.
+#' Aborts via [cli::cli_abort()] on the first failing condition.
+#' @keywords internal
+#' @noRd
+validate_polygon_geoms <- function(polygons) {
+  nested_required <- c("view", "x", "y", "group", "subgroup")
+  geoms <- polygons$geometry
+
+  not_df <- !vapply(geoms, is.data.frame, logical(1))
+  if (any(not_df)) {
+    cli::cli_abort(c(
+      "Each {.field geometry} entry must be a data.frame.",
+      "x" = "Not a data.frame for: {.val {polygons$label[not_df]}}."
+    ))
   }
-  NextMethod()
+
+  miss_cols <- vapply(
+    geoms,
+    function(g) length(setdiff(nested_required, names(g))) > 0L,
+    logical(1)
+  )
+  if (any(miss_cols)) {
+    cli::cli_abort(c(
+      "Each {.field geometry} needs columns {.field {nested_required}}.",
+      "x" = "Missing columns for: {.val {polygons$label[miss_cols]}}."
+    ))
+  }
+
+  empty <- vapply(geoms, nrow, integer(1)) == 0L
+  if (any(empty)) {
+    cli::cli_abort(
+      "Geometry data.frame is empty for: {.val {polygons$label[empty]}}."
+    )
+  }
+
+  invisible(polygons)
 }

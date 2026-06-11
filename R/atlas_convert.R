@@ -62,43 +62,46 @@ convert_legacy_brain_atlas <- function(
     atlas_2d <- convert_legacy_brain_data(atlas_2d) # nolint: object_usage_linter
   }
 
-  atlas_name <- atlas_name %||%
-    (if (has_2d) atlas_2d$atlas else gsub("_3d$", "", atlas_3d$atlas[1]))
-  type <- type %||% infer_atlas_type(has_2d, atlas_2d, atlas_3d)
+  setup <- legacy_atlas_setup(has_2d, atlas_2d, atlas_3d, atlas_name, type)
 
-  sf_data <- extract_2d_sf(has_2d, atlas_2d)
-  core <- if (has_2d) atlas_2d$core else NULL
-  palette <- if (has_2d) atlas_2d$palette else NULL
+  result <- collect_legacy_atlas_parts(
+    has_3d,
+    atlas_2d,
+    atlas_3d,
+    setup$type,
+    surface,
+    brain_meshes,
+    core = setup$core,
+    palette = setup$palette,
+    sf_data = setup$sf_data
+  )
 
-  result <- if (has_3d) {
-    extract_3d_data(
-      atlas_3d,
-      type,
-      surface,
-      brain_meshes,
-      core = core,
-      palette = palette,
-      sf_data = sf_data
-    )
-  } else {
-    extract_2d_data(atlas_2d)
-  }
+  assemble_legacy_atlas(setup, result, original_palette)
+}
 
-  core <- result$core %||% core
-  palette <- result$palette %||% palette
 
-  if (is.null(palette) || !any(names(palette) %in% core$label)) {
-    palette <- remap_palette_to_labels(original_palette, core)
-  }
-
-  data <- build_atlas_data(type, sf_data, result$vertices, result$meshes)
-
-  ggseg_atlas(
-    atlas = atlas_name,
+#' @rdname convert_legacy_brain_atlas
+#' @export
+unify_legacy_atlases <- function(
+  atlas_2d = NULL,
+  atlas_3d = NULL,
+  atlas_name = NULL,
+  type = NULL,
+  surface = "inflated",
+  brain_meshes = NULL
+) {
+  lifecycle::deprecate_warn(
+    "0.1.0",
+    "unify_legacy_atlases()",
+    "convert_legacy_brain_atlas()"
+  )
+  convert_legacy_brain_atlas(
+    atlas_2d = atlas_2d,
+    atlas_3d = atlas_3d,
+    atlas_name = atlas_name,
     type = type,
-    palette = palette,
-    core = core,
-    data = data
+    surface = surface,
+    brain_meshes = brain_meshes
   )
 }
 
@@ -264,10 +267,9 @@ extract_2d_data <- function(atlas_2d) {
       c("i" = "Using existing vertex data from 2D atlas.")
     )
   } else {
-    cli::cli_inform(c(
-      "i" = "Created atlas from 2D only.",
-      "i" = "3D rendering will not be available without vertex data."
-    ))
+    cli::cli_inform(
+      c("i" = "Created atlas from 2D only; 3D rendering needs vertex data.")
+    )
   }
   list(core = NULL, palette = NULL, vertices = vertices, meshes = NULL)
 }
@@ -292,32 +294,6 @@ build_atlas_data <- function(type, sf_data, vertices_df, meshes_df) {
 }
 
 
-#' @rdname convert_legacy_brain_atlas
-#' @export
-unify_legacy_atlases <- function(
-  atlas_2d = NULL,
-  atlas_3d = NULL,
-  atlas_name = NULL,
-  type = NULL,
-  surface = "inflated",
-  brain_meshes = NULL
-) {
-  lifecycle::deprecate_warn(
-    "0.1.0",
-    "unify_legacy_atlases()",
-    "convert_legacy_brain_atlas()"
-  )
-  convert_legacy_brain_atlas(
-    atlas_2d = atlas_2d,
-    atlas_3d = atlas_3d,
-    atlas_name = atlas_name,
-    type = type,
-    surface = surface,
-    brain_meshes = brain_meshes
-  )
-}
-
-
 #' @noRd
 #' @keywords internal
 infer_atlas_type <- function(has_2d, atlas_2d, atlas_3d) {
@@ -337,7 +313,7 @@ has_vertex_data <- function(dt) {
   if (!("vertices" %in% names(dt))) {
     return(FALSE)
   }
-  !all(vapply(dt$vertices, function(v) length(v) == 0, logical(1)))
+  !all(vapply(dt$vertices, length, integer(1)) == 0)
 }
 
 
@@ -463,4 +439,94 @@ match_ggseg_vertices <- function(ggseg, brain_index) {
     }
   }
   out
+}
+
+
+#' Resolve atlas name, type, sf, core and palette from legacy inputs
+#' @noRd
+#' @keywords internal
+legacy_atlas_setup <- function(
+  has_2d,
+  atlas_2d,
+  atlas_3d,
+  atlas_name,
+  type
+) {
+  atlas_name <- atlas_name %||%
+    (if (has_2d) atlas_2d$atlas else gsub("_3d$", "", atlas_3d$atlas[1]))
+  type <- type %||% infer_atlas_type(has_2d, atlas_2d, atlas_3d)
+  list(
+    atlas_name = atlas_name,
+    type = type,
+    sf_data = extract_2d_sf(has_2d, atlas_2d),
+    core = if (has_2d) atlas_2d$core else NULL,
+    palette = if (has_2d) atlas_2d$palette else NULL
+  )
+}
+
+
+#' Build the final ggseg_atlas from setup and extracted result parts
+#' @noRd
+#' @keywords internal
+assemble_legacy_atlas <- function(setup, result, original_palette) {
+  core <- result$core %||% setup$core
+  palette <- resolve_legacy_palette(
+    result$palette %||% setup$palette,
+    original_palette,
+    core
+  )
+  data <- build_atlas_data(
+    setup$type,
+    setup$sf_data,
+    result$vertices,
+    result$meshes
+  )
+  ggseg_atlas(
+    atlas = setup$atlas_name,
+    type = setup$type,
+    palette = palette,
+    core = core,
+    data = data
+  )
+}
+
+
+#' Collect core/palette/vertices/meshes from 2D or 3D legacy inputs
+#' @noRd
+#' @keywords internal
+collect_legacy_atlas_parts <- function(
+  has_3d,
+  atlas_2d,
+  atlas_3d,
+  type,
+  surface,
+  brain_meshes,
+  core,
+  palette,
+  sf_data
+) {
+  if (has_3d) {
+    extract_3d_data(
+      atlas_3d,
+      type,
+      surface,
+      brain_meshes,
+      core = core,
+      palette = palette,
+      sf_data = sf_data
+    )
+  } else {
+    extract_2d_data(atlas_2d)
+  }
+}
+
+
+#' Ensure a palette covers the core labels, remapping from regions if needed
+#' @noRd
+#' @keywords internal
+resolve_legacy_palette <- function(palette, original_palette, core) {
+  if (is.null(palette) || !any(names(palette) %in% core$label)) {
+    palette <- remap_palette_to_labels(original_palette, core)
+  }
+  palette
 }

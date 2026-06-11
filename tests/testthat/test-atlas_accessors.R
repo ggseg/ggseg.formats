@@ -28,6 +28,39 @@ describe("atlas_palette", {
   })
 })
 
+describe("atlas_geom", {
+  it("errors for non-ggseg_atlas input", {
+    expect_error(atlas_geom(list()), "must be a")
+  })
+})
+
+describe("atlas_geometry_type", {
+  it("returns 'sf' for an sf atlas", {
+    expect_identical(atlas_geometry_type(dk()), "sf")
+  })
+
+  it("errors when the atlas has no recognised 2D geometry", {
+    core <- data.frame(hemi = "left", region = "frontal", label = "lh_frontal")
+    vertices <- data.frame(label = "lh_frontal")
+    vertices$vertices <- list(1L:3L)
+
+    atlas <- ggseg_atlas(
+      atlas = "a",
+      type = "cortical",
+      core = core,
+      data = ggseg_data_cortical(vertices = vertices)
+    )
+
+    expect_error(atlas_geometry_type(atlas), "no recognised 2D geometry")
+  })
+})
+
+describe("atlas_polygons", {
+  it("errors for non-ggseg_atlas input", {
+    expect_error(atlas_polygons(list()), "must be a")
+  })
+})
+
 describe("atlas_sf", {
   it("returns sf data from atlas", {
     sf_data <- atlas_sf(dk())
@@ -85,7 +118,7 @@ describe("atlas_sf", {
     result <- atlas_sf(atlas)
 
     expect_s3_class(result, "sf")
-    expect_equal(nrow(result), 2)
+    expect_identical(nrow(result), 2L)
     expect_true("hemi" %in% names(result))
     expect_true("region" %in% names(result))
     expect_true("colour" %in% names(result))
@@ -93,10 +126,10 @@ describe("atlas_sf", {
 
   it("removes hemi/region from sf before merge", {
     sf_geom <- sf::st_sf(
-      label = c("lh_frontal"),
-      hemi = c("left"),
-      region = c("frontal"),
-      view = c("lateral"),
+      label = "lh_frontal",
+      hemi = "left",
+      region = "frontal",
+      view = "lateral",
       geometry = sf::st_sfc(
         make_polygon()
       )
@@ -156,7 +189,7 @@ describe("atlas_vertices", {
 
     result <- atlas_vertices(atlas)
 
-    expect_equal(nrow(result), 2)
+    expect_identical(nrow(result), 2L)
     expect_true("hemi" %in% names(result))
     expect_true("region" %in% names(result))
     expect_true("colour" %in% names(result))
@@ -241,7 +274,7 @@ describe("atlas_meshes", {
 
     result <- atlas_meshes(atlas)
 
-    expect_equal(nrow(result), 1)
+    expect_identical(nrow(result), 1L)
     expect_true("colour" %in% names(result))
     expect_identical(result$colour, "#FF0000")
   })

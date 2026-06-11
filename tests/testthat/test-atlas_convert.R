@@ -281,27 +281,21 @@ describe("convert_legacy_brain_atlas", {
       infer_vertices_from_meshes = function(...) NULL
     )
 
-    warned <- FALSE
-    tryCatch(
-      withCallingHandlers(
+    expect_warning(
+      tryCatch(
         convert_legacy_brain_atlas(atlas_3d = mock_3d),
-        warning = function(w) {
-          if (grepl("Could not infer", conditionMessage(w))) {
-            warned <<- TRUE
-          }
-          invokeRestart("muffleWarning")
-        }
+        error = function(e) NULL
       ),
-      error = function(e) NULL
+      "Could not infer",
+      fixed = TRUE
     )
-    expect_true(warned)
   })
 
   it("extracts rgl-style meshes with vb/it columns", {
     mock_3d <- data.frame(
       atlas = "test_3d",
-      hemi = c("subcort"),
-      surf = c("LCBC")
+      hemi = "subcort",
+      surf = "LCBC"
     )
     rgl_mesh <- list(
       vb = matrix(c(1, 2, 3, 4, 5, 6, 7, 8, 9), nrow = 3),
@@ -340,19 +334,19 @@ describe("convert_legacy_brain_atlas", {
 describe("infer_atlas_type", {
   it("returns atlas_2d type when has_2d is TRUE", {
     mock_2d <- list(type = "cortical")
-    result <- ggseg.formats:::infer_atlas_type(TRUE, mock_2d, NULL)
+    result <- infer_atlas_type(TRUE, mock_2d, NULL)
     expect_identical(result, "cortical")
   })
 
   it("returns subcortical when atlas_3d has subcort hemi", {
     mock_3d <- data.frame(hemi = c("subcort", "subcort"))
-    result <- ggseg.formats:::infer_atlas_type(FALSE, NULL, mock_3d)
+    result <- infer_atlas_type(FALSE, NULL, mock_3d)
     expect_identical(result, "subcortical")
   })
 
   it("defaults to cortical when no subcort hemi", {
     mock_3d <- data.frame(hemi = c("left", "right"))
-    result <- ggseg.formats:::infer_atlas_type(FALSE, NULL, mock_3d)
+    result <- infer_atlas_type(FALSE, NULL, mock_3d)
     expect_identical(result, "cortical")
   })
 })
@@ -361,19 +355,19 @@ describe("infer_atlas_type", {
 describe("has_vertex_data", {
   it("returns FALSE when no vertices column", {
     dt <- data.frame(label = "test")
-    expect_false(ggseg.formats:::has_vertex_data(dt))
+    expect_false(has_vertex_data(dt))
   })
 
   it("returns FALSE when all vertices are empty", {
     dt <- data.frame(label = c("a", "b"))
     dt$vertices <- list(integer(0), integer(0))
-    expect_false(ggseg.formats:::has_vertex_data(dt))
+    expect_false(has_vertex_data(dt))
   })
 
   it("returns TRUE when some vertices have data", {
     dt <- data.frame(label = c("a", "b"))
     dt$vertices <- list(1:5, integer(0))
-    expect_true(ggseg.formats:::has_vertex_data(dt))
+    expect_true(has_vertex_data(dt))
   })
 })
 
@@ -386,7 +380,7 @@ describe("remap_palette_to_labels", {
       label = c("lh_motor", "rh_motor", "lh_visual")
     )
 
-    result <- ggseg.formats:::remap_palette_to_labels(palette, core)
+    result <- remap_palette_to_labels(palette, core)
 
     expect_identical(result[["lh_motor"]], "#FF0000")
     expect_identical(result[["rh_motor"]], "#FF0000")
@@ -395,13 +389,13 @@ describe("remap_palette_to_labels", {
 
   it("returns NULL for NULL palette", {
     core <- data.frame(region = "test", label = "lh_test")
-    expect_null(ggseg.formats:::remap_palette_to_labels(NULL, core))
+    expect_null(remap_palette_to_labels(NULL, core))
   })
 
   it("returns NULL when no regions match", {
     palette <- c("unknown" = "#FF0000")
     core <- data.frame(region = "motor", label = "lh_motor")
-    expect_null(ggseg.formats:::remap_palette_to_labels(palette, core))
+    expect_null(remap_palette_to_labels(palette, core))
   })
 
   it("skips NA regions in core", {
@@ -411,9 +405,9 @@ describe("remap_palette_to_labels", {
       label = c("lh_motor", "lh_medialwall")
     )
 
-    result <- ggseg.formats:::remap_palette_to_labels(palette, core)
+    result <- remap_palette_to_labels(palette, core)
 
-    expect_identical(names(result), "lh_motor")
+    expect_named(result, "lh_motor")
   })
 })
 
@@ -869,10 +863,10 @@ describe("extract_meshes_from_rgl", {
     dt$mesh <- list(m1, m2)
 
     result <- extract_meshes_from_rgl(dt)
-    expect_equal(nrow(result), 2)
+    expect_identical(nrow(result), 2L)
     expect_true(all(c("label", "mesh") %in% names(result)))
-    expect_true(is.data.frame(result$mesh[[1]]$vertices))
-    expect_true(is.data.frame(result$mesh[[1]]$faces))
+    expect_s3_class(result$mesh[[1]]$vertices, "data.frame")
+    expect_s3_class(result$mesh[[1]]$faces, "data.frame")
   })
 
   it("handles NULL mesh entries", {
@@ -887,7 +881,7 @@ describe("extract_meshes_from_rgl", {
 
     result <- extract_meshes_from_rgl(dt)
     expect_null(result$mesh[[1]])
-    expect_true(is.data.frame(result$mesh[[2]]$vertices))
+    expect_s3_class(result$mesh[[2]]$vertices, "data.frame")
   })
 })
 
@@ -929,9 +923,9 @@ describe("try_infer_vertices", {
       brain_meshes = mock_brain_meshes,
       sf_data = NULL
     )
-    expect_true(is.data.frame(result))
+    expect_s3_class(result, "data.frame")
     expect_identical(result$label, "lh_frontal")
-    expect_true(is.list(result$vertices))
+    expect_type(result$vertices, "list")
   })
 
   it("returns NULL when inference fails but sf_data exists", {

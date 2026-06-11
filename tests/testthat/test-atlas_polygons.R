@@ -6,7 +6,7 @@ describe("sf_to_polygons()", {
     expect_s3_class(polys, "tbl_df")
     expect_identical(nrow(polys), length(unique(dk()$data$sf$label)))
     expect_named(polys, c("label", "geometry"))
-    expect_true(is.list(polys$geometry))
+    expect_type(polys$geometry, "list")
   })
 
   it("nested geometry data.frams carry view, x, y, group, subgroup", {
@@ -34,6 +34,90 @@ describe("sf_to_polygons()", {
 
   it("errors on non-sf input", {
     expect_error(sf_to_polygons(data.frame(a = 1)), "must inherit from class")
+  })
+})
+
+describe("print.brain_polygons()", {
+  it("prints labels, views and total points for a populated object", {
+    p <- atlas_polygons(as_polygon_atlas(dk()))
+    expect_no_error(print(p))
+  })
+
+  it("prints without error for a zero-row object", {
+    p <- structure(
+      as_tbl(data.frame(
+        label = character(0),
+        geometry = I(list())
+      )),
+      class = c("brain_polygons", "tbl_df", "tbl", "data.frame")
+    )
+    expect_no_error(print(p))
+  })
+})
+
+describe("sf_to_polygons() column validation", {
+  it("errors when a required column is missing", {
+    sf_bad <- sf::st_sf(
+      label = "lh_x",
+      geometry = sf::st_sfc(make_polygon())
+    )
+    expect_error(sf_to_polygons(sf_bad), "missing columns")
+  })
+})
+
+describe("validate_polygons() geometry column", {
+  it("errors when the geometry column is absent", {
+    bad <- data.frame(label = "lh_x", stringsAsFactors = FALSE)
+    expect_error(validate_polygons(bad), "missing columns")
+  })
+
+  it("errors when geometry is not a list-column", {
+    bad <- data.frame(
+      label = "lh_x",
+      geometry = 1,
+      stringsAsFactors = FALSE
+    )
+    expect_error(validate_polygons(bad), "must be a list-column")
+  })
+})
+
+describe("validate_geom()", {
+  it("errors on objects that are neither sf nor brain_polygons", {
+    expect_error(validate_geom(list(a = 1)), "must be an")
+  })
+})
+
+describe("resolve_geom()", {
+  it("warns and ignores sf= when geom is also supplied", {
+    polys <- sf_to_polygons(dk()$data$sf)
+    sf0 <- dk()$data$sf
+    expect_warning(
+      resolve_geom(geom = polys, sf = sf0, .fn = "x"),
+      "ignoring"
+    )
+  })
+})
+
+describe("validate_polygon_geoms()", {
+  it("errors when a geometry entry is not a data.frame", {
+    bad <- structure(
+      as_tbl(data.frame(label = "lh_x", stringsAsFactors = FALSE)),
+      class = c("brain_polygons", "tbl_df", "tbl", "data.frame")
+    )
+    bad$geometry <- list("not a data.frame")
+    expect_error(validate_polygons(bad), "must be a data.frame")
+  })
+
+  it("errors when a geometry data.frame has zero rows", {
+    bad <- data.frame(label = "lh_x", stringsAsFactors = FALSE)
+    bad$geometry <- list(data.frame(
+      view = character(0),
+      x = numeric(0),
+      y = numeric(0),
+      group = integer(0),
+      subgroup = integer(0)
+    ))
+    expect_error(validate_polygons(bad), "empty")
   })
 })
 

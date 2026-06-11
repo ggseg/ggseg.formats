@@ -51,31 +51,6 @@ atlas_geom <- function(atlas) {
   geom_from_data(atlas$data)
 }
 
-#' @keywords internal
-#' @noRd
-geom_from_data <- function(data) {
-  if (!is.null(data$geom)) {
-    return(data$geom)
-  }
-  data$sf
-}
-
-#' The sf-class geometry of an atlas data object, or NULL if it is polygon-only
-#' @keywords internal
-#' @noRd
-data_sf <- function(data) {
-  geom <- geom_from_data(data)
-  if (inherits(geom, "sf")) geom else NULL
-}
-
-#' The brain_polygons geometry of an atlas data object, or NULL if it is sf
-#' @keywords internal
-#' @noRd
-data_poly <- function(data) {
-  geom <- geom_from_data(data)
-  if (inherits(geom, "brain_polygons")) geom else NULL
-}
-
 #' Classify or test an atlas's 2D geometry
 #'
 #' @param atlas a ggseg_atlas object
@@ -257,6 +232,7 @@ print.ggseg_sf <- function(x, ...) {
     cli::cli_text("Views: {views}")
   }
   NextMethod()
+  invisible(x)
 }
 
 #' @export
@@ -273,6 +249,7 @@ print.ggseg_vertices <- function(x, ...) {
     )
   }
   NextMethod()
+  invisible(x)
 }
 
 #' @export
@@ -283,4 +260,29 @@ print.ggseg_meshes <- function(x, ...) {
     print_mesh_summary(x)
   }
   invisible(x)
+}
+
+#' @keywords internal
+#' @noRd
+geom_from_data <- function(data) {
+  if (!is.null(data$geom)) {
+    return(data$geom)
+  }
+  data$sf
+}
+
+#' The sf-class geometry of an atlas data object, or NULL if it is polygon-only
+#' @keywords internal
+#' @noRd
+data_sf <- function(data) {
+  geom <- geom_from_data(data)
+  if (inherits(geom, "sf")) geom else NULL
+}
+
+#' The brain_polygons geometry of an atlas data object, or NULL if it is sf
+#' @keywords internal
+#' @noRd
+data_poly <- function(data) {
+  geom <- geom_from_data(data)
+  if (inherits(geom, "brain_polygons")) geom else NULL
 }

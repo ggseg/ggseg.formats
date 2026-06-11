@@ -36,43 +36,7 @@
 ggseg_atlas <- function(atlas, type, core, data, palette = NULL) {
   type <- match.arg(type, c("cortical", "subcortical", "tract", "cerebellar"))
 
-  if (length(atlas) != 1 || !is.character(atlas)) {
-    cli::cli_abort(
-      "{.arg atlas} must be a single character string, not {length(atlas)}."
-    )
-  }
-
-  if (!is.data.frame(core)) {
-    cli::cli_abort("{.arg core} must be a data.frame.")
-  }
-
-  required_core <- c("region", "label")
-  missing_core <- setdiff(required_core, names(core))
-  if (length(missing_core) > 0) {
-    cli::cli_abort(
-      "{.arg core} must contain columns: {.field {missing_core}}."
-    )
-  }
-
-  if (
-    !inherits(data, "ggseg_atlas_data") &&
-      !inherits(data, "brain_atlas_data")
-  ) {
-    cli::cli_abort(c(
-      "{.arg data} must be a {.cls ggseg_atlas_data} object.",
-      "i" = "Use {.fn ggseg_data_cortical}, {.fn ggseg_data_subcortical},
-      {.fn ggseg_data_tract}, or {.fn ggseg_data_cerebellar}."
-    ))
-  }
-
-  expected_new <- paste0("ggseg_data_", type)
-  expected_old <- paste0("brain_data_", type)
-  if (!inherits(data, expected_new) && !inherits(data, expected_old)) {
-    cli::cli_abort(c(
-      "Atlas type {.val {type}} requires {.cls {expected_new}}.",
-      "x" = "Got {.cls {class(data)[1]}}."
-    ))
-  }
+  validate_ggseg_atlas_inputs(atlas, core, data, type)
 
   data <- validate_data_labels(data, core, check_sf = TRUE)
 
@@ -182,25 +146,6 @@ is_ggseg3d_atlas <- function(x) {
 }
 
 
-#' @keywords internal
-#' @noRd
-validate_ggseg_atlas <- function(x) {
-  tryCatch(
-    {
-      ggseg_atlas(
-        atlas = x$atlas,
-        type = x$type,
-        core = x$core,
-        data = x$data,
-        palette = x$palette
-      )
-      TRUE
-    },
-    error = function(e) FALSE
-  )
-}
-
-
 #' @export
 #' @importFrom stats na.omit
 print.ggseg_atlas <- function(x, n = 10, ...) {
@@ -210,52 +155,9 @@ print.ggseg_atlas <- function(x, n = 10, ...) {
   has_3d <- !is.null(data$vertices) ||
     !is.null(data$meshes) ||
     !is.null(data$centerlines)
-  has_palette <- !is.null(x$palette) # nolint: object_usage_linter
-  n_regions <- length(stats::na.omit(unique(x$core$region))) # nolint
-  hemis <- paste0(unique(x$core$hemi), collapse = ", ") # nolint
 
-  cli::cli_h1("{x$atlas} ggseg atlas")
-
-  cli::cli_text("{.strong Type: {x$type}}")
-  cli::cli_text("{.strong Regions:} {n_regions}")
-  cli::cli_text("{.strong Hemispheres:} {hemis}")
-
-  if (has_sf) {
-    geom_views <- if (inherits(geom, "brain_polygons")) {
-      unique(polygons_unnest(geom)$view)
-    } else {
-      unique(geom$view)
-    }
-    views <- paste0(geom_views, collapse = ", ") # nolint
-    cli::cli_text("{.strong Views:} {views}")
-  }
-
-  check <- function(val) {
-    # nolint: object_usage_linter
-    if (val) {
-      cli::col_green(cli::symbol$tick)
-    } else {
-      cli::col_red(cli::symbol$cross)
-    }
-  }
-
-  cli::cli_text("{.strong Palette:} {check(has_palette)}")
-
-  # nolint start: object_usage_linter
-  render_3d <- if (!is.null(data$centerlines)) {
-    # nolint end
-    "centerlines"
-  } else if (!is.null(data$meshes)) {
-    "meshes"
-  } else if (!is.null(data$vertices)) {
-    "vertices"
-  } else {
-    "none"
-  }
-  ggseg_status <- check(has_sf) # nolint: object_usage_linter
-  ggseg3d_status <- check(has_3d) # nolint: object_usage_linter
-  cli::cli_text("{.strong Rendering:} {ggseg_status} ggseg")
-  cli::cli_text("             {ggseg3d_status} ggseg3d ({render_3d})")
+  print_atlas_summary(x, has_sf)
+  print_atlas_rendering(x, data, has_sf, has_3d)
 
   cli::cli_rule()
 
@@ -303,10 +205,72 @@ as.data.frame.ggseg_atlas <- function(x, ...) {
   sf::st_as_sf(result)
 }
 
+#' @importFrom graphics mtext par plot.new plot.window polygon polypath
+#' @export
+plot.ggseg_atlas <- function(x, ...) {
+  flat <- polygons_unnest(atlas_polygons(x))
+  fill_colors <- resolve_fill_colors(flat$label, x$palette)
+  dots <- list(...)
+
+  # One panel per spatially separate piece, arranged in a near-square grid so
+  # each gets enough room to read. This is a quick overview of the atlas, not a
+  # publication figure.
+  cell <- plot_cells(flat)
+  cells <- sort(unique(cell))
+  ncol <- ceiling(sqrt(length(cells)))
+  nrow <- ceiling(length(cells) / ncol)
+  cell_tables <- split(flat, cell)
+
+  old_par <- par(
+    mfrow = c(nrow, ncol),
+    mar = c(0.3, 0.3, 0.3, 0.3),
+    oma = c(0, 0, 2, 0)
+  )
+  on.exit(par(old_par), add = TRUE)
+
+  for (ci in cells) {
+    cf <- cell_tables[[as.character(ci)]]
+    plot.new()
+    plot.window(
+      xlim = range(cf$x, na.rm = TRUE),
+      ylim = range(cf$y, na.rm = TRUE),
+      asp = 1
+    )
+    # `view` in the key keeps a region's per-view instances from being joined.
+    piece_id <- paste(cf$label, cf$view, cf$group, sep = "\r")
+    invisible(lapply(split(cf, piece_id), function(piece) {
+      draw_piece(piece, fill_colors[[piece$label[[1L]]]], dots)
+    }))
+  }
+
+  mtext(paste(x$atlas, x$type, "atlas"), outer = TRUE, cex = 1, line = 0.5)
+
+  invisible(x)
+}
+
+
+#' @keywords internal
+#' @noRd
+validate_ggseg_atlas <- function(x) {
+  tryCatch(
+    {
+      ggseg_atlas(
+        atlas = x$atlas,
+        type = x$type,
+        core = x$core,
+        data = x$data,
+        palette = x$palette
+      )
+      TRUE
+    },
+    error = function(e) FALSE
+  )
+}
+
 
 #' Resolve an atlas's 2D geometry to a non-empty sf data frame
 #'
-#' Used by [as.data.frame.ggseg_atlas()]. Aborts when there is no 2D geometry
+#' Used by `as.data.frame.ggseg_atlas()`. Aborts when there is no 2D geometry
 #' (or it is empty) and requires sf.
 #' @noRd
 #' @keywords internal
@@ -328,14 +292,11 @@ as_sf_for_data_frame <- function(x) {
     sf::st_as_sf(
       if (inherits(geom, "brain_polygons")) polygons_to_sf(geom) else geom
     )
-  } else if (inherits(x$data, "sf") || inherits(x$data, "data.frame")) {
-    sf::st_as_sf(x$data)
   } else {
-    NULL
+    sf::st_as_sf(x$data)
   }
 
-  n <- if (!is.null(sf_data)) nrow(sf_data) else 0
-  if (is.null(n) || n == 0) {
+  if (nrow(sf_data) == 0) {
     cli::cli_abort("Cannot convert ggseg_atlas to data.frame: no 2D geometry.")
   }
   sf_data
@@ -383,14 +344,9 @@ infer_cortical_hemi <- function(result) {
   }
   missing_hemi <- is.na(result$hemi)
   if (any(missing_hemi)) {
-    result$hemi[missing_hemi] <- ifelse(
-      grepl("^lh[_.]", result$label[missing_hemi]),
-      "left",
-      ifelse(
-        grepl("^rh[_.]", result$label[missing_hemi]),
-        "right",
-        NA_character_
-      )
+    result$hemi[missing_hemi] <- hemi_from_label(
+      result$label[missing_hemi],
+      default = NA_character_
     )
   }
   still_missing <- is.na(result$hemi)
@@ -417,7 +373,7 @@ resolve_fill_colors <- function(labels, palette = NULL) {
 
   if (!is.null(palette)) {
     vals <- palette[labels]
-    matched <- labels %in% names(palette) & !is.na(vals)
+    matched <- !is.na(vals)
     return(stats::setNames(ifelse(matched, vals, "#CCCCCC"), labels))
   }
 
@@ -537,45 +493,115 @@ plot_cells <- function(flat, gap_frac = 0.12) {
   ids
 }
 
-#' @importFrom graphics mtext par plot.new plot.window polygon polypath
-#' @export
-plot.ggseg_atlas <- function(x, ...) {
-  flat <- polygons_unnest(atlas_polygons(x))
-  fill_colors <- resolve_fill_colors(flat$label, x$palette)
-  dots <- list(...)
-
-  # One panel per spatially separate piece, arranged in a near-square grid so
-  # each gets enough room to read. This is a quick overview of the atlas, not a
-  # publication figure.
-  cell <- plot_cells(flat)
-  cells <- sort(unique(cell))
-  ncol <- ceiling(sqrt(length(cells)))
-  nrow <- ceiling(length(cells) / ncol)
-  cell_tables <- split(flat, cell)
-
-  old_par <- par(
-    mfrow = c(nrow, ncol),
-    mar = c(0.3, 0.3, 0.3, 0.3),
-    oma = c(0, 0, 2, 0)
-  )
-  on.exit(par(old_par), add = TRUE)
-
-  for (ci in cells) {
-    cf <- cell_tables[[as.character(ci)]]
-    plot.new()
-    plot.window(
-      xlim = range(cf$x, na.rm = TRUE),
-      ylim = range(cf$y, na.rm = TRUE),
-      asp = 1
+#' Validate constructor inputs for [ggseg_atlas()]
+#'
+#' Checks `atlas`, `core`, and `data` for type, required columns, and the
+#' expected `ggseg_data_*`/`brain_data_*` class for `type`. Aborts on the first
+#' violation; returns invisibly when all checks pass.
+#' @noRd
+#' @keywords internal
+validate_ggseg_atlas_inputs <- function(atlas, core, data, type) {
+  if (length(atlas) != 1 || !is.character(atlas)) {
+    cli::cli_abort(
+      "{.arg atlas} must be a single character string, not {length(atlas)}."
     )
-    # `view` in the key keeps a region's per-view instances from being joined.
-    piece_id <- paste(cf$label, cf$view, cf$group, sep = "\r")
-    invisible(lapply(split(cf, piece_id), function(piece) {
-      draw_piece(piece, fill_colors[[piece$label[[1L]]]], dots)
-    }))
   }
 
-  mtext(paste(x$atlas, x$type, "atlas"), outer = TRUE, cex = 1, line = 0.5)
+  if (!is.data.frame(core)) {
+    cli::cli_abort("{.arg core} must be a data.frame.")
+  }
 
-  invisible(x)
+  required_core <- c("region", "label")
+  missing_core <- setdiff(required_core, names(core))
+  if (length(missing_core) > 0) {
+    cli::cli_abort(
+      "{.arg core} must contain columns: {.field {missing_core}}."
+    )
+  }
+
+  if (
+    !inherits(data, "ggseg_atlas_data") &&
+      !inherits(data, "brain_atlas_data")
+  ) {
+    cli::cli_abort(c(
+      "{.arg data} must be a {.cls ggseg_atlas_data} object.",
+      "i" = "Use {.fn ggseg_data_cortical}, {.fn ggseg_data_subcortical},
+      {.fn ggseg_data_tract}, or {.fn ggseg_data_cerebellar}."
+    ))
+  }
+
+  expected_new <- paste0("ggseg_data_", type)
+  expected_old <- paste0("brain_data_", type)
+  if (!inherits(data, expected_new) && !inherits(data, expected_old)) {
+    cli::cli_abort(c(
+      "Atlas type {.val {type}} requires {.cls {expected_new}}.",
+      "x" = "Got {.cls {class(data)[1]}}."
+    ))
+  }
+
+  invisible()
+}
+
+#' Print the header and summary block for a ggseg atlas
+#'
+#' Emits the title, type, region count, hemispheres, and (when 2D geometry is
+#' present) the available views. Side-effecting; returns invisibly.
+#' @noRd
+#' @keywords internal
+print_atlas_summary <- function(x, has_sf) {
+  n_regions <- length(stats::na.omit(unique(x$core$region))) # nolint
+  hemis <- paste0(unique(x$core$hemi), collapse = ", ") # nolint
+
+  cli::cli_h1("{x$atlas} ggseg atlas")
+
+  cli::cli_text("{.strong Type: {x$type}}")
+  cli::cli_text("{.strong Regions:} {n_regions}")
+  cli::cli_text("{.strong Hemispheres:} {hemis}")
+
+  if (has_sf) {
+    views <- paste0(atlas_views(x), collapse = ", ") # nolint
+    cli::cli_text("{.strong Views:} {views}")
+  }
+
+  invisible()
+}
+
+#' Print the palette and rendering-support block for a ggseg atlas
+#'
+#' Emits palette presence plus ggseg (2D) and ggseg3d (3D) rendering status,
+#' noting which 3D geometry slot is available. Side-effecting; returns
+#' invisibly.
+#' @noRd
+#' @keywords internal
+print_atlas_rendering <- function(x, data, has_sf, has_3d) {
+  has_palette <- !is.null(x$palette) # nolint: object_usage_linter
+
+  check <- function(val) {
+    # nolint: object_usage_linter
+    if (val) {
+      cli::col_green(cli::symbol$tick)
+    } else {
+      cli::col_red(cli::symbol$cross)
+    }
+  }
+
+  cli::cli_text("{.strong Palette:} {check(has_palette)}")
+
+  # nolint start: object_usage_linter
+  render_3d <- if (!is.null(data$centerlines)) {
+    # nolint end
+    "centerlines"
+  } else if (!is.null(data$meshes)) {
+    "meshes"
+  } else if (!is.null(data$vertices)) {
+    "vertices"
+  } else {
+    "none"
+  }
+  ggseg_status <- check(has_sf) # nolint: object_usage_linter
+  ggseg3d_status <- check(has_3d) # nolint: object_usage_linter
+  cli::cli_text("{.strong Rendering:} {ggseg_status} ggseg")
+  cli::cli_text("             {ggseg3d_status} ggseg3d ({render_3d})")
+
+  invisible()
 }

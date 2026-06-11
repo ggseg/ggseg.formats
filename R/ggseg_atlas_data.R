@@ -222,6 +222,131 @@ ggseg_data_tract <- function(
 }
 
 
+#' @export
+print.ggseg_data_cortical <- function(x, ...) {
+  cli::cli_h2("ggseg_data_cortical")
+
+  twod_summary <- summarise_2d(x) # nolint: object_usage_linter
+  if (!is.null(twod_summary)) {
+    cli::cli_text(twod_summary)
+  }
+
+  if (!is.null(x$vertices)) {
+    cli::cli_text("{.strong 3D (ggseg3d):} vertex indices")
+    print(x$vertices, ...)
+  }
+
+  invisible(x)
+}
+
+
+#' @export
+print.ggseg_data_subcortical <- function(x, ...) {
+  cli::cli_h2("ggseg_data_subcortical")
+
+  twod_summary <- summarise_2d(x) # nolint: object_usage_linter
+  if (!is.null(twod_summary)) {
+    cli::cli_text(twod_summary)
+  }
+
+  if (!is.null(x$meshes)) {
+    cli::cli_text("{.strong 3D (ggseg3d):} meshes")
+    print_mesh_summary(x$meshes)
+  }
+
+  invisible(x)
+}
+
+
+#' @export
+print.ggseg_data_cerebellar <- function(x, ...) {
+  cli::cli_h2("ggseg_data_cerebellar")
+
+  twod_summary <- summarise_2d(x) # nolint: object_usage_linter
+  if (!is.null(twod_summary)) {
+    cli::cli_text(twod_summary)
+  }
+
+  if (!is.null(x$vertices)) {
+    cli::cli_text("{.strong 3D (ggseg3d):} vertex indices (SUIT surface)")
+    print(x$vertices, ...)
+  }
+
+  invisible(x)
+}
+
+
+#' @export
+print.ggseg_data_tract <- function(x, ...) {
+  cli::cli_h2("ggseg_data_tract")
+
+  twod_summary <- summarise_2d(x) # nolint: object_usage_linter
+  if (!is.null(twod_summary)) {
+    cli::cli_text(twod_summary)
+  }
+
+  if (!is.null(x$centerlines)) {
+    n_tracts <- nrow(x$centerlines) # nolint: object_usage_linter
+    total_points <- sum(vapply(x$centerlines$points, nrow, integer(1))) # nolint
+    cli::cli_text(
+      "{.strong 3D (ggseg3d):} {n_tracts} centerlines ({total_points} points)"
+    )
+  }
+
+  invisible(x)
+}
+
+
+# Deprecated wrappers ----
+
+#' @param sf Deprecated. Pass 2D geometry via `geom` instead.
+#' @rdname ggseg_data_cortical
+#' @export
+brain_data_cortical <- function(sf = NULL, vertices = NULL) {
+  lifecycle::deprecate_warn(
+    "0.1.0",
+    "brain_data_cortical()",
+    "ggseg_data_cortical()"
+  )
+  ggseg_data_cortical(sf = sf, vertices = vertices)
+}
+
+
+#' @param sf Deprecated. Pass 2D geometry via `geom` instead.
+#' @rdname ggseg_data_subcortical
+#' @export
+brain_data_subcortical <- function(sf = NULL, meshes = NULL) {
+  lifecycle::deprecate_warn(
+    "0.1.0",
+    "brain_data_subcortical()",
+    "ggseg_data_subcortical()"
+  )
+  ggseg_data_subcortical(sf = sf, meshes = meshes)
+}
+
+
+#' @param sf Deprecated. Pass 2D geometry via `geom` instead.
+#' @rdname ggseg_data_tract
+#' @export
+brain_data_tract <- function(
+  sf = NULL,
+  centerlines = NULL,
+  meshes = NULL,
+  ...
+) {
+  lifecycle::deprecate_warn(
+    "0.1.0",
+    "brain_data_tract()",
+    "ggseg_data_tract()"
+  )
+  ggseg_data_tract(
+    sf = sf,
+    centerlines = centerlines,
+    meshes = meshes
+  )
+}
+
+
 #' Convert legacy meshes to centerlines format
 #' @noRd
 #' @keywords internal
@@ -323,81 +448,6 @@ compute_tangents <- function(points) {
   tangents
 }
 
-
-#' @export
-print.ggseg_data_cortical <- function(x, ...) {
-  cli::cli_h2("ggseg_data_cortical")
-
-  twod_summary <- summarise_2d(x) # nolint: object_usage_linter
-  if (!is.null(twod_summary)) {
-    cli::cli_text(twod_summary)
-  }
-
-  if (!is.null(x$vertices)) {
-    cli::cli_text("{.strong 3D (ggseg3d):} vertex indices")
-    print(x$vertices, ...)
-  }
-
-  invisible(x)
-}
-
-
-#' @export
-print.ggseg_data_subcortical <- function(x, ...) {
-  cli::cli_h2("ggseg_data_subcortical")
-
-  twod_summary <- summarise_2d(x) # nolint: object_usage_linter
-  if (!is.null(twod_summary)) {
-    cli::cli_text(twod_summary)
-  }
-
-  if (!is.null(x$meshes)) {
-    cli::cli_text("{.strong 3D (ggseg3d):} meshes")
-    print_mesh_summary(x$meshes)
-  }
-
-  invisible(x)
-}
-
-
-#' @export
-print.ggseg_data_cerebellar <- function(x, ...) {
-  cli::cli_h2("ggseg_data_cerebellar")
-
-  twod_summary <- summarise_2d(x) # nolint: object_usage_linter
-  if (!is.null(twod_summary)) {
-    cli::cli_text(twod_summary)
-  }
-
-  if (!is.null(x$vertices)) {
-    cli::cli_text("{.strong 3D (ggseg3d):} vertex indices (SUIT surface)")
-    print(x$vertices, ...)
-  }
-
-  invisible(x)
-}
-
-
-#' @export
-print.ggseg_data_tract <- function(x, ...) {
-  cli::cli_h2("ggseg_data_tract")
-
-  twod_summary <- summarise_2d(x) # nolint: object_usage_linter
-  if (!is.null(twod_summary)) {
-    cli::cli_text(twod_summary)
-  }
-
-  if (!is.null(x$centerlines)) {
-    n_tracts <- nrow(x$centerlines) # nolint: object_usage_linter
-    total_points <- sum(vapply(x$centerlines$points, nrow, integer(1))) # nolint
-    cli::cli_text(
-      "{.strong 3D (ggseg3d):} {n_tracts} centerlines ({total_points} points)"
-    )
-  }
-
-  invisible(x)
-}
-
 #' Summarise 2D atlas data for printing
 #' @noRd
 #' @keywords internal
@@ -445,54 +495,4 @@ print_mesh_summary <- function(meshes) {
     )
   ))
   print(summary_df)
-}
-
-
-# Deprecated wrappers ----
-
-#' @param sf Deprecated. Pass 2D geometry via `geom` instead.
-#' @rdname ggseg_data_cortical
-#' @export
-brain_data_cortical <- function(sf = NULL, vertices = NULL) {
-  lifecycle::deprecate_warn(
-    "0.1.0",
-    "brain_data_cortical()",
-    "ggseg_data_cortical()"
-  )
-  ggseg_data_cortical(sf = sf, vertices = vertices)
-}
-
-
-#' @param sf Deprecated. Pass 2D geometry via `geom` instead.
-#' @rdname ggseg_data_subcortical
-#' @export
-brain_data_subcortical <- function(sf = NULL, meshes = NULL) {
-  lifecycle::deprecate_warn(
-    "0.1.0",
-    "brain_data_subcortical()",
-    "ggseg_data_subcortical()"
-  )
-  ggseg_data_subcortical(sf = sf, meshes = meshes)
-}
-
-
-#' @param sf Deprecated. Pass 2D geometry via `geom` instead.
-#' @rdname ggseg_data_tract
-#' @export
-brain_data_tract <- function(
-  sf = NULL,
-  centerlines = NULL,
-  meshes = NULL,
-  ...
-) {
-  lifecycle::deprecate_warn(
-    "0.1.0",
-    "brain_data_tract()",
-    "ggseg_data_tract()"
-  )
-  ggseg_data_tract(
-    sf = sf,
-    centerlines = centerlines,
-    meshes = meshes
-  )
 }
