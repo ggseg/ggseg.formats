@@ -28,20 +28,13 @@ head(sf_data)
 #> Simple feature collection with 6 features and 6 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
-#> Bounding box:  xmin: 252.3839 ymin: 20.30279 xmax: 2552.774 ymax: 375.349
+#> Bounding box:  xmin: 245.421 ymin: 0 xmax: 4499.276 ymax: 232.5186
 #> CRS:           NA
-#>                        label     view hemi                            region
-#> 1                lh_bankssts inferior left banks of superior temporal sulcus
-#> 2                lh_bankssts  lateral left banks of superior temporal sulcus
-#> 3                lh_bankssts superior left banks of superior temporal sulcus
-#> 4 lh_caudalanteriorcingulate   medial left         caudal anterior cingulate
-#> 5     lh_caudalmiddlefrontal inferior left             caudal middle frontal
-#> 6     lh_caudalmiddlefrontal  lateral left             caudal middle frontal
-#>        lobe                       geometry  colour
-#> 1  temporal MULTIPOLYGON (((534.4782 21... #196428
-#> 2  temporal MULTIPOLYGON (((1121.478 12... #196428
-#> 3  temporal MULTIPOLYGON (((2448.464 20... #196428
-#> 4 cingulate MULTIPOLYGON (((1921.971 20... #7D64A0
-#> 5   frontal MULTIPOLYGON (((272.7879 22... #641900
-#> 6   frontal MULTIPOLYGON (((911.758 248... #641900
+#>          label     view hemi region lobe                       geometry colour
+#> 186 rh_unknown  lateral <NA>   <NA> <NA> MULTIPOLYGON (((3849.766 60...   <NA>
+#> 187 lh_unknown   medial <NA>   <NA> <NA> MULTIPOLYGON (((1782.84 18....   <NA>
+#> 188 rh_unknown inferior <NA>   <NA> <NA> MULTIPOLYGON (((3190.519 5....   <NA>
+#> 189 rh_unknown   medial <NA>   <NA> <NA> MULTIPOLYGON (((4318.844 20...   <NA>
+#> 190 lh_unknown  lateral <NA>   <NA> <NA> MULTIPOLYGON (((926.5936 60...   <NA>
+#> 191 lh_unknown inferior <NA>   <NA> <NA> MULTIPOLYGON (((367.1256 13...   <NA>
 ```
