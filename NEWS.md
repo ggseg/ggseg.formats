@@ -9,6 +9,14 @@
   context-behind-core draw order established by the manipulation helpers, so
   contextual regions could draw on top of focus regions. The ordering is now
   preserved and re-applied after the join, matching `as.data.frame()`.
+- `atlas_type()` can again guess the type of an atlas whose `type` is unset:
+  `guess_type()` now reads views from the unified `$data` geometry slot instead
+  of the legacy bare `$sf` slot, which a modern `ggseg_atlas` never populates
+  (it previously always guessed `"subcortical"`).
+- `read_atlas_files()` extracts the subject id by stripping the `subjects_dir`
+  prefix by length rather than as a regular expression, so directories
+  containing regex metacharacters (or a trailing slash) no longer yield the
+  wrong subject.
 
 ### sf-optional migration
 

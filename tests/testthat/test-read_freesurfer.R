@@ -184,6 +184,30 @@ describe("find_subject_fromdir", {
 })
 
 
+describe("read_atlas_files() path handling", {
+  it("extracts the subject when subjects_dir has regex metacharacters", {
+    base <- withr::local_tempdir()
+    # '+' is a regex metacharacter: a regex-based prefix strip would not match
+    sdir <- file.path(base, "a+b")
+    dir.create(file.path(sdir, "bert", "stats"), recursive = TRUE)
+    for (f in c("lh.aparc.stats", "rh.aparc.stats")) {
+      file.copy(
+        test_path(file.path("data/bert/stats", f)),
+        file.path(sdir, "bert", "stats", f)
+      )
+    }
+
+    dat <- read_atlas_files(sdir, "aparc")
+    expect_identical(unique(dat$subject), "bert")
+  })
+
+  it("extracts the subject despite a trailing slash on subjects_dir", {
+    dat <- read_atlas_files(paste0(test_path("data"), "/"), "aseg.stats")
+    expect_identical(unique(dat$subject), "bert")
+  })
+})
+
+
 describe("find_hemi_fromfile", {
   it("extracts hemisphere from lh file", {
     result <- find_hemi_fromfile("/path/to/lh.aparc.stats")
