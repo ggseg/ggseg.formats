@@ -28,6 +28,7 @@ machinery in $data — useful for wasm builds and air-gapped installs."><meta pr
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/atlas-manipulation.html">Customising brain atlases</a></li>
     <li><a class="dropdown-item" href="../articles/ggseg.formats.html">The ggseg_atlas object</a></li>
+    <li><a class="dropdown-item" href="../articles/migrating-atlases.html">Migrating atlas packages to sf-optional</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -79,6 +80,12 @@ machinery in <code>$data</code> — useful for wasm builds and air-gapped instal
     <p>Conversion is lossless, so a single representation is kept (no redundant
 sf alongside polygons). To rehydrate sf for geometric operations later,
 use <code><a href="as_sf_atlas.html">as_sf_atlas()</a></code>.</p>
+<p>This doubles as the backward-compatible path for sf-optional installs: a
+lite-only ggseg that meets a still-sf-backed atlas converts it on the fly
+when sf is installed. When sf is not installed the geometry cannot be read,
+so the call aborts with a pointer to <code><a href="migrate_atlas_files.html">migrate_atlas_files()</a></code> — which the
+atlas maintainer runs once (on a machine with sf) to ship the package in the
+polygon format.</p>
     </div>
 
     <div class="section level2">

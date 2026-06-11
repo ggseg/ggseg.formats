@@ -29,6 +29,14 @@ sf alongside polygons). To rehydrate sf for geometric operations later,
 use
 [`as_sf_atlas()`](https://ggsegverse.github.io/ggseg.formats/reference/as_sf_atlas.md).
 
+This doubles as the backward-compatible path for sf-optional installs: a
+lite-only ggseg that meets a still-sf-backed atlas converts it on the
+fly when sf is installed. When sf is not installed the geometry cannot
+be read, so the call aborts with a pointer to
+[`migrate_atlas_files()`](https://ggsegverse.github.io/ggseg.formats/reference/migrate_atlas_files.md)
+— which the atlas maintainer runs once (on a machine with sf) to ship
+the package in the polygon format.
+
 ## Examples
 
 ``` r
