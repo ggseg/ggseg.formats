@@ -26,6 +26,11 @@ describe("atlas_palette", {
     my_df <- data.frame(x = 1)
     expect_error(atlas_palette(my_df), "must be a.*ggseg_atlas")
   })
+
+  it("errors when a name resolves to a function returning a non-atlas", {
+    # match.fun("data.frame")() succeeds but is not an atlas
+    expect_error(atlas_palette("data.frame"), "Could not find atlas")
+  })
 })
 
 describe("atlas_geom", {
