@@ -2,4 +2,5 @@
 
 0 errors | 0 warnings | 0 notes
 
-* adds support for cerebellar projections
+* incorporates new atlas `suit()``
+* `sf` becomes optional dependency

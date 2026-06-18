@@ -1,98 +1,36 @@
 # ggseg.formats
 
-## ggseg.formats 0.0.2.9004 (development)
+## ggseg.formats 0.0.3
 
-### Bug fixes
+### sf-optional atlas format
 
-- `atlas_sf()` no longer re-sorts geometry rows alphabetically by `label`. The
-  underlying `merge()` defaulted to `sort = TRUE`, which discarded the
-  context-behind-core draw order established by the manipulation helpers, so
-  contextual regions could draw on top of focus regions. The ordering is now
-  preserved and re-applied after the join, matching `as.data.frame()`.
-- `atlas_type()` can again guess the type of an atlas whose `type` is unset:
-  `guess_type()` now reads views from the unified `$data` geometry slot instead
-  of the legacy bare `$sf` slot, which a modern `ggseg_atlas` never populates
-  (it previously always guessed `"subcortical"`).
-- `read_atlas_files()` extracts the subject id by stripping the `subjects_dir`
-  prefix by length rather than as a regular expression, so directories
-  containing regex metacharacters (or a trailing slash) no longer yield the
-  wrong subject.
-- `read_freesurfer_table(measure = )` strips the `_<measure>` suffix literally
-  from the end of each label instead of with an unanchored regex, so a label
-  that contains the measure mid-string is no longer over-stripped.
-- `atlas_palette()` given a non-atlas object now errors with a class-specific
-  message instead of interpolating the whole object into "Could not find
-  atlas".
+`sfheaders` joins Imports. **`sf` moves from Imports to Suggests.** The
+package can now be installed without GDAL / GEOS / PROJ system libraries —
+enabling wasm builds and air-gapped installs. Functions that genuinely need
+sf (e.g. `validate_sf()`, `as.data.frame.ggseg_atlas()`, `plot.ggseg_atlas()`,
+the `atlas_view_*` repositioning helpers) check `requireNamespace("sf")` at
+entry and error with a clear pointer to `as_polygon_atlas()` if sf is
+unavailable. The bundled `dk`, `aseg`, and `tracula` atlases still carry
+their `sf` slots, so callers who have sf installed see no behavioural change.
 
-### Breaking changes
-
-- `atlas_palette()` now takes a `ggseg_atlas` object only (its first argument
-  is `atlas`). Looking an atlas up by name string (e.g. `atlas_palette("dk")`)
-  is no longer supported — pass the atlas, e.g. `atlas_palette(dk())`.
-
-### Documentation & internals
-
-- Corrected the package-level help page: the title and `?ggseg.formats` alias
-  are now derived from `DESCRIPTION` (previously titled "Plot brain
-  segmentations with ggplot" and aliased as `ggseg`).
-- Dropped the vestigial `utils::globalVariables()` registration, which no
-  longer referenced any global used by the package.
-
-### sf-optional migration
-
+- New `brain_polygons` representation: a nested tibble keyed by `label`, with a
+  `geometry` list-column containing per-view, per-ring point coordinates
+  (`view`, `x`, `y`, `group`, `subgroup`). Renderable directly by
+  `geom_polygon()` via the `subgroup` aesthetic (which handles holes
+  through `grid::pathGrob` even-odd fill).
+- Geometry round-trips between sf and `brain_polygons` losslessly. The sf-side
+  conversion uses `sfheaders` (pure Rcpp, no GDAL/GEOS/PROJ system libraries),
+  enabling wasm builds and air-gapped installation paths. The low-level
+  converters are internal; the public API is the atlas-level `as_sf_atlas()` /
+  `as_polygon_atlas()` and the `atlas_sf()` / `atlas_polygons()` accessors.
+- `validate_data_labels()` checks 2D label coverage against whichever 2D source
+  is present (`sf` or `polygons`), preserving the same 80%/90% thresholds.
 - New vignette `vignette("migrating-atlases")` — a three-line recipe for
   downstream atlas-package maintainers to migrate their `data/*.rda` to the
   sf-optional polygon format with `migrate_atlas_files()`.
 - `as_polygon_atlas()` now aborts with an actionable message naming
   `migrate_atlas_files()` when it meets a still-sf-backed atlas on an install
   where `sf` is not available, instead of a generic "sf is required" error.
-
-### Internal & tooling
-
-- Added a package hex logo: the brain as atlas data — dk lobes traced as a
-  sparse "connect-the-dots" network of vertices and edges, in a plum take on
-  the ggsegverse house style. Reproducible via `data-raw/make_hex.R`.
-- The package now passes the full `goodpractice` + tidyverse check suite as a
-  CI hard gate, at 100% line coverage. Formatting is enforced with `air` and
-  linting with `lintr`.
-
-## ggseg.formats 0.0.2.9001 (development)
-
-### Base-R `plot()` (breaking)
-
-`plot.ggseg_atlas()` is reimplemented with base graphics
-(`graphics::polygon()` / `graphics::polypath()`), and **`ggplot2` is dropped
-from Imports** — the package no longer depends on ggplot2 for its own plotting.
-
-- `plot()` now returns the atlas invisibly rather than a `ggplot` object; it is
-  called for its side effect. Each spatially separate piece (e.g. a hemisphere
-  surface or a slice) is drawn in its own panel, arranged in a near-square grid
-  for a legible overview of the atlas. Code that captured the return value to
-  add ggplot2 layers (`plot(atlas) + ...`) must be updated.
-- The `show.legend` argument is removed; the base-R plot draws no legend. Extra
-  arguments in `...` are forwarded to the underlying `polygon()` / `polypath()`
-  primitives (e.g. `lwd`, `border`).
-- `vdiffr` is dropped from Suggests; the plot tests no longer snapshot SVG.
-
-### Lighter dependency tree
-
-- Dropped the `dplyr` and `tidyr` Imports in favour of base-R equivalents,
-  shrinking the recursive dependency tree from 32 to 20 packages (also removes
-  `tibble`, `pillar`, `purrr`, `stringi`, `stringr`, `tidyselect`, `generics`,
-  `magrittr` and more). Returned data objects keep the `tbl_df`/`tbl` classes
-  so they continue to integrate with `tibble`/`dplyr` workflows, but `tibble`
-  is no longer required at install time.
-- `print()` for a `ggseg_atlas` now shows the first 10 core rows by default
-  (atlases can have hundreds of regions); pass `n` to control how many rows
-  print, e.g. `print(dk(), n = 50)`.
-
-### Bundled SUIT cerebellar atlas
-
-- New `suit()` bundled atlas — the SUIT cerebellar parcellation (lobules + deep
-  nuclei) from ggsegSUIT, stored in the sf-optional polygon (`geom`) format with
-  3D vertices (lobules) and meshes (nuclei). ggseg.formats now ships one atlas of
-  each kind: `dk()` (cortical), `aseg()` (subcortical), `tracula()` (tract),
-  `suit()` (cerebellar).
 
 ### Unified `geom` slot (breaking)
 
@@ -113,43 +51,39 @@ representation is ever stored.
   polygons via `sf_to_polygons()`) with a deprecation warning.
 - `as_polygon_atlas()` / `as_sf_atlas()` set the single `geom` slot.
 - `migrate_atlas_files()` rewrites atlases to the single `geom` slot
-  (polygons by default; `keep_sf = TRUE` stores sf).
+  (polygons by default; `keep_sf = TRUE` stores sf). It walks a package's
+  `data/` directory and rewrites every `ggseg_atlas` `.rda`. Intended for
+  downstream atlas-package maintainers across the ggsegverse ecosystem.
 
-### sf-optional atlas format
+### Base-R `plot()` (breaking)
 
-Foundation work for the `sf-optional` milestone — see
-[ggsegverse/ggseg.formats#4](https://github.com/ggsegverse/ggseg.formats/issues/4).
+`plot.ggseg_atlas()` is reimplemented with base graphics
+(`graphics::polygon()` / `graphics::polypath()`), and **`ggplot2` is dropped
+from Imports** — the package no longer depends on ggplot2 for its own plotting.
 
-- New `brain_polygons` representation: a nested tibble keyed by `label`, with a
-  `geometry` list-column containing per-view, per-ring point coordinates
-  (`view`, `x`, `y`, `group`, `subgroup`). Renderable directly by
-  `geom_polygon()` via the `subgroup` aesthetic (which handles holes
-  through `grid::pathGrob` even-odd fill).
-- Geometry round-trips between sf and `brain_polygons` losslessly. The sf-side
-  conversion uses `sfheaders` (pure Rcpp, no GDAL/GEOS/PROJ system libraries),
-  enabling wasm builds and air-gapped installation paths. The low-level
-  converters are internal; the public API is the atlas-level `as_sf_atlas()` /
-  `as_polygon_atlas()` and the `atlas_sf()` / `atlas_polygons()` accessors.
-- `ggseg_data_cortical()`, `ggseg_data_subcortical()`, `ggseg_data_cerebellar()`,
-  and `ggseg_data_tract()` now accept a `polygons =` argument alongside `sf =`.
-  When only `sf` is supplied, the `polygons` slot is derived automatically; the
-  two slots are kept in sync so existing callers see no change.
-- `as_polygon_atlas()` and `as_sf_atlas()` convert between the sf-backed and
-  polygon-only forms at the atlas level.
-- `migrate_atlas_files()` walks a package's `data/` directory and rewrites every
-  `ggseg_atlas` `.rda` to the polygon format. Intended for downstream
-  atlas-package maintainers across the ggsegverse ecosystem.
-- `validate_data_labels()` checks 2D label coverage against whichever 2D source
-  is present (`sf` or `polygons`), preserving the same 80%/90% thresholds.
+- `plot()` now returns the atlas invisibly rather than a `ggplot` object; it is
+  called for its side effect. Each spatially separate piece (e.g. a hemisphere
+  surface or a slice) is drawn in its own panel, arranged in a near-square grid
+  for a legible overview of the atlas. Code that captured the return value to
+  add ggplot2 layers (`plot(atlas) + ...`) must be updated.
+- The `show.legend` argument is removed; the base-R plot draws no legend. Extra
+  arguments in `...` are forwarded to the underlying `polygon()` / `polypath()`
+  primitives (e.g. `lwd`, `border`).
+- `vdiffr` is dropped from Suggests; the plot tests no longer snapshot SVG.
 
-`sfheaders` joins Imports. **`sf` moves from Imports to Suggests.** The
-package can now be installed without GDAL / GEOS / PROJ system libraries —
-enabling wasm builds and air-gapped installs. Functions that genuinely need
-sf (e.g. `validate_sf()`, `as.data.frame.ggseg_atlas()`, `plot.ggseg_atlas()`,
-the `atlas_view_*` repositioning helpers) check `requireNamespace("sf")` at
-entry and error with a clear pointer to `as_polygon_atlas()` if sf is
-unavailable. The bundled `dk`, `aseg`, and `tracula` atlases still carry
-their `sf` slots, so callers who have sf installed see no behavioural change.
+### `atlas_palette()` (breaking)
+
+- `atlas_palette()` now takes a `ggseg_atlas` object only (its first argument
+  is `atlas`). Looking an atlas up by name string (e.g. `atlas_palette("dk")`)
+  is no longer supported — pass the atlas, e.g. `atlas_palette(dk())`.
+
+### Bundled SUIT cerebellar atlas
+
+- New `suit()` bundled atlas — the SUIT cerebellar parcellation (lobules + deep
+  nuclei) from ggsegSUIT, stored in the sf-optional polygon (`geom`) format with
+  3D vertices (lobules) and meshes (nuclei). ggseg.formats now ships one atlas of
+  each kind: `dk()` (cortical), `aseg()` (subcortical), `tracula()` (tract),
+  `suit()` (cerebellar).
 
 ### Region geometry operations
 
@@ -180,6 +114,54 @@ their `sf` slots, so callers who have sf installed see no behavioural change.
   on polygon-only atlases (they previously rebuilt from the `sf` slot only).
 - View helpers now warn about "no 2D geometry" (rather than "no sf data") only
   when an atlas carries neither `sf` nor `polygons`.
+
+### Lighter dependency tree
+
+- Dropped the `dplyr` and `tidyr` Imports in favour of base-R equivalents,
+  shrinking the recursive dependency tree from 32 to 20 packages (also removes
+  `tibble`, `pillar`, `purrr`, `stringi`, `stringr`, `tidyselect`, `generics`,
+  `magrittr` and more). Returned data objects keep the `tbl_df`/`tbl` classes
+  so they continue to integrate with `tibble`/`dplyr` workflows, but `tibble`
+  is no longer required at install time.
+- `print()` for a `ggseg_atlas` now shows the first 10 core rows by default
+  (atlases can have hundreds of regions); pass `n` to control how many rows
+  print, e.g. `print(dk(), n = 50)`.
+
+### Bug fixes
+
+- `atlas_sf()` no longer re-sorts geometry rows alphabetically by `label`. The
+  underlying `merge()` defaulted to `sort = TRUE`, which discarded the
+  context-behind-core draw order established by the manipulation helpers, so
+  contextual regions could draw on top of focus regions. The ordering is now
+  preserved and re-applied after the join, matching `as.data.frame()`.
+- `atlas_type()` can again guess the type of an atlas whose `type` is unset:
+  `guess_type()` now reads views from the unified `$data` geometry slot instead
+  of the legacy bare `$sf` slot, which a modern `ggseg_atlas` never populates
+  (it previously always guessed `"subcortical"`).
+- `read_atlas_files()` extracts the subject id by stripping the `subjects_dir`
+  prefix by length rather than as a regular expression, so directories
+  containing regex metacharacters (or a trailing slash) no longer yield the
+  wrong subject.
+- `read_freesurfer_table(measure = )` strips the `_<measure>` suffix literally
+  from the end of each label instead of with an unanchored regex, so a label
+  that contains the measure mid-string is no longer over-stripped.
+- `atlas_palette()` given a non-atlas object now errors with a class-specific
+  message instead of interpolating the whole object into "Could not find
+  atlas".
+
+### Documentation & internals
+
+- Corrected the package-level help page: the title and `?ggseg.formats` alias
+  are now derived from `DESCRIPTION` (previously titled "Plot brain
+  segmentations with ggplot" and aliased as `ggseg`).
+- Dropped the vestigial `utils::globalVariables()` registration, which no
+  longer referenced any global used by the package.
+- Added a package hex logo: the brain as atlas data — dk lobes traced as a
+  sparse "connect-the-dots" network of vertices and edges, in a plum take on
+  the ggsegverse house style. Reproducible via `data-raw/make_hex.R`.
+- The package now passes the full `goodpractice` + tidyverse check suite as a
+  CI hard gate, at 100% line coverage. Formatting is enforced with `air` and
+  linting with `lintr`.
 
 ## ggseg.formats 0.0.2
 
