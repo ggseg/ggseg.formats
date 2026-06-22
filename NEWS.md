@@ -1,5 +1,16 @@
 # ggseg.formats
 
+## ggseg.formats 0.0.3.9000
+
+### Bug fixes
+
+- `plot.ggseg_atlas()` now draws contextual regions (those not in the atlas
+  core) behind the labelled core regions, instead of in alphabetical label
+  order. Previously a context region whose label sorted after a core region
+  could be drawn on top of it and occlude small structures (e.g. neighbouring
+  subcortical structures hiding the hypothalamic subunits). This matches the
+  ordering already used by the `geom_brain()` / `as.data.frame()` path.
+
 ## ggseg.formats 0.0.3
 
 ### sf-optional atlas format

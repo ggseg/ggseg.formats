@@ -34,6 +34,37 @@ describe("plot.ggseg_atlas", {
   })
 })
 
+describe("order_context_behind", {
+  it("moves contextual rows ahead of core rows", {
+    flat <- data.frame(
+      label = c("core1", "ctxA", "core2", "ctxB"),
+      x = 1:4,
+      stringsAsFactors = FALSE
+    )
+    out <- order_context_behind(flat, core_labels = c("core1", "core2"))
+    is_ctx <- !out$label %in% c("core1", "core2")
+    # every context row precedes every core row
+    expect_true(max(which(is_ctx)) < min(which(!is_ctx)))
+    expect_identical(out$label, c("ctxA", "ctxB", "core1", "core2"))
+  })
+
+  it("preserves the original within-group order (stable sort)", {
+    flat <- data.frame(
+      label = c("ctxB", "core2", "ctxA", "core1"),
+      stringsAsFactors = FALSE
+    )
+    out <- order_context_behind(flat, core_labels = c("core1", "core2"))
+    # context block keeps B-before-A; core block keeps 2-before-1
+    expect_identical(out$label, c("ctxB", "ctxA", "core2", "core1"))
+  })
+
+  it("is order-preserving when every row is core", {
+    flat <- data.frame(label = c("a", "b", "c"), stringsAsFactors = FALSE)
+    out <- order_context_behind(flat, core_labels = c("a", "b", "c"))
+    expect_identical(out$label, c("a", "b", "c"))
+  })
+})
+
 describe("gap_groups", {
   it("keeps densely sampled contiguous values in a single group", {
     vals <- seq(0, 10, by = 0.5)
