@@ -44,7 +44,7 @@ describe("order_context_behind", {
     out <- order_context_behind(flat, core_labels = c("core1", "core2"))
     is_ctx <- !out$label %in% c("core1", "core2")
     # every context row precedes every core row
-    expect_true(max(which(is_ctx)) < min(which(!is_ctx)))
+    expect_lt(max(which(is_ctx)), min(which(!is_ctx)))
     expect_identical(out$label, c("ctxA", "ctxB", "core1", "core2"))
   })
 

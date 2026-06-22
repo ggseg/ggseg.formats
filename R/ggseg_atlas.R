@@ -204,22 +204,6 @@ as.data.frame.ggseg_atlas <- function(x, ...) {
   sf::st_as_sf(result)
 }
 
-#' Order polygon rows so contextual regions are drawn behind core regions
-#'
-#' Contextual regions are those whose `label` is not part of the atlas core
-#' (e.g. the cortex silhouette and neighbouring structures drawn for anatomical
-#' reference). They must be drawn first so the labelled core regions sit on top;
-#' otherwise a context region that overlaps a small core region would occlude
-#' it. Returns `flat` with context rows moved ahead of core rows, preserving the
-#' original within-group order (a stable sort), mirroring the ordering the
-#' ggplot path applies in `as.data.frame()`.
-#' @noRd
-#' @keywords internal
-order_context_behind <- function(flat, core_labels) {
-  is_context <- !flat$label %in% core_labels
-  flat[order(is_context, decreasing = TRUE), , drop = FALSE]
-}
-
 #' @importFrom graphics mtext par plot.new plot.window polygon polypath
 #' @export
 plot.ggseg_atlas <- function(x, ...) {
@@ -266,6 +250,22 @@ plot.ggseg_atlas <- function(x, ...) {
   mtext(paste(x$atlas, x$type, "atlas"), outer = TRUE, cex = 1, line = 0.5)
 
   invisible(x)
+}
+
+#' Order polygon rows so contextual regions are drawn behind core regions
+#'
+#' Contextual regions are those whose `label` is not part of the atlas core
+#' (e.g. the cortex silhouette and neighbouring structures drawn for anatomical
+#' reference). They must be drawn first so the labelled core regions sit on top;
+#' otherwise a context region that overlaps a small core region would occlude
+#' it. Returns `flat` with context rows moved ahead of core rows, preserving the
+#' original within-group order (a stable sort), mirroring the ordering the
+#' ggplot path applies in `as.data.frame()`.
+#' @noRd
+#' @keywords internal
+order_context_behind <- function(flat, core_labels) {
+  is_context <- !flat$label %in% core_labels
+  flat[order(is_context, decreasing = TRUE), , drop = FALSE]
 }
 
 

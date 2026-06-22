@@ -69,19 +69,20 @@ fusiform
 gapped
 ggplot
 ggseg
-ggsegExtra
 ggsegSUIT
 ggsegverse
 globus
 grey
 gyral
 hemi
+hypothalamic
 labelled
 legended
 lobular
 lobules
 losslessly
 midline
+neighbouring
 neuroanatomical
 neuroimaging
 normalise
@@ -100,7 +101,6 @@ parcellations
 peduncular
 pericalcarine
 pial
-pkgcheck
 postcentral
 precentral
 precuneus
@@ -116,6 +116,7 @@ segmentations
 sfc
 sfheaders
 subcortical
+subunits
 sulcus
 supramarginal
 symdifference
