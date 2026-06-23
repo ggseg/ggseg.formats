@@ -208,6 +208,7 @@ as.data.frame.ggseg_atlas <- function(x, ...) {
 #' @export
 plot.ggseg_atlas <- function(x, ...) {
   flat <- polygons_unnest(atlas_polygons(x))
+  flat <- order_context_behind(flat, x$core$label)
   fill_colors <- resolve_fill_colors(flat$label, x$palette)
   dots <- list(...)
 
@@ -236,8 +237,12 @@ plot.ggseg_atlas <- function(x, ...) {
       asp = 1
     )
     # `view` in the key keeps a region's per-view instances from being joined.
+    # Factor levels follow first appearance (not the alphabetical order a bare
+    # character split would impose) so the context-behind ordering set above is
+    # honoured when the pieces are drawn.
     piece_id <- paste(cf$label, cf$view, cf$group, sep = "\r")
-    invisible(lapply(split(cf, piece_id), function(piece) {
+    pieces <- split(cf, factor(piece_id, levels = unique(piece_id)))
+    invisible(lapply(pieces, function(piece) {
       draw_piece(piece, fill_colors[[piece$label[[1L]]]], dots)
     }))
   }
@@ -245,6 +250,22 @@ plot.ggseg_atlas <- function(x, ...) {
   mtext(paste(x$atlas, x$type, "atlas"), outer = TRUE, cex = 1, line = 0.5)
 
   invisible(x)
+}
+
+#' Order polygon rows so contextual regions are drawn behind core regions
+#'
+#' Contextual regions are those whose `label` is not part of the atlas core
+#' (e.g. the cortex silhouette and neighbouring structures drawn for anatomical
+#' reference). They must be drawn first so the labelled core regions sit on top;
+#' otherwise a context region that overlaps a small core region would occlude
+#' it. Returns `flat` with context rows moved ahead of core rows, preserving the
+#' original within-group order (a stable sort), mirroring the ordering the
+#' ggplot path applies in `as.data.frame()`.
+#' @noRd
+#' @keywords internal
+order_context_behind <- function(flat, core_labels) {
+  is_context <- !flat$label %in% core_labels
+  flat[order(is_context, decreasing = TRUE), , drop = FALSE]
 }
 
 
