@@ -1,16 +1,16 @@
 describe("sf_to_polygons()", {
   it("returns one row per label with a nested geometry list-column", {
-    polys <- sf_to_polygons(dk()$data$sf)
+    polys <- sf_to_polygons(dk_sf_geom())
 
     expect_s3_class(polys, "brain_polygons")
     expect_s3_class(polys, "tbl_df")
-    expect_identical(nrow(polys), length(unique(dk()$data$sf$label)))
+    expect_identical(nrow(polys), length(unique(dk_sf_geom()$label)))
     expect_named(polys, c("label", "geometry"))
     expect_type(polys$geometry, "list")
   })
 
   it("nested geometry data.frams carry view, x, y, group, subgroup", {
-    polys <- sf_to_polygons(dk()$data$sf)
+    polys <- sf_to_polygons(dk_sf_geom())
     inner <- polys$geometry[[1]]
     expect_s3_class(inner, "tbl_df")
     expect_named(inner, c("view", "x", "y", "group", "subgroup"))
@@ -19,7 +19,7 @@ describe("sf_to_polygons()", {
   })
 
   it("preserves coordinate counts across the conversion", {
-    sf0 <- dk()$data$sf
+    sf0 <- dk_sf_geom()
     polys <- sf_to_polygons(sf0)
     n_sf <- sum(vapply(
       sf0$geometry,
@@ -89,8 +89,8 @@ describe("validate_geom()", {
 
 describe("resolve_geom()", {
   it("warns and ignores sf= when geom is also supplied", {
-    polys <- sf_to_polygons(dk()$data$sf)
-    sf0 <- dk()$data$sf
+    polys <- sf_to_polygons(dk_sf_geom())
+    sf0 <- dk_sf_geom()
     expect_warning(
       resolve_geom(geom = polys, sf = sf0, .fn = "x"),
       "ignoring"
@@ -123,7 +123,7 @@ describe("validate_polygon_geoms()", {
 
 describe("polygons_to_sf()", {
   it("round-trips dk geometry losslessly (areas equal)", {
-    sf0 <- dk()$data$sf
+    sf0 <- dk_sf_geom()
     polys <- sf_to_polygons(sf0)
     sf1 <- polygons_to_sf(polys)
 
@@ -191,7 +191,7 @@ describe("validate_polygons()", {
 
 describe("ggseg_data_cortical() geometry", {
   it("accepts polygons input as geom", {
-    polys <- sf_to_polygons(atlas_geom(dk()))
+    polys <- sf_to_polygons(dk_sf_geom())
     d <- ggseg_data_cortical(geom = polys)
     expect_s3_class(d$geom, "brain_polygons")
     expect_null(d$sf)
@@ -199,13 +199,13 @@ describe("ggseg_data_cortical() geometry", {
   })
 
   it("accepts sf input as geom", {
-    d <- ggseg_data_cortical(geom = atlas_geom(dk()))
+    d <- ggseg_data_cortical(geom = dk_sf_geom())
     expect_s3_class(d$geom, "sf")
   })
 
   it("converts a deprecated sf= argument to polygons", {
     withr::local_options(lifecycle_verbosity = "quiet")
-    d <- ggseg_data_cortical(sf = atlas_geom(dk()))
+    d <- ggseg_data_cortical(sf = dk_sf_geom())
     expect_s3_class(d$geom, "brain_polygons")
   })
 
@@ -246,7 +246,7 @@ describe("as_polygon_atlas() / as_sf_atlas()", {
 describe("migrate_atlas_files()", {
   it("rewrites .rda files to a polygon geom slot", {
     tmp <- withr::local_tempdir()
-    atlas <- dk()
+    atlas <- dk_sf_atlas()
     save(atlas, file = file.path(tmp, "atlas.rda"))
 
     migrated <- migrate_atlas_files(tmp, quiet = TRUE)

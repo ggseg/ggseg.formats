@@ -10,6 +10,8 @@
 #
 # Run with: source("data-raw/make_sysdata.R")
 
+devtools::load_all()
+
 load("R/sysdata.rda")
 
 dk_env <- new.env()
@@ -22,6 +24,12 @@ load("data/tracula.rda", envir = tracula_env)
 .dk_atlas <- dk_env$dk
 .aseg_atlas <- aseg_env$aseg
 .tracula_atlas <- tracula_env$tracula
+
+# Ship the bundled atlases in the polygon format so they install and plot
+# without sf. The conversion is lossless; see refresh_sysdata_polygons.R.
+.dk_atlas <- as_polygon_atlas(.dk_atlas)
+.aseg_atlas <- as_polygon_atlas(.aseg_atlas)
+.tracula_atlas <- as_polygon_atlas(.tracula_atlas)
 
 usethis::use_data(
   brain_mesh_inflated,

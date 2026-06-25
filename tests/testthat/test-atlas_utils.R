@@ -2028,14 +2028,15 @@ describe("view_reorder_poly with no matching views", {
 
 describe("view_reorder_group_order across atlas types", {
   it("returns the order unchanged for a non-cortical sf atlas", {
-    views <- atlas_views(aseg())
-    result <- atlas_view_reorder(aseg(), views[2])
+    atlas <- as_sf_atlas(aseg())
+    views <- atlas_views(atlas)
+    result <- atlas_view_reorder(atlas, views[2])
     expect_s3_class(result$data, "ggseg_data_subcortical")
     expect_identical(unique(result$data$geom$view)[1], views[2])
   })
 
-  it("expands a partial order into hemi groups for a cortical atlas", {
-    result <- atlas_view_reorder(dk(), "lateral")
+  it("expands a partial order into hemi groups for a cortical sf atlas", {
+    result <- atlas_view_reorder(as_sf_atlas(dk()), "lateral")
     expect_identical(unique(result$data$geom$view)[1], "lateral")
   })
 })

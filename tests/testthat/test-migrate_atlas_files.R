@@ -14,7 +14,7 @@ describe("migrate_atlas_files()", {
 
   it("rewrites a legacy sf atlas to brain_polygons in place", {
     dir <- withr::local_tempdir()
-    atlas <- dk()
+    atlas <- dk_sf_atlas()
     save(atlas, file = file.path(dir, "atlas.rda"))
 
     migrated <- migrate_atlas_files(dir, quiet = TRUE)
@@ -48,7 +48,7 @@ describe("migrate_atlas_files()", {
 
   it("reports migrated files when quiet = FALSE", {
     dir <- withr::local_tempdir()
-    atlas <- dk()
+    atlas <- dk_sf_atlas()
     save(atlas, file = file.path(dir, "atlas.rda"))
 
     expect_message(migrate_atlas_files(dir, quiet = FALSE), "Migrated")

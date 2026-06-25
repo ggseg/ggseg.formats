@@ -2,6 +2,16 @@
 
 ## ggseg.formats 0.0.3.9000
 
+### sf-optional bundled atlases
+
+- The bundled `dk()`, `aseg()`, and `tracula()` atlases now ship in the
+  `brain_polygons` format, joining `suit()`. They install and plot without
+  `sf` (and its GDAL / GEOS / PROJ system libraries) — previously they were
+  sf-backed, so plotting them still required `sf` even though the package
+  itself did not. The conversion is lossless, so figures are unchanged;
+  callers who want sf geometry can still obtain it on demand with
+  `as_sf_atlas()`.
+
 ### Bug fixes
 
 - `plot.ggseg_atlas()` now draws contextual regions (those not in the atlas

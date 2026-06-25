@@ -23,7 +23,11 @@ describe("atlas_geom", {
 
 describe("atlas_geometry_type", {
   it("returns 'sf' for an sf atlas", {
-    expect_identical(atlas_geometry_type(dk()), "sf")
+    expect_identical(atlas_geometry_type(dk_sf_atlas()), "sf")
+  })
+
+  it("returns 'polygon' for a polygon atlas", {
+    expect_identical(atlas_geometry_type(dk()), "polygon")
   })
 
   it("errors when the atlas has no recognised 2D geometry", {

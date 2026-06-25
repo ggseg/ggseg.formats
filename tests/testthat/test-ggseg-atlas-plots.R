@@ -23,6 +23,7 @@ describe("plot.ggseg_atlas", {
 
   it("errors when atlas has no geometry", {
     k <- dk()
+    k$data$geom <- NULL
     k$data$sf <- NULL
     expect_error(plot(k), "2D geometry")
   })
