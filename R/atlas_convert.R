@@ -175,7 +175,7 @@ extract_3d_data <- function(
     meshes <- extract_meshes_from_rgl(dt)
     cli::cli_inform(c("i" = "Extracted meshes from 3D atlas."))
   } else if (has_vertex_data(dt)) {
-    vertices <- data.frame(label = dt$label, stringsAsFactors = FALSE)
+    vertices <- data.frame(label = dt$label)
     vertices$vertices <- dt$vertices
     cli::cli_inform(
       c("i" = "Using existing vertex indices from 3D atlas.")
@@ -191,7 +191,7 @@ extract_3d_data <- function(
 #' @noRd
 #' @keywords internal
 extract_meshes_from_rgl <- function(dt) {
-  meshes_df <- data.frame(label = dt$label, stringsAsFactors = FALSE)
+  meshes_df <- data.frame(label = dt$label)
   meshes_df$mesh <- lapply(seq_len(nrow(dt)), function(i) {
     m <- dt$mesh[[i]]
     if (is.null(m)) {

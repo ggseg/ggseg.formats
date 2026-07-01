@@ -114,6 +114,5 @@ dk_metadata <- data.frame(
     "parietal",
     "temporal",
     "temporal"
-  ),
-  stringsAsFactors = FALSE
+  )
 )

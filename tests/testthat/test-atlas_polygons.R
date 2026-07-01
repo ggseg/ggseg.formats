@@ -40,7 +40,7 @@ describe("sf_to_polygons()", {
 describe("print.brain_polygons()", {
   it("prints labels, views and total points for a populated object", {
     p <- atlas_polygons(as_polygon_atlas(dk()))
-    expect_no_error(print(p))
+    expect_snapshot(print(p))
   })
 
   it("prints without error for a zero-row object", {
@@ -51,7 +51,7 @@ describe("print.brain_polygons()", {
       )),
       class = c("brain_polygons", "tbl_df", "tbl", "data.frame")
     )
-    expect_no_error(print(p))
+    expect_snapshot(print(p))
   })
 })
 
@@ -67,15 +67,14 @@ describe("sf_to_polygons() column validation", {
 
 describe("validate_polygons() geometry column", {
   it("errors when the geometry column is absent", {
-    bad <- data.frame(label = "lh_x", stringsAsFactors = FALSE)
+    bad <- data.frame(label = "lh_x")
     expect_error(validate_polygons(bad), "missing columns")
   })
 
   it("errors when geometry is not a list-column", {
     bad <- data.frame(
       label = "lh_x",
-      geometry = 1,
-      stringsAsFactors = FALSE
+      geometry = 1
     )
     expect_error(validate_polygons(bad), "must be a list-column")
   })
@@ -101,7 +100,7 @@ describe("resolve_geom()", {
 describe("validate_polygon_geoms()", {
   it("errors when a geometry entry is not a data.frame", {
     bad <- structure(
-      as_tbl(data.frame(label = "lh_x", stringsAsFactors = FALSE)),
+      as_tbl(data.frame(label = "lh_x")),
       class = c("brain_polygons", "tbl_df", "tbl", "data.frame")
     )
     bad$geometry <- list("not a data.frame")
@@ -109,7 +108,7 @@ describe("validate_polygon_geoms()", {
   })
 
   it("errors when a geometry data.frame has zero rows", {
-    bad <- data.frame(label = "lh_x", stringsAsFactors = FALSE)
+    bad <- data.frame(label = "lh_x")
     bad$geometry <- list(data.frame(
       view = character(0),
       x = numeric(0),
@@ -174,7 +173,7 @@ describe("validate_polygons()", {
   })
 
   it("rejects duplicated labels", {
-    bad <- data.frame(label = c("a", "a"), stringsAsFactors = FALSE)
+    bad <- data.frame(label = c("a", "a"))
     bad$geometry <- list(
       data.frame(view = "x", x = 1, y = 1, group = 1L, subgroup = 1L),
       data.frame(view = "x", x = 2, y = 2, group = 1L, subgroup = 1L)
@@ -183,7 +182,7 @@ describe("validate_polygons()", {
   })
 
   it("rejects missing geometry columns", {
-    bad <- data.frame(label = "a", stringsAsFactors = FALSE)
+    bad <- data.frame(label = "a")
     bad$geometry <- list(data.frame(view = "x", x = 1, y = 1))
     expect_error(validate_polygons(bad), "needs columns")
   })

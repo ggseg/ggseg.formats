@@ -193,7 +193,7 @@ describe("convert_legacy_brain_atlas", {
           region = "test",
           label = "lh_test"
         )
-        vdf <- data.frame(label = "lh_test", stringsAsFactors = FALSE)
+        vdf <- data.frame(label = "lh_test")
         vdf$vertices <- list(1:10)
         atlas$data$vertices <- vdf
         atlas
@@ -221,7 +221,7 @@ describe("convert_legacy_brain_atlas", {
         )))
       )
     )
-    vdf <- data.frame(label = "lh_test", stringsAsFactors = FALSE)
+    vdf <- data.frame(label = "lh_test")
     vdf$vertices <- list(1:10)
     mock_2d <- structure(
       list(
@@ -917,11 +917,14 @@ describe("try_infer_vertices", {
     )
     mock_3d$ggseg_3d[[1]]$mesh <- list(region_mesh)
 
-    result <- try_infer_vertices(
-      mock_3d,
-      surface = "inflated",
-      brain_meshes = mock_brain_meshes,
-      sf_data = NULL
+    expect_message(
+      result <- try_infer_vertices(
+        mock_3d,
+        surface = "inflated",
+        brain_meshes = mock_brain_meshes,
+        sf_data = NULL
+      ),
+      "Inferred vertex indices"
     )
     expect_s3_class(result, "data.frame")
     expect_identical(result$label, "lh_frontal")

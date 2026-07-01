@@ -120,6 +120,5 @@ tracula_metadata <- data.frame(
     rep("limbic", 1),
     rep("association", 5),
     rep("limbic", 1)
-  ),
-  stringsAsFactors = FALSE
+  )
 )

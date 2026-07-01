@@ -1225,10 +1225,11 @@ describe("subclass preservation", {
       atlas_view_remove_region(atlas, "lh_frontal"),
       "cortical_atlas"
     )
-    expect_s3_class(
-      suppressMessages(atlas_view_remove_small(atlas, min_area = 2)),
-      "cortical_atlas"
+    expect_message(
+      removed <- atlas_view_remove_small(atlas, min_area = 2),
+      "Removed"
     )
+    expect_s3_class(removed, "cortical_atlas")
     expect_s3_class(atlas_view_gather(atlas), "cortical_atlas")
     expect_s3_class(
       atlas_view_reorder(atlas, c("sagittal", "axial_1", "coronal_2")),

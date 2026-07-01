@@ -46,6 +46,17 @@ describe("migrate_atlas_files()", {
     expect_identical(migrate_atlas_files(dir, quiet = TRUE), character())
   })
 
+  it("skips sf atlases when keep_sf = TRUE", {
+    dir <- withr::local_tempdir()
+    atlas <- dk_sf_atlas()
+    save(atlas, file = file.path(dir, "atlas.rda"))
+
+    expect_identical(
+      migrate_atlas_files(dir, keep_sf = TRUE, quiet = TRUE),
+      character()
+    )
+  })
+
   it("reports migrated files when quiet = FALSE", {
     dir <- withr::local_tempdir()
     atlas <- dk_sf_atlas()

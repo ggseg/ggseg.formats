@@ -193,6 +193,5 @@ aseg_metadata <- data.frame(
     "corpus callosum",
     "corpus callosum",
     "corpus callosum"
-  ),
-  stringsAsFactors = FALSE
+  )
 )

@@ -2,10 +2,60 @@
 #' @noRd
 #' @keywords internal
 as_tbl <- function(x) {
-  x <- as.data.frame(x, stringsAsFactors = FALSE)
+  x <- as.data.frame(x)
   rownames(x) <- NULL
   class(x) <- c("tbl_df", "tbl", "data.frame")
   x
+}
+
+#' Print the first `n` rows of a table as a plain data.frame
+#'
+#' Renders deterministically whether or not tibble is installed: the frame is
+#' stripped to a base data.frame and list-columns are summarised as
+#' `<type [size]>`, so output never depends on tibble's pretty-printer. The
+#' package only tags frames as `tbl_df` for cosmetics and does
+#' not depend on tibble, so relying on tibble's printer is a source of snapshot
+#' drift across environments.
+#' @noRd
+#' @keywords internal
+print_data_head <- function(x, n = 10L) {
+  df <- as.data.frame(x)
+  n_total <- nrow(df)
+  df <- utils::head(df, n)
+  for (col in names(df)) {
+    if (is.list(df[[col]])) {
+      df[[col]] <- vapply(df[[col]], format_list_cell, character(1))
+    }
+  }
+  rownames(df) <- NULL
+  print.data.frame(df)
+  if (n_total > n) {
+    cli::cli_text("{.emph ... with {n_total - n} more row{?s}}")
+  }
+  invisible(x)
+}
+
+#' Summarise a list-column cell as a compact `<type [size]>` token
+#' @noRd
+#' @keywords internal
+format_list_cell <- function(cell) {
+  if (is.null(cell)) {
+    return("<NULL>")
+  }
+  if (is.data.frame(cell)) {
+    return(sprintf("<df [%d x %d]>", nrow(cell), ncol(cell)))
+  }
+  abbr <- c(
+    integer = "int",
+    double = "dbl",
+    character = "chr",
+    logical = "lgl",
+    complex = "cpl",
+    list = "list"
+  )
+  type <- typeof(cell)
+  label <- if (type %in% names(abbr)) abbr[[type]] else type
+  sprintf("<%s [%d]>", label, length(cell))
 }
 
 #' Distinct rows over a set of columns

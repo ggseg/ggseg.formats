@@ -14,6 +14,14 @@
 
 ### Bug fixes
 
+- Atlas and atlas-data print methods now render the first `n` (default 10)
+  rows of their data as a plain `data.frame`, summarising list-columns as
+  compact `<int [n]>` / `<df [r x c]>` tokens. Output no longer depends on
+  whether `tibble` happens to be installed (the package tags frames as
+  `tbl_df` only for cosmetics and does not depend on `tibble`), which makes
+  printed output — and the snapshot tests that capture it — deterministic
+  across environments.
+
 - `plot.ggseg_atlas()` now draws contextual regions (those not in the atlas
   core) behind the labelled core regions, instead of in alphabetical label
   order. Previously a context region whose label sorted after a core region
