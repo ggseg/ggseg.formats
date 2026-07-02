@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/ggsegverse/ggseg.formats/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/ggsegverse/ggseg.formats/blob/v0.0.4/DESCRIPTION)
 
 Mowinckel A (2026). *ggseg.formats: Brain Atlas Data Structures for the
 'ggsegverse' Ecosystem*. R package version 0.0.4,
