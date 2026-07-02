@@ -36,5 +36,5 @@ rather than reaching into `atlas$data` directly.
 ``` r
 g <- atlas_geom(dk())
 atlas_geometry_type(dk())
-#> [1] "sf"
+#> [1] "polygon"
 ```

@@ -124,8 +124,8 @@ tells you what 2D views an atlas has:
 ``` r
 
 atlas_views(aseg())
-#> [1] "axial_3"   "axial_4"   "axial_5"   "axial_6"   "coronal_1" "coronal_2"
-#> [7] "sagittal"
+#> [1] "axial_3"   "axial_4"   "axial_5"   "sagittal"  "axial_6"   "coronal_1"
+#> [7] "coronal_2"
 ```
 
 [`atlas_view_keep()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
@@ -146,7 +146,7 @@ Or remove several views at once by passing a vector:
 
 fewer <- atlas_view_remove(aseg(), c("axial_3", "coronal_2"))
 atlas_views(fewer)
-#> [1] "axial_4"   "axial_5"   "axial_6"   "coronal_1" "sagittal"
+#> [1] "axial_4"   "axial_5"   "sagittal"  "axial_6"   "coronal_1"
 ```
 
 ## Cleaning up geometry

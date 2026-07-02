@@ -75,7 +75,7 @@ tracula()
 #> Type: tract
 #> Regions: 26
 #> Hemispheres: midline, left, right
-#> Views: axial_2, axial_4, coronal_3, coronal_4, sagittal_left, sagittal_midline,
+#> Views: axial_2, axial_4, coronal_3, coronal_4, sagittal_midline, sagittal_left,
 #> sagittal_right
 #> Palette: ✔
 #> Rendering: ✔ ggseg

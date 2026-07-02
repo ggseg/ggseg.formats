@@ -28,7 +28,7 @@ atlas has no recognised 2D geometry. `is_atlas_sf()` /
 
 ``` r
 atlas_geometry_type(dk())
-#> [1] "sf"
+#> [1] "polygon"
 is_atlas_polygon(dk())
-#> [1] FALSE
+#> [1] TRUE
 ```

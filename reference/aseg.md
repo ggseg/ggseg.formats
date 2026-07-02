@@ -106,7 +106,7 @@ aseg()
 #> Type: subcortical
 #> Regions: 19
 #> Hemispheres: left, NA, right
-#> Views: axial_3, axial_4, axial_5, axial_6, coronal_1, coronal_2, sagittal
+#> Views: axial_3, axial_4, axial_5, sagittal, axial_6, coronal_1, coronal_2
 #> Palette: ✔
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (meshes)

@@ -234,7 +234,7 @@ dk() |>
 #> Type: cortical
 #> Regions: 6
 #> Hemispheres: left, right
-#> Views: inferior, lateral, medial, superior
+#> Views: inferior, lateral, superior, medial
 #> Palette: ✔
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (vertices)

@@ -11,7 +11,7 @@ Used for cortical atlases with vertex-based rendering."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">ggseg.formats</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,15 +76,20 @@ Used for cortical atlases with vertex-based rendering.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">verts</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="color: #0000BB;">&lt;ggseg_vertices&gt;</span> data: 6 × 6 ────────────────────────────────────────────────</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Vertices per region: 48 –232</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   label                      vertices    hemi  region               lobe  colour</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> lh_bankssts                <span style="color: #949494;">&lt;int [126]&gt;</span> left  banks of superior t… temp… #1964…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> lh_caudalanteriorcingulate <span style="color: #949494;">&lt;int [67]&gt;</span>  left  caudal anterior cin… cing… #7D64…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> lh_caudalmiddlefrontal     <span style="color: #949494;">&lt;int [232]&gt;</span> left  caudal middle front… fron… #6419…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> lh_corpuscallosum          <span style="color: #949494;">&lt;int [198]&gt;</span> left  corpus callosum      whit… #7846…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> lh_cuneus                  <span style="color: #949494;">&lt;int [102]&gt;</span> left  cuneus               occi… #DC14…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> lh_entorhinal              <span style="color: #949494;">&lt;int [48]&gt;</span>  left  entorhinal           temp… #DC14…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        label    vertices hemi                            region</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                lh_bankssts &lt;int [126]&gt; left banks of superior temporal sulcus</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 lh_caudalanteriorcingulate  &lt;int [67]&gt; left         caudal anterior cingulate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     lh_caudalmiddlefrontal &lt;int [232]&gt; left             caudal middle frontal</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4          lh_corpuscallosum &lt;int [198]&gt; left                   corpus callosum</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                  lh_cuneus &lt;int [102]&gt; left                            cuneus</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6              lh_entorhinal  &lt;int [48]&gt; left                        entorhinal</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           lobe  colour</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     temporal #196428</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    cingulate #7D64A0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      frontal #641900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 white matter #784632</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    occipital #DC1464</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     temporal #DC140A</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
