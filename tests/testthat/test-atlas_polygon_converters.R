@@ -33,8 +33,9 @@ describe("as_polygon_atlas()", {
   })
 
   it("points sf-backed atlases at migrate_atlas_files() when sf is missing", {
+    sf_atlas <- dk_sf_atlas()
     local_mocked_bindings(has_sf = function() FALSE)
-    expect_error(as_polygon_atlas(dk()), "migrate_atlas_files")
+    expect_error(as_polygon_atlas(sf_atlas), "migrate_atlas_files")
   })
 })
 

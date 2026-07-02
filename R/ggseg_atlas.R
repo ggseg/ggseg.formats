@@ -160,11 +160,7 @@ print.ggseg_atlas <- function(x, n = 10, ...) {
 
   cli::cli_rule()
 
-  core <- x$core
-  print(utils::head(as.data.frame(core), n), ...)
-  if (nrow(core) > n) {
-    cli::cli_text("{.emph ... with {nrow(core) - n} more rows}")
-  }
+  print_data_head(x$core, n)
 
   invisible(x)
 }

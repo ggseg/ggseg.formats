@@ -24,7 +24,7 @@ read_freesurfer_stats <- function(path, rename = TRUE) {
   headers <- headers[!grepl("ColHeaders", headers, fixed = TRUE)]
   headers <- headers[headers != ""]
 
-  data <- as_tbl(read.table(path, stringsAsFactors = FALSE))
+  data <- as_tbl(read.table(path))
   names(data) <- headers
 
   if (rename) {

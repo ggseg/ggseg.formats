@@ -85,7 +85,10 @@ describe("polygons_remove_small()", {
   it("removes scoped small geometry via atlas_view_remove_small()", {
     atlas <- as_polygon_atlas(dk())
     view <- unique(polygons_unnest(atlas_polygons(atlas))$view)[1]
-    out <- atlas_view_remove_small(atlas, min_area = Inf, views = view)
+    expect_message(
+      out <- atlas_view_remove_small(atlas, min_area = Inf, views = view),
+      "Removed"
+    )
     expect_true(is_atlas_polygon(out))
   })
 })

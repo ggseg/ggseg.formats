@@ -23,7 +23,11 @@ describe("atlas_geom", {
 
 describe("atlas_geometry_type", {
   it("returns 'sf' for an sf atlas", {
-    expect_identical(atlas_geometry_type(dk()), "sf")
+    expect_identical(atlas_geometry_type(dk_sf_atlas()), "sf")
+  })
+
+  it("returns 'polygon' for a polygon atlas", {
+    expect_identical(atlas_geometry_type(dk()), "polygon")
   })
 
   it("errors when the atlas has no recognised 2D geometry", {
@@ -61,10 +65,15 @@ describe("atlas_sf", {
   })
 
   it("prints without error and keeps its classes", {
-    sf_data <- atlas_sf(dk())
+    sf_data <- sf::st_sf(
+      label = c("lh_a", "lh_b"),
+      view = c("lateral", "medial"),
+      geometry = sf::st_sfc(make_polygon(), make_polygon2())
+    )
+    class(sf_data) <- c("ggseg_sf", class(sf_data))
     expect_s3_class(sf_data, "ggseg_sf")
     expect_s3_class(sf_data, "sf")
-    expect_no_error(capture.output(print(sf_data)))
+    expect_snapshot(print(sf_data))
   })
 
   it("errors when atlas is not brain_atlas", {
@@ -187,7 +196,7 @@ describe("atlas_vertices", {
     result <- atlas_vertices(dk())
     expect_s3_class(result, "ggseg_vertices")
     expect_s3_class(result, "tbl_df")
-    expect_no_error(capture.output(print(result)))
+    expect_snapshot(print(result))
   })
 
   it("returns vertices joined with core and palette", {
@@ -273,7 +282,7 @@ describe("atlas_meshes", {
     result <- atlas_meshes(aseg())
     expect_s3_class(result, "ggseg_meshes")
     expect_s3_class(result, "tbl_df")
-    expect_no_error(capture.output(print(result)))
+    expect_snapshot(print(result))
   })
 
   it("returns meshes joined with core and palette", {

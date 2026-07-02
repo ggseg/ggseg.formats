@@ -1,8 +1,26 @@
 # ggseg.formats
 
-## ggseg.formats 0.0.3.9000
+## ggseg.formats 0.0.4
+
+### sf-optional bundled atlases
+
+- The bundled `dk()`, `aseg()`, and `tracula()` atlases now ship in the
+  `brain_polygons` format, joining `suit()`. They install and plot without
+  `sf` (and its GDAL / GEOS / PROJ system libraries) — previously they were
+  sf-backed, so plotting them still required `sf` even though the package
+  itself did not. The conversion is lossless, so figures are unchanged;
+  callers who want sf geometry can still obtain it on demand with
+  `as_sf_atlas()`.
 
 ### Bug fixes
+
+- Atlas and atlas-data print methods now render the first `n` (default 10)
+  rows of their data as a plain `data.frame`, summarising list-columns as
+  compact `<int [n]>` / `<df [r x c]>` tokens. Output no longer depends on
+  whether `tibble` happens to be installed (the package tags frames as
+  `tbl_df` only for cosmetics and does not depend on `tibble`), which makes
+  printed output — and the snapshot tests that capture it — deterministic
+  across environments.
 
 - `plot.ggseg_atlas()` now draws contextual regions (those not in the atlas
   core) behind the labelled core regions, instead of in alphabetical label

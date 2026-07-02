@@ -18,3 +18,5 @@
 ^dev$
 ^\.lintr$
 \.DS_Store$
+Rplots\.pdf$
+\.impeccable$

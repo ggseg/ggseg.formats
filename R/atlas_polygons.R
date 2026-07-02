@@ -1,5 +1,5 @@
 #' @export
-print.brain_polygons <- function(x, ...) {
+print.brain_polygons <- function(x, n = 10, ...) {
   cli::cli_h2("brain_polygons")
   cli::cli_text("{.strong Labels:} {nrow(x)}")
   if (nrow(x) > 0) {
@@ -10,7 +10,7 @@ print.brain_polygons <- function(x, ...) {
     cli::cli_text("{.strong Views:} {paste(views, collapse = ', ')}")
     cli::cli_text("{.strong Total points:} {n_pts}")
   }
-  NextMethod()
+  print_data_head(x, n)
   invisible(x)
 }
 # sf-optional atlas polygon format ----

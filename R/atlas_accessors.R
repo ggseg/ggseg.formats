@@ -150,10 +150,9 @@ atlas_polygons <- function(atlas) {
     cli::cli_abort("Atlas does not contain 2D geometry for rendering.")
   }
   if (inherits(geom, "brain_polygons")) {
-    geom
-  } else {
-    sf_to_polygons(geom)
+    return(geom)
   }
+  sf_to_polygons(geom)
 }
 
 
@@ -234,7 +233,7 @@ print.ggseg_sf <- function(x, ...) {
 }
 
 #' @export
-print.ggseg_vertices <- function(x, ...) {
+print.ggseg_vertices <- function(x, n = 10, ...) {
   dims <- paste(nrow(x), "\u00d7", ncol(x)) # nolint [object_usage_linter]
   vert_lengths <- if ("vertices" %in% names(x)) {
     vapply(x$vertices, length, integer(1))
@@ -246,16 +245,16 @@ print.ggseg_vertices <- function(x, ...) {
 \u2013{format(max(vert_lengths), big.mark = ',')}"
     )
   }
-  NextMethod()
+  print_data_head(x, n)
   invisible(x)
 }
 
 #' @export
-print.ggseg_meshes <- function(x, ...) {
+print.ggseg_meshes <- function(x, n = 10, ...) {
   dims <- paste(nrow(x), "\u00d7", ncol(x)) # nolint [object_usage_linter]
   cli::cli_rule("{.cls ggseg_meshes} data: {dims}")
   if ("mesh" %in% names(x)) {
-    print_mesh_summary(x)
+    print_mesh_summary(x, n)
   }
   invisible(x)
 }

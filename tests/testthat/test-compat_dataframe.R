@@ -117,3 +117,42 @@ describe("df_nest / df_unnest", {
     expect_setequal(names(back), names(flat))
   })
 })
+
+describe("format_list_cell", {
+  it("summarises atomic vectors by abbreviated type and length", {
+    expect_identical(format_list_cell(1:3), "<int [3]>")
+    expect_identical(format_list_cell(c(1.5, 2.5)), "<dbl [2]>")
+    expect_identical(format_list_cell(c("a", "b", "c")), "<chr [3]>")
+    expect_identical(format_list_cell(c(TRUE, FALSE)), "<lgl [2]>")
+    expect_identical(format_list_cell(complex(1)), "<cpl [1]>")
+    expect_identical(format_list_cell(list(1, 2)), "<list [2]>")
+  })
+
+  it("summarises data.frame cells by dimensions", {
+    expect_identical(
+      format_list_cell(data.frame(x = 1:5, y = 1:5)),
+      "<df [5 x 2]>"
+    )
+  })
+
+  it("labels NULL cells", {
+    expect_identical(format_list_cell(NULL), "<NULL>")
+  })
+
+  it("falls back to the type name for unabbreviated types", {
+    expect_identical(format_list_cell(as.raw(1:2)), "<raw [2]>")
+  })
+})
+
+describe("print_data_head", {
+  it("prints list-columns as compact summaries, regardless of tibble", {
+    df <- as_tbl(data.frame(label = c("a", "b")))
+    df$vertices <- list(1:3, 1:10)
+    expect_snapshot(result <- print_data_head(df))
+    expect_identical(result, df)
+  })
+
+  it("notes the rows dropped beyond n", {
+    expect_snapshot(print_data_head(as_tbl(data.frame(x = 1:5)), n = 2))
+  })
+})

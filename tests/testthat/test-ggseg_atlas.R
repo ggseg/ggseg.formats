@@ -24,13 +24,12 @@ describe("ggseg_atlas class", {
 
   it("print method works", {
     expect_s3_class(dk()$core, "tbl_df")
-    expect_no_error(capture.output(print(dk())))
+    expect_snapshot(print(dk()))
   })
 
   it("print caps core rows at n", {
-    few <- capture.output(print(dk(), n = 5))
-    many <- capture.output(print(dk(), n = 40))
-    expect_gt(length(many), length(few))
+    expect_snapshot(print(dk(), n = 3))
+    expect_snapshot(print(dk(), n = 6))
   })
 
   it("atlas_regions returns character vector", {
@@ -461,18 +460,15 @@ describe("plot.ggseg_atlas", {
 
 describe("print.ggseg_atlas rendering branches", {
   it("prints a tract atlas (centerlines)", {
-    out <- capture.output(print(tracula()), type = "message")
-    expect_true(any(grepl("centerlines", out, fixed = TRUE)))
+    expect_snapshot(print(tracula()))
   })
 
   it("prints a subcortical atlas (meshes)", {
-    out <- capture.output(print(aseg()), type = "message")
-    expect_true(any(grepl("meshes", out, fixed = TRUE)))
+    expect_snapshot(print(aseg()))
   })
 
   it("prints a cortical atlas (vertices)", {
-    out <- capture.output(print(dk()), type = "message")
-    expect_true(any(grepl("vertices", out, fixed = TRUE)))
+    expect_snapshot(print(dk()))
   })
 
   it("prints an atlas with no 3D geometry as none", {
@@ -492,14 +488,12 @@ describe("print.ggseg_atlas rendering branches", {
       core = core,
       data = ggseg_data_cerebellar(geom = sf_geom)
     )
-    out <- capture.output(print(atlas), type = "message")
-    expect_true(any(grepl("none", out, fixed = TRUE)))
+    expect_snapshot(print(atlas))
   })
 
   it("prints a polygon atlas summary with views", {
     poly_atlas <- as_polygon_atlas(dk())
-    out <- capture.output(print(poly_atlas), type = "message")
-    expect_true(any(grepl("Views", out, fixed = TRUE)))
+    expect_snapshot(print(poly_atlas))
   })
 })
 

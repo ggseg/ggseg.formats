@@ -29,9 +29,9 @@ describe("dk atlas", {
     expect_gt(length(regions), 30)
   })
 
-  it("has sf geometry for 2D rendering", {
-    expect_false(is.null(dk()$data$sf))
-    expect_s3_class(dk()$data$sf, "sf")
+  it("has polygon geometry for 2D rendering", {
+    expect_false(is.null(atlas_geom(dk())))
+    expect_s3_class(atlas_geom(dk()), "brain_polygons")
   })
 })
 
@@ -61,9 +61,9 @@ describe("aseg atlas", {
     expect_gt(length(regions), 5)
   })
 
-  it("has sf geometry for 2D rendering", {
-    expect_false(is.null(aseg()$data$sf))
-    expect_s3_class(aseg()$data$sf, "sf")
+  it("has polygon geometry for 2D rendering", {
+    expect_false(is.null(atlas_geom(aseg())))
+    expect_s3_class(atlas_geom(aseg()), "brain_polygons")
   })
 })
 
