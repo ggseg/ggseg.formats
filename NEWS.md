@@ -1,6 +1,6 @@
 # ggseg.formats
 
-## ggseg.formats 0.0.3.9000
+## ggseg.formats 0.0.4
 
 ### sf-optional bundled atlases
 
