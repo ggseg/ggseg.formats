@@ -4,17 +4,17 @@
   "identifier": "ggseg.formats",
   "description": "Provides the 'ggseg_atlas' S3 class used across the 'ggsegverse' ecosystem for 2D and 3D brain visualisation. Ships four bundled atlases ('Desikan-Killiany', 'FreeSurfer' 'aseg', 'TRACULA', 'SUIT') and functions for querying, subsetting, renaming, and enriching atlas objects. Also includes readers for 'FreeSurfer' statistics files.",
   "name": "ggseg.formats: Brain Atlas Data Structures for the 'ggsegverse' Ecosystem",
-  "relatedLink": "https://ggsegverse.github.io/ggseg.formats/",
+  "relatedLink": ["https://ggsegverse.github.io/ggseg.formats/", "https://CRAN.R-project.org/package=ggseg.formats"],
   "codeRepository": "https://github.com/ggsegverse/ggseg.formats",
   "issueTracker": "https://github.com/ggsegverse/ggseg.formats/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.0.1.9001",
+  "version": "0.0.4.9000",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.5.2 (2025-10-31)",
+  "runtimePlatform": "R version 4.6.1 (2026-06-24)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -142,6 +142,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=testthat"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "withr",
+      "name": "withr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=withr"
     }
   ],
   "softwareRequirements": {
@@ -165,18 +177,6 @@
     },
     "3": {
       "@type": "SoftwareApplication",
-      "identifier": "dplyr",
-      "name": "dplyr",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=dplyr"
-    },
-    "4": {
-      "@type": "SoftwareApplication",
       "identifier": "lifecycle",
       "name": "lifecycle",
       "provider": {
@@ -187,7 +187,7 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=lifecycle"
     },
-    "5": {
+    "4": {
       "@type": "SoftwareApplication",
       "identifier": "rlang",
       "name": "rlang",
@@ -199,19 +199,23 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=rlang"
     },
-    "6": {
+    "5": {
       "@type": "SoftwareApplication",
-      "identifier": "tidyr",
-      "name": "tidyr",
+      "identifier": "sfheaders",
+      "name": "sfheaders",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
         "name": "Comprehensive R Archive Network (CRAN)",
         "url": "https://cran.r-project.org"
       },
-      "sameAs": "https://CRAN.R-project.org/package=tidyr"
+      "sameAs": "https://CRAN.R-project.org/package=sfheaders"
     },
     "SystemRequirements": null
   },
-  "fileSize": "NAKB"
+  "fileSize": "4512.493KB",
+  "releaseNotes": "https://github.com/ggsegverse/ggseg.formats/blob/main/NEWS.md",
+  "readme": "https://github.com/ggsegverse/ggseg.formats/blob/main/README.md",
+  "contIntegration": ["https://github.com/ggsegverse/ggseg.formats/actions/workflows/R-CMD-check.yaml", "https://github.com/ggsegverse/ggseg.formats/actions/workflows/code-quality.yaml", "https://github.com/ggsegverse/ggseg.formats/actions/workflows/test-coverage.yaml"],
+  "developmentStatus": "https://lifecycle.r-lib.org/articles/stages.html#experimental"
 }
