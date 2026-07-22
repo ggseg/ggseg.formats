@@ -1,6 +1,6 @@
 # Create DK (Desikan-Killiany) Atlas
 #
-# Generates the dk cortical atlas using ggsegExtra from FreeSurfer's
+# Generates the dk cortical atlas using ggseg.extra from FreeSurfer's
 # aparc annotation on fsaverage5.
 #
 # This is the default cortical parcellation in FreeSurfer with 68 regions
@@ -8,13 +8,13 @@
 #
 # Requirements:
 #   - FreeSurfer installed with fsaverage5 subject
-#   - ggsegExtra package
+#   - ggseg.extra package
 #   - Chrome/Chromium for snapshots
 #
 # Run with: source("data-raw/make_dk_atlas.R")
 
 library(dplyr)
-library(ggsegExtra) # nolint
+library(ggseg.extra) # nolint
 devtools::load_all()
 
 source("data-raw/dk_metadata.R")
@@ -43,12 +43,11 @@ annot_files <- file.path(
 
 cli::cli_h1("Creating DK cortical atlas")
 
-dk_raw <- create_cortical_atlas(
+dk_raw <- create_cortical_from_annotation(
   input_annot = annot_files,
   atlas_name = "dk",
   output_dir = "data-raw",
   tolerance = 1,
-  smoothness = 2,
   skip_existing = FALSE,
   cleanup = FALSE
 )

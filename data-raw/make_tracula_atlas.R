@@ -5,12 +5,12 @@
 #
 # Requirements:
 #   - FreeSurfer installed with trctrain data
-#   - ggsegExtra package
+#   - ggseg.extra package
 #
 # Run with: source("data-raw/make_tracula_atlas.R")
 
 library(dplyr)
-library(ggsegExtra) # nolint
+library(ggseg.extra) # nolint
 devtools::load_all()
 
 source("data-raw/tracula_metadata.R")
@@ -43,7 +43,7 @@ if (!file.exists(aseg_file)) {
 
 cli::cli_h1("Creating TRACULA tract atlas")
 
-tracula_raw <- create_tract_atlas(
+tracula_raw <- create_tract_from_tractography(
   input_tracts = tract_files,
   input_aseg = aseg_file,
   atlas_name = "tracula",
