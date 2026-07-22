@@ -1,6 +1,6 @@
 # Create ASEG (Automatic Subcortical Segmentation) Atlas
 #
-# Generates the aseg subcortical atlas using ggsegExtra from FreeSurfer's
+# Generates the aseg subcortical atlas using ggseg.extra from FreeSurfer's
 # aseg.mgz volume on fsaverage5.
 #
 # Uses projection-based 2D views (6 views) to show subcortical structures
@@ -8,13 +8,13 @@
 #
 # Requirements:
 #   - FreeSurfer installed with fsaverage5 subject
-#   - ggsegExtra package
+#   - ggseg.extra package
 #   - Chrome/Chromium for snapshots
 #
 # Run with: source("data-raw/make_aseg_atlas.R")
 
 library(dplyr)
-library(ggsegExtra) # nolint
+library(ggseg.extra) # nolint
 devtools::load_all()
 options(freesurfer.verbose = FALSE)
 future::plan(future::multicore())
@@ -39,7 +39,7 @@ if (!file.exists(color_lut)) {
   color_lut <- file.path(fs_dir, "FreeSurferColorLUT.txt")
 }
 
-# Create atlas using ggsegExtra with projection-based views
+# Create atlas using ggseg.extra with projection-based views
 # Default uses 6 views focused on subcortical range:
 #   - axial_inferior, axial_superior
 #   - coronal_posterior, coronal_anterior
@@ -74,6 +74,17 @@ aseg_raw <- aseg_raw |>
     "coronal_1|coronal_2|sagittal|axial_3|axial_4|axial_5|axial_6"
   ) |>
   atlas_view_gather()
+
+# Smooth the voxel-stepped 2D contours. `create_subcortical_from_volume()`'s
+# `smoothness` is a morphological-close buffer distance, so the value passed
+# to the builder is too small to round off the voxel staircase on its own;
+# tidy the polygons here (matching the pattern in the ggsegFreeSurfer build
+# scripts). Structures get a light close; the `cortex`/`cortex_` silhouette
+# gets a heavier close plus vertex simplification so it reads smooth.
+cli::cli_alert_info("Smoothing contours")
+aseg_raw <- aseg_raw |>
+  atlas_smooth(keep = NULL, smoothness = 3, exclude = "^cortex") |>
+  atlas_smooth(keep = 0.1, smoothness = 7, labels = "^cortex")
 
 
 cli::cli_h2("Merging metadata")
