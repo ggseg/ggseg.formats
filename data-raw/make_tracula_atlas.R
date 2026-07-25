@@ -59,24 +59,14 @@ tracula_raw <- create_tract_from_tractography(
 
 cli::cli_h2("Post-processing atlas")
 
-normalize_label <- function(x) {
-  x |>
-    basename() |>
-    tools::file_path_sans_ext()
-}
-
-tracula_meta_keyed <- tracula_metadata |>
-  mutate(label_key = normalize_label(label)) |>
-  select(label_key, region_pretty = region, group)
-
 core_with_meta <- tracula_raw$core |>
-  mutate(label_key = normalize_label(label)) |>
+  rename(region_raw = region) |>
   left_join(
-    tracula_meta_keyed,
-    by = "label_key"
+    select(tracula_metadata, label, region, names, group),
+    by = "label"
   ) |>
-  mutate(region = coalesce(region_pretty, region)) |>
-  select(hemi, region, label, group)
+  mutate(region = coalesce(region, region_raw)) |>
+  select(hemi, region, label, names, group)
 
 n_with_group <- sum(!is.na(core_with_meta$group))
 n_total <- nrow(core_with_meta)

@@ -1,6 +1,10 @@
 # ASEG (Automatic Subcortical Segmentation) metadata
 #
-# Full names and structure groupings for FreeSurfer aseg regions.
+# One row per raw FreeSurfer aseg label. `label` is the untouched atlas
+# identifier; `hemi` and `region` are derived mechanically from it (hemisphere
+# stripped into `hemi`, the remainder lowercased with separators spaced);
+# `names` is the fully spelled-out label; `structure` groups regions.
+#
 # Based on: # nolint start: line_length_linter.
 # https://surfer.nmr.mgh.harvard.edu/fswiki/FsTutorial/AnatomicalROI/FreeSurferColorLUT
 # nolint end
@@ -43,6 +47,11 @@ aseg_metadata <- data.frame(
     # Ventral diencephalon
     "Left-VentralDC",
     "Right-VentralDC",
+    # Vessels and choroid plexus
+    "Left-vessel",
+    "Right-vessel",
+    "Left-choroid-plexus",
+    "Right-choroid-plexus",
     # Brainstem
     "Brain-Stem",
     # Cerebellum
@@ -62,93 +71,53 @@ aseg_metadata <- data.frame(
     "CC_Mid_Anterior",
     "CC_Anterior"
   ),
-  region = c(
-    "Cerebral Cortex",
-    "Cerebral Cortex",
-    "Cerebral White Matter",
-    "Cerebral White Matter",
-    "Lateral Ventricle",
-    "Lateral Ventricle",
-    "Inferior Lateral Ventricle",
-    "Inferior Lateral Ventricle",
-    "Third Ventricle",
-    "Fourth Ventricle",
-    "CSF",
-    "Thalamus",
-    "Thalamus",
-    "Caudate",
-    "Caudate",
-    "Putamen",
-    "Putamen",
-    "Pallidum",
-    "Pallidum",
-    "Hippocampus",
-    "Hippocampus",
-    "Amygdala",
-    "Amygdala",
-    "Accumbens",
-    "Accumbens",
-    "Ventral Diencephalon",
-    "Ventral Diencephalon",
-    "Brain Stem",
-    "Cerebellum Cortex",
-    "Cerebellum Cortex",
-    "Cerebellum White Matter",
-    "Cerebellum White Matter",
-    "Thalamus",
-    "Thalamus",
-    "WM Hypointensities",
-    "Non-WM Hypointensities",
-    "Optic Chiasm",
-    "Corpus Callosum",
-    "Corpus Callosum",
-    "Corpus Callosum",
-    "Corpus Callosum",
-    "Corpus Callosum"
-  ),
-  label_pretty = c(
-    "Cortex",
-    "Cortex",
-    "White Matter",
-    "White Matter",
-    "Lateral Ventricle",
-    "Lateral Ventricle",
-    "Inferior Lateral Ventricle",
-    "Inferior Lateral Ventricle",
-    "3rd Ventricle",
-    "4th Ventricle",
-    "CSF",
-    "Thalamus",
-    "Thalamus",
-    "Caudate",
-    "Caudate",
-    "Putamen",
-    "Putamen",
-    "Pallidum",
-    "Pallidum",
-    "Hippocampus",
-    "Hippocampus",
-    "Amygdala",
-    "Amygdala",
-    "Accumbens",
-    "Accumbens",
-    "Ventral DC",
-    "Ventral DC",
-    "Brain Stem",
-    "Cerebellum",
-    "Cerebellum",
-    "Cerebellum WM",
-    "Cerebellum WM",
-    "Thalamus Proper",
-    "Thalamus Proper",
-    "WM Hypointensities",
-    "Non-WM Hypointensities",
-    "Optic Chiasm",
-    "CC Posterior",
-    "CC Mid-Posterior",
-    "CC Central",
-    "CC Mid-Anterior",
-    "CC Anterior"
+  names = c(
+    "cerebral cortex",
+    "cerebral cortex",
+    "cerebral white matter",
+    "cerebral white matter",
+    "lateral ventricle",
+    "lateral ventricle",
+    "inferior lateral ventricle",
+    "inferior lateral ventricle",
+    "third ventricle",
+    "fourth ventricle",
+    "cerebrospinal fluid",
+    "thalamus",
+    "thalamus",
+    "caudate",
+    "caudate",
+    "putamen",
+    "putamen",
+    "pallidum",
+    "pallidum",
+    "hippocampus",
+    "hippocampus",
+    "amygdala",
+    "amygdala",
+    "accumbens",
+    "accumbens",
+    "ventral diencephalon",
+    "ventral diencephalon",
+    "vessel",
+    "vessel",
+    "choroid plexus",
+    "choroid plexus",
+    "brain stem",
+    "cerebellum cortex",
+    "cerebellum cortex",
+    "cerebellum white matter",
+    "cerebellum white matter",
+    "thalamus proper",
+    "thalamus proper",
+    "white matter hypointensities",
+    "non-white matter hypointensities",
+    "optic chiasm",
+    "corpus callosum posterior",
+    "corpus callosum mid-posterior",
+    "corpus callosum central",
+    "corpus callosum mid-anterior",
+    "corpus callosum anterior"
   ),
   structure = c(
     "cortex",
@@ -178,6 +147,10 @@ aseg_metadata <- data.frame(
     "basal ganglia",
     "diencephalon",
     "diencephalon",
+    "other",
+    "other",
+    "ventricle",
+    "ventricle",
     "brainstem",
     "cerebellum",
     "cerebellum",
@@ -195,3 +168,17 @@ aseg_metadata <- data.frame(
     "corpus callosum"
   )
 )
+
+aseg_metadata$hemi <- ifelse(
+  grepl("^Left-", aseg_metadata$label),
+  "left",
+  ifelse(grepl("^Right-", aseg_metadata$label), "right", "midline")
+)
+
+aseg_metadata$region <- tolower(
+  gsub("[-_]", " ", sub("^(Left|Right)-", "", aseg_metadata$label))
+)
+
+aseg_metadata <- aseg_metadata[,
+  c("label", "hemi", "region", "names", "structure")
+]

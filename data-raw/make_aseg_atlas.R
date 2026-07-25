@@ -89,35 +89,14 @@ aseg_raw <- aseg_raw |>
 
 cli::cli_h2("Merging metadata")
 
-# Create lookup for region name from label
-# Need to normalize region names for matching
-normalize_region <- function(x) {
-  cleaned <- x |>
-    tolower() |>
-    gsub("-", " ", x = _) |>
-    gsub("_", " ", x = _) |>
-    gsub("left |right ", "", x = _) |>
-    trimws()
-  ifelse(is.na(x), NA_character_, cleaned)
-}
-
-aseg_meta_keyed <- aseg_metadata |>
-  mutate(region_key = normalize_region(region)) |>
-  select(region_key, label_pretty, structure)
-
 core_with_meta <- aseg_raw$core |>
-  mutate(
-    region_key = normalize_region(region)
-  ) |>
+  rename(region_raw = region) |>
   left_join(
-    aseg_meta_keyed,
-    by = "region_key",
-    relationship = "many-to-many"
+    select(aseg_metadata, label, region, names, structure),
+    by = "label"
   ) |>
-  mutate(
-    region = coalesce(label_pretty, region)
-  ) |>
-  select(hemi, region, label, structure)
+  mutate(region = coalesce(region, region_raw)) |>
+  select(hemi, region, label, names, structure)
 
 n_with_structure <- sum(!is.na(core_with_meta$structure))
 n_total <- nrow(core_with_meta)

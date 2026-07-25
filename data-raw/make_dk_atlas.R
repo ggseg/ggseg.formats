@@ -60,11 +60,10 @@ cli::cli_h2("Merging metadata")
 
 core_with_meta <- dk_raw$core |>
   left_join(
-    dk_metadata |> select(region, region_pretty, lobe),
+    select(dk_metadata, region, names, lobe),
     by = "region"
   ) |>
-  mutate(region = coalesce(region_pretty, region)) |>
-  select(hemi, region, label, lobe)
+  select(hemi, region, label, names, lobe)
 
 n_with_lobe <- sum(!is.na(core_with_meta$lobe))
 n_total <- nrow(core_with_meta)
