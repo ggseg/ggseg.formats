@@ -180,7 +180,7 @@ describe("atlas_sf", {
     expect_lt(max(which(!is_core)), min(which(is_core)))
     # alphabetical order (lh_aaa, lh_ctx, lh_zzz) would put a core row first;
     # guard against a regression to the merge() default sort.
-    expect_false(identical(result$label, sort(result$label)))
+    expect_true(is.unsorted(result$label))
   })
 })
 
