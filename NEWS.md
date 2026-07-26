@@ -1,6 +1,20 @@
 # ggseg.formats
 
-## ggseg.formats 0.0.4.9000
+## ggseg.formats 0.0.4.9001
+
+### Atlas data
+
+- The bundled `dk()`, `aseg()`, and `tracula()` atlases now carry a `names`
+  column holding the fully spelled-out region name, and their `region` column
+  holds a cleaned, hemisphere-free short name derived from `label` (for example
+  `region` `"bankssts"` alongside `names` `"banks of superior temporal sulcus"`).
+  Code that filtered on the previously prettified `region` values should switch
+  to `names`. The `aseg` atlas also drops duplicate rows left over from the
+  previous label matching (47 to 29 rows).
+- The bundled atlases were rebuilt with lighter geometry: `dk` polygons are
+  simplified (roughly a quarter of the previous vertex count) and the `aseg`
+  cortex silhouette is smoothed without inflating, shrinking `R/sysdata.rda`
+  from 3.4 MB to 2.1 MB. Figures are visually unchanged.
 
 ## ggseg.formats 0.0.4
 
