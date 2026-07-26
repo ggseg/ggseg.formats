@@ -47,7 +47,6 @@ dk_raw <- create_cortical_from_annotation(
   input_annot = annot_files,
   atlas_name = "dk",
   output_dir = "data-raw",
-  tolerance = 1,
   skip_existing = FALSE,
   cleanup = FALSE
 )
@@ -55,6 +54,13 @@ dk_raw <- create_cortical_from_annotation(
 cli::cli_h2("Post-processing atlas data")
 dk_raw <- dk_raw |>
   atlas_region_contextual("unknown", "label")
+
+# `create_cortical_from_annotation()` no longer simplifies sf geometry, so trim
+# the vertex count here. The `cortex_` outline is excluded to keep the brain
+# silhouette crisp (matching the pattern in make_aseg_atlas.R).
+cli::cli_alert_info("Smoothing contours")
+dk_raw <- dk_raw |>
+  atlas_smooth(keep = 0.2, exclude = "cortex_")
 
 cli::cli_h2("Merging metadata")
 

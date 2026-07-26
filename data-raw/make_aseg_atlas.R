@@ -79,12 +79,13 @@ aseg_raw <- aseg_raw |>
 # `smoothness` is a morphological-close buffer distance, so the value passed
 # to the builder is too small to round off the voxel staircase on its own;
 # tidy the polygons here (matching the pattern in the ggsegFreeSurfer build
-# scripts). Structures get a light close; the `cortex`/`cortex_` silhouette
-# gets a heavier close plus vertex simplification so it reads smooth.
+# scripts). Both the structures and the `cortex`/`cortex_` silhouette get a
+# light close: a heavier close inflates the cortex outline into a blob and
+# hides the ventricle gaps, so keep it modest and simplify the outline lightly.
 cli::cli_alert_info("Smoothing contours")
 aseg_raw <- aseg_raw |>
   atlas_smooth(keep = NULL, smoothness = 3, exclude = "^cortex") |>
-  atlas_smooth(keep = 0.1, smoothness = 7, labels = "^cortex")
+  atlas_smooth(keep = 0.3, smoothness = 2, labels = "^cortex")
 
 
 cli::cli_h2("Merging metadata")
