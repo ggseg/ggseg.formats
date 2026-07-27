@@ -169,11 +169,9 @@ aseg_metadata <- data.frame(
   )
 )
 
-aseg_metadata$hemi <- ifelse(
-  grepl("^Left-", aseg_metadata$label),
-  "left",
-  ifelse(grepl("^Right-", aseg_metadata$label), "right", "midline")
-)
+aseg_metadata$hemi <- "midline"
+aseg_metadata$hemi[grepl("^Left-", aseg_metadata$label)] <- "left"
+aseg_metadata$hemi[grepl("^Right-", aseg_metadata$label)] <- "right"
 
 aseg_metadata$region <- tolower(
   gsub("[-_]", " ", sub("^(Left|Right)-", "", aseg_metadata$label))

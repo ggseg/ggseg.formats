@@ -128,11 +128,9 @@ tracula_metadata <- data.frame(
   )
 )
 
-tracula_metadata$hemi <- ifelse(
-  grepl("^lh\\.", tracula_metadata$label),
-  "left",
-  ifelse(grepl("^rh\\.", tracula_metadata$label), "right", "midline")
-)
+tracula_metadata$hemi <- "midline"
+tracula_metadata$hemi[grepl("^lh\\.", tracula_metadata$label)] <- "left"
+tracula_metadata$hemi[grepl("^rh\\.", tracula_metadata$label)] <- "right"
 
 tracula_metadata$region <- tracula_metadata$label |>
   sub("^(lh|rh)\\.", "", x = _) |>
