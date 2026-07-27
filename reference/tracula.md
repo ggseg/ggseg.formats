@@ -81,32 +81,36 @@ tracula()
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (centerlines)
 #> ────────────────────────────────────────────────────────────────────────────────
-#>       hemi              region                label           group
-#> 1  midline anterior commissure       acomm.bbr.prep      commissure
-#> 2  midline     CC body central    cc.bodyc.bbr.prep corpus callosum
-#> 3  midline    CC body parietal    cc.bodyp.bbr.prep corpus callosum
-#> 4  midline  CC body prefrontal   cc.bodypf.bbr.prep corpus callosum
-#> 5  midline    CC body premotor   cc.bodypm.bbr.prep corpus callosum
-#> 6  midline    CC body temporal    cc.bodyt.bbr.prep corpus callosum
-#> 7  midline             CC genu     cc.genu.bbr.prep corpus callosum
-#> 8  midline          CC rostrum  cc.rostrum.bbr.prep corpus callosum
-#> 9  midline         CC splenium cc.splenium.bbr.prep corpus callosum
-#> 10    left  arcuate fasciculus       lh.af.bbr.prep     association
+#>       hemi      region                label                           names
+#> 1  midline       acomm       acomm.bbr.prep             anterior commissure
+#> 2  midline    cc bodyc    cc.bodyc.bbr.prep    corpus callosum body central
+#> 3  midline    cc bodyp    cc.bodyp.bbr.prep   corpus callosum body parietal
+#> 4  midline   cc bodypf   cc.bodypf.bbr.prep corpus callosum body prefrontal
+#> 5  midline   cc bodypm   cc.bodypm.bbr.prep   corpus callosum body premotor
+#> 6  midline    cc bodyt    cc.bodyt.bbr.prep   corpus callosum body temporal
+#> 7  midline     cc genu     cc.genu.bbr.prep            corpus callosum genu
+#> 8  midline  cc rostrum  cc.rostrum.bbr.prep         corpus callosum rostrum
+#> 9  midline cc splenium cc.splenium.bbr.prep        corpus callosum splenium
+#> 10    left          af       lh.af.bbr.prep              arcuate fasciculus
+#>              group
+#> 1       commissure
+#> 2  corpus callosum
+#> 3  corpus callosum
+#> 4  corpus callosum
+#> 5  corpus callosum
+#> 6  corpus callosum
+#> 7  corpus callosum
+#> 8  corpus callosum
+#> 9  corpus callosum
+#> 10     association
 #> ... with 32 more rows
 plot(tracula())
 
 atlas_regions(tracula())
-#>  [1] "CC body central"                  "CC body parietal"                
-#>  [3] "CC body prefrontal"               "CC body premotor"                
-#>  [5] "CC body temporal"                 "CC genu"                         
-#>  [7] "CC rostrum"                       "CC splenium"                     
-#>  [9] "SLF I"                            "SLF II"                          
-#> [11] "SLF III"                          "acoustic radiation"              
-#> [13] "anterior commissure"              "anterior thalamic radiation"     
-#> [15] "arcuate fasciculus"               "cingulum dorsal"                 
-#> [17] "cingulum ventral"                 "corticospinal tract"             
-#> [19] "extreme capsule"                  "fornix"                          
-#> [21] "frontal aslant tract"             "inferior longitudinal fasciculus"
-#> [23] "middle cerebellar peduncle"       "middle longitudinal fasciculus"  
-#> [25] "optic radiation"                  "uncinate fasciculus"             
+#>  [1] "acomm"       "af"          "ar"          "atr"         "cbd"        
+#>  [6] "cbv"         "cc bodyc"    "cc bodyp"    "cc bodypf"   "cc bodypm"  
+#> [11] "cc bodyt"    "cc genu"     "cc rostrum"  "cc splenium" "cst"        
+#> [16] "emc"         "fat"         "fx"          "ilf"         "mcp"        
+#> [21] "mlf"         "or"          "slf1"        "slf2"        "slf3"       
+#> [26] "uf"         
 ```

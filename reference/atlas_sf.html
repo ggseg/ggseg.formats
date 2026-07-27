@@ -13,7 +13,7 @@ sf geometry, converting from the polygon representation when needed."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">ggseg.formats</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.4.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.4.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,18 +77,25 @@ sf geometry, converting from the polygon representation when needed.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sf_data</span> <span class="op">&lt;-</span> <span class="fu">atlas_sf</span><span class="op">(</span><span class="fu"><a href="dk.html">dk</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sf_data</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 6 features and 6 fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 6 features and 7 fields</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: MULTIPOLYGON</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 245.421 ymin: 0 xmax: 4499.276 ymax: 232.5186</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 56.9868 ymin: 6.453514 xmax: 1625.641 ymax: 79.38795</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CRS:           NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          label     view hemi region lobe                       geometry colour</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 186 lh_unknown  lateral &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt; MULTIPOLYGON (((926.5936 60...   &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 187 lh_unknown   medial &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt; MULTIPOLYGON (((1782.84 18....   &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 188 rh_unknown  lateral &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt; MULTIPOLYGON (((3849.766 60...   &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 189 rh_unknown   medial &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt; MULTIPOLYGON (((4318.844 20...   &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 190 lh_unknown inferior &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt; MULTIPOLYGON (((367.1256 13...   &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 191 rh_unknown inferior &lt;NA&gt;   &lt;NA&gt; &lt;NA&gt; MULTIPOLYGON (((3190.519 5....   &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          label     view hemi region names lobe                       geometry</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 180 lh_unknown inferior &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt; &lt;NA&gt; MULTIPOLYGON (((59.87309 38...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 181 lh_unknown  lateral &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt; &lt;NA&gt; MULTIPOLYGON (((309.1881 20...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 182 lh_unknown   medial &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt; &lt;NA&gt; MULTIPOLYGON (((561.9354 46...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 183 rh_unknown inferior &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt; &lt;NA&gt; MULTIPOLYGON (((1056.938 47...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 184 rh_unknown  lateral &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt; &lt;NA&gt; MULTIPOLYGON (((1376.635 14...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 185 rh_unknown   medial &lt;NA&gt;   &lt;NA&gt;  &lt;NA&gt; &lt;NA&gt; MULTIPOLYGON (((1539.551 20...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     colour</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 180   &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 181   &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 182   &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 183   &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 184   &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 185   &lt;NA&gt;</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

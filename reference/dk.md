@@ -90,55 +90,55 @@ dk()
 #> Type: cortical
 #> Regions: 35
 #> Hemispheres: left, right
-#> Views: inferior, lateral, superior, medial
+#> Views: inferior, lateral, medial, superior
 #> Palette: ✔
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (vertices)
 #> ────────────────────────────────────────────────────────────────────────────────
-#>    hemi                            region                      label
-#> 1  left banks of superior temporal sulcus                lh_bankssts
-#> 2  left         caudal anterior cingulate lh_caudalanteriorcingulate
-#> 3  left             caudal middle frontal     lh_caudalmiddlefrontal
-#> 4  left                   corpus callosum          lh_corpuscallosum
-#> 5  left                            cuneus                  lh_cuneus
-#> 6  left                        entorhinal              lh_entorhinal
-#> 7  left                          fusiform                lh_fusiform
-#> 8  left                 inferior parietal        lh_inferiorparietal
-#> 9  left                 inferior temporal        lh_inferiortemporal
-#> 10 left                 isthmus cingulate        lh_isthmuscingulate
-#>            lobe
-#> 1      temporal
-#> 2     cingulate
-#> 3       frontal
-#> 4  white matter
-#> 5     occipital
-#> 6      temporal
-#> 7      temporal
-#> 8      parietal
-#> 9      temporal
-#> 10    cingulate
+#>    hemi                  region                      label
+#> 1  left                bankssts                lh_bankssts
+#> 2  left caudalanteriorcingulate lh_caudalanteriorcingulate
+#> 3  left     caudalmiddlefrontal     lh_caudalmiddlefrontal
+#> 4  left          corpuscallosum          lh_corpuscallosum
+#> 5  left                  cuneus                  lh_cuneus
+#> 6  left              entorhinal              lh_entorhinal
+#> 7  left                fusiform                lh_fusiform
+#> 8  left        inferiorparietal        lh_inferiorparietal
+#> 9  left        inferiortemporal        lh_inferiortemporal
+#> 10 left        isthmuscingulate        lh_isthmuscingulate
+#>                                names         lobe
+#> 1  banks of superior temporal sulcus     temporal
+#> 2          caudal anterior cingulate    cingulate
+#> 3              caudal middle frontal      frontal
+#> 4                    corpus callosum white matter
+#> 5                             cuneus    occipital
+#> 6                         entorhinal     temporal
+#> 7                           fusiform     temporal
+#> 8                  inferior parietal     parietal
+#> 9                  inferior temporal     temporal
+#> 10                 isthmus cingulate    cingulate
 #> ... with 60 more rows
 plot(dk())
 
 atlas_regions(dk())
-#>  [1] "banks of superior temporal sulcus" "caudal anterior cingulate"        
-#>  [3] "caudal middle frontal"             "corpus callosum"                  
-#>  [5] "cuneus"                            "entorhinal"                       
-#>  [7] "frontal pole"                      "fusiform"                         
-#>  [9] "inferior parietal"                 "inferior temporal"                
-#> [11] "insula"                            "isthmus cingulate"                
-#> [13] "lateral occipital"                 "lateral orbitofrontal"            
-#> [15] "lingual"                           "medial orbitofrontal"             
-#> [17] "middle temporal"                   "paracentral"                      
-#> [19] "parahippocampal"                   "pars opercularis"                 
-#> [21] "pars orbitalis"                    "pars triangularis"                
-#> [23] "pericalcarine"                     "postcentral"                      
-#> [25] "posterior cingulate"               "precentral"                       
-#> [27] "precuneus"                         "rostral anterior cingulate"       
-#> [29] "rostral middle frontal"            "superior frontal"                 
-#> [31] "superior parietal"                 "superior temporal"                
-#> [33] "supramarginal"                     "temporal pole"                    
-#> [35] "transverse temporal"              
+#>  [1] "bankssts"                 "caudalanteriorcingulate" 
+#>  [3] "caudalmiddlefrontal"      "corpuscallosum"          
+#>  [5] "cuneus"                   "entorhinal"              
+#>  [7] "frontalpole"              "fusiform"                
+#>  [9] "inferiorparietal"         "inferiortemporal"        
+#> [11] "insula"                   "isthmuscingulate"        
+#> [13] "lateraloccipital"         "lateralorbitofrontal"    
+#> [15] "lingual"                  "medialorbitofrontal"     
+#> [17] "middletemporal"           "paracentral"             
+#> [19] "parahippocampal"          "parsopercularis"         
+#> [21] "parsorbitalis"            "parstriangularis"        
+#> [23] "pericalcarine"            "postcentral"             
+#> [25] "posteriorcingulate"       "precentral"              
+#> [27] "precuneus"                "rostralanteriorcingulate"
+#> [29] "rostralmiddlefrontal"     "superiorfrontal"         
+#> [31] "superiorparietal"         "superiortemporal"        
+#> [33] "supramarginal"            "temporalpole"            
+#> [35] "transversetemporal"      
 atlas_labels(dk())
 #>  [1] "lh_bankssts"                 "lh_caudalanteriorcingulate" 
 #>  [3] "lh_caudalmiddlefrontal"      "lh_corpuscallosum"          

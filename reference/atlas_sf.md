@@ -25,16 +25,23 @@ sf data.frame ready for plotting
 ``` r
 sf_data <- atlas_sf(dk())
 head(sf_data)
-#> Simple feature collection with 6 features and 6 fields
+#> Simple feature collection with 6 features and 7 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
-#> Bounding box:  xmin: 245.421 ymin: 0 xmax: 4499.276 ymax: 232.5186
+#> Bounding box:  xmin: 56.9868 ymin: 6.453514 xmax: 1625.641 ymax: 79.38795
 #> CRS:           NA
-#>          label     view hemi region lobe                       geometry colour
-#> 186 lh_unknown  lateral <NA>   <NA> <NA> MULTIPOLYGON (((926.5936 60...   <NA>
-#> 187 lh_unknown   medial <NA>   <NA> <NA> MULTIPOLYGON (((1782.84 18....   <NA>
-#> 188 rh_unknown  lateral <NA>   <NA> <NA> MULTIPOLYGON (((3849.766 60...   <NA>
-#> 189 rh_unknown   medial <NA>   <NA> <NA> MULTIPOLYGON (((4318.844 20...   <NA>
-#> 190 lh_unknown inferior <NA>   <NA> <NA> MULTIPOLYGON (((367.1256 13...   <NA>
-#> 191 rh_unknown inferior <NA>   <NA> <NA> MULTIPOLYGON (((3190.519 5....   <NA>
+#>          label     view hemi region names lobe                       geometry
+#> 180 lh_unknown inferior <NA>   <NA>  <NA> <NA> MULTIPOLYGON (((59.87309 38...
+#> 181 lh_unknown  lateral <NA>   <NA>  <NA> <NA> MULTIPOLYGON (((309.1881 20...
+#> 182 lh_unknown   medial <NA>   <NA>  <NA> <NA> MULTIPOLYGON (((561.9354 46...
+#> 183 rh_unknown inferior <NA>   <NA>  <NA> <NA> MULTIPOLYGON (((1056.938 47...
+#> 184 rh_unknown  lateral <NA>   <NA>  <NA> <NA> MULTIPOLYGON (((1376.635 14...
+#> 185 rh_unknown   medial <NA>   <NA>  <NA> <NA> MULTIPOLYGON (((1539.551 20...
+#>     colour
+#> 180   <NA>
+#> 181   <NA>
+#> 182   <NA>
+#> 183   <NA>
+#> 184   <NA>
+#> 185   <NA>
 ```

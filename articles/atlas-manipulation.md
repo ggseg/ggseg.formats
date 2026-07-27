@@ -51,8 +51,8 @@ continuity, but non-matching regions leave core and palette):
 
 frontal <- atlas_region_keep(dk(), "frontal")
 atlas_regions(frontal)
-#> [1] "caudal middle frontal"  "frontal pole"           "lateral orbitofrontal" 
-#> [4] "medial orbitofrontal"   "rostral middle frontal" "superior frontal"
+#> [1] "caudalmiddlefrontal"  "frontalpole"          "lateralorbitofrontal"
+#> [4] "medialorbitofrontal"  "rostralmiddlefrontal" "superiorfrontal"
 ```
 
 Both functions accept a `match_on` argument to choose whether the
@@ -102,7 +102,7 @@ renamed <- atlas_region_rename(
   "STS banks"
 )
 "STS banks" %in% atlas_regions(renamed)
-#> [1] TRUE
+#> [1] FALSE
 ```
 
 Or pass a function for programmatic renaming:
@@ -111,9 +111,9 @@ Or pass a function for programmatic renaming:
 
 upper <- atlas_region_rename(dk(), ".*", toupper)
 head(atlas_regions(upper))
-#> [1] "BANKS OF SUPERIOR TEMPORAL SULCUS" "CAUDAL ANTERIOR CINGULATE"        
-#> [3] "CAUDAL MIDDLE FRONTAL"             "CORPUS CALLOSUM"                  
-#> [5] "CUNEUS"                            "ENTORHINAL"
+#> [1] "BANKSSTS"                "CAUDALANTERIORCINGULATE"
+#> [3] "CAUDALMIDDLEFRONTAL"     "CORPUSCALLOSUM"         
+#> [5] "CUNEUS"                  "ENTORHINAL"
 ```
 
 ## Managing views
@@ -124,8 +124,8 @@ tells you what 2D views an atlas has:
 ``` r
 
 atlas_views(aseg())
-#> [1] "axial_3"   "axial_4"   "axial_5"   "sagittal"  "axial_6"   "coronal_1"
-#> [7] "coronal_2"
+#> [1] "axial_3"   "axial_4"   "axial_5"   "axial_6"   "coronal_1" "coronal_2"
+#> [7] "sagittal"
 ```
 
 [`atlas_view_keep()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
@@ -146,7 +146,7 @@ Or remove several views at once by passing a vector:
 
 fewer <- atlas_view_remove(aseg(), c("axial_3", "coronal_2"))
 atlas_views(fewer)
-#> [1] "axial_4"   "axial_5"   "sagittal"  "axial_6"   "coronal_1"
+#> [1] "axial_4"   "axial_5"   "axial_6"   "coronal_1" "sagittal"
 ```
 
 ## Cleaning up geometry
@@ -160,7 +160,7 @@ removes region polygons below a minimum area threshold. Context polygons
 ``` r
 
 cleaned <- atlas_view_remove_small(aseg(), min_area = 50)
-#> ℹ Removed 20 geometries below area 50
+#> ℹ Removed 14 geometries below area 50
 ```
 
 You can scope the removal to specific views:
@@ -172,7 +172,7 @@ cleaned_sag <- atlas_view_remove_small(
   min_area = 50,
   views = "sagittal"
 )
-#> ℹ Removed 2 geometries below area 50
+#> ℹ Removed 4 geometries below area 50
 ```
 
 [`atlas_view_remove_region()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
@@ -239,15 +239,9 @@ network_info <- data.frame(
 )
 enriched <- atlas_core_add(dk(), network_info)
 enriched$core[!is.na(enriched$core$network), c("region", "network")]
-#>                 region      network
-#> 8    inferior parietal default mode
-#> 23 posterior cingulate default mode
-#> 25           precuneus default mode
-#> 28    superior frontal default mode
-#> 43   inferior parietal default mode
-#> 58 posterior cingulate default mode
-#> 60           precuneus default mode
-#> 63    superior frontal default mode
+#>       region      network
+#> 25 precuneus default mode
+#> 60 precuneus default mode
 ```
 
 The `by` argument defaults to `"region"` but you can join on any shared
@@ -265,31 +259,42 @@ publication_aseg <- aseg() |>
   atlas_region_contextual("ventricle|choroid|white|cc") |>
   atlas_view_remove_small(min_area = 30) |>
   atlas_view_gather(gap = 0.1)
-#> ℹ Removed 2 geometries below area 30
+#> ℹ Removed 3 geometries below area 30
 
 publication_aseg
 #> 
 #> ── aseg ggseg atlas ────────────────────────────────────────────────────────────
 #> Type: subcortical
-#> Regions: 12
+#> Regions: 11
 #> Hemispheres: left, NA, right
 #> Views: sagittal
 #> Palette: ✔
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (meshes)
 #> ────────────────────────────────────────────────────────────────────────────────
-#>    hemi          region                  label     structure
-#> 1  left      Cerebellum Left-Cerebellum-Cortex    cerebellum
-#> 2  left      Cerebellum Left-Cerebellum-Cortex    cerebellum
-#> 3  left        Thalamus          Left-Thalamus basal ganglia
-#> 4  left        Thalamus          Left-Thalamus basal ganglia
-#> 5  left Thalamus Proper          Left-Thalamus basal ganglia
-#> 6  left Thalamus Proper          Left-Thalamus basal ganglia
-#> 7  left         Caudate           Left-Caudate basal ganglia
-#> 8  left         Caudate           Left-Caudate basal ganglia
-#> 9  left         Putamen           Left-Putamen basal ganglia
-#> 10 left         Putamen           Left-Putamen basal ganglia
-#> ... with 28 more rows
+#>    hemi            region                  label                names
+#> 1  left cerebellum cortex Left-Cerebellum-Cortex    cerebellum cortex
+#> 2  left          thalamus          Left-Thalamus             thalamus
+#> 3  left           caudate           Left-Caudate              caudate
+#> 4  left           putamen           Left-Putamen              putamen
+#> 5  left          pallidum          Left-Pallidum             pallidum
+#> 6  <NA>        brain stem             Brain-Stem           brain stem
+#> 7  left       hippocampus       Left-Hippocampus          hippocampus
+#> 8  left          amygdala          Left-Amygdala             amygdala
+#> 9  left         ventraldc         Left-VentralDC ventral diencephalon
+#> 10 left            vessel            Left-vessel               vessel
+#>        structure
+#> 1     cerebellum
+#> 2  basal ganglia
+#> 3  basal ganglia
+#> 4  basal ganglia
+#> 5  basal ganglia
+#> 6      brainstem
+#> 7         limbic
+#> 8         limbic
+#> 9   diencephalon
+#> 10         other
+#> ... with 10 more rows
 ```
 
 Each function returns a valid `ggseg_atlas`, so you can inspect

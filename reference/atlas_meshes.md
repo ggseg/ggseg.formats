@@ -24,12 +24,12 @@ data.frame with meshes ready for 3D rendering
 ``` r
 meshes <- atlas_meshes(aseg())
 head(meshes)
-#> ── <ggseg_meshes> data: 6 × 6 ──────────────────────────────────────────────────
+#> ── <ggseg_meshes> data: 6 × 7 ──────────────────────────────────────────────────
 #>                    label vertices faces
-#> 1 Left-Cerebellum-Cortex    21232 42456
-#> 2 Left-Cerebellum-Cortex    21232 42456
-#> 3          Left-Thalamus     3726  7448
-#> 4          Left-Thalamus     3726  7448
-#> 5          Left-Thalamus     3726  7448
-#> 6          Left-Thalamus     3726  7448
+#> 1 Left-Cerebellum-Cortex    10618 21228
+#> 2          Left-Thalamus     1864  3724
+#> 3           Left-Caudate     1512  3028
+#> 4           Left-Putamen     1998  3992
+#> 5          Left-Pallidum      723  1442
+#> 6             Brain-Stem     4608  9212
 ```

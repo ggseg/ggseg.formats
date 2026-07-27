@@ -234,21 +234,32 @@ dk() |>
 #> Type: cortical
 #> Regions: 6
 #> Hemispheres: left, right
-#> Views: inferior, lateral, superior, medial
+#> Views: inferior, lateral, medial, superior
 #> Palette: ✔
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (vertices)
 #> ────────────────────────────────────────────────────────────────────────────────
-#>     hemi                 region                   label    lobe
-#> 1   left  caudal middle frontal  lh_caudalmiddlefrontal frontal
-#> 2   left  lateral orbitofrontal lh_lateralorbitofrontal frontal
-#> 3   left   medial orbitofrontal  lh_medialorbitofrontal frontal
-#> 4   left rostral middle frontal lh_rostralmiddlefrontal frontal
-#> 5   left       superior frontal      lh_superiorfrontal frontal
-#> 6   left           frontal pole          lh_frontalpole frontal
-#> 7  right  caudal middle frontal  rh_caudalmiddlefrontal frontal
-#> 8  right  lateral orbitofrontal rh_lateralorbitofrontal frontal
-#> 9  right   medial orbitofrontal  rh_medialorbitofrontal frontal
-#> 10 right rostral middle frontal rh_rostralmiddlefrontal frontal
+#>     hemi               region                   label                  names
+#> 1   left  caudalmiddlefrontal  lh_caudalmiddlefrontal  caudal middle frontal
+#> 2   left lateralorbitofrontal lh_lateralorbitofrontal  lateral orbitofrontal
+#> 3   left  medialorbitofrontal  lh_medialorbitofrontal   medial orbitofrontal
+#> 4   left rostralmiddlefrontal lh_rostralmiddlefrontal rostral middle frontal
+#> 5   left      superiorfrontal      lh_superiorfrontal       superior frontal
+#> 6   left          frontalpole          lh_frontalpole           frontal pole
+#> 7  right  caudalmiddlefrontal  rh_caudalmiddlefrontal  caudal middle frontal
+#> 8  right lateralorbitofrontal rh_lateralorbitofrontal  lateral orbitofrontal
+#> 9  right  medialorbitofrontal  rh_medialorbitofrontal   medial orbitofrontal
+#> 10 right rostralmiddlefrontal rh_rostralmiddlefrontal rostral middle frontal
+#>       lobe
+#> 1  frontal
+#> 2  frontal
+#> 3  frontal
+#> 4  frontal
+#> 5  frontal
+#> 6  frontal
+#> 7  frontal
+#> 8  frontal
+#> 9  frontal
+#> 10 frontal
 #> ... with 2 more rows
 ```

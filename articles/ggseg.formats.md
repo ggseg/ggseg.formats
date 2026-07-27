@@ -30,33 +30,33 @@ dk()
 #> Type: cortical
 #> Regions: 35
 #> Hemispheres: left, right
-#> Views: inferior, lateral, superior, medial
+#> Views: inferior, lateral, medial, superior
 #> Palette: ✔
 #> Rendering: ✔ ggseg
 #> ✔ ggseg3d (vertices)
 #> ────────────────────────────────────────────────────────────────────────────────
-#>    hemi                            region                      label
-#> 1  left banks of superior temporal sulcus                lh_bankssts
-#> 2  left         caudal anterior cingulate lh_caudalanteriorcingulate
-#> 3  left             caudal middle frontal     lh_caudalmiddlefrontal
-#> 4  left                   corpus callosum          lh_corpuscallosum
-#> 5  left                            cuneus                  lh_cuneus
-#> 6  left                        entorhinal              lh_entorhinal
-#> 7  left                          fusiform                lh_fusiform
-#> 8  left                 inferior parietal        lh_inferiorparietal
-#> 9  left                 inferior temporal        lh_inferiortemporal
-#> 10 left                 isthmus cingulate        lh_isthmuscingulate
-#>            lobe
-#> 1      temporal
-#> 2     cingulate
-#> 3       frontal
-#> 4  white matter
-#> 5     occipital
-#> 6      temporal
-#> 7      temporal
-#> 8      parietal
-#> 9      temporal
-#> 10    cingulate
+#>    hemi                  region                      label
+#> 1  left                bankssts                lh_bankssts
+#> 2  left caudalanteriorcingulate lh_caudalanteriorcingulate
+#> 3  left     caudalmiddlefrontal     lh_caudalmiddlefrontal
+#> 4  left          corpuscallosum          lh_corpuscallosum
+#> 5  left                  cuneus                  lh_cuneus
+#> 6  left              entorhinal              lh_entorhinal
+#> 7  left                fusiform                lh_fusiform
+#> 8  left        inferiorparietal        lh_inferiorparietal
+#> 9  left        inferiortemporal        lh_inferiortemporal
+#> 10 left        isthmuscingulate        lh_isthmuscingulate
+#>                                names         lobe
+#> 1  banks of superior temporal sulcus     temporal
+#> 2          caudal anterior cingulate    cingulate
+#> 3              caudal middle frontal      frontal
+#> 4                    corpus callosum white matter
+#> 5                             cuneus    occipital
+#> 6                         entorhinal     temporal
+#> 7                           fusiform     temporal
+#> 8                  inferior parietal     parietal
+#> 9                  inferior temporal     temporal
+#> 10                 isthmus cingulate    cingulate
 #> ... with 60 more rows
 ```
 
@@ -102,20 +102,20 @@ metadata like `lobe` or `structure`:
 ``` r
 
 head(dk()$core)
-#>   hemi                            region                      label
-#> 1 left banks of superior temporal sulcus                lh_bankssts
-#> 2 left         caudal anterior cingulate lh_caudalanteriorcingulate
-#> 3 left             caudal middle frontal     lh_caudalmiddlefrontal
-#> 4 left                   corpus callosum          lh_corpuscallosum
-#> 5 left                            cuneus                  lh_cuneus
-#> 6 left                        entorhinal              lh_entorhinal
-#>           lobe
-#> 1     temporal
-#> 2    cingulate
-#> 3      frontal
-#> 4 white matter
-#> 5    occipital
-#> 6     temporal
+#>   hemi                  region                      label
+#> 1 left                bankssts                lh_bankssts
+#> 2 left caudalanteriorcingulate lh_caudalanteriorcingulate
+#> 3 left     caudalmiddlefrontal     lh_caudalmiddlefrontal
+#> 4 left          corpuscallosum          lh_corpuscallosum
+#> 5 left                  cuneus                  lh_cuneus
+#> 6 left              entorhinal              lh_entorhinal
+#>                               names         lobe
+#> 1 banks of superior temporal sulcus     temporal
+#> 2         caudal anterior cingulate    cingulate
+#> 3             caudal middle frontal      frontal
+#> 4                   corpus callosum white matter
+#> 5                            cuneus    occipital
+#> 6                        entorhinal     temporal
 ```
 
 Finally, `$data` is a `ggseg_atlas_data` object that holds the actual
@@ -140,7 +140,7 @@ rendering and vertex indices for 3D:
 dk()$type
 #> [1] "cortical"
 names(dk()$data)
-#> [1] "vertices" "geom"
+#> [1] "geom"     "vertices"
 ```
 
 **Subcortical** atlases like `aseg` represent deep brain structures.
@@ -152,7 +152,7 @@ Their data is a `ggseg_data_subcortical` with sf polygons and individual
 aseg()$type
 #> [1] "subcortical"
 names(aseg()$data)
-#> [1] "meshes" "geom"
+#> [1] "geom"   "meshes"
 ```
 
 **Tract** atlases like `tracula` represent white matter bundles. Their
@@ -164,7 +164,7 @@ generate tube meshes for 3D:
 tracula()$type
 #> [1] "tract"
 names(tracula()$data)
-#> [1] "centerlines" "geom"
+#> [1] "geom"        "centerlines"
 ```
 
 In every case the sf component drives 2D plotting and the type-specific
@@ -183,10 +183,11 @@ unique identifier that links core to geometry). Most atlases also carry
 ``` r
 
 str(dk()$core)
-#> Classes 'tbl_df', 'tbl' and 'data.frame':    70 obs. of  4 variables:
+#> Classes 'tbl_df', 'tbl' and 'data.frame':    70 obs. of  5 variables:
 #>  $ hemi  : chr  "left" "left" "left" "left" ...
-#>  $ region: chr  "banks of superior temporal sulcus" "caudal anterior cingulate" "caudal middle frontal" "corpus callosum" ...
+#>  $ region: chr  "bankssts" "caudalanteriorcingulate" "caudalmiddlefrontal" "corpuscallosum" ...
 #>  $ label : chr  "lh_bankssts" "lh_caudalanteriorcingulate" "lh_caudalmiddlefrontal" "lh_corpuscallosum" ...
+#>  $ names : chr  "banks of superior temporal sulcus" "caudal anterior cingulate" "caudal middle frontal" "corpus callosum" ...
 #>  $ lobe  : chr  "temporal" "cingulate" "frontal" "white matter" ...
 ```
 
@@ -215,24 +216,24 @@ returns the sorted unique region names:
 ``` r
 
 atlas_regions(dk())
-#>  [1] "banks of superior temporal sulcus" "caudal anterior cingulate"        
-#>  [3] "caudal middle frontal"             "corpus callosum"                  
-#>  [5] "cuneus"                            "entorhinal"                       
-#>  [7] "frontal pole"                      "fusiform"                         
-#>  [9] "inferior parietal"                 "inferior temporal"                
-#> [11] "insula"                            "isthmus cingulate"                
-#> [13] "lateral occipital"                 "lateral orbitofrontal"            
-#> [15] "lingual"                           "medial orbitofrontal"             
-#> [17] "middle temporal"                   "paracentral"                      
-#> [19] "parahippocampal"                   "pars opercularis"                 
-#> [21] "pars orbitalis"                    "pars triangularis"                
-#> [23] "pericalcarine"                     "postcentral"                      
-#> [25] "posterior cingulate"               "precentral"                       
-#> [27] "precuneus"                         "rostral anterior cingulate"       
-#> [29] "rostral middle frontal"            "superior frontal"                 
-#> [31] "superior parietal"                 "superior temporal"                
-#> [33] "supramarginal"                     "temporal pole"                    
-#> [35] "transverse temporal"
+#>  [1] "bankssts"                 "caudalanteriorcingulate" 
+#>  [3] "caudalmiddlefrontal"      "corpuscallosum"          
+#>  [5] "cuneus"                   "entorhinal"              
+#>  [7] "frontalpole"              "fusiform"                
+#>  [9] "inferiorparietal"         "inferiortemporal"        
+#> [11] "insula"                   "isthmuscingulate"        
+#> [13] "lateraloccipital"         "lateralorbitofrontal"    
+#> [15] "lingual"                  "medialorbitofrontal"     
+#> [17] "middletemporal"           "paracentral"             
+#> [19] "parahippocampal"          "parsopercularis"         
+#> [21] "parsorbitalis"            "parstriangularis"        
+#> [23] "pericalcarine"            "postcentral"             
+#> [25] "posteriorcingulate"       "precentral"              
+#> [27] "precuneus"                "rostralanteriorcingulate"
+#> [29] "rostralmiddlefrontal"     "superiorfrontal"         
+#> [31] "superiorparietal"         "superiortemporal"        
+#> [33] "supramarginal"            "temporalpole"            
+#> [35] "transversetemporal"
 ```
 
 [`atlas_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md)
@@ -252,10 +253,10 @@ returns the available 2D views:
 ``` r
 
 atlas_views(dk())
-#> [1] "inferior" "lateral"  "superior" "medial"
+#> [1] "inferior" "lateral"  "medial"   "superior"
 atlas_views(aseg())
-#> [1] "axial_3"   "axial_4"   "axial_5"   "sagittal"  "axial_6"   "coronal_1"
-#> [7] "coronal_2"
+#> [1] "axial_3"   "axial_4"   "axial_5"   "axial_6"   "coronal_1" "coronal_2"
+#> [7] "sagittal"
 atlas_views(tracula())
 #> [1] "axial_2"          "axial_4"          "coronal_3"        "coronal_4"       
 #> [5] "sagittal_midline" "sagittal_left"    "sagittal_right"
@@ -301,36 +302,36 @@ returns an sf data frame for 2D rendering:
 
 sf_data <- atlas_sf(dk())
 sf_data
-#> ── <ggseg_sf> data: 191 × 7 ────────────────────────────────────────────────────
-#> Views: lateral, medial, inferior, superior
-#> Simple feature collection with 191 features and 6 fields
+#> ── <ggseg_sf> data: 185 × 8 ────────────────────────────────────────────────────
+#> Views: inferior, lateral, medial, superior
+#> Simple feature collection with 185 features and 7 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
-#> Bounding box:  xmin: 84.2049 ymin: 0 xmax: 5359.689 ymax: 429.9372
+#> Bounding box:  xmin: 0.899055 ymin: 0.0853615 xmax: 1938.834 ymax: 146.1192
 #> CRS:           NA
 #> First 10 features:
-#>                      label     view hemi                            region
-#> 186             lh_unknown  lateral <NA>                              <NA>
-#> 187             lh_unknown   medial <NA>                              <NA>
-#> 188             rh_unknown  lateral <NA>                              <NA>
-#> 189             rh_unknown   medial <NA>                              <NA>
-#> 190             lh_unknown inferior <NA>                              <NA>
-#> 191             rh_unknown inferior <NA>                              <NA>
-#> 1              lh_bankssts  lateral left banks of superior temporal sulcus
-#> 2              lh_bankssts superior left banks of superior temporal sulcus
-#> 3              lh_bankssts inferior left banks of superior temporal sulcus
-#> 4   lh_caudalmiddlefrontal  lateral left             caudal middle frontal
-#>         lobe                       geometry  colour
-#> 186     <NA> MULTIPOLYGON (((926.5936 60...    <NA>
-#> 187     <NA> MULTIPOLYGON (((1782.84 18....    <NA>
-#> 188     <NA> MULTIPOLYGON (((3849.766 60...    <NA>
-#> 189     <NA> MULTIPOLYGON (((4318.844 20...    <NA>
-#> 190     <NA> MULTIPOLYGON (((367.1256 13...    <NA>
-#> 191     <NA> MULTIPOLYGON (((3190.519 5....    <NA>
-#> 1   temporal MULTIPOLYGON (((1121.478 12... #196428
-#> 2   temporal MULTIPOLYGON (((2448.464 20... #196428
-#> 3   temporal MULTIPOLYGON (((534.4782 21... #196428
-#> 4    frontal MULTIPOLYGON (((911.758 248... #641900
+#>             label     view hemi     region      names    lobe
+#> 180    lh_unknown inferior <NA>       <NA>       <NA>    <NA>
+#> 181    lh_unknown  lateral <NA>       <NA>       <NA>    <NA>
+#> 182    lh_unknown   medial <NA>       <NA>       <NA>    <NA>
+#> 183    rh_unknown inferior <NA>       <NA>       <NA>    <NA>
+#> 184    rh_unknown  lateral <NA>       <NA>       <NA>    <NA>
+#> 185    rh_unknown   medial <NA>       <NA>       <NA>    <NA>
+#> 1   lh_precentral inferior left precentral precentral frontal
+#> 2   lh_precentral  lateral left precentral precentral frontal
+#> 3   lh_precentral   medial left precentral precentral frontal
+#> 4   lh_precentral superior left precentral precentral frontal
+#>                           geometry  colour
+#> 180 MULTIPOLYGON (((59.87309 38...    <NA>
+#> 181 MULTIPOLYGON (((309.1881 20...    <NA>
+#> 182 MULTIPOLYGON (((561.9354 46...    <NA>
+#> 183 MULTIPOLYGON (((1056.938 47...    <NA>
+#> 184 MULTIPOLYGON (((1376.635 14...    <NA>
+#> 185 MULTIPOLYGON (((1539.551 20...    <NA>
+#> 1   MULTIPOLYGON (((66.45332 10... #3C14DC
+#> 2   MULTIPOLYGON (((310.8458 85... #3C14DC
+#> 3   MULTIPOLYGON (((578.4216 14... #3C14DC
+#> 4   MULTIPOLYGON (((804.4479 56... #3C14DC
 ```
 
 [`atlas_vertices()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_vertices.md)
@@ -340,20 +341,20 @@ returns the vertex data for cortical 3D rendering:
 
 vert_data <- atlas_vertices(dk())
 vert_data
-#> ── <ggseg_vertices> data: 70 × 6 ───────────────────────────────────────────────
+#> ── <ggseg_vertices> data: 70 × 7 ───────────────────────────────────────────────
 #> Vertices per region: 18 –759
-#>                         label    vertices hemi
-#> 1                 lh_bankssts <int [126]> left
-#> 2  lh_caudalanteriorcingulate  <int [67]> left
-#> 3      lh_caudalmiddlefrontal <int [232]> left
-#> 4           lh_corpuscallosum <int [198]> left
-#> 5                   lh_cuneus <int [102]> left
-#> 6               lh_entorhinal  <int [48]> left
-#> 7                 lh_fusiform <int [308]> left
-#> 8         lh_inferiorparietal <int [484]> left
-#> 9         lh_inferiortemporal <int [271]> left
-#> 10        lh_isthmuscingulate <int [123]> left
-#>                               region         lobe  colour
+#>                         label    vertices hemi                  region
+#> 1                 lh_bankssts <int [126]> left                bankssts
+#> 2  lh_caudalanteriorcingulate  <int [67]> left caudalanteriorcingulate
+#> 3      lh_caudalmiddlefrontal <int [232]> left     caudalmiddlefrontal
+#> 4           lh_corpuscallosum <int [198]> left          corpuscallosum
+#> 5                   lh_cuneus <int [102]> left                  cuneus
+#> 6               lh_entorhinal  <int [48]> left              entorhinal
+#> 7                 lh_fusiform <int [308]> left                fusiform
+#> 8         lh_inferiorparietal <int [484]> left        inferiorparietal
+#> 9         lh_inferiortemporal <int [271]> left        inferiortemporal
+#> 10        lh_isthmuscingulate <int [123]> left        isthmuscingulate
+#>                                names         lobe  colour
 #> 1  banks of superior temporal sulcus     temporal #196428
 #> 2          caudal anterior cingulate    cingulate #7D64A0
 #> 3              caudal middle frontal      frontal #641900
@@ -374,19 +375,19 @@ returns mesh data for subcortical or tract 3D rendering:
 
 mesh_data <- atlas_meshes(aseg())
 mesh_data
-#> ── <ggseg_meshes> data: 47 × 6 ─────────────────────────────────────────────────
+#> ── <ggseg_meshes> data: 29 × 7 ─────────────────────────────────────────────────
 #>                     label vertices faces
-#> 1  Left-Cerebellum-Cortex    21232 42456
-#> 2  Left-Cerebellum-Cortex    21232 42456
-#> 3           Left-Thalamus     3726  7448
-#> 4           Left-Thalamus     3726  7448
-#> 5           Left-Thalamus     3726  7448
-#> 6           Left-Thalamus     3726  7448
-#> 7            Left-Caudate     3026  6056
-#> 8            Left-Caudate     3026  6056
-#> 9            Left-Putamen     3994  7984
-#> 10           Left-Putamen     3994  7984
-#> ... with 37 more rows
+#> 1  Left-Cerebellum-Cortex    10618 21228
+#> 2           Left-Thalamus     1864  3724
+#> 3            Left-Caudate     1512  3028
+#> 4            Left-Putamen     1998  3992
+#> 5           Left-Pallidum      723  1442
+#> 6              Brain-Stem     4608  9212
+#> 7        Left-Hippocampus     1892  3780
+#> 8           Left-Amygdala      710  1416
+#> 9     Left-Accumbens-area      432   860
+#> 10         Left-VentralDC     1683  3366
+#> ... with 19 more rows
 ```
 
 [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) is a
@@ -398,8 +399,8 @@ but with atlas-level columns (`atlas`, `type`) attached:
 
 df <- as.data.frame(dk())
 names(df)
-#> [1] "label"    "view"     "hemi"     "region"   "lobe"     "geometry" "atlas"   
-#> [8] "type"     "colour"
+#>  [1] "label"    "view"     "hemi"     "region"   "names"    "lobe"    
+#>  [7] "geometry" "atlas"    "type"     "colour"
 ```
 
 ## Checking and converting
