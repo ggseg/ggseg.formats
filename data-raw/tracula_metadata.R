@@ -1,6 +1,11 @@
 # TRACULA tract metadata
 #
-# Full names and groupings for FreeSurfer TRACULA tracts.
+# One row per raw FreeSurfer TRACULA tract label. `label` is the untouched atlas
+# identifier; `hemi` and `region` are derived mechanically from it (the lh./rh.
+# prefix becomes `hemi`, the remainder with the .bbr.prep suffix stripped and
+# dots spaced becomes `region`); `names` is the fully spelled-out label; `group`
+# classifies tracts.
+#
 # Based on: https://surfer.nmr.mgh.harvard.edu/fswiki/Tracula
 
 tracula_metadata <- data.frame(
@@ -53,16 +58,16 @@ tracula_metadata <- data.frame(
     "rh.slf3.bbr.prep",
     "rh.uf.bbr.prep"
   ),
-  region = c(
+  names = c(
     # CC segments
-    "CC rostrum",
-    "CC genu",
-    "CC body central",
-    "CC body prefrontal",
-    "CC body premotor",
-    "CC body parietal",
-    "CC body temporal",
-    "CC splenium",
+    "corpus callosum rostrum",
+    "corpus callosum genu",
+    "corpus callosum body central",
+    "corpus callosum body prefrontal",
+    "corpus callosum body premotor",
+    "corpus callosum body parietal",
+    "corpus callosum body temporal",
+    "corpus callosum splenium",
     # Commissures
     "anterior commissure",
     # Cerebellar
@@ -80,9 +85,9 @@ tracula_metadata <- data.frame(
     "inferior longitudinal fasciculus",
     "middle longitudinal fasciculus",
     "optic radiation",
-    "SLF I",
-    "SLF II",
-    "SLF III",
+    "superior longitudinal fasciculus I",
+    "superior longitudinal fasciculus II",
+    "superior longitudinal fasciculus III",
     "uncinate fasciculus",
     # Right tracts (same names)
     "corticospinal tract",
@@ -97,9 +102,9 @@ tracula_metadata <- data.frame(
     "inferior longitudinal fasciculus",
     "middle longitudinal fasciculus",
     "optic radiation",
-    "SLF I",
-    "SLF II",
-    "SLF III",
+    "superior longitudinal fasciculus I",
+    "superior longitudinal fasciculus II",
+    "superior longitudinal fasciculus III",
     "uncinate fasciculus"
   ),
   group = c(
@@ -122,3 +127,16 @@ tracula_metadata <- data.frame(
     rep("limbic", 1)
   )
 )
+
+tracula_metadata$hemi <- "midline"
+tracula_metadata$hemi[grepl("^lh\\.", tracula_metadata$label)] <- "left"
+tracula_metadata$hemi[grepl("^rh\\.", tracula_metadata$label)] <- "right"
+
+tracula_metadata$region <- tracula_metadata$label |>
+  sub("^(lh|rh)\\.", "", x = _) |>
+  sub("\\.bbr\\.prep$", "", x = _) |>
+  gsub("\\.", " ", x = _)
+
+tracula_metadata <- tracula_metadata[,
+  c("label", "hemi", "region", "names", "group")
+]

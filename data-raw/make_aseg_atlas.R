@@ -1,6 +1,6 @@
 # Create ASEG (Automatic Subcortical Segmentation) Atlas
 #
-# Generates the aseg subcortical atlas using ggsegExtra from FreeSurfer's
+# Generates the aseg subcortical atlas using ggseg.extra from FreeSurfer's
 # aseg.mgz volume on fsaverage5.
 #
 # Uses projection-based 2D views (6 views) to show subcortical structures
@@ -8,13 +8,13 @@
 #
 # Requirements:
 #   - FreeSurfer installed with fsaverage5 subject
-#   - ggsegExtra package
+#   - ggseg.extra package
 #   - Chrome/Chromium for snapshots
 #
 # Run with: source("data-raw/make_aseg_atlas.R")
 
 library(dplyr)
-library(ggsegExtra) # nolint
+library(ggseg.extra) # nolint
 devtools::load_all()
 options(freesurfer.verbose = FALSE)
 future::plan(future::multicore())
@@ -39,7 +39,7 @@ if (!file.exists(color_lut)) {
   color_lut <- file.path(fs_dir, "FreeSurferColorLUT.txt")
 }
 
-# Create atlas using ggsegExtra with projection-based views
+# Create atlas using ggseg.extra with projection-based views
 # Default uses 6 views focused on subcortical range:
 #   - axial_inferior, axial_superior
 #   - coronal_posterior, coronal_anterior
@@ -75,38 +75,29 @@ aseg_raw <- aseg_raw |>
   ) |>
   atlas_view_gather()
 
+# Smooth the voxel-stepped 2D contours. `create_subcortical_from_volume()`'s
+# `smoothness` is a morphological-close buffer distance, so the value passed
+# to the builder is too small to round off the voxel staircase on its own;
+# tidy the polygons here (matching the pattern in the ggsegFreeSurfer build
+# scripts). Both the structures and the `cortex`/`cortex_` silhouette get a
+# light close: a heavier close inflates the cortex outline into a blob and
+# hides the ventricle gaps, so keep it modest and simplify the outline lightly.
+cli::cli_alert_info("Smoothing contours")
+aseg_raw <- aseg_raw |>
+  atlas_smooth(keep = NULL, smoothness = 3, exclude = "^cortex") |>
+  atlas_smooth(keep = 0.3, smoothness = 2, labels = "^cortex")
+
 
 cli::cli_h2("Merging metadata")
 
-# Create lookup for region name from label
-# Need to normalize region names for matching
-normalize_region <- function(x) {
-  cleaned <- x |>
-    tolower() |>
-    gsub("-", " ", x = _) |>
-    gsub("_", " ", x = _) |>
-    gsub("left |right ", "", x = _) |>
-    trimws()
-  ifelse(is.na(x), NA_character_, cleaned)
-}
-
-aseg_meta_keyed <- aseg_metadata |>
-  mutate(region_key = normalize_region(region)) |>
-  select(region_key, label_pretty, structure)
-
 core_with_meta <- aseg_raw$core |>
-  mutate(
-    region_key = normalize_region(region)
-  ) |>
+  rename(region_raw = region) |>
   left_join(
-    aseg_meta_keyed,
-    by = "region_key",
-    relationship = "many-to-many"
+    select(aseg_metadata, label, region, names, structure),
+    by = "label"
   ) |>
-  mutate(
-    region = coalesce(label_pretty, region)
-  ) |>
-  select(hemi, region, label, structure)
+  mutate(region = coalesce(region, region_raw)) |>
+  select(hemi, region, label, names, structure)
 
 n_with_structure <- sum(!is.na(core_with_meta$structure))
 n_total <- nrow(core_with_meta)

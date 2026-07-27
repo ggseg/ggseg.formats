@@ -8,34 +8,34 @@
       Type: cortical
       Regions: 35
       Hemispheres: left, right
-      Views: inferior, lateral, superior, medial
+      Views: inferior, lateral, medial, superior
       Palette: v
       Rendering: v ggseg
       v ggseg3d (vertices)
       --------------------------------------------------------------------------------
     Output
-         hemi                            region                      label
-      1  left banks of superior temporal sulcus                lh_bankssts
-      2  left         caudal anterior cingulate lh_caudalanteriorcingulate
-      3  left             caudal middle frontal     lh_caudalmiddlefrontal
-      4  left                   corpus callosum          lh_corpuscallosum
-      5  left                            cuneus                  lh_cuneus
-      6  left                        entorhinal              lh_entorhinal
-      7  left                          fusiform                lh_fusiform
-      8  left                 inferior parietal        lh_inferiorparietal
-      9  left                 inferior temporal        lh_inferiortemporal
-      10 left                 isthmus cingulate        lh_isthmuscingulate
-                 lobe
-      1      temporal
-      2     cingulate
-      3       frontal
-      4  white matter
-      5     occipital
-      6      temporal
-      7      temporal
-      8      parietal
-      9      temporal
-      10    cingulate
+         hemi                  region                      label
+      1  left                bankssts                lh_bankssts
+      2  left caudalanteriorcingulate lh_caudalanteriorcingulate
+      3  left     caudalmiddlefrontal     lh_caudalmiddlefrontal
+      4  left          corpuscallosum          lh_corpuscallosum
+      5  left                  cuneus                  lh_cuneus
+      6  left              entorhinal              lh_entorhinal
+      7  left                fusiform                lh_fusiform
+      8  left        inferiorparietal        lh_inferiorparietal
+      9  left        inferiortemporal        lh_inferiortemporal
+      10 left        isthmuscingulate        lh_isthmuscingulate
+                                     names         lobe
+      1  banks of superior temporal sulcus     temporal
+      2          caudal anterior cingulate    cingulate
+      3              caudal middle frontal      frontal
+      4                    corpus callosum white matter
+      5                             cuneus    occipital
+      6                         entorhinal     temporal
+      7                           fusiform     temporal
+      8                  inferior parietal     parietal
+      9                  inferior temporal     temporal
+      10                 isthmus cingulate    cingulate
     Message
       ... with 60 more rows
 
@@ -49,16 +49,20 @@
       Type: cortical
       Regions: 35
       Hemispheres: left, right
-      Views: inferior, lateral, superior, medial
+      Views: inferior, lateral, medial, superior
       Palette: v
       Rendering: v ggseg
       v ggseg3d (vertices)
       --------------------------------------------------------------------------------
     Output
-        hemi                            region                      label      lobe
-      1 left banks of superior temporal sulcus                lh_bankssts  temporal
-      2 left         caudal anterior cingulate lh_caudalanteriorcingulate cingulate
-      3 left             caudal middle frontal     lh_caudalmiddlefrontal   frontal
+        hemi                  region                      label
+      1 left                bankssts                lh_bankssts
+      2 left caudalanteriorcingulate lh_caudalanteriorcingulate
+      3 left     caudalmiddlefrontal     lh_caudalmiddlefrontal
+                                    names      lobe
+      1 banks of superior temporal sulcus  temporal
+      2         caudal anterior cingulate cingulate
+      3             caudal middle frontal   frontal
     Message
       ... with 67 more rows
 
@@ -72,26 +76,26 @@
       Type: cortical
       Regions: 35
       Hemispheres: left, right
-      Views: inferior, lateral, superior, medial
+      Views: inferior, lateral, medial, superior
       Palette: v
       Rendering: v ggseg
       v ggseg3d (vertices)
       --------------------------------------------------------------------------------
     Output
-        hemi                            region                      label
-      1 left banks of superior temporal sulcus                lh_bankssts
-      2 left         caudal anterior cingulate lh_caudalanteriorcingulate
-      3 left             caudal middle frontal     lh_caudalmiddlefrontal
-      4 left                   corpus callosum          lh_corpuscallosum
-      5 left                            cuneus                  lh_cuneus
-      6 left                        entorhinal              lh_entorhinal
-                lobe
-      1     temporal
-      2    cingulate
-      3      frontal
-      4 white matter
-      5    occipital
-      6     temporal
+        hemi                  region                      label
+      1 left                bankssts                lh_bankssts
+      2 left caudalanteriorcingulate lh_caudalanteriorcingulate
+      3 left     caudalmiddlefrontal     lh_caudalmiddlefrontal
+      4 left          corpuscallosum          lh_corpuscallosum
+      5 left                  cuneus                  lh_cuneus
+      6 left              entorhinal              lh_entorhinal
+                                    names         lobe
+      1 banks of superior temporal sulcus     temporal
+      2         caudal anterior cingulate    cingulate
+      3             caudal middle frontal      frontal
+      4                   corpus callosum white matter
+      5                            cuneus    occipital
+      6                        entorhinal     temporal
     Message
       ... with 64 more rows
 
@@ -112,17 +116,28 @@
       v ggseg3d (centerlines)
       --------------------------------------------------------------------------------
     Output
-            hemi              region                label           group
-      1  midline anterior commissure       acomm.bbr.prep      commissure
-      2  midline     CC body central    cc.bodyc.bbr.prep corpus callosum
-      3  midline    CC body parietal    cc.bodyp.bbr.prep corpus callosum
-      4  midline  CC body prefrontal   cc.bodypf.bbr.prep corpus callosum
-      5  midline    CC body premotor   cc.bodypm.bbr.prep corpus callosum
-      6  midline    CC body temporal    cc.bodyt.bbr.prep corpus callosum
-      7  midline             CC genu     cc.genu.bbr.prep corpus callosum
-      8  midline          CC rostrum  cc.rostrum.bbr.prep corpus callosum
-      9  midline         CC splenium cc.splenium.bbr.prep corpus callosum
-      10    left  arcuate fasciculus       lh.af.bbr.prep     association
+            hemi      region                label                           names
+      1  midline       acomm       acomm.bbr.prep             anterior commissure
+      2  midline    cc bodyc    cc.bodyc.bbr.prep    corpus callosum body central
+      3  midline    cc bodyp    cc.bodyp.bbr.prep   corpus callosum body parietal
+      4  midline   cc bodypf   cc.bodypf.bbr.prep corpus callosum body prefrontal
+      5  midline   cc bodypm   cc.bodypm.bbr.prep   corpus callosum body premotor
+      6  midline    cc bodyt    cc.bodyt.bbr.prep   corpus callosum body temporal
+      7  midline     cc genu     cc.genu.bbr.prep            corpus callosum genu
+      8  midline  cc rostrum  cc.rostrum.bbr.prep         corpus callosum rostrum
+      9  midline cc splenium cc.splenium.bbr.prep        corpus callosum splenium
+      10    left          af       lh.af.bbr.prep              arcuate fasciculus
+                   group
+      1       commissure
+      2  corpus callosum
+      3  corpus callosum
+      4  corpus callosum
+      5  corpus callosum
+      6  corpus callosum
+      7  corpus callosum
+      8  corpus callosum
+      9  corpus callosum
+      10     association
     Message
       ... with 32 more rows
 
@@ -134,27 +149,38 @@
       
       -- aseg ggseg atlas ------------------------------------------------------------
       Type: subcortical
-      Regions: 19
+      Regions: 18
       Hemispheres: left, NA, right
-      Views: axial_3, axial_4, axial_5, sagittal, axial_6, coronal_1, coronal_2
+      Views: axial_3, axial_4, axial_5, axial_6, coronal_1, coronal_2, sagittal
       Palette: v
       Rendering: v ggseg
       v ggseg3d (meshes)
       --------------------------------------------------------------------------------
     Output
-         hemi          region                  label     structure
-      1  left      Cerebellum Left-Cerebellum-Cortex    cerebellum
-      2  left      Cerebellum Left-Cerebellum-Cortex    cerebellum
-      3  left        Thalamus          Left-Thalamus basal ganglia
-      4  left        Thalamus          Left-Thalamus basal ganglia
-      5  left Thalamus Proper          Left-Thalamus basal ganglia
-      6  left Thalamus Proper          Left-Thalamus basal ganglia
-      7  left         Caudate           Left-Caudate basal ganglia
-      8  left         Caudate           Left-Caudate basal ganglia
-      9  left         Putamen           Left-Putamen basal ganglia
-      10 left         Putamen           Left-Putamen basal ganglia
+         hemi            region                  label                names
+      1  left cerebellum cortex Left-Cerebellum-Cortex    cerebellum cortex
+      2  left          thalamus          Left-Thalamus             thalamus
+      3  left           caudate           Left-Caudate              caudate
+      4  left           putamen           Left-Putamen              putamen
+      5  left          pallidum          Left-Pallidum             pallidum
+      6  <NA>        brain stem             Brain-Stem           brain stem
+      7  left       hippocampus       Left-Hippocampus          hippocampus
+      8  left          amygdala          Left-Amygdala             amygdala
+      9  left    accumbens area    Left-Accumbens-area            accumbens
+      10 left         ventraldc         Left-VentralDC ventral diencephalon
+             structure
+      1     cerebellum
+      2  basal ganglia
+      3  basal ganglia
+      4  basal ganglia
+      5  basal ganglia
+      6      brainstem
+      7         limbic
+      8         limbic
+      9  basal ganglia
+      10  diencephalon
     Message
-      ... with 37 more rows
+      ... with 19 more rows
 
 # print.ggseg_atlas rendering branches / prints a cortical atlas (vertices)
 
@@ -166,34 +192,34 @@
       Type: cortical
       Regions: 35
       Hemispheres: left, right
-      Views: inferior, lateral, superior, medial
+      Views: inferior, lateral, medial, superior
       Palette: v
       Rendering: v ggseg
       v ggseg3d (vertices)
       --------------------------------------------------------------------------------
     Output
-         hemi                            region                      label
-      1  left banks of superior temporal sulcus                lh_bankssts
-      2  left         caudal anterior cingulate lh_caudalanteriorcingulate
-      3  left             caudal middle frontal     lh_caudalmiddlefrontal
-      4  left                   corpus callosum          lh_corpuscallosum
-      5  left                            cuneus                  lh_cuneus
-      6  left                        entorhinal              lh_entorhinal
-      7  left                          fusiform                lh_fusiform
-      8  left                 inferior parietal        lh_inferiorparietal
-      9  left                 inferior temporal        lh_inferiortemporal
-      10 left                 isthmus cingulate        lh_isthmuscingulate
-                 lobe
-      1      temporal
-      2     cingulate
-      3       frontal
-      4  white matter
-      5     occipital
-      6      temporal
-      7      temporal
-      8      parietal
-      9      temporal
-      10    cingulate
+         hemi                  region                      label
+      1  left                bankssts                lh_bankssts
+      2  left caudalanteriorcingulate lh_caudalanteriorcingulate
+      3  left     caudalmiddlefrontal     lh_caudalmiddlefrontal
+      4  left          corpuscallosum          lh_corpuscallosum
+      5  left                  cuneus                  lh_cuneus
+      6  left              entorhinal              lh_entorhinal
+      7  left                fusiform                lh_fusiform
+      8  left        inferiorparietal        lh_inferiorparietal
+      9  left        inferiortemporal        lh_inferiortemporal
+      10 left        isthmuscingulate        lh_isthmuscingulate
+                                     names         lobe
+      1  banks of superior temporal sulcus     temporal
+      2          caudal anterior cingulate    cingulate
+      3              caudal middle frontal      frontal
+      4                    corpus callosum white matter
+      5                             cuneus    occipital
+      6                         entorhinal     temporal
+      7                           fusiform     temporal
+      8                  inferior parietal     parietal
+      9                  inferior temporal     temporal
+      10                 isthmus cingulate    cingulate
     Message
       ... with 60 more rows
 
@@ -226,34 +252,34 @@
       Type: cortical
       Regions: 35
       Hemispheres: left, right
-      Views: inferior, lateral, superior, medial
+      Views: inferior, lateral, medial, superior
       Palette: v
       Rendering: v ggseg
       v ggseg3d (vertices)
       --------------------------------------------------------------------------------
     Output
-         hemi                            region                      label
-      1  left banks of superior temporal sulcus                lh_bankssts
-      2  left         caudal anterior cingulate lh_caudalanteriorcingulate
-      3  left             caudal middle frontal     lh_caudalmiddlefrontal
-      4  left                   corpus callosum          lh_corpuscallosum
-      5  left                            cuneus                  lh_cuneus
-      6  left                        entorhinal              lh_entorhinal
-      7  left                          fusiform                lh_fusiform
-      8  left                 inferior parietal        lh_inferiorparietal
-      9  left                 inferior temporal        lh_inferiortemporal
-      10 left                 isthmus cingulate        lh_isthmuscingulate
-                 lobe
-      1      temporal
-      2     cingulate
-      3       frontal
-      4  white matter
-      5     occipital
-      6      temporal
-      7      temporal
-      8      parietal
-      9      temporal
-      10    cingulate
+         hemi                  region                      label
+      1  left                bankssts                lh_bankssts
+      2  left caudalanteriorcingulate lh_caudalanteriorcingulate
+      3  left     caudalmiddlefrontal     lh_caudalmiddlefrontal
+      4  left          corpuscallosum          lh_corpuscallosum
+      5  left                  cuneus                  lh_cuneus
+      6  left              entorhinal              lh_entorhinal
+      7  left                fusiform                lh_fusiform
+      8  left        inferiorparietal        lh_inferiorparietal
+      9  left        inferiortemporal        lh_inferiortemporal
+      10 left        isthmuscingulate        lh_isthmuscingulate
+                                     names         lobe
+      1  banks of superior temporal sulcus     temporal
+      2          caudal anterior cingulate    cingulate
+      3              caudal middle frontal      frontal
+      4                    corpus callosum white matter
+      5                             cuneus    occipital
+      6                         entorhinal     temporal
+      7                           fusiform     temporal
+      8                  inferior parietal     parietal
+      9                  inferior temporal     temporal
+      10                 isthmus cingulate    cingulate
     Message
       ... with 60 more rows
 

@@ -7,20 +7,20 @@
       -- brain_polygons --
       
       Labels: 72
-      Views: inferior, lateral, superior, medial
-      Total points: 6254
+      Views: inferior, lateral, medial, superior
+      Total points: 5391
     Output
-                          label       geometry
-      1             lh_bankssts  <df [58 x 5]>
-      2  lh_caudalmiddlefrontal <df [105 x 5]>
-      3       lh_corpuscallosum  <df [55 x 5]>
-      4           lh_entorhinal  <df [36 x 5]>
-      5          lh_frontalpole  <df [22 x 5]>
-      6             lh_fusiform <df [110 x 5]>
-      7     lh_inferiorparietal <df [137 x 5]>
-      8     lh_inferiortemporal <df [189 x 5]>
-      9               lh_insula  <df [74 x 5]>
-      10    lh_isthmuscingulate  <df [50 x 5]>
+                           label       geometry
+      1               lh_unknown <df [113 x 5]>
+      2               rh_unknown <df [111 x 5]>
+      3            lh_precentral <df [150 x 5]>
+      4  lh_lateralorbitofrontal  <df [89 x 5]>
+      5      lh_superiortemporal <df [178 x 5]>
+      6      lh_lateraloccipital <df [114 x 5]>
+      7  lh_rostralmiddlefrontal <df [117 x 5]>
+      8                lh_insula <df [132 x 5]>
+      9       lh_parsopercularis  <df [69 x 5]>
+      10        lh_supramarginal <df [117 x 5]>
     Message
       ... with 62 more rows
 

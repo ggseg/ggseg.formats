@@ -1,6 +1,6 @@
 # Create DK (Desikan-Killiany) Atlas
 #
-# Generates the dk cortical atlas using ggsegExtra from FreeSurfer's
+# Generates the dk cortical atlas using ggseg.extra from FreeSurfer's
 # aparc annotation on fsaverage5.
 #
 # This is the default cortical parcellation in FreeSurfer with 68 regions
@@ -8,13 +8,13 @@
 #
 # Requirements:
 #   - FreeSurfer installed with fsaverage5 subject
-#   - ggsegExtra package
+#   - ggseg.extra package
 #   - Chrome/Chromium for snapshots
 #
 # Run with: source("data-raw/make_dk_atlas.R")
 
 library(dplyr)
-library(ggsegExtra) # nolint
+library(ggseg.extra) # nolint
 devtools::load_all()
 
 source("data-raw/dk_metadata.R")
@@ -43,12 +43,10 @@ annot_files <- file.path(
 
 cli::cli_h1("Creating DK cortical atlas")
 
-dk_raw <- create_cortical_atlas(
+dk_raw <- create_cortical_from_annotation(
   input_annot = annot_files,
   atlas_name = "dk",
   output_dir = "data-raw",
-  tolerance = 1,
-  smoothness = 2,
   skip_existing = FALSE,
   cleanup = FALSE
 )
@@ -57,15 +55,21 @@ cli::cli_h2("Post-processing atlas data")
 dk_raw <- dk_raw |>
   atlas_region_contextual("unknown", "label")
 
+# `create_cortical_from_annotation()` no longer simplifies sf geometry, so trim
+# the vertex count here. The `cortex_` outline is excluded to keep the brain
+# silhouette crisp (matching the pattern in make_aseg_atlas.R).
+cli::cli_alert_info("Smoothing contours")
+dk_raw <- dk_raw |>
+  atlas_smooth(keep = 0.2, exclude = "cortex_")
+
 cli::cli_h2("Merging metadata")
 
 core_with_meta <- dk_raw$core |>
   left_join(
-    dk_metadata |> select(region, region_pretty, lobe),
+    select(dk_metadata, region, names, lobe),
     by = "region"
   ) |>
-  mutate(region = coalesce(region_pretty, region)) |>
-  select(hemi, region, label, lobe)
+  select(hemi, region, label, names, lobe)
 
 n_with_lobe <- sum(!is.na(core_with_meta$lobe))
 n_total <- nrow(core_with_meta)

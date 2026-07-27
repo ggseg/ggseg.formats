@@ -20,21 +20,21 @@
     Code
       print(result)
     Message
-      -- <ggseg_vertices> data: 70 × 6 -----------------------------------------------
+      -- <ggseg_vertices> data: 70 × 7 -----------------------------------------------
       Vertices per region: 18 –759
     Output
-                              label    vertices hemi
-      1                 lh_bankssts <int [126]> left
-      2  lh_caudalanteriorcingulate  <int [67]> left
-      3      lh_caudalmiddlefrontal <int [232]> left
-      4           lh_corpuscallosum <int [198]> left
-      5                   lh_cuneus <int [102]> left
-      6               lh_entorhinal  <int [48]> left
-      7                 lh_fusiform <int [308]> left
-      8         lh_inferiorparietal <int [484]> left
-      9         lh_inferiortemporal <int [271]> left
-      10        lh_isthmuscingulate <int [123]> left
-                                    region         lobe  colour
+                              label    vertices hemi                  region
+      1                 lh_bankssts <int [126]> left                bankssts
+      2  lh_caudalanteriorcingulate  <int [67]> left caudalanteriorcingulate
+      3      lh_caudalmiddlefrontal <int [232]> left     caudalmiddlefrontal
+      4           lh_corpuscallosum <int [198]> left          corpuscallosum
+      5                   lh_cuneus <int [102]> left                  cuneus
+      6               lh_entorhinal  <int [48]> left              entorhinal
+      7                 lh_fusiform <int [308]> left                fusiform
+      8         lh_inferiorparietal <int [484]> left        inferiorparietal
+      9         lh_inferiortemporal <int [271]> left        inferiortemporal
+      10        lh_isthmuscingulate <int [123]> left        isthmuscingulate
+                                     names         lobe  colour
       1  banks of superior temporal sulcus     temporal #196428
       2          caudal anterior cingulate    cingulate #7D64A0
       3              caudal middle frontal      frontal #641900
@@ -53,19 +53,19 @@
     Code
       print(result)
     Message
-      -- <ggseg_meshes> data: 47 × 6 -------------------------------------------------
+      -- <ggseg_meshes> data: 29 × 7 -------------------------------------------------
     Output
                           label vertices faces
-      1  Left-Cerebellum-Cortex    21232 42456
-      2  Left-Cerebellum-Cortex    21232 42456
-      3           Left-Thalamus     3726  7448
-      4           Left-Thalamus     3726  7448
-      5           Left-Thalamus     3726  7448
-      6           Left-Thalamus     3726  7448
-      7            Left-Caudate     3026  6056
-      8            Left-Caudate     3026  6056
-      9            Left-Putamen     3994  7984
-      10           Left-Putamen     3994  7984
+      1  Left-Cerebellum-Cortex    10618 21228
+      2           Left-Thalamus     1864  3724
+      3            Left-Caudate     1512  3028
+      4            Left-Putamen     1998  3992
+      5           Left-Pallidum      723  1442
+      6              Brain-Stem     4608  9212
+      7        Left-Hippocampus     1892  3780
+      8           Left-Amygdala      710  1416
+      9     Left-Accumbens-area      432   860
+      10         Left-VentralDC     1683  3366
     Message
-      ... with 37 more rows
+      ... with 19 more rows
 

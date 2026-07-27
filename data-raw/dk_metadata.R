@@ -1,10 +1,14 @@
 # DK (Desikan-Killiany) cortical atlas metadata
 #
-# Spaced region names and lobe assignments for FreeSurfer aparc regions.
+# One row per raw FreeSurfer aparc annotation label. The annotation names are
+# already clean and hemisphere-free, so `label` and `region` are identical and
+# there is no `hemi` column (hemisphere is assigned per annotation file when
+# the atlas is built). `names` is the spelled-out label; `lobe` groups regions.
+#
 # Based on: https://surfer.nmr.mgh.harvard.edu/fswiki/CorticalParcellation
 
 dk_metadata <- data.frame(
-  region = c(
+  label = c(
     "bankssts",
     "caudalanteriorcingulate",
     "caudalmiddlefrontal",
@@ -41,7 +45,7 @@ dk_metadata <- data.frame(
     "temporalpole",
     "transversetemporal"
   ),
-  region_pretty = c(
+  names = c(
     "banks of superior temporal sulcus",
     "caudal anterior cingulate",
     "caudal middle frontal",
@@ -116,3 +120,7 @@ dk_metadata <- data.frame(
     "temporal"
   )
 )
+
+dk_metadata$region <- dk_metadata$label
+
+dk_metadata <- dk_metadata[, c("label", "region", "names", "lobe")]
