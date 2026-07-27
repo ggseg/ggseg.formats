@@ -2,8 +2,8 @@
 #
 # One row per raw FreeSurfer aparc annotation label. The annotation names are
 # already clean and hemisphere-free, so `label` and `region` are identical and
-# there is no `hemi` column (hemisphere is assigned per annotation file when the
-# atlas is built). `names` is the fully spelled-out label; `lobe` groups regions.
+# there is no `hemi` column (hemisphere is assigned per annotation file when
+# the atlas is built). `names` is the spelled-out label; `lobe` groups regions.
 #
 # Based on: https://surfer.nmr.mgh.harvard.edu/fswiki/CorticalParcellation
 
