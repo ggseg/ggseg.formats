@@ -16,6 +16,21 @@
   cortex silhouette is smoothed without inflating, shrinking `R/sysdata.rda`
   from 3.4 MB to 2.1 MB. Figures are visually unchanged.
 
+### Bug fixes
+
+- `plot()` now divides a view into panels by hemisphere where the atlas makes
+  that division unambiguous, instead of always guessing panel boundaries from
+  coordinate gaps. The old heuristic split only on gaps wider than 12% of the
+  view's total span, so atlases whose hemispheres sat a little closer together
+  collapsed into a single wide panel and drew both hemispheres at a third of
+  their proper size. A view is only split this way when both hemispheres are
+  present, their extents are disjoint, and every midline structure and
+  contextual silhouette falls wholly inside one of them; anything spanning the
+  divide keeps the view whole, so no region is clipped out of the figure.
+  Views the hemisphere rule cannot resolve still fall back to gap splitting.
+  Of the bundled atlases only `suit()` changes, gaining a second panel that
+  renders the deep nuclei at a legible size (#18).
+
 ## ggseg.formats 0.0.4
 
 ### sf-optional bundled atlases
