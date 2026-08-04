@@ -59,7 +59,7 @@ aseg_raw <- create_subcortical_from_volume(
 cli::cli_h2("Post-processing atlas")
 
 cli::cli_alert_info("Remove unwanted regions")
-aseg_raw <- aseg_raw |>
+aseg_raw_simple <- aseg_raw |>
   atlas_region_remove("White-Matter", match_on = "label") |>
   atlas_region_remove("WM-hypointensities", match_on = "label") |>
   atlas_region_remove("-Ventricle", match_on = "label") |>
@@ -69,7 +69,7 @@ aseg_raw <- aseg_raw |>
   atlas_view_remove_region("cerebellum", "label", "coronal")
 
 cli::cli_alert_info("Selecting views")
-aseg_raw <- aseg_raw |>
+aseg_raw_simple <- aseg_raw_simple |>
   atlas_view_keep(
     "coronal_1|coronal_2|sagittal|axial_3|axial_4|axial_5|axial_6"
   ) |>
@@ -83,14 +83,14 @@ aseg_raw <- aseg_raw |>
 # light close: a heavier close inflates the cortex outline into a blob and
 # hides the ventricle gaps, so keep it modest and simplify the outline lightly.
 cli::cli_alert_info("Smoothing contours")
-aseg_raw <- aseg_raw |>
+aseg_raw_smooth <- aseg_raw_simple |>
   atlas_smooth(keep = NULL, smoothness = 3, exclude = "^cortex") |>
   atlas_smooth(keep = 0.3, smoothness = 2, labels = "^cortex")
 
 
 cli::cli_h2("Merging metadata")
 
-core_with_meta <- aseg_raw$core |>
+core_with_meta <- aseg_raw_smooth$core |>
   rename(region_raw = region) |>
   left_join(
     select(aseg_metadata, label, region, names, structure),
@@ -107,11 +107,11 @@ cli::cli_alert_info(
 
 # Rebuild atlas with enriched core
 aseg <- ggseg_atlas(
-  atlas = aseg_raw$atlas,
-  type = aseg_raw$type,
-  palette = aseg_raw$palette,
+  atlas = aseg_raw_smooth$atlas,
+  type = aseg_raw_smooth$type,
+  palette = aseg_raw_smooth$palette,
   core = core_with_meta,
-  data = aseg_raw$data
+  data = aseg_raw_smooth$data
 )
 
 

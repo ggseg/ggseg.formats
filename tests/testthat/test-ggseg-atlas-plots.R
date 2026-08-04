@@ -85,6 +85,128 @@ describe("gap_groups", {
   })
 })
 
+describe("piece_keys", {
+  it("distinguishes a region's instances across views", {
+    flat <- data.frame(
+      label = c("a", "a", "a"),
+      view = c("lateral", "medial", "medial"),
+      group = c(1L, 1L, 2L)
+    )
+    expect_length(unique(piece_keys(flat)), 3L)
+  })
+})
+
+describe("resolve_plot_hemi", {
+  it("reads hemisphere from the atlas core", {
+    core <- data.frame(label = c("a", "b"), hemi = c("left", "right"))
+    expect_identical(
+      resolve_plot_hemi(c("b", "a"), core),
+      c("right", "left")
+    )
+  })
+
+  it("falls back to the lh/rh prefix for contextual regions", {
+    core <- data.frame(label = "a", hemi = "left")
+    expect_identical(
+      resolve_plot_hemi(c("lh_unknown", "rh_unknown"), core),
+      c("left", "right")
+    )
+  })
+
+  it("returns NA when neither core nor label resolves a hemisphere", {
+    core <- data.frame(label = "a", hemi = "left")
+    expect_identical(resolve_plot_hemi("cortex", core), NA_character_)
+  })
+
+  it("tolerates a core carrying no hemi column", {
+    core <- data.frame(label = "a")
+    expect_identical(
+      resolve_plot_hemi(c("lh_a", "cortex"), core),
+      c("left", NA_character_)
+    )
+  })
+})
+
+describe("contained_in", {
+  it("names the extent that wholly contains the span", {
+    expect_identical(contained_in(c(1, 2), c(0, 3), c(5, 8)), "left")
+    expect_identical(contained_in(c(6, 7), c(0, 3), c(5, 8)), "right")
+  })
+
+  it("returns NA for a span that straddles the divide", {
+    expect_identical(contained_in(c(2, 6), c(0, 3), c(5, 8)), NA_character_)
+  })
+
+  it("returns NA for a span stranded in the gap", {
+    expect_identical(contained_in(c(3.5, 4), c(0, 3), c(5, 8)), NA_character_)
+  })
+})
+
+describe("hemi_cells", {
+  bilateral <- function(hemi, x, piece = seq_along(x)) {
+    hemi_cells(hemi, x, as.character(piece))
+  }
+
+  it("splits a bilateral view into two panels", {
+    cells <- bilateral(
+      hemi = c("left", "left", "right", "right"),
+      x = c(0, 1, 5, 6)
+    )
+    expect_identical(cells, c(1L, 1L, 2L, 2L))
+  })
+
+  it("numbers panels left to right on screen, not by hemisphere name", {
+    cells <- bilateral(
+      hemi = c("left", "left", "right", "right"),
+      x = c(5, 6, 0, 1)
+    )
+    expect_identical(cells, c(2L, 2L, 1L, 1L))
+  })
+
+  it("assigns a midline piece to the hemisphere containing it", {
+    cells <- bilateral(
+      hemi = c("left", "left", "right", "right", NA),
+      x = c(0, 2, 5, 7, 1),
+      piece = c("l", "l", "r", "r", "mid")
+    )
+    expect_identical(cells, c(1L, 1L, 2L, 2L, 1L))
+  })
+
+  it("declines when only one hemisphere is present", {
+    expect_null(bilateral(hemi = c("left", "left"), x = c(0, 1)))
+  })
+
+  it("declines when the hemisphere extents overlap", {
+    expect_null(
+      bilateral(hemi = c("left", "left", "right", "right"), x = c(0, 6, 5, 9))
+    )
+  })
+
+  it("declines when a piece spans the divide", {
+    expect_null(bilateral(
+      hemi = c("left", "right", NA, NA),
+      x = c(0, 5, 0, 5),
+      piece = c("l", "r", "ctx", "ctx")
+    ))
+  })
+
+  it("declines when a piece is stranded in the gap", {
+    expect_null(bilateral(
+      hemi = c("left", "right", NA),
+      x = c(0, 5, 3),
+      piece = c("l", "r", "mid")
+    ))
+  })
+
+  it("declines when a single piece carries both hemispheres", {
+    expect_null(bilateral(
+      hemi = c("left", "right"),
+      x = c(0, 5),
+      piece = c("both", "both")
+    ))
+  })
+})
+
 describe("plot_cells", {
   it("separates the two hemispheres of each surface view", {
     flat <- polygons_unnest(atlas_polygons(dk()))
@@ -98,6 +220,46 @@ describe("plot_cells", {
     flat <- polygons_unnest(atlas_polygons(aseg()))
     cells <- plot_cells(flat)
     expect_length(unique(cells), length(unique(flat$view)))
+  })
+
+  it("splits hemispheres whose gap falls under the fallback threshold", {
+    # Mirrors ggsegChen's chenTh: a 1.06-wide gap across a 9.14-wide view is
+    # 11.6% of the span, just under the 12% the gap heuristic needs. Both
+    # hemispheres are sampled densely, as real polygon outlines are, so the
+    # inter-hemisphere gap is the widest band in the view.
+    hemisphere <- function(from, to) {
+      data.frame(
+        x = seq(from, to, length.out = 41L),
+        y = seq(0, 2.7, length.out = 41L)
+      )
+    }
+    flat <- rbind(
+      cbind(label = "lh_a", hemisphere(0, 4.04)),
+      cbind(label = "rh_a", hemisphere(5.1, 9.14))
+    )
+    flat$view <- "medial"
+    flat$group <- 1L
+    core <- data.frame(
+      label = c("lh_a", "rh_a"),
+      hemi = c("left", "right")
+    )
+    expect_length(unique(plot_cells(flat)), 1L)
+    expect_length(
+      unique(plot_cells(flat, resolve_plot_hemi(flat$label, core))),
+      2L
+    )
+  })
+
+  it("falls back to gap splitting when hemisphere is unresolvable", {
+    flat <- polygons_unnest(atlas_polygons(dk()))
+    hemi <- rep(NA_character_, nrow(flat))
+    expect_identical(plot_cells(flat, hemi), plot_cells(flat))
+  })
+
+  it("keeps a bridged view whole even with hemispheres supplied", {
+    flat <- polygons_unnest(atlas_polygons(aseg()))
+    hemi <- resolve_plot_hemi(flat$label, aseg()$core)
+    expect_identical(plot_cells(flat, hemi), plot_cells(flat))
   })
 })
 

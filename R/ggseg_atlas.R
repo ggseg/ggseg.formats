@@ -211,7 +211,7 @@ plot.ggseg_atlas <- function(x, ...) {
   # One panel per spatially separate piece, arranged in a near-square grid so
   # each gets enough room to read. This is a quick overview of the atlas, not a
   # publication figure.
-  cell <- plot_cells(flat)
+  cell <- plot_cells(flat, resolve_plot_hemi(flat$label, x$core))
   cells <- sort(unique(cell))
   ncol <- ceiling(sqrt(length(cells)))
   nrow <- ceiling(length(cells) / ncol)
@@ -232,11 +232,10 @@ plot.ggseg_atlas <- function(x, ...) {
       ylim = range(cf$y, na.rm = TRUE),
       asp = 1
     )
-    # `view` in the key keeps a region's per-view instances from being joined.
     # Factor levels follow first appearance (not the alphabetical order a bare
     # character split would impose) so the context-behind ordering set above is
     # honoured when the pieces are drawn.
-    piece_id <- paste(cf$label, cf$view, cf$group, sep = "\r")
+    piece_id <- piece_keys(cf)
     pieces <- split(cf, factor(piece_id, levels = unique(piece_id)))
     invisible(lapply(pieces, function(piece) {
       draw_piece(piece, fill_colors[[piece$label[[1L]]]], dots)
@@ -458,6 +457,102 @@ draw_piece <- function(piece, col, dots = list()) {
   invisible()
 }
 
+#' Identify the drawable pieces of a polygon table
+#'
+#' A piece is one contiguous polygon: a region's rings for a single view. The
+#' `view` component keeps a region's per-view instances from being joined.
+#' Panel assignment works at this granularity so a piece is never split across
+#' two panels.
+#' @noRd
+#' @keywords internal
+piece_keys <- function(flat) {
+  paste(flat$label, flat$view, flat$group, sep = "\r")
+}
+
+#' Resolve a hemisphere for each polygon row
+#'
+#' Reads `hemi` from the atlas core, falling back to the `lh_`/`rh_` label
+#' prefix for contextual regions that are drawn but hold no core entry. `NA`
+#' where neither resolves.
+#' @noRd
+#' @keywords internal
+resolve_plot_hemi <- function(label, core) {
+  out <- rep(NA_character_, length(label))
+  if (!is.null(core) && all(c("label", "hemi") %in% names(core))) {
+    out <- as.character(core$hemi[match(label, core$label)])
+  }
+  unresolved <- is.na(out)
+  out[unresolved] <- hemi_from_label(label[unresolved], default = NA_character_)
+  out
+}
+
+#' Partition one view's rows into left and right hemisphere panels
+#'
+#' Hemisphere is the boundary these panels are meant to follow, so it is
+#' preferred over the coordinate-gap heuristic, whose threshold is measured
+#' against the width of the whole view and so drifts between atlases that look
+#' alike. Returns `NULL` — leaving the caller on the gap heuristic — unless the
+#' view divides unambiguously: both hemispheres present, their x extents
+#' disjoint, and every remaining piece (midline structures, contextual
+#' silhouettes) falling wholly inside one of them. Anything spanning the divide
+#' blocks the split, so no piece is ever clipped out of both panels. Panel 1 is
+#' the leftmost hemisphere on screen, matching the ordering [gap_groups()]
+#' produces.
+#' @noRd
+#' @keywords internal
+hemi_cells <- function(hemi, x, piece) {
+  side <- ifelse(hemi %in% c("left", "right"), hemi, NA_character_)
+  is_left <- !is.na(side) & side == "left"
+  is_right <- !is.na(side) & side == "right"
+  if (!any(is_left) || !any(is_right)) {
+    return(NULL)
+  }
+
+  left <- range(x[is_left])
+  right <- range(x[is_right])
+  if (left[[1L]] <= right[[2L]] && right[[1L]] <= left[[2L]]) {
+    return(NULL)
+  }
+
+  keys <- unique(piece)
+  rows_of <- split(seq_along(x), factor(piece, levels = keys))
+  piece_side <- vapply(
+    rows_of,
+    function(ix) {
+      lateral <- unique(side[ix])
+      lateral <- lateral[!is.na(lateral)]
+      if (length(lateral) == 1L) {
+        return(lateral)
+      }
+      contained_in(range(x[ix]), left, right)
+    },
+    character(1L)
+  )
+
+  if (anyNA(piece_side)) {
+    return(NULL)
+  }
+
+  leftmost <- if (left[[1L]] < right[[1L]]) "left" else "right"
+  unname(ifelse(piece_side[match(piece, keys)] == leftmost, 1L, 2L))
+}
+
+#' Name the hemisphere extent that wholly contains a span
+#'
+#' `NA` when the span straddles the divide or sits in the gap between the two,
+#' which is the signal that a hemisphere split would orphan the piece.
+#' @noRd
+#' @keywords internal
+contained_in <- function(span, left, right) {
+  if (span[[1L]] >= left[[1L]] && span[[2L]] <= left[[2L]]) {
+    return("left")
+  }
+  if (span[[1L]] >= right[[1L]] && span[[2L]] <= right[[2L]]) {
+    return("right")
+  }
+  NA_character_
+}
+
 #' Partition coordinates into groups separated by empty gaps along one axis
 #'
 #' Returns a contiguous integer group id per element. A break is placed wherever
@@ -499,20 +594,33 @@ refine_by_gaps <- function(cell, values, gap_frac) {
 #'
 #' The atlas views are pre-positioned in one coordinate space, but a surface
 #' atlas still splits into spatially separate pieces within a view (e.g. the
-#' left and right hemispheres, drawn apart with empty space between). Within
-#' each view, rows are partitioned into cells by gap-splitting along x then y,
-#' so each contiguous piece becomes its own panel. Returns a cell id per row,
-#' with order preserved.
+#' left and right hemispheres, drawn apart with empty space between). Each view
+#' is divided by hemisphere where `hemi` makes the division unambiguous, since
+#' that is the boundary the panels are meant to follow; views it cannot resolve
+#' fall back to gap-splitting along x then y. Returns a cell id per row, with
+#' order preserved.
+#'
+#' @param flat Unnested polygon table with `view`, `x`, `y` columns.
+#' @param hemi Optional hemisphere per row, from [resolve_plot_hemi()].
+#' @param gap_frac Gap threshold for the fallback heuristic, as a fraction of
+#'   the view's total span.
 #' @noRd
 #' @keywords internal
-plot_cells <- function(flat, gap_frac = 0.12) {
+plot_cells <- function(flat, hemi = NULL, gap_frac = 0.12) {
   ids <- integer(nrow(flat))
+  pieces <- piece_keys(flat)
   base <- 0L
   for (v in unique(flat$view)) {
     ix <- which(flat$view == v)
-    cell <- rep(1L, length(ix))
-    for (axis in c("x", "y")) {
-      cell <- refine_by_gaps(cell, flat[[axis]][ix], gap_frac)
+    cell <- NULL
+    if (!is.null(hemi)) {
+      cell <- hemi_cells(hemi[ix], flat$x[ix], pieces[ix])
+    }
+    if (is.null(cell)) {
+      cell <- rep(1L, length(ix))
+      for (axis in c("x", "y")) {
+        cell <- refine_by_gaps(cell, flat[[axis]][ix], gap_frac)
+      }
     }
     ids[ix] <- cell + base
     base <- base + max(cell)
