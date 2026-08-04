@@ -1,6 +1,6 @@
 describe("read_freesurfer_stats()", {
   it("reads aseg.stats file with renamed columns", {
-    aseg_file <- test_path("data/bert/stats/aseg.stats")
+    aseg_file <- extdata_path("bert", "stats", "aseg.stats")
     aseg_stats <- read_freesurfer_stats(aseg_file)
 
     expect_named(
@@ -22,7 +22,7 @@ describe("read_freesurfer_stats()", {
   })
 
   it("reads aseg.stats file without renaming when rename = FALSE", {
-    aseg_file <- test_path("data/bert/stats/aseg.stats")
+    aseg_file <- extdata_path("bert", "stats", "aseg.stats")
     expect_named(
       read_freesurfer_stats(aseg_file, FALSE),
       c(
@@ -41,7 +41,7 @@ describe("read_freesurfer_stats()", {
   })
 
   it("reads aparc.stats file with renamed columns", {
-    dkt_file <- test_path("data/bert/stats/lh.aparc.stats")
+    dkt_file <- extdata_path("bert", "stats", "lh.aparc.stats")
     dkt_stats <- read_freesurfer_stats(dkt_file)
 
     expect_named(
@@ -63,7 +63,7 @@ describe("read_freesurfer_stats()", {
   })
 
   it("reads aparc.stats file without renaming when rename = FALSE", {
-    dkt_file <- test_path("data/bert/stats/lh.aparc.stats")
+    dkt_file <- extdata_path("bert", "stats", "lh.aparc.stats")
     expect_named(
       read_freesurfer_stats(dkt_file, FALSE),
       c(
@@ -84,7 +84,7 @@ describe("read_freesurfer_stats()", {
 
 describe("read_atlas_files()", {
   it("reads all aparc stats files from subjects directory", {
-    dat <- read_atlas_files(test_path("data"), "aparc")
+    dat <- read_atlas_files(extdata_path(), "aparc")
 
     expect_named(
       dat,
@@ -106,7 +106,7 @@ describe("read_atlas_files()", {
   })
 
   it("combines hemispheres with correct label prefixes", {
-    dat <- read_atlas_files(test_path("data"), "aparc")
+    dat <- read_atlas_files(extdata_path(), "aparc")
     expect_identical(
       unique(dat$label)[1:10],
       c(
@@ -127,7 +127,7 @@ describe("read_atlas_files()", {
 
 describe("read_freesurfer_table()", {
   it("reads table file with default column names", {
-    file <- test_path("data/aparc.volume.table")
+    file <- extdata_path("aparc.volume.table")
     dat <- read_freesurfer_table(file)
 
     expect_named(dat, c("subject", "label", "value"))
@@ -136,7 +136,7 @@ describe("read_freesurfer_table()", {
   })
 
   it("strips measure suffix from labels when measure is specified", {
-    file <- test_path("data/aparc.volume.table")
+    file <- extdata_path("aparc.volume.table")
     dat <- read_freesurfer_table(file, measure = "volume")
 
     expect_named(dat, c("subject", "label", "volume"))
@@ -184,7 +184,7 @@ describe("read_freesurfer_table()", {
 
 describe("read_atlas_files() with aseg", {
   it("reads aseg stats files without hemisphere prefixes", {
-    dat <- read_atlas_files(test_path("data"), "aseg.stats")
+    dat <- read_atlas_files(extdata_path(), "aseg.stats")
 
     expect_true("subject" %in% names(dat))
     expect_true("label" %in% names(dat))
@@ -210,7 +210,7 @@ describe("read_atlas_files() path handling", {
     dir.create(file.path(sdir, "bert", "stats"), recursive = TRUE)
     for (f in c("lh.aparc.stats", "rh.aparc.stats")) {
       file.copy(
-        test_path(file.path("data/bert/stats", f)),
+        extdata_path("bert", "stats", f),
         file.path(sdir, "bert", "stats", f)
       )
     }
@@ -220,7 +220,7 @@ describe("read_atlas_files() path handling", {
   })
 
   it("extracts the subject despite a trailing slash on subjects_dir", {
-    dat <- read_atlas_files(paste0(test_path("data"), "/"), "aseg.stats")
+    dat <- read_atlas_files(paste0(extdata_path(), "/"), "aseg.stats")
     expect_identical(unique(dat$subject), "bert")
   })
 })

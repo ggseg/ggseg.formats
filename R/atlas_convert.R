@@ -38,9 +38,8 @@
 #' @importFrom rlang %||%
 #'
 #' @examples
-#' \donttest{
 #' new_atlas <- convert_legacy_brain_atlas(atlas_2d = dk())
-#' }
+#' atlas_type(new_atlas)
 convert_legacy_brain_atlas <- function(
   atlas_2d = NULL,
   atlas_3d = NULL,

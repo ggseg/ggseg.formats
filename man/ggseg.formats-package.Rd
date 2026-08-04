@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Provides the 'ggseg_atlas' S3 class used across the 'ggsegverse' ecosystem for 2D and 3D brain visualisation. Ships four bundled atlases ('Desikan-Killiany', 'FreeSurfer' 'aseg', 'TRACULA', 'SUIT') and functions for querying, subsetting, renaming, and enriching atlas objects. Also includes readers for 'FreeSurfer' statistics files.
+Provides the 'ggseg_atlas' S3 class used across the 'ggsegverse' ecosystem for 2D and 3D brain visualisation. Ships four bundled atlases: 'Desikan-Killiany' cortical, 'FreeSurfer' 'aseg' subcortical, TRActs Constrained by UnderLying Anatomy ('TRACULA') white matter, and Spatially Unbiased Infratentorial Template ('SUIT') cerebellar. Also provides functions for querying, subsetting, renaming, and enriching atlas objects, and readers for 'FreeSurfer' statistics files.
 }
 \seealso{
 Useful links:

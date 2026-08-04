@@ -66,7 +66,6 @@ those are preserved. Otherwise, vertex indices are inferred from mesh
 coordinates using hash-based matching (no FreeSurfer needed).
 }
 \examples{
-\donttest{
 new_atlas <- convert_legacy_brain_atlas(atlas_2d = dk())
-}
+atlas_type(new_atlas)
 }

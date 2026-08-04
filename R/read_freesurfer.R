@@ -11,9 +11,11 @@
 #' @importFrom utils read.table
 #' @return data.frame with stats information for subjects from FreeSurfer
 #' @export
-#' @examplesIf FALSE
-#' subj_dir <- "/path/to/freesurfer/7.2.0/subjects/"
-#' aseg_stats <- file.path(subj_dir, "bert/stats/aseg.stats")
+#' @examples
+#' aseg_stats <- system.file(
+#'   "extdata", "bert", "stats", "aseg.stats",
+#'   package = "ggseg.formats"
+#' )
 #' read_freesurfer_stats(aseg_stats)
 read_freesurfer_stats <- function(path, rename = TRUE) {
   headers <- readLines(path)
@@ -45,10 +47,12 @@ read_freesurfer_stats <- function(path, rename = TRUE) {
 #' @param atlas unique character combination identifying the atlas
 #' @return data.frame with stats information for subjects from FreeSurfer
 #' @export
-#' @examplesIf FALSE
-#' subj_dir <- "/path/to/freesurfer/7.2.0/subjects/"
+#' @examples
+#' subj_dir <- system.file("extdata", package = "ggseg.formats")
 #' read_atlas_files(subj_dir, "aseg.stats")
-#' read_atlas_files(subj_dir, "lh.aparc.stats")
+#'
+#' # hemispheres are merged, with the hemisphere prefixed onto each label
+#' read_atlas_files(subj_dir, "aparc")
 read_atlas_files <- function(subjects_dir, atlas) {
   stats_files <- list.files(
     subjects_dir,
@@ -104,9 +108,15 @@ read_atlas_files <- function(subjects_dir, atlas) {
 #' @importFrom utils read.table
 #' @return data.frame with stats information for subjects from FreeSurfer
 #' @export
-#' @examplesIf FALSE
-#' file_path <- "all_subj_aseg.txt"
-#' read_freesurfer_table(file_path)
+#' @examples
+#' table_file <- system.file(
+#'   "extdata", "aparc.volume.table",
+#'   package = "ggseg.formats"
+#' )
+#' read_freesurfer_table(table_file)
+#'
+#' # naming the measure strips its suffix from the labels
+#' read_freesurfer_table(table_file, measure = "volume")
 read_freesurfer_table <- function(path, measure = NULL, ...) {
   dat <- read.table(path, header = TRUE, ...)
   names(dat)[1] <- "subject"

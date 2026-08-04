@@ -88,7 +88,13 @@ plot(aseg_small)
 
 ## Installation
 
-Install from the ggsegverse r-universe:
+Install the released version from CRAN:
+
+```r
+install.packages("ggseg.formats")
+```
+
+The ggsegverse r-universe carries the latest build, usually ahead of CRAN:
 
 ```r
 options(repos = c(

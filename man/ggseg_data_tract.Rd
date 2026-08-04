@@ -19,7 +19,7 @@ determines the rendering path used downstream.}
 \itemize{
 \item label: tract identifier (character)
 \item points: list-column of n x 3 matrices (centerline coordinates)
-\item tangents: list-column of n x 3 matrices (for orientation coloring)
+\item tangents: list-column of n x 3 matrices (for orientation colouring)
 }}
 
 \item{meshes}{Deprecated. Use centerlines instead. If provided, will be

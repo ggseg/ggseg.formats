@@ -1,6 +1,6 @@
 # ggseg.formats
 
-## ggseg.formats 0.0.4.9001
+## ggseg.formats 0.0.5
 
 ### Atlas data
 
@@ -30,6 +30,17 @@
   Views the hemisphere rule cannot resolve still fall back to gap splitting.
   Of the bundled atlases only `suit()` changes, gaining a second panel that
   renders the deep nuclei at a legible size (#18).
+
+### Documentation
+
+- The `read_freesurfer_stats()`, `read_atlas_files()`, and
+  `read_freesurfer_table()` examples now run against a small bundled FreeSurfer
+  subject in `inst/extdata` instead of pointing at an imaginary subjects
+  directory. The `as_polygon_atlas()`, `as_sf_atlas()`,
+  `convert_legacy_brain_atlas()`, and `migrate_atlas_files()` examples are
+  likewise executable rather than guarded.
+- `DESCRIPTION` declares `Language: en-GB`, and spelling is checked in
+  `tests/spelling.R`.
 
 ## ggseg.formats 0.0.4
 

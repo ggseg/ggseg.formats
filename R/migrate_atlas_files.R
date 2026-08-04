@@ -22,10 +22,19 @@
 #'   rewritten.
 #' @export
 #' @examples
-#' \dontrun{
-#' # In an atlas package, from the package root:
-#' ggseg.formats::migrate_atlas_files("data")
-#' }
+#' # atlas packages ship their atlases in `data/`; stand one up in a temporary
+#' # directory here so the example does not write into a real package
+#' data_dir <- file.path(tempdir(), "data")
+#' dir.create(data_dir, showWarnings = FALSE)
+#' dk_sf <- as_sf_atlas(dk())
+#' save(dk_sf, file = file.path(data_dir, "dk_sf.rda"))
+#'
+#' migrate_atlas_files(data_dir)
+#'
+#' load(file.path(data_dir, "dk_sf.rda"))
+#' is_atlas_polygon(dk_sf)
+#'
+#' unlink(data_dir, recursive = TRUE)
 migrate_atlas_files <- function(path = "data", keep_sf = FALSE, quiet = FALSE) {
   if (!dir.exists(path)) {
     cli::cli_abort("Directory {.path {path}} does not exist.")

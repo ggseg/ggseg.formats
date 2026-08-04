@@ -25,9 +25,10 @@ Conversion is lossless, so a single representation is kept (no redundant
 polygons alongside sf).
 }
 \examples{
-\dontrun{
-library(sf)
+\dontshow{if (rlang::is_installed("sf")) withAutoprint(\{ # examplesIf}
 atlas <- as_sf_atlas(as_polygon_atlas(dk()))
-st_buffer(atlas_geom(atlas)$geometry[[1]], dist = 2)
-}
+is_atlas_sf(atlas)
+
+sf::st_buffer(atlas_geom(atlas)$geometry[[1]], dist = 2)
+\dontshow{\}) # examplesIf}
 }
