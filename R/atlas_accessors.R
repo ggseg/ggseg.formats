@@ -18,6 +18,44 @@ atlas_palette <- function(atlas, ...) {
 }
 
 
+#' Set atlas palette
+#'
+#' Replaces the colour palette of a brain atlas. The palette is a named
+#' character vector mapping region `label`s to colours; a warning is issued if
+#' it does not cover every atlas label. Prefer this setter to assigning
+#' `atlas$palette` directly.
+#'
+#' @param atlas a `ggseg_atlas` object
+#' @param value Named character vector of colours keyed by atlas `label`.
+#'
+#' @return The `ggseg_atlas` with its palette replaced.
+#' @export
+#' @examples
+#' a <- aseg()
+#' labs <- atlas_labels(a)
+#' atlas_palette(a) <- setNames(grDevices::rainbow(length(labs)), labs)
+`atlas_palette<-` <- function(atlas, value) {
+  if (!is_atlas_class(atlas)) {
+    cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas} object.")
+  }
+  if (!is.character(value) || is.null(names(value))) {
+    cli::cli_abort(c(
+      "{.arg value} must be a named character vector of colours.",
+      "i" = "Names are the atlas region {.field label}s."
+    ))
+  }
+  absent <- setdiff(atlas_labels(atlas), names(value))
+  if (length(absent)) {
+    cli::cli_warn(c(
+      "Palette does not cover every atlas label.",
+      "i" = "e.g. {.val {utils::head(absent, 3)}} ({length(absent)} total)."
+    ))
+  }
+  atlas$palette <- value
+  atlas
+}
+
+
 #' Get the raw 2D geometry of an atlas
 #'
 #' Returns the single 2D geometry object stored in `atlas$data$geom`, which is

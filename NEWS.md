@@ -1,5 +1,11 @@
 # ggseg.formats
 
+## ggseg.formats 0.0.4.9002 (development)
+
+- New `atlas_palette<-()` setter so a palette can be replaced through the
+  accessor API instead of assigning `atlas$palette` directly. Warns if the new
+  palette does not cover every atlas label.
+
 ## ggseg.formats 0.0.4.9001
 
 ### Atlas data
