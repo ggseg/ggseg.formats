@@ -21,3 +21,17 @@ sf geometry, converting from the polygon representation when needed.
 sf_data <- atlas_sf(dk())
 head(sf_data)
 }
+\seealso{
+Other atlas accessors: 
+\code{\link{atlas_geom}()},
+\code{\link{atlas_geometry_type}()},
+\code{\link{atlas_labels}()},
+\code{\link{atlas_meshes}()},
+\code{\link{atlas_palette}()},
+\code{\link{atlas_polygons}()},
+\code{\link{atlas_regions}()},
+\code{\link{atlas_type}()},
+\code{\link{atlas_vertices}()},
+\code{\link{atlas_views}()}
+}
+\concept{atlas accessors}
