@@ -1,11 +1,15 @@
-#' Get atlas palette
+#' Get the palette of an atlas
 #'
-#' Retrieves the colour palette from a brain atlas.
+#' Retrieves the colour palette from a brain atlas: a named character vector
+#' mapping region `label`s to colours. To change the palette, use the
+#' [set_atlas_palette()] setter.
 #'
 #' @param atlas a `ggseg_atlas` object
 #' @param ... Additional arguments (unused)
 #'
-#' @return Named character vector of colours
+#' @return Named character vector of colours.
+#' @family atlas accessors
+#' @seealso [set_atlas_palette()] to set the palette.
 #' @export
 #' @examples
 #' atlas_palette(aseg())
@@ -36,6 +40,7 @@ atlas_palette <- function(atlas, ...) {
 #' @examples
 #' g <- atlas_geom(dk())
 #' atlas_geometry_type(dk())
+#' @family atlas accessors
 atlas_geom <- function(atlas) {
   if (!is_ggseg_atlas(atlas)) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas}.")
@@ -53,6 +58,7 @@ atlas_geom <- function(atlas) {
 #' @examples
 #' atlas_geometry_type(dk())
 #' is_atlas_polygon(dk())
+#' @family atlas accessors
 atlas_geometry_type <- function(atlas) {
   geom <- atlas_geom(atlas)
   if (inherits(geom, "sf")) {
@@ -92,6 +98,7 @@ is_atlas_polygon <- function(atlas) {
 #' @examples
 #' sf_data <- atlas_sf(dk())
 #' head(sf_data)
+#' @family atlas accessors
 atlas_sf <- function(atlas) {
   require_sf("atlas_sf()")
   if (!is_ggseg_atlas(atlas)) {
@@ -140,6 +147,7 @@ atlas_sf <- function(atlas) {
 #' @export
 #' @examples
 #' polys <- atlas_polygons(dk())
+#' @family atlas accessors
 atlas_polygons <- function(atlas) {
   if (!is_ggseg_atlas(atlas)) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas}.")
@@ -167,6 +175,7 @@ atlas_polygons <- function(atlas) {
 #' @examples
 #' verts <- atlas_vertices(dk())
 #' head(verts)
+#' @family atlas accessors
 atlas_vertices <- function(atlas) {
   if (!is_ggseg_atlas(atlas)) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas}.")
@@ -198,6 +207,7 @@ atlas_vertices <- function(atlas) {
 #' @examples
 #' meshes <- atlas_meshes(aseg())
 #' head(meshes)
+#' @family atlas accessors
 atlas_meshes <- function(atlas) {
   if (!is_ggseg_atlas(atlas)) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas}.")

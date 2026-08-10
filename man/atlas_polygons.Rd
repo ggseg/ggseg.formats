@@ -19,3 +19,17 @@ converting from sf when needed. The sf-optional counterpart to \code{\link[=atla
 \examples{
 polys <- atlas_polygons(dk())
 }
+\seealso{
+Other atlas accessors: 
+\code{\link{atlas_geom}()},
+\code{\link{atlas_geometry_type}()},
+\code{\link{atlas_labels}()},
+\code{\link{atlas_meshes}()},
+\code{\link{atlas_palette}()},
+\code{\link{atlas_regions}()},
+\code{\link{atlas_sf}()},
+\code{\link{atlas_type}()},
+\code{\link{atlas_vertices}()},
+\code{\link{atlas_views}()}
+}
+\concept{atlas accessors}

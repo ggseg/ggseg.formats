@@ -204,3 +204,4 @@ dk() |>
   atlas_region_keep("frontal", match_on = "region")
 
 }
+\concept{atlas manipulations}

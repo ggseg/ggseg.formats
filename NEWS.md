@@ -1,5 +1,15 @@
 # ggseg.formats
 
+## ggseg.formats 0.0.4.9002 (development)
+
+- New `set_atlas_palette()` setter replaces a palette without requiring users to assign `atlas$palette` directly; it validates the value and warns if the new palette does not cover every atlas label.
+- The exported API is now organised into three documented families
+  (`@family`): **atlas accessors** (read-only getters such as `atlas_palette()`,
+  `atlas_labels()`), **atlas setters** (`set_atlas_palette()`), and **atlas
+  manipulations** (structural transforms such as `atlas_region_rename()`,
+  `atlas_view_reorder()`). Accessors are pure getters — there is no
+  `atlas_palette<-()` replacement form.
+
 ## ggseg.formats 0.0.4.9001
 
 ### Atlas data

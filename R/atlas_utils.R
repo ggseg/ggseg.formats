@@ -7,6 +7,7 @@
 #' atlas_regions(aseg())
 #'
 #' @export
+#' @family atlas accessors
 atlas_regions <- function(x) {
   UseMethod("atlas_regions")
 }
@@ -35,6 +36,7 @@ atlas_regions.data.frame <- function(x) {
 #' atlas_labels(aseg())
 #'
 #' @export
+#' @family atlas accessors
 atlas_labels <- function(x) {
   UseMethod("atlas_labels")
 }
@@ -82,6 +84,7 @@ brain_labels <- function(x) {
 #' atlas_type(tracula())
 #'
 #' @export
+#' @family atlas accessors
 atlas_type <- function(x) {
   UseMethod("atlas_type")
 }
@@ -153,6 +156,7 @@ atlas_type.brain_atlas <- function(x) {
 #'
 #' @name atlas_manipulation
 #' @export
+#' @family atlas manipulations
 atlas_region_remove <- function(
   atlas,
   pattern,
@@ -193,6 +197,7 @@ atlas_region_remove <- function(
 #'   Operates on whichever 2D representation the atlas carries (`sf` and/or
 #'   `polygons`), keeping both in sync, and needs no `sf` for a polygon atlas.
 #' @export
+#' @family atlas manipulations
 atlas_region_contextual <- function(
   atlas,
   pattern,
@@ -257,6 +262,7 @@ atlas_region_contextual <- function(
 #'   supplied, `into` is registered in core and palette; when `NULL`, the
 #'   result is contextual geometry only.
 #' @export
+#' @family atlas manipulations
 atlas_region_op <- function(
   atlas,
   x,
@@ -324,6 +330,7 @@ atlas_region_op <- function(
 #'   via [atlas_view_gather()] so the plot focuses tightly on the
 #'   labelled regions.
 #' @export
+#' @family atlas manipulations
 atlas_context_remove <- function(atlas) {
   if (is.null(data_sf(atlas$data))) {
     if (is.null(data_poly(atlas$data))) {
@@ -346,6 +353,7 @@ atlas_context_remove <- function(atlas) {
 #'   affects the `region` column, not `label`. If `replacement` is a function,
 #'   it receives matched names and returns new names.
 #' @export
+#' @family atlas manipulations
 atlas_region_rename <- function(atlas, pattern, replacement) {
   new_core <- atlas$core
   match_mask <- grepl(pattern, new_core$region, ignore.case = TRUE)
@@ -376,6 +384,7 @@ atlas_region_rename <- function(atlas, pattern, replacement) {
 #'   regions are removed from core, palette, and 3D data but sf geometry
 #'   is preserved for surface continuity.
 #' @export
+#' @family atlas manipulations
 atlas_region_keep <- function(atlas, pattern, match_on = c("region", "label")) {
   match_on <- match.arg(match_on)
 
@@ -407,6 +416,7 @@ atlas_region_keep <- function(atlas, pattern, match_on = c("region", "label")) {
 #' @describeIn atlas_manipulation Join additional metadata columns to
 #'   atlas core.
 #' @export
+#' @family atlas manipulations
 atlas_core_add <- function(atlas, data, by = "region") {
   if (anyDuplicated(do.call(paste, c(data[by], sep = "\r")))) {
     cli::cli_abort(c(
@@ -438,6 +448,7 @@ atlas_core_add <- function(atlas, data, by = "region") {
 #' atlas_views(tracula())
 #'
 #' @export
+#' @family atlas accessors
 atlas_views <- function(atlas) {
   if (!is.null(data_sf(atlas$data))) {
     return(unique(data_sf(atlas$data)$view))
@@ -450,6 +461,7 @@ atlas_views <- function(atlas) {
 
 #' @rdname atlas_views
 #' @export
+#' @family atlas accessors
 brain_views <- function(atlas) {
   lifecycle::deprecate_warn(
     "0.1.0",
@@ -464,6 +476,7 @@ brain_views <- function(atlas) {
 #'   data. Remaining views are re-packed via [atlas_view_gather()] so
 #'   the layout stays tight.
 #' @export
+#' @family atlas manipulations
 atlas_view_remove <- function(atlas, views) {
   if (is.null(data_sf(atlas$data))) {
     if (is.null(data_poly(atlas$data))) {
@@ -494,6 +507,7 @@ atlas_view_remove <- function(atlas, views) {
 
 #' @describeIn atlas_manipulation Keep only views matching pattern.
 #' @export
+#' @family atlas manipulations
 atlas_view_keep <- function(atlas, views) {
   if (is.null(data_sf(atlas$data))) {
     if (is.null(data_poly(atlas$data))) {
@@ -525,6 +539,7 @@ atlas_view_keep <- function(atlas, views) {
 #'   data only. Core, palette, and 3D data are unchanged. Views are
 #'   re-packed via [atlas_view_gather()] in case any view shrank.
 #' @export
+#' @family atlas manipulations
 atlas_view_remove_region <- function(
   atlas,
   pattern,
@@ -572,6 +587,7 @@ atlas_view_remove_region <- function(
 #'   removed. Optionally scope to specific views. Views are re-packed
 #'   via [atlas_view_gather()] in case any view shrank.
 #' @export
+#' @family atlas manipulations
 atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
   if (is.null(data_sf(atlas$data))) {
     if (is.null(data_poly(atlas$data))) {
@@ -620,6 +636,7 @@ atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
 #' @describeIn atlas_manipulation Reposition remaining views to close gaps
 #'   after view removal.
 #' @export
+#' @family atlas manipulations
 atlas_view_gather <- function(atlas, gap = 0.15) {
   sf_data <- data_sf(atlas$data)
   if (is.null(sf_data)) {
@@ -644,6 +661,7 @@ atlas_view_gather <- function(atlas, gap = 0.15) {
 #' @describeIn atlas_manipulation Reorder views and reposition. Views not
 #'   in `order` are appended at end.
 #' @export
+#' @family atlas manipulations
 atlas_view_reorder <- function(atlas, order, gap = 0.15) {
   if (is.null(data_sf(atlas$data))) {
     return(view_reorder_poly(atlas, order, gap))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/atlas_accessors.R
 \name{atlas_palette}
 \alias{atlas_palette}
-\title{Get atlas palette}
+\title{Get the palette of an atlas}
 \usage{
 atlas_palette(atlas, ...)
 }
@@ -12,12 +12,30 @@ atlas_palette(atlas, ...)
 \item{...}{Additional arguments (unused)}
 }
 \value{
-Named character vector of colours
+Named character vector of colours.
 }
 \description{
-Retrieves the colour palette from a brain atlas.
+Retrieves the colour palette from a brain atlas: a named character vector
+mapping region \code{label}s to colours. To change the palette, use the
+\code{\link[=set_atlas_palette]{set_atlas_palette()}} setter.
 }
 \examples{
 atlas_palette(aseg())
 atlas_palette(dk())
 }
+\seealso{
+\code{\link[=set_atlas_palette]{set_atlas_palette()}} to set the palette.
+
+Other atlas accessors: 
+\code{\link{atlas_geom}()},
+\code{\link{atlas_geometry_type}()},
+\code{\link{atlas_labels}()},
+\code{\link{atlas_meshes}()},
+\code{\link{atlas_polygons}()},
+\code{\link{atlas_regions}()},
+\code{\link{atlas_sf}()},
+\code{\link{atlas_type}()},
+\code{\link{atlas_vertices}()},
+\code{\link{atlas_views}()}
+}
+\concept{atlas accessors}
