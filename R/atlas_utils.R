@@ -54,7 +54,6 @@ atlas_labels.brain_atlas <- function(x) {
 
 #' @rdname atlas_regions
 #' @export
-#' @family atlas accessors
 brain_regions <- function(x) {
   lifecycle::deprecate_warn(
     "0.1.0",
