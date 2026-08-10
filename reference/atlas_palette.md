@@ -1,6 +1,10 @@
-# Get atlas palette
+# Get the palette of an atlas
 
-Retrieves the colour palette from a brain atlas.
+Retrieves the colour palette from a brain atlas: a named character
+vector mapping region `label`s to colours. To change the palette, use
+the
+[`set_atlas_palette()`](https://ggsegverse.github.io/ggseg.formats/reference/set_atlas_palette.md)
+setter.
 
 ## Usage
 
@@ -20,7 +24,24 @@ atlas_palette(atlas, ...)
 
 ## Value
 
-Named character vector of colours
+Named character vector of colours.
+
+## See also
+
+[`set_atlas_palette()`](https://ggsegverse.github.io/ggseg.formats/reference/set_atlas_palette.md)
+to set the palette.
+
+Other atlas accessors:
+[`atlas_geom()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geom.md),
+[`atlas_geometry_type()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geometry_type.md),
+[`atlas_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md),
+[`atlas_meshes()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_meshes.md),
+[`atlas_polygons()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_polygons.md),
+[`atlas_regions()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_regions.md),
+[`atlas_sf()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_sf.md),
+[`atlas_type()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_type.md),
+[`atlas_vertices()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_vertices.md),
+[`atlas_views()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_views.md)
 
 ## Examples
 

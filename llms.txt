@@ -197,7 +197,7 @@ Query atlas contents without reaching into slots directly.
 - [`atlas_meshes()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_meshes.md)
   : Get atlas meshes for 3D rendering
 - [`atlas_palette()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_palette.md)
-  : Get atlas palette
+  : Get the palette of an atlas
 - [`atlas_polygons()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_polygons.md)
   : Get atlas polygons for 2D rendering
 - [`atlas_regions()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_regions.md)
@@ -214,6 +214,13 @@ Query atlas contents without reaching into slots directly.
   : Get available views in atlas
 - [`get_cerebellar_mesh()`](https://ggsegverse.github.io/ggseg.formats/reference/get_cerebellar_mesh.md)
   : Get SUIT cerebellar surface mesh
+
+## Setters
+
+Replace atlas properties, returning a modified `ggseg_atlas`.
+
+- [`set_atlas_palette()`](https://ggsegverse.github.io/ggseg.formats/reference/set_atlas_palette.md)
+  : Set the palette of an atlas
 
 ## Geometry representation (sf-optional)
 
