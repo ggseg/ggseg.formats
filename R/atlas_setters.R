@@ -5,7 +5,7 @@
 #' This is the setter counterpart to the [atlas_palette()] accessor; it returns
 #' the modified atlas, so it composes with the pipe.
 #'
-#' @param atlas a `ggseg_atlas` object
+#' @inheritParams atlas_palette
 #' @param value Named character vector of colours keyed by atlas `label`.
 #'
 #' @return The `ggseg_atlas` with its palette replaced.

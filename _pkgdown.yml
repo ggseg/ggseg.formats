@@ -31,6 +31,10 @@ reference:
       - starts_with("atlas_")
       - starts_with("is_atlas")
       - get_cerebellar_mesh
+  - title: Setters
+    desc: Replace atlas properties, returning a modified `ggseg_atlas`.
+    contents:
+      - starts_with("set_")
   - title: Geometry representation (sf-optional)
     desc: |
       Convert atlas 2D geometry between sf and the sf-optional `brain_polygons`
