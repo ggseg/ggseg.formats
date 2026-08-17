@@ -1,6 +1,6 @@
 # ggseg.formats
 
-## ggseg.formats 0.0.4.9002 (development)
+## ggseg.formats 0.0.4.9003 (development)
 
 - New `set_atlas_palette()` setter replaces a palette without requiring users to assign `atlas$palette` directly; it validates the value and warns if the new palette does not cover every atlas label.
 - New `set_atlas_type()` setter replaces an atlas type without assigning
