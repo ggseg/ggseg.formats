@@ -75,9 +75,15 @@ brain_labels <- function(x) {
 }
 
 
+atlas_types <- function() {
+  c("cortical", "subcortical", "tract", "cerebellar")
+}
+
 #' Detect atlas type
 #' @param x brain atlas object
-#' @return Character string: "cortical", "subcortical", or "tract"
+#' @return Character string: one of "cortical", "subcortical", "tract" or
+#'   "cerebellar".
+#' @seealso [set_atlas_type()] to set the type.
 #' @examples
 #' atlas_type(dk())
 #' atlas_type(aseg())
@@ -119,7 +125,7 @@ atlas_type.brain_atlas <- function(x) {
 #' - `atlas_view_remove()`: remove entire views
 #' - `atlas_view_keep()`: keep only matching views
 #' - `atlas_view_remove_region()`: remove specific region geometry from sf
-#' - `atlas_view_remove_small()`: remove small polygon fragments
+#' - `atlas_view_remove_small()`: remove small regions, or stray specks
 #' - `atlas_view_gather()`: reposition views to close gaps
 #' - `atlas_view_reorder()`: change view order
 #'
@@ -141,8 +147,9 @@ atlas_type.brain_atlas <- function(x) {
 #'   patterns. Multiple values collapsed with `"|"` for matching.
 #' @param order For `atlas_view_reorder()`: character vector of desired
 #'   view order. Unspecified views appended at end.
-#' @param min_area For `atlas_view_remove_small()`: minimum polygon
-#'   area to keep. Context geometries are never removed.
+#' @param min_area For `atlas_view_remove_small()`: minimum area to keep.
+#'   What it applies to depends on `scope`; with the default
+#'   `scope = "region"` context geometries are never removed.
 #' @param gap Proportional gap between views (default 0.15 = 15% of max width).
 #' @param data For `atlas_core_add()`: data.frame with metadata to join.
 #' @param by For `atlas_core_add()`: column(s) to join by. Default `"region"`.
@@ -582,13 +589,46 @@ atlas_view_remove_region <- function(
 }
 
 
-#' @describeIn atlas_manipulation Remove region geometries below a minimum
-#'   area threshold. Context geometries (labels not in core) are never
-#'   removed. Optionally scope to specific views. Views are re-packed
-#'   via [atlas_view_gather()] in case any view shrank.
+#' @describeIn atlas_manipulation Remove geometry below a minimum area
+#'   threshold. With `scope = "region"` (the default) a label's whole geometry
+#'   in a view is removed when its combined area is too small, and context
+#'   geometries (labels not in core) are never removed. With
+#'   `scope = "piece"` individual disconnected pieces are removed while the
+#'   rest of the region stays -- use this to clear stray specks left by
+#'   volumetric projection. A region's largest piece in a view is always kept,
+#'   so no region disappears, and context is cleaned too. Optionally scope to
+#'   specific views. Views are re-packed via [atlas_view_gather()] in case any
+#'   view shrank.
+#' @param scope Whether `min_area` applies to a label's whole geometry in a
+#'   view (`"region"`, the default) or to each disconnected piece
+#'   (`"piece"`).
+#' @param labels,exclude For `atlas_view_remove_small()`: optional regex
+#'   scoping which labels are considered. `labels` restricts removal to
+#'   matching labels, `exclude` spares them. Only one may be given. Useful
+#'   with `scope = "piece"`, where a thin structure such as a cortical ribbon
+#'   has legitimately small pieces that should not be treated as specks.
 #' @export
 #' @family atlas manipulations
-atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
+atlas_view_remove_small <- function(
+  atlas,
+  min_area,
+  views = NULL,
+  scope = c("region", "piece"),
+  labels = NULL,
+  exclude = NULL
+) {
+  scope <- match.arg(scope)
+
+  if (!is.null(labels) && !is.null(exclude)) {
+    cli::cli_abort(
+      "Specify only one of {.arg labels} or {.arg exclude}, not both."
+    )
+  }
+
+  if (identical(scope, "piece")) {
+    return(remove_small_pieces(atlas, min_area, views, labels, exclude))
+  }
+
   if (is.null(data_sf(atlas$data))) {
     if (is.null(data_poly(atlas$data))) {
       cli::cli_warn("Atlas has no 2D geometry, nothing to remove")
@@ -630,6 +670,46 @@ atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
   new_sf <- data_sf(atlas$data)[!is_small, , drop = FALSE]
   new_data <- rebuild_atlas_data(atlas, new_sf)
   atlas_view_gather(rebuild_atlas(atlas, new_data))
+}
+
+
+#' Remove disconnected pieces below an area threshold
+#'
+#' Piece-level counterpart of [atlas_view_remove_small()]. sf atlases are
+#' routed through the polygon representation, which is where piece geometry is
+#' explicit, and converted back afterwards.
+#' @noRd
+#' @keywords internal
+remove_small_pieces <- function(
+  atlas,
+  min_area,
+  views = NULL,
+  labels = NULL,
+  exclude = NULL
+) {
+  if (is.null(data_poly(atlas$data)) && is.null(data_sf(atlas$data))) {
+    cli::cli_warn("Atlas has no 2D geometry, nothing to remove")
+    return(atlas)
+  }
+
+  was_sf <- is.null(data_poly(atlas$data))
+  work <- if (was_sf) as_polygon_atlas(atlas) else atlas
+
+  res <- polygons_remove_small_pieces(
+    data_poly(work$data),
+    min_area,
+    views = views,
+    labels = labels,
+    exclude = exclude
+  )
+  if (res$n_removed > 0) {
+    cli::cli_alert_info(
+      "Removed {res$n_removed} piece{?s} below area {min_area}"
+    )
+  }
+
+  out <- atlas_view_gather(set_atlas_polygons(work, res$polygons))
+  if (was_sf) as_sf_atlas(out) else out
 }
 
 

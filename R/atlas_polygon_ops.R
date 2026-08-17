@@ -195,6 +195,93 @@ polygons_remove_small <- function(
 }
 
 
+#' Drop disconnected pieces below an area threshold
+#'
+#' Unlike [polygons_remove_small()], which drops a label's whole geometry in a
+#' view when its combined area is too small, this drops individual disconnected
+#' pieces and keeps the rest of the region. A region's largest piece in a view
+#' is always kept, so no region can disappear. Holes are not treated as pieces:
+#' a piece's area is its exterior ring minus its holes.
+#'
+#' @param polygons A `brain_polygons` table.
+#' @param min_area Pieces below this area are dropped.
+#' @param views Optional character vector of view name patterns to scope to.
+#' @return List with the new polygons and the count of pieces removed.
+#' @noRd
+#' @keywords internal
+polygons_remove_small_pieces <- function(
+  polygons,
+  min_area,
+  views = NULL,
+  labels = NULL,
+  exclude = NULL
+) {
+  flat <- polygons_unnest(polygons)
+  if (nrow(flat) == 0) {
+    return(list(polygons = polygons, n_removed = 0L))
+  }
+
+  piece_key <- paste(flat$label, flat$view, flat$group, sep = "\r")
+  areas <- vapply(
+    split(flat, piece_key),
+    function(d) {
+      rings <- unique(d$subgroup)
+      ext <- min(rings)
+      ring_area <- function(r) {
+        idx <- d$subgroup == r
+        polygon_ring_area(d$x[idx], d$y[idx])
+      }
+      ring_area(ext) - sum(vapply(setdiff(rings, ext), ring_area, numeric(1)))
+    },
+    numeric(1)
+  )
+
+  region_key <- vapply(
+    strsplit(names(areas), "\r", fixed = TRUE),
+    function(p) {
+      paste(p[1:2], collapse = "\r")
+    },
+    character(1)
+  )
+
+  # Never drop a region's largest piece in a view, so nothing vanishes.
+  largest <- tapply(areas, region_key, max)[region_key]
+  drop <- areas < min_area & areas < largest
+
+  if (!is.null(views)) {
+    view_of <- vapply(
+      strsplit(names(areas), "\r", fixed = TRUE),
+      `[`,
+      character(1),
+      2
+    )
+    drop <- drop &
+      grepl(paste(views, collapse = "|"), view_of, ignore.case = TRUE)
+  }
+
+  if (!is.null(labels) || !is.null(exclude)) {
+    label_of <- vapply(
+      strsplit(names(areas), "\r", fixed = TRUE),
+      `[`,
+      character(1),
+      1
+    )
+    in_scope <- if (!is.null(labels)) {
+      grepl(labels, label_of, ignore.case = TRUE)
+    } else {
+      !grepl(exclude, label_of, ignore.case = TRUE)
+    }
+    drop <- drop & in_scope
+  }
+
+  keep_keys <- names(areas)[!drop]
+  list(
+    polygons = polygons_renest(flat[piece_key %in% keep_keys, , drop = FALSE]),
+    n_removed = sum(drop)
+  )
+}
+
+
 #' Reposition view groups left-to-right on a flat coordinate table
 #'
 #' Pure-R equivalent of `reposition_views()`: centre each view group on the

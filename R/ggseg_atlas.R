@@ -34,7 +34,7 @@
 #'   data = ggseg_data_cortical(vertices = vertices)
 #' )
 ggseg_atlas <- function(atlas, type, core, data, palette = NULL) {
-  type <- match.arg(type, c("cortical", "subcortical", "tract", "cerebellar"))
+  type <- match.arg(type, atlas_types())
 
   validate_ggseg_atlas_inputs(atlas, core, data, type)
 
@@ -212,7 +212,7 @@ plot.ggseg_atlas <- function(x, ...) {
   # each gets enough room to read. This is a quick overview of the atlas, not a
   # publication figure.
   cell <- plot_cells(flat, resolve_plot_hemi(flat$label, x$core))
-  cells <- sort(unique(cell))
+  cells <- order_cells_spatially(cell, flat$x)
   ncol <- ceiling(sqrt(length(cells)))
   nrow <- ceiling(length(cells) / ncol)
   cell_tables <- split(flat, cell)
@@ -246,6 +246,27 @@ plot.ggseg_atlas <- function(x, ...) {
 
   invisible(x)
 }
+
+#' Order plot panels by their left-to-right position
+#'
+#' Panel ids come from [plot_cells()], which numbers cells in the order views
+#' are encountered in the row table. For `brain_polygons` those rows are nested
+#' by `label`, so encounter order depends on which views the first label happens
+#' to carry -- it neither follows the atlas layout nor is stable. Ordering by
+#' each cell's leftmost x makes the panels read in the order the views are
+#' actually laid out, so [atlas_view_reorder()] is honoured.
+#' @noRd
+#' @keywords internal
+order_cells_spatially <- function(cell, x) {
+  cells <- unique(cell)
+  left <- vapply(
+    cells,
+    function(ci) min(x[cell == ci], na.rm = TRUE),
+    numeric(1)
+  )
+  cells[order(left, cells)]
+}
+
 
 #' Order polygon rows so contextual regions are drawn behind core regions
 #'

@@ -3,6 +3,18 @@
 ## ggseg.formats 0.0.4.9002 (development)
 
 - New `set_atlas_palette()` setter replaces a palette without requiring users to assign `atlas$palette` directly; it validates the value and warns if the new palette does not cover every atlas label.
+- New `set_atlas_type()` setter replaces an atlas type without assigning
+  `atlas$type` directly. Type is coupled to both the `<type>_atlas` subclass and
+  the `ggseg_data_<type>` payload class, so a direct field assignment leaves the
+  subclass stale and `is_tract_atlas()` disagreeing with `atlas_type()`. The
+  setter reconstructs through `ggseg_atlas()`, so it keeps all three in
+  agreement and errors when the payload does not match the requested type.
+- `plot()` now draws atlas panels in the order the views are laid out, so
+  `atlas_view_reorder()` is reflected in the output. Panels were previously
+  ordered by the sequence in which views appeared in the underlying row table;
+  for `brain_polygons` those rows nest by `label`, so the order depended on
+  which views the first label happened to carry — neither following the atlas
+  layout nor stable across atlases. Panels are now ordered by position.
 - The exported API is now organised into three documented families
   (`@family`): **atlas accessors** (read-only getters such as `atlas_palette()`,
   `atlas_labels()`), **atlas setters** (`set_atlas_palette()`), and **atlas

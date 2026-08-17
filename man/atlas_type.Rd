@@ -10,7 +10,8 @@ atlas_type(x)
 \item{x}{brain atlas object}
 }
 \value{
-Character string: "cortical", "subcortical", or "tract"
+Character string: one of "cortical", "subcortical", "tract" or
+"cerebellar".
 }
 \description{
 Detect atlas type
@@ -22,6 +23,8 @@ atlas_type(tracula())
 
 }
 \seealso{
+\code{\link[=set_atlas_type]{set_atlas_type()}} to set the type.
+
 Other atlas accessors: 
 \code{\link{atlas_geom}()},
 \code{\link{atlas_geometry_type}()},

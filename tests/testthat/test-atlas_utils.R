@@ -2110,3 +2110,68 @@ describe("rebuild_data_with_geom() cerebellar vertices-only branch", {
     expect_false("left_lobule" %in% atlas_labels(res))
   })
 })
+
+
+describe("atlas_view_remove_small(scope = 'piece')", {
+  # One region drawn as a big square plus a detached speck, in one view.
+  speck_atlas <- function() {
+    sq <- function(x0, y0, w) {
+      list(cbind(
+        c(x0, x0 + w, x0 + w, x0, x0),
+        c(y0, y0, y0 + w, y0 + w, y0)
+      ))
+    }
+    geom <- sf::st_sf(
+      label = "a",
+      view = "axial",
+      geometry = sf::st_sfc(sf::st_multipolygon(list(
+        sq(0, 0, 20),
+        sq(100, 100, 2)
+      )))
+    )
+    ggseg.formats::ggseg_atlas(
+      atlas = "t",
+      type = "subcortical",
+      core = data.frame(
+        hemi = "mid",
+        region = "a",
+        label = "a",
+        stringsAsFactors = FALSE
+      ),
+      data = ggseg.formats::ggseg_data_subcortical(geom = geom)
+    )
+  }
+  total_area <- function(x) {
+    sum(as.numeric(sf::st_area(atlas_geom(as_sf_atlas(x)))))
+  }
+
+  it("drops the speck and keeps the main piece", {
+    result <- atlas_view_remove_small(speck_atlas(), 10, scope = "piece")
+    # 20x20 kept, 2x2 speck dropped
+    expect_equal(total_area(result), 400)
+  })
+
+  it("keeps the region present rather than removing it wholesale", {
+    result <- atlas_view_remove_small(speck_atlas(), 10, scope = "piece")
+    expect_identical(nrow(result$core), 1L)
+    expect_true("a" %in% atlas_labels(result))
+  })
+
+  it("never removes a region's largest piece, even below min_area", {
+    # min_area far above everything: the biggest piece must still survive.
+    result <- atlas_view_remove_small(speck_atlas(), 1e6, scope = "piece")
+    expect_equal(total_area(result), 400)
+  })
+
+  it("leaves geometry untouched when nothing is small enough", {
+    result <- atlas_view_remove_small(speck_atlas(), 1, scope = "piece")
+    expect_equal(total_area(result), 404)
+  })
+
+  it("defaults to region scope", {
+    expect_equal(
+      atlas_view_remove_small(speck_atlas(), 10),
+      atlas_view_remove_small(speck_atlas(), 10, scope = "region")
+    )
+  })
+})

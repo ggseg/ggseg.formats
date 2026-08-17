@@ -55,7 +55,14 @@ atlas_view_remove_region(
   views = NULL
 )
 
-atlas_view_remove_small(atlas, min_area, views = NULL)
+atlas_view_remove_small(
+  atlas,
+  min_area,
+  views = NULL,
+  scope = c("region", "piece"),
+  labels = NULL,
+  exclude = NULL
+)
 
 atlas_view_gather(atlas, gap = 0.15)
 
@@ -95,8 +102,19 @@ function.}
 \item{views}{For view functions: character vector of view names or
 patterns. Multiple values collapsed with \code{"|"} for matching.}
 
-\item{min_area}{For \code{atlas_view_remove_small()}: minimum polygon
-area to keep. Context geometries are never removed.}
+\item{min_area}{For \code{atlas_view_remove_small()}: minimum area to keep.
+What it applies to depends on \code{scope}; with the default
+\code{scope = "region"} context geometries are never removed.}
+
+\item{scope}{Whether \code{min_area} applies to a label's whole geometry in a
+view (\code{"region"}, the default) or to each disconnected piece
+(\code{"piece"}).}
+
+\item{labels, exclude}{For \code{atlas_view_remove_small()}: optional regex
+scoping which labels are considered. \code{labels} restricts removal to
+matching labels, \code{exclude} spares them. Only one may be given. Useful
+with \code{scope = "piece"}, where a thin structure such as a cortical ribbon
+has legitimately small pieces that should not be treated as specks.}
 
 \item{gap}{Proportional gap between views (default 0.15 = 15\% of max width).}
 
@@ -126,7 +144,7 @@ Functions for modifying brain atlas objects. These cover three areas:
 \item \code{atlas_view_remove()}: remove entire views
 \item \code{atlas_view_keep()}: keep only matching views
 \item \code{atlas_view_remove_region()}: remove specific region geometry from sf
-\item \code{atlas_view_remove_small()}: remove small polygon fragments
+\item \code{atlas_view_remove_small()}: remove small regions, or stray specks
 \item \code{atlas_view_gather()}: reposition views to close gaps
 \item \code{atlas_view_reorder()}: change view order
 }
@@ -186,10 +204,16 @@ the layout stays tight.
 data only. Core, palette, and 3D data are unchanged. Views are
 re-packed via \code{\link[=atlas_view_gather]{atlas_view_gather()}} in case any view shrank.
 
-\item \code{atlas_view_remove_small()}: Remove region geometries below a minimum
-area threshold. Context geometries (labels not in core) are never
-removed. Optionally scope to specific views. Views are re-packed
-via \code{\link[=atlas_view_gather]{atlas_view_gather()}} in case any view shrank.
+\item \code{atlas_view_remove_small()}: Remove geometry below a minimum area
+threshold. With \code{scope = "region"} (the default) a label's whole geometry
+in a view is removed when its combined area is too small, and context
+geometries (labels not in core) are never removed. With
+\code{scope = "piece"} individual disconnected pieces are removed while the
+rest of the region stays -- use this to clear stray specks left by
+volumetric projection. A region's largest piece in a view is always kept,
+so no region disappears, and context is cleaned too. Optionally scope to
+specific views. Views are re-packed via \code{\link[=atlas_view_gather]{atlas_view_gather()}} in case any
+view shrank.
 
 \item \code{atlas_view_gather()}: Reposition remaining views to close gaps
 after view removal.

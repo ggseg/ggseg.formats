@@ -128,6 +128,21 @@ describe("reorder_polygons()", {
       views
     )
   })
+
+  it("orders views left to right to match the requested order", {
+    poly_aseg <- atlas_polygons(as_polygon_atlas(aseg()))
+    views <- unique(polygons_unnest(poly_aseg)$view)
+    wanted <- rev(views)
+
+    out <- polygons_unnest(reorder_polygons(poly_aseg, wanted, type = NULL))
+    centres <- vapply(
+      wanted,
+      function(v) mean(range(out$x[out$view == v])),
+      numeric(1)
+    )
+
+    expect_false(is.unsorted(centres))
+  })
 })
 
 describe("polygon_ring_area()", {
@@ -143,5 +158,33 @@ describe("polygon_ring_area()", {
 
   it("returns 0 for a degenerate ring", {
     expect_identical(polygon_ring_area(c(0, 1), c(0, 1)), 0)
+  })
+})
+
+
+describe("order_cells_spatially()", {
+  it("orders panels left to right, not by cell id", {
+    # Cell 1 sits to the right of cell 2, so the drawing order must be 2 then 1.
+    cell <- c(1L, 1L, 2L, 2L)
+    x <- c(100, 110, 0, 10)
+    expect_identical(order_cells_spatially(cell, x), c(2L, 1L))
+  })
+
+  it("keeps already left-to-right cells in their existing order", {
+    cell <- c(1L, 1L, 2L, 2L)
+    x <- c(0, 10, 100, 110)
+    expect_identical(order_cells_spatially(cell, x), c(1L, 2L))
+  })
+
+  it("breaks ties on cell id so the order is deterministic", {
+    cell <- c(2L, 1L)
+    x <- c(5, 5)
+    expect_identical(order_cells_spatially(cell, x), c(1L, 2L))
+  })
+
+  it("ignores NA coordinates when locating a cell", {
+    cell <- c(1L, 1L, 2L)
+    x <- c(NA, 100, 0)
+    expect_identical(order_cells_spatially(cell, x), c(2L, 1L))
   })
 })
