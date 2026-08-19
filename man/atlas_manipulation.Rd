@@ -13,6 +13,7 @@
 \alias{atlas_view_keep}
 \alias{atlas_view_remove_region}
 \alias{atlas_view_remove_small}
+\alias{atlas_view_select}
 \alias{atlas_view_gather}
 \alias{atlas_view_reorder}
 \title{Manipulate brain atlas regions and views}
@@ -63,6 +64,8 @@ atlas_view_remove_small(
   labels = NULL,
   exclude = NULL
 )
+
+atlas_view_select(atlas, threshold = 0.5, weights = NULL)
 
 atlas_view_gather(atlas, gap = 0.15)
 
@@ -116,6 +119,14 @@ matching labels, \code{exclude} spares them. Only one may be given. Useful
 with \code{scope = "piece"}, where a thin structure such as a cortical ribbon
 has legitimately small pieces that should not be treated as specks.}
 
+\item{threshold}{For \code{atlas_view_select()}: minimum share, between 0 and 1,
+of a region's best-view area that a view must hold to keep drawing it.
+Higher values are more aggressive.}
+
+\item{weights}{For \code{atlas_view_select()}: optional named numeric vector of
+per-view multipliers applied before comparing areas. Overrides the
+automatic hemisphere-coverage weighting for the views named.}
+
 \item{gap}{Proportional gap between views (default 0.15 = 15\% of max width).}
 
 \item{order}{For \code{atlas_view_reorder()}: character vector of desired
@@ -145,6 +156,8 @@ Functions for modifying brain atlas objects. These cover three areas:
 \item \code{atlas_view_keep()}: keep only matching views
 \item \code{atlas_view_remove_region()}: remove specific region geometry from sf
 \item \code{atlas_view_remove_small()}: remove small regions, or stray specks
+\item \code{atlas_view_select()}: keep each region only in the views that show it
+well
 \item \code{atlas_view_gather()}: reposition views to close gaps
 \item \code{atlas_view_reorder()}: change view order
 }
@@ -214,6 +227,28 @@ volumetric projection. A region's largest piece in a view is always kept,
 so no region disappears, and context is cleaned too. Optionally scope to
 specific views. Views are re-packed via \code{\link[=atlas_view_gather]{atlas_view_gather()}} in case any
 view shrank.
+
+\item \code{atlas_view_select()}: Keep each region only in the views that show
+it well.
+
+A slice or projection slab catches a structure in cross-section as readily
+as along its length, so most regions leave a sliver in most views. That
+leaves every panel cluttered and every region drawn several times over. A
+region is kept only where it is substantially represented: in any view
+holding at least \code{threshold} of the area it reaches in its best view.
+
+Regions are compared as a whole, across all the labels that share a
+\code{region} in \code{core}, so bilateral structures stay together -- assigning
+left and right independently splits pairs across panels, which reads as
+an error rather than a choice. Every region is guaranteed to survive in
+at least one view, and context geometry (labels absent from \code{core}, such
+as a cortical outline) is never touched.
+
+Single-hemisphere views are the awkward case: a sagittal panel cuts one
+hemisphere while axial and coronal panels show both, so on raw area it
+loses every comparison and empties out. Such views are detected from the
+hemispheres actually present in each view and their areas scaled to
+match, so they compete fairly. Pass \code{weights} to override.
 
 \item \code{atlas_view_gather()}: Reposition remaining views to close gaps
 after view removal.

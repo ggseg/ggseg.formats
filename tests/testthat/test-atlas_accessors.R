@@ -271,6 +271,53 @@ describe("atlas_vertices", {
 })
 
 
+describe("atlas_centerlines", {
+  make_tract_atlas <- function() {
+    centerlines <- data.frame(label = c("lh_af", "rh_af"))
+    centerlines$points <- list(
+      cbind(1:5, 1:5, 1:5),
+      cbind(6:10, 1:5, 1:5)
+    )
+    centerlines$tangents <- list(
+      cbind(rep(1, 5), 0, 0),
+      cbind(rep(1, 5), 0, 0)
+    )
+
+    ggseg_atlas(
+      atlas = "test",
+      type = "tract",
+      palette = c(lh_af = "#FF0000", rh_af = "#00FF00"),
+      core = data.frame(
+        hemi = c("left", "right"),
+        region = c("af", "af"),
+        label = c("lh_af", "rh_af")
+      ),
+      data = ggseg_data_tract(centerlines = centerlines)
+    )
+  }
+
+  it("returns centerlines joined with core and palette", {
+    result <- atlas_centerlines(make_tract_atlas())
+
+    expect_identical(nrow(result), 2L)
+    expect_identical(result$region, c("af", "af"))
+    expect_identical(result$colour, c("#FF0000", "#00FF00"))
+    expect_identical(dim(result$points[[1]]), c(5L, 3L))
+  })
+
+  it("errors on an atlas that has no centerlines", {
+    expect_error(
+      atlas_centerlines(aseg()),
+      "does not contain tract centerlines"
+    )
+  })
+
+  it("errors on a non-atlas", {
+    expect_error(atlas_centerlines(data.frame(a = 1)), "must be a")
+  })
+})
+
+
 describe("atlas_meshes", {
   it("has ggseg_meshes as first class", {
     result <- atlas_meshes(aseg())

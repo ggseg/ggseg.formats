@@ -126,6 +126,8 @@ atlas_type.brain_atlas <- function(x) {
 #' - `atlas_view_keep()`: keep only matching views
 #' - `atlas_view_remove_region()`: remove specific region geometry from sf
 #' - `atlas_view_remove_small()`: remove small regions, or stray specks
+#' - `atlas_view_select()`: keep each region only in the views that show it
+#'   well
 #' - `atlas_view_gather()`: reposition views to close gaps
 #' - `atlas_view_reorder()`: change view order
 #'
@@ -670,6 +672,144 @@ atlas_view_remove_small <- function(
   new_sf <- data_sf(atlas$data)[!is_small, , drop = FALSE]
   new_data <- rebuild_atlas_data(atlas, new_sf)
   atlas_view_gather(rebuild_atlas(atlas, new_data))
+}
+
+
+#' @describeIn atlas_manipulation Keep each region only in the views that show
+#'   it well.
+#'
+#'   A slice or projection slab catches a structure in cross-section as readily
+#'   as along its length, so most regions leave a sliver in most views. That
+#'   leaves every panel cluttered and every region drawn several times over. A
+#'   region is kept only where it is substantially represented: in any view
+#'   holding at least `threshold` of the area it reaches in its best view.
+#'
+#'   Regions are compared as a whole, across all the labels that share a
+#'   `region` in `core`, so bilateral structures stay together -- assigning
+#'   left and right independently splits pairs across panels, which reads as
+#'   an error rather than a choice. Every region is guaranteed to survive in
+#'   at least one view, and context geometry (labels absent from `core`, such
+#'   as a cortical outline) is never touched.
+#'
+#'   Single-hemisphere views are the awkward case: a sagittal panel cuts one
+#'   hemisphere while axial and coronal panels show both, so on raw area it
+#'   loses every comparison and empties out. Such views are detected from the
+#'   hemispheres actually present in each view and their areas scaled to
+#'   match, so they compete fairly. Pass `weights` to override.
+#' @param threshold For `atlas_view_select()`: minimum share, between 0 and 1,
+#'   of a region's best-view area that a view must hold to keep drawing it.
+#'   Higher values are more aggressive.
+#' @param weights For `atlas_view_select()`: optional named numeric vector of
+#'   per-view multipliers applied before comparing areas. Overrides the
+#'   automatic hemisphere-coverage weighting for the views named.
+#' @export
+atlas_view_select <- function(
+  atlas,
+  threshold = 0.5,
+  weights = NULL
+) {
+  if (
+    !rlang::is_scalar_double(threshold) && !rlang::is_scalar_integer(threshold)
+  ) {
+    cli::cli_abort("{.arg threshold} must be a single number.")
+  }
+  if (threshold < 0 || threshold > 1) {
+    cli::cli_abort("{.arg threshold} must be between 0 and 1.")
+  }
+
+  polygons <- atlas_polygons(atlas)
+  if (is.null(polygons)) {
+    cli::cli_warn("Atlas has no 2D geometry, nothing to select")
+    return(atlas)
+  }
+
+  flat <- polygons_unnest(polygons)
+  flat <- flat[flat$label %in% atlas$core$label, , drop = FALSE]
+  if (!nrow(flat)) {
+    cli::cli_warn("Atlas has no core geometry, nothing to select")
+    return(atlas)
+  }
+
+  areas <- polygon_geometry_areas(flat)
+  view_names <- atlas_views(atlas)
+
+  area_by_view <- tapply(areas$area, list(areas$label, areas$view), sum)
+  area_by_view <- area_by_view[, view_names, drop = FALSE]
+  area_by_view[is.na(area_by_view)] <- 0
+
+  weights <- view_hemisphere_weights(atlas, flat, view_names, weights)
+
+  region <- atlas$core$region[match(rownames(area_by_view), atlas$core$label)]
+  region[is.na(region)] <- rownames(area_by_view)[is.na(region)]
+
+  region_area <- rowsum(area_by_view, region)
+  region_area <- sweep(region_area, 2, weights, `*`)
+  region_keep <- region_area >= threshold * apply(region_area, 1, max)
+
+  keep <- region_keep[region, , drop = FALSE] & area_by_view > 0
+  dimnames(keep) <- dimnames(area_by_view)
+
+  # A region's chosen views can hold no geometry for one of its labels -- a
+  # sagittal plane is one-sided, so the other hemisphere's label would vanish
+  # entirely. Fall back to wherever that label is largest.
+  empty <- rowSums(keep) == 0
+  for (i in which(empty)) {
+    keep[i, which.max(area_by_view[i, ])] <- TRUE
+  }
+
+  for (label in rownames(keep)) {
+    drop_views <- view_names[!keep[label, ]]
+    if (length(drop_views)) {
+      atlas <- atlas_view_remove_region(
+        atlas,
+        paste0("^", label, "$"),
+        match_on = "label",
+        views = drop_views
+      )
+    }
+  }
+
+  cli::cli_alert_info(
+    "Regions drawn per view: \\
+     {paste(view_names, colSums(keep), sep = '=', collapse = ', ')}"
+  )
+
+  atlas_view_gather(atlas)
+}
+
+
+#' Scale each view by how much of the brain it can possibly show
+#'
+#' A view that cuts a single hemisphere can never match a bilateral view on
+#' area, so on raw comparison it loses every region. Weight each view by the
+#' reciprocal of the hemisphere share it covers, measured from the geometry
+#' itself rather than assumed from the view's name.
+#' @noRd
+view_hemisphere_weights <- function(atlas, flat, view_names, weights) {
+  hemi <- atlas$core$hemi[match(flat$label, atlas$core$label)]
+  lateral <- hemi %in% c("left", "right")
+  n_hemi <- vapply(
+    view_names,
+    function(v) {
+      seen <- unique(hemi[lateral & flat$view == v])
+      max(length(seen), 1L)
+    },
+    integer(1)
+  )
+  auto <- max(n_hemi) / n_hemi
+
+  if (!is.null(weights)) {
+    if (is.null(names(weights))) {
+      cli::cli_abort("{.arg weights} must be a named numeric vector.")
+    }
+    unknown <- setdiff(names(weights), view_names)
+    if (length(unknown)) {
+      cli::cli_abort("Unknown view{?s} in {.arg weights}: {.val {unknown}}.")
+    }
+    auto[names(weights)] <- weights
+  }
+
+  auto
 }
 
 

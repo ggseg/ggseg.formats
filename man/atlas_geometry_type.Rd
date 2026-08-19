@@ -29,6 +29,7 @@ is_atlas_polygon(dk())
 }
 \seealso{
 Other atlas accessors: 
+\code{\link{atlas_centerlines}()},
 \code{\link{atlas_geom}()},
 \code{\link{atlas_labels}()},
 \code{\link{atlas_meshes}()},
