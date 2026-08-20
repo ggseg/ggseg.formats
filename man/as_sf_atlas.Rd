@@ -25,9 +25,8 @@ Conversion is lossless, so a single representation is kept (no redundant
 polygons alongside sf).
 }
 \examples{
-\dontrun{
-library(sf)
+\dontshow{if (requireNamespace("sf", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 atlas <- as_sf_atlas(as_polygon_atlas(dk()))
-st_buffer(atlas_geom(atlas)$geometry[[1]], dist = 2)
-}
+sf::st_buffer(atlas_geom(atlas)$geometry[[1]], dist = 2)
+\dontshow{\}) # examplesIf}
 }

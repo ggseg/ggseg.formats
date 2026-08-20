@@ -209,9 +209,9 @@ atlas_vertices <- function(atlas) {
 #'   n x 3 coordinate matrices and a matching `tangents` list-column
 #' @export
 #' @examples
-#' \dontrun{
-#' centerlines <- atlas_centerlines(tract_atlas)
-#' }
+#' centerlines <- atlas_centerlines(tracula())
+#' nrow(centerlines)
+#' dim(centerlines$points[[1]])
 #' @family atlas accessors
 atlas_centerlines <- function(atlas) {
   if (!is_ggseg_atlas(atlas)) {

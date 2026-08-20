@@ -21,9 +21,9 @@ that curve, so the centerline — not a mesh — is the geometry that defines
 them.
 }
 \examples{
-\dontrun{
-centerlines <- atlas_centerlines(tract_atlas)
-}
+centerlines <- atlas_centerlines(tracula())
+nrow(centerlines)
+dim(centerlines$points[[1]])
 }
 \seealso{
 Other atlas accessors: 
