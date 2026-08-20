@@ -30,6 +30,7 @@ atlas_geometry_type(dk())
 }
 \seealso{
 Other atlas accessors: 
+\code{\link{atlas_centerlines}()},
 \code{\link{atlas_geometry_type}()},
 \code{\link{atlas_labels}()},
 \code{\link{atlas_meshes}()},

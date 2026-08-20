@@ -77,7 +77,9 @@ brain_labels <- function(x) {
 
 #' Detect atlas type
 #' @param x brain atlas object
-#' @return Character string: "cortical", "subcortical", or "tract"
+#' @return Character string: one of "cortical", "subcortical", "tract" or
+#'   "cerebellar".
+#' @seealso [set_atlas_type()] to set the type.
 #' @examples
 #' atlas_type(dk())
 #' atlas_type(aseg())
@@ -119,7 +121,9 @@ atlas_type.brain_atlas <- function(x) {
 #' - `atlas_view_remove()`: remove entire views
 #' - `atlas_view_keep()`: keep only matching views
 #' - `atlas_view_remove_region()`: remove specific region geometry from sf
-#' - `atlas_view_remove_small()`: remove small polygon fragments
+#' - `atlas_view_remove_small()`: remove small regions, or stray specks
+#' - `atlas_view_select()`: keep each region only in the views that show it
+#'   well
 #' - `atlas_view_gather()`: reposition views to close gaps
 #' - `atlas_view_reorder()`: change view order
 #'
@@ -141,8 +145,9 @@ atlas_type.brain_atlas <- function(x) {
 #'   patterns. Multiple values collapsed with `"|"` for matching.
 #' @param order For `atlas_view_reorder()`: character vector of desired
 #'   view order. Unspecified views appended at end.
-#' @param min_area For `atlas_view_remove_small()`: minimum polygon
-#'   area to keep. Context geometries are never removed.
+#' @param min_area For `atlas_view_remove_small()`: minimum area to keep.
+#'   What it applies to depends on `scope`; with the default
+#'   `scope = "region"` context geometries are never removed.
 #' @param gap Proportional gap between views (default 0.15 = 15% of max width).
 #' @param data For `atlas_core_add()`: data.frame with metadata to join.
 #' @param by For `atlas_core_add()`: column(s) to join by. Default `"region"`.
@@ -582,13 +587,46 @@ atlas_view_remove_region <- function(
 }
 
 
-#' @describeIn atlas_manipulation Remove region geometries below a minimum
-#'   area threshold. Context geometries (labels not in core) are never
-#'   removed. Optionally scope to specific views. Views are re-packed
-#'   via [atlas_view_gather()] in case any view shrank.
+#' @describeIn atlas_manipulation Remove geometry below a minimum area
+#'   threshold. With `scope = "region"` (the default) a label's whole geometry
+#'   in a view is removed when its combined area is too small, and context
+#'   geometries (labels not in core) are never removed. With
+#'   `scope = "piece"` individual disconnected pieces are removed while the
+#'   rest of the region stays -- use this to clear stray specks left by
+#'   volumetric projection. A region's largest piece in a view is always kept,
+#'   so no region disappears, and context is cleaned too. Optionally scope to
+#'   specific views. Views are re-packed via [atlas_view_gather()] in case any
+#'   view shrank.
+#' @param scope Whether `min_area` applies to a label's whole geometry in a
+#'   view (`"region"`, the default) or to each disconnected piece
+#'   (`"piece"`).
+#' @param labels,exclude For `atlas_view_remove_small()`: optional regex
+#'   scoping which labels are considered. `labels` restricts removal to
+#'   matching labels, `exclude` spares them. Only one may be given. Useful
+#'   with `scope = "piece"`, where a thin structure such as a cortical ribbon
+#'   has legitimately small pieces that should not be treated as specks.
 #' @export
 #' @family atlas manipulations
-atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
+atlas_view_remove_small <- function(
+  atlas,
+  min_area,
+  views = NULL,
+  scope = c("region", "piece"),
+  labels = NULL,
+  exclude = NULL
+) {
+  scope <- match.arg(scope)
+
+  if (!is.null(labels) && !is.null(exclude)) {
+    cli::cli_abort(
+      "Specify only one of {.arg labels} or {.arg exclude}, not both."
+    )
+  }
+
+  if (identical(scope, "piece")) {
+    return(remove_small_pieces(atlas, min_area, views, labels, exclude))
+  }
+
   if (is.null(data_sf(atlas$data))) {
     if (is.null(data_poly(atlas$data))) {
       cli::cli_warn("Atlas has no 2D geometry, nothing to remove")
@@ -630,6 +668,67 @@ atlas_view_remove_small <- function(atlas, min_area, views = NULL) {
   new_sf <- data_sf(atlas$data)[!is_small, , drop = FALSE]
   new_data <- rebuild_atlas_data(atlas, new_sf)
   atlas_view_gather(rebuild_atlas(atlas, new_data))
+}
+
+
+#' @describeIn atlas_manipulation Keep each region only in the views that show
+#'   it well.
+#'
+#'   A slice or projection slab catches a structure in cross-section as readily
+#'   as along its length, so most regions leave a sliver in most views. That
+#'   leaves every panel cluttered and every region drawn several times over. A
+#'   region is kept only where it is substantially represented: in any view
+#'   holding at least `threshold` of the area it reaches in its best view.
+#'
+#'   Regions are compared as a whole, across all the labels that share a
+#'   `region` in `core`, so bilateral structures stay together -- assigning
+#'   left and right independently splits pairs across panels, which reads as
+#'   an error rather than a choice. Every region is guaranteed to survive in
+#'   at least one view, and context geometry (labels absent from `core`, such
+#'   as a cortical outline) is never touched.
+#'
+#'   Single-hemisphere views are the awkward case: a sagittal panel cuts one
+#'   hemisphere while axial and coronal panels show both, so on raw area it
+#'   loses every comparison and empties out. Such views are detected from the
+#'   hemispheres actually present in each view and their areas scaled to
+#'   match, so they compete fairly. Pass `weights` to override.
+#' @param threshold For `atlas_view_select()`: minimum share, between 0 and 1,
+#'   of a region's best-view area that a view must hold to keep drawing it.
+#'   Higher values are more aggressive.
+#' @param weights For `atlas_view_select()`: optional named numeric vector of
+#'   per-view multipliers applied before comparing areas. Overrides the
+#'   automatic hemisphere-coverage weighting for the views named.
+#' @export
+atlas_view_select <- function(
+  atlas,
+  threshold = 0.5,
+  weights = NULL
+) {
+  check_select_threshold(threshold)
+
+  polygons <- atlas_polygons(atlas)
+  if (is.null(polygons)) {
+    cli::cli_warn("Atlas has no 2D geometry, nothing to select")
+    return(atlas)
+  }
+
+  flat <- polygons_unnest(polygons)
+  flat <- flat[flat$label %in% atlas$core$label, , drop = FALSE]
+  if (!nrow(flat)) {
+    cli::cli_warn("Atlas has no core geometry, nothing to select")
+    return(atlas)
+  }
+
+  view_names <- atlas_views(atlas)
+  keep <- view_selection_matrix(atlas, flat, view_names, threshold, weights)
+  atlas <- apply_view_selection(atlas, keep, view_names)
+
+  cli::cli_alert_info(
+    "Regions drawn per view: \\
+     {paste(view_names, colSums(keep), sep = '=', collapse = ', ')}"
+  )
+
+  atlas_view_gather(atlas)
 }
 
 
@@ -1174,4 +1273,154 @@ pack_views_horizontally <- function(view_data, gap) {
     view_data,
     x_offsets
   )
+}
+
+
+atlas_types <- function() {
+  c("cortical", "subcortical", "tract", "cerebellar")
+}
+
+
+#' Scale each view by how much of the brain it can possibly show
+#'
+#' A view that cuts a single hemisphere can never match a bilateral view on
+#' area, so on raw comparison it loses every region. Weight each view by the
+#' reciprocal of the hemisphere share it covers, measured from the geometry
+#' itself rather than assumed from the view's name.
+#' @noRd
+view_hemisphere_weights <- function(atlas, flat, view_names, weights) {
+  hemi <- atlas$core$hemi[match(flat$label, atlas$core$label)]
+  lateral <- hemi %in% c("left", "right")
+  n_hemi <- vapply(
+    view_names,
+    function(v) {
+      seen <- unique(hemi[lateral & flat$view == v])
+      max(length(seen), 1L)
+    },
+    integer(1)
+  )
+  auto <- max(n_hemi) / n_hemi
+
+  if (!is.null(weights)) {
+    if (is.null(names(weights))) {
+      cli::cli_abort("{.arg weights} must be a named numeric vector.")
+    }
+    unknown <- setdiff(names(weights), view_names)
+    if (length(unknown)) {
+      cli::cli_abort("Unknown view{?s} in {.arg weights}: {.val {unknown}}.")
+    }
+    auto[names(weights)] <- weights
+  }
+
+  auto
+}
+
+
+#' Remove disconnected pieces below an area threshold
+#'
+#' Piece-level counterpart of [atlas_view_remove_small()]. sf atlases are
+#' routed through the polygon representation, which is where piece geometry is
+#' explicit, and converted back afterwards.
+#' @noRd
+#' @keywords internal
+remove_small_pieces <- function(
+  atlas,
+  min_area,
+  views = NULL,
+  labels = NULL,
+  exclude = NULL
+) {
+  if (is.null(data_poly(atlas$data)) && is.null(data_sf(atlas$data))) {
+    cli::cli_warn("Atlas has no 2D geometry, nothing to remove")
+    return(atlas)
+  }
+
+  was_sf <- is.null(data_poly(atlas$data))
+  work <- if (was_sf) as_polygon_atlas(atlas) else atlas
+
+  res <- polygons_remove_small_pieces(
+    data_poly(work$data),
+    min_area,
+    views = views,
+    labels = labels,
+    exclude = exclude
+  )
+  if (res$n_removed > 0) {
+    cli::cli_alert_info(
+      "Removed {res$n_removed} piece{?s} below area {min_area}"
+    )
+  }
+
+  out <- atlas_view_gather(set_atlas_polygons(work, res$polygons))
+  if (was_sf) as_sf_atlas(out) else out
+}
+
+
+#' Validate the `threshold` argument of [atlas_view_select()]
+#' @noRd
+check_select_threshold <- function(threshold) {
+  if (
+    !rlang::is_scalar_double(threshold) && !rlang::is_scalar_integer(threshold)
+  ) {
+    cli::cli_abort("{.arg threshold} must be a single number.")
+  }
+  if (threshold < 0 || threshold > 1) {
+    cli::cli_abort("{.arg threshold} must be between 0 and 1.")
+  }
+  invisible(threshold)
+}
+
+
+#' Decide, per label and view, whether that label is drawn there
+#'
+#' Labels are compared within their `core$region`, so a bilateral structure's
+#' left and right sides are selected together rather than competing.
+#' @return Logical matrix, labels by views.
+#' @noRd
+view_selection_matrix <- function(atlas, flat, view_names, threshold, weights) {
+  areas <- polygon_geometry_areas(flat)
+
+  area_by_view <- tapply(areas$area, list(areas$label, areas$view), sum)
+  area_by_view <- area_by_view[, view_names, drop = FALSE]
+  area_by_view[is.na(area_by_view)] <- 0
+
+  weights <- view_hemisphere_weights(atlas, flat, view_names, weights)
+
+  region <- atlas$core$region[match(rownames(area_by_view), atlas$core$label)]
+  region[is.na(region)] <- rownames(area_by_view)[is.na(region)]
+
+  region_area <- rowsum(area_by_view, region)
+  region_area <- sweep(region_area, 2, weights, `*`)
+  region_keep <- region_area >= threshold * apply(region_area, 1, max)
+
+  keep <- region_keep[region, , drop = FALSE] & area_by_view > 0
+  dimnames(keep) <- dimnames(area_by_view)
+
+  # A region's chosen views can hold no geometry for one of its labels -- a
+  # sagittal plane is one-sided, so the other hemisphere's label would vanish
+  # entirely. Fall back to wherever that label is largest.
+  empty <- rowSums(keep) == 0
+  for (i in which(empty)) {
+    keep[i, which.max(area_by_view[i, ])] <- TRUE
+  }
+
+  keep
+}
+
+
+#' Drop each label from the views its selection matrix rules out
+#' @noRd
+apply_view_selection <- function(atlas, keep, view_names) {
+  for (label in rownames(keep)) {
+    drop_views <- view_names[!keep[label, ]]
+    if (length(drop_views)) {
+      atlas <- atlas_view_remove_region(
+        atlas,
+        paste0("^", label, "$"),
+        match_on = "label",
+        views = drop_views
+      )
+    }
+  }
+  atlas
 }

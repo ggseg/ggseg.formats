@@ -196,6 +196,46 @@ atlas_vertices <- function(atlas) {
 }
 
 
+#' Get atlas tract centerlines
+#'
+#' Returns the centerline of each tract, joined with core region info and
+#' palette colours. Tract atlases represent each pathway as a curve through
+#' the bundle rather than as a surface, and render it by sweeping a tube along
+#' that curve, so the centerline — not a mesh — is the geometry that defines
+#' them.
+#'
+#' @param atlas a ggseg_atlas object
+#' @return data.frame with one row per tract, a `points` list-column of
+#'   n x 3 coordinate matrices and a matching `tangents` list-column
+#' @export
+#' @examples
+#' centerlines <- atlas_centerlines(tracula())
+#' nrow(centerlines)
+#' dim(centerlines$points[[1]])
+#' @family atlas accessors
+atlas_centerlines <- function(atlas) {
+  if (!is_ggseg_atlas(atlas)) {
+    cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas}.")
+  }
+
+  if (is.null(atlas$data$centerlines)) {
+    cli::cli_abort(c(
+      "Atlas does not contain tract centerlines.",
+      "i" = "Only tract atlases carry centerlines; this one is \\
+             {.val {atlas_type(atlas)}}."
+    ))
+  }
+
+  result <- df_left_join(atlas$data$centerlines, atlas$core, by = "label")
+
+  if (!is.null(atlas$palette)) {
+    result$colour <- unname(atlas$palette[result$label])
+  }
+
+  result
+}
+
+
 #' Get atlas meshes for 3D rendering
 #'
 #' Returns meshes data joined with core region info and palette colours.

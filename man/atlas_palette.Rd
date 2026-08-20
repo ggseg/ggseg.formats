@@ -27,6 +27,7 @@ atlas_palette(dk())
 \code{\link[=set_atlas_palette]{set_atlas_palette()}} to set the palette.
 
 Other atlas accessors: 
+\code{\link{atlas_centerlines}()},
 \code{\link{atlas_geom}()},
 \code{\link{atlas_geometry_type}()},
 \code{\link{atlas_labels}()},

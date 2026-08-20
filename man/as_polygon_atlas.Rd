@@ -31,8 +31,6 @@ atlas maintainer runs once (on a machine with sf) to ship the package in the
 polygon format.
 }
 \examples{
-\dontrun{
 poly <- as_polygon_atlas(dk())
 is_atlas_polygon(poly) # TRUE
-}
 }

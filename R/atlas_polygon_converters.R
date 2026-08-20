@@ -23,10 +23,8 @@
 #' @return A `ggseg_atlas` whose `$data$geom` is a `brain_polygons` object.
 #' @export
 #' @examples
-#' \dontrun{
 #' poly <- as_polygon_atlas(dk())
 #' is_atlas_polygon(poly) # TRUE
-#' }
 as_polygon_atlas <- function(atlas) {
   if (!is_atlas_class(atlas)) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas} object.")
@@ -79,12 +77,9 @@ as_polygon_atlas <- function(atlas) {
 #'
 #' @return A `ggseg_atlas` whose `$data$geom` is an sf object.
 #' @export
-#' @examples
-#' \dontrun{
-#' library(sf)
+#' @examplesIf requireNamespace("sf", quietly = TRUE)
 #' atlas <- as_sf_atlas(as_polygon_atlas(dk()))
-#' st_buffer(atlas_geom(atlas)$geometry[[1]], dist = 2)
-#' }
+#' sf::st_buffer(atlas_geom(atlas)$geometry[[1]], dist = 2)
 as_sf_atlas <- function(atlas) {
   if (!is_atlas_class(atlas)) {
     cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas} object.")

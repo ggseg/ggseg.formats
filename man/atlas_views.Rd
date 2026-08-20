@@ -25,6 +25,7 @@ atlas_views(tracula())
 }
 \seealso{
 Other atlas accessors: 
+\code{\link{atlas_centerlines}()},
 \code{\link{atlas_geom}()},
 \code{\link{atlas_geometry_type}()},
 \code{\link{atlas_labels}()},
@@ -37,6 +38,7 @@ Other atlas accessors:
 \code{\link{atlas_vertices}()}
 
 Other atlas accessors: 
+\code{\link{atlas_centerlines}()},
 \code{\link{atlas_geom}()},
 \code{\link{atlas_geometry_type}()},
 \code{\link{atlas_labels}()},

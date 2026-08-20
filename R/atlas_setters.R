@@ -36,3 +36,47 @@ set_atlas_palette <- function(atlas, value) {
   atlas$palette <- value
   atlas
 }
+
+
+#' Set the type of an atlas
+#'
+#' Replaces the type of a brain atlas. The type is held in three coupled
+#' places: the `type` field, the leading `<type>_atlas` class, and the
+#' `ggseg_data_<type>` class of the data payload. This setter reconstructs the
+#' atlas through [ggseg_atlas()] so all three stay in agreement -- assigning
+#' the `type` field directly leaves the subclass stale and
+#' [is_tract_atlas()] and friends disagreeing with [atlas_type()].
+#'
+#' Because type and payload are coupled, the new type must match the data the
+#' atlas already carries: a `"tract"` atlas needs [ggseg_data_tract()]
+#' (centerlines), a `"subcortical"` atlas needs [ggseg_data_subcortical()]
+#' (meshes). Retyping an atlas whose payload does not match is an error --
+#' rebuild the payload with the matching `ggseg_data_*()` constructor first.
+#'
+#' @inheritParams atlas_palette
+#' @param value Atlas type; one of `"cortical"`, `"subcortical"`, `"tract"` or
+#'   `"cerebellar"`.
+#'
+#' @return The `ggseg_atlas` with its type, subclass and payload class in
+#'   agreement.
+#' @family atlas setters
+#' @seealso [atlas_type()] to read the type.
+#' @export
+#' @examples
+#' a <- aseg()
+#' a <- set_atlas_type(a, "subcortical")
+#' atlas_type(a)
+set_atlas_type <- function(atlas, value) {
+  if (!is_atlas_class(atlas)) {
+    cli::cli_abort("{.arg atlas} must be a {.cls ggseg_atlas} object.")
+  }
+  value <- match.arg(value, atlas_types())
+
+  ggseg_atlas(
+    atlas = atlas$atlas,
+    type = value,
+    core = atlas$core,
+    data = atlas$data,
+    palette = atlas$palette
+  )
+}

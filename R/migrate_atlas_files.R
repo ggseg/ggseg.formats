@@ -21,11 +21,20 @@
 #' @return Invisibly, a character vector of paths to the files that were
 #'   rewritten.
 #' @export
-#' @examples
-#' \dontrun{
-#' # In an atlas package, from the package root:
-#' ggseg.formats::migrate_atlas_files("data")
-#' }
+#' @examplesIf requireNamespace("sf", quietly = TRUE)
+#' # In an atlas package you would call this on the package's own data/
+#' # directory. Here it runs against a throwaway copy, since it rewrites the
+#' # files it is pointed at. Producing an sf atlas to migrate needs sf.
+#' dir <- file.path(tempdir(), "data")
+#' dir.create(dir, showWarnings = FALSE)
+#' dk_atlas <- as_sf_atlas(dk())
+#' save(dk_atlas, file = file.path(dir, "dk_atlas.rda"))
+#'
+#' migrate_atlas_files(dir, quiet = TRUE)
+#'
+#' load(file.path(dir, "dk_atlas.rda"))
+#' is_atlas_polygon(dk_atlas) # TRUE
+#' unlink(dir, recursive = TRUE)
 migrate_atlas_files <- function(path = "data", keep_sf = FALSE, quiet = FALSE) {
   if (!dir.exists(path)) {
     cli::cli_abort("Directory {.path {path}} does not exist.")

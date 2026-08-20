@@ -3,6 +3,7 @@ make_test_atlas <- function() {
     label = c("lh_frontal", "lh_parietal", "rh_frontal", "lh_unknown"),
     view = c("lateral", "lateral", "medial", "lateral"),
     geometry = sf::st_sfc(
+      # nolint next: object_usage_linter. Defined in helper-polygons.R.
       make_polygon(),
       sf::st_polygon(list(matrix(
         c(2, 2, 4, 2, 4, 4, 2, 2),
@@ -371,6 +372,7 @@ make_cerebellar_atlas <- function() {
     label = c("lobule_I", "dentate"),
     view = c("flatmap", "nuclei"),
     geometry = sf::st_sfc(
+      # nolint next: object_usage_linter. Defined in helper-polygons.R.
       make_polygon(),
       sf::st_polygon(list(matrix(
         c(2, 2, 4, 2, 4, 4, 2, 2),
@@ -908,6 +910,168 @@ describe("atlas_view_remove_region", {
     atlas <- make_multiview_atlas()
     result <- atlas_view_remove_region(atlas, "ctx_left")
     expect_false("ctx_left" %in% result$data$geom$label)
+  })
+})
+
+
+# atlas_view_select ----
+
+# Three views over two bilateral regions. `frontal` is drawn large in axial_1
+# and as a sliver in axial_2; `temporal` is the other way round. The sagittal
+# view holds left labels only, at the same size as the large drawings, so it
+# is only competitive once single-hemisphere views are weighted up.
+make_view_select_atlas <- function() {
+  square <- function(x_off, size) {
+    sf::st_polygon(list(matrix(
+      c(
+        x_off,
+        0,
+        x_off + size,
+        0,
+        x_off + size,
+        size,
+        x_off,
+        size,
+        x_off,
+        0
+      ),
+      ncol = 2,
+      byrow = TRUE
+    )))
+  }
+
+  spec <- rbind(
+    data.frame(label = "lh_frontal", view = "axial_1", size = 4),
+    data.frame(label = "rh_frontal", view = "axial_1", size = 4),
+    data.frame(label = "lh_frontal", view = "axial_2", size = 1),
+    data.frame(label = "rh_frontal", view = "axial_2", size = 1),
+    data.frame(label = "lh_temporal", view = "axial_1", size = 1),
+    data.frame(label = "rh_temporal", view = "axial_1", size = 1),
+    data.frame(label = "lh_temporal", view = "axial_2", size = 4),
+    data.frame(label = "rh_temporal", view = "axial_2", size = 4),
+    data.frame(label = "lh_frontal", view = "sagittal", size = 4),
+    data.frame(label = "lh_temporal", view = "sagittal", size = 4),
+    data.frame(label = "outline", view = "axial_1", size = 9),
+    data.frame(label = "outline", view = "axial_2", size = 9),
+    data.frame(label = "outline", view = "sagittal", size = 9)
+  )
+
+  x_off <- (match(spec$view, c("axial_1", "axial_2", "sagittal")) - 1) *
+    40 +
+    seq_len(nrow(spec)) * 0.01
+  geoms <- Map(square, x_off, spec$size)
+
+  sf_geom <- sf::st_sf(
+    label = spec$label,
+    view = spec$view,
+    geometry = sf::st_sfc(geoms)
+  )
+
+  core <- data.frame(
+    hemi = c("left", "right", "left", "right"),
+    region = c("frontal", "frontal", "temporal", "temporal"),
+    label = c("lh_frontal", "rh_frontal", "lh_temporal", "rh_temporal")
+  )
+
+  ggseg_atlas(
+    atlas = "test",
+    type = "cortical",
+    core = core,
+    palette = setNames(
+      c("#FF0000", "#00FF00", "#0000FF", "#FFFF00"),
+      core$label
+    ),
+    data = ggseg_data_cortical(geom = sf_geom)
+  )
+}
+
+describe("atlas_view_select", {
+  views_of <- function(atlas, label) {
+    flat <- polygons_unnest(atlas_polygons(atlas))
+    sort(unique(flat$view[flat$label == label]))
+  }
+
+  it("drops a region from views where it is only a sliver", {
+    atlas <- make_view_select_atlas()
+    expect_message(result <- atlas_view_select(atlas), "Regions drawn per view")
+
+    expect_false("axial_2" %in% views_of(result, "rh_frontal"))
+    expect_true("axial_1" %in% views_of(result, "rh_frontal"))
+    expect_false("axial_1" %in% views_of(result, "rh_temporal"))
+    expect_true("axial_2" %in% views_of(result, "rh_temporal"))
+  })
+
+  it("keeps left and right of a region in the same views", {
+    atlas <- make_view_select_atlas()
+    expect_message(result <- atlas_view_select(atlas))
+
+    for (region in c("frontal", "temporal")) {
+      expect_identical(
+        setdiff(views_of(result, paste0("lh_", region)), "sagittal"),
+        views_of(result, paste0("rh_", region))
+      )
+    }
+  })
+
+  it("keeps a single-hemisphere view competitive", {
+    # Untouched, sagittal holds half the area of a bilateral view and would
+    # lose every region at any threshold above 0.5.
+    atlas <- make_view_select_atlas()
+    expect_message(result <- atlas_view_select(atlas, threshold = 0.9))
+
+    expect_true("sagittal" %in% views_of(result, "lh_frontal"))
+    expect_true("sagittal" %in% views_of(result, "lh_temporal"))
+  })
+
+  it("honours explicit weights over the automatic ones", {
+    atlas <- make_view_select_atlas()
+    expect_message(
+      result <- atlas_view_select(
+        atlas,
+        threshold = 0.9,
+        weights = c(sagittal = 0.1)
+      )
+    )
+
+    expect_false("sagittal" %in% views_of(result, "lh_frontal"))
+  })
+
+  it("never drops a region from every view", {
+    atlas <- make_view_select_atlas()
+    expect_message(result <- atlas_view_select(atlas, threshold = 1))
+
+    for (label in atlas_labels(result)) {
+      expect_gt(length(views_of(result, label)), 0)
+    }
+  })
+
+  it("leaves context geometry alone", {
+    atlas <- make_view_select_atlas()
+    expect_message(result <- atlas_view_select(atlas, threshold = 1))
+
+    expect_setequal(views_of(result, "outline"), views_of(atlas, "outline"))
+  })
+
+  it("preserves core and palette", {
+    atlas <- make_view_select_atlas()
+    expect_message(result <- atlas_view_select(atlas))
+
+    expect_identical(result$core, atlas$core)
+    expect_identical(atlas_palette(result), atlas_palette(atlas))
+  })
+
+  it("rejects an out-of-range threshold", {
+    atlas <- make_view_select_atlas()
+    expect_error(atlas_view_select(atlas, threshold = 1.5), "between 0 and 1")
+    expect_error(atlas_view_select(atlas, threshold = -1), "between 0 and 1")
+  })
+
+  it("rejects weights naming an unknown view", {
+    atlas <- make_view_select_atlas()
+    expect_error(
+      atlas_view_select(atlas, weights = c(coronal = 2)),
+      "Unknown view"
+    )
   })
 })
 
@@ -2108,5 +2272,70 @@ describe("rebuild_data_with_geom() cerebellar vertices-only branch", {
     expect_s3_class(res$data, "ggseg_data_cerebellar")
     expect_null(res$data$meshes)
     expect_false("left_lobule" %in% atlas_labels(res))
+  })
+})
+
+
+describe("atlas_view_remove_small(scope = 'piece')", {
+  # One region drawn as a big square plus a detached speck, in one view.
+  speck_atlas <- function() {
+    sq <- function(x0, y0, w) {
+      list(cbind(
+        c(x0, x0 + w, x0 + w, x0, x0),
+        c(y0, y0, y0 + w, y0 + w, y0)
+      ))
+    }
+    geom <- sf::st_sf(
+      label = "a",
+      view = "axial",
+      geometry = sf::st_sfc(sf::st_multipolygon(list(
+        sq(0, 0, 20),
+        sq(100, 100, 2)
+      )))
+    )
+    ggseg.formats::ggseg_atlas(
+      atlas = "t",
+      type = "subcortical",
+      core = data.frame(
+        hemi = "mid",
+        region = "a",
+        label = "a",
+        stringsAsFactors = FALSE
+      ),
+      data = ggseg.formats::ggseg_data_subcortical(geom = geom)
+    )
+  }
+  total_area <- function(x) {
+    sum(as.numeric(sf::st_area(atlas_geom(as_sf_atlas(x)))))
+  }
+
+  it("drops the speck and keeps the main piece", {
+    result <- atlas_view_remove_small(speck_atlas(), 10, scope = "piece")
+    # 20x20 kept, 2x2 speck dropped
+    expect_identical(total_area(result), 400)
+  })
+
+  it("keeps the region present rather than removing it wholesale", {
+    result <- atlas_view_remove_small(speck_atlas(), 10, scope = "piece")
+    expect_identical(nrow(result$core), 1L)
+    expect_true("a" %in% atlas_labels(result))
+  })
+
+  it("never removes a region's largest piece, even below min_area", {
+    # min_area far above everything: the biggest piece must still survive.
+    result <- atlas_view_remove_small(speck_atlas(), 1e6, scope = "piece")
+    expect_identical(total_area(result), 400)
+  })
+
+  it("leaves geometry untouched when nothing is small enough", {
+    result <- atlas_view_remove_small(speck_atlas(), 1, scope = "piece")
+    expect_identical(total_area(result), 404)
+  })
+
+  it("defaults to region scope", {
+    expect_identical(
+      atlas_view_remove_small(speck_atlas(), 10),
+      atlas_view_remove_small(speck_atlas(), 10, scope = "region")
+    )
   })
 })

@@ -1,8 +1,48 @@
 # ggseg.formats
 
-## ggseg.formats 0.0.4.9002 (development)
+## ggseg.formats 0.0.4.9004 (development)
+
+- New `atlas_centerlines()` accessor returns a tract atlas's centerlines,
+  joined with core region info and palette colours, like `atlas_meshes()` and
+  `atlas_vertices()` do for the other geometry types. A tract atlas represents
+  each pathway as a curve swept into a tube rather than as a stored surface,
+  so the centerline is the geometry that defines it — and it was the one
+  payload with no getter, leaving callers reaching into `atlas$data`.
+
+- New `atlas_view_select()` keeps each region only in the views that show it
+  well. A slice or projection slab catches a structure in cross-section as
+  readily as along its length, so most regions leave a sliver in most views,
+  leaving every panel cluttered and every region drawn several times over. A
+  region is kept only where it holds at least `threshold` of the area it
+  reaches in its best view.
+
+  Regions are compared as a whole, across the labels sharing a `region` in
+  `core`, so bilateral structures stay together — assigning left and right
+  independently splits pairs across panels, which reads as an error rather
+  than a choice. Every region survives in at least one view, and context
+  geometry is never touched. Single-hemisphere views (a sagittal panel cuts
+  one hemisphere while axial and coronal panels show both) are detected from
+  the hemispheres actually present and weighted up so they compete fairly;
+  `weights` overrides this per view.
+
+  This was previously hand-rolled in atlas build scripts, where it ran to
+  roughly ninety lines apiece and drifted between them.
+
+## ggseg.formats 0.0.4.9003 (development)
 
 - New `set_atlas_palette()` setter replaces a palette without requiring users to assign `atlas$palette` directly; it validates the value and warns if the new palette does not cover every atlas label.
+- New `set_atlas_type()` setter replaces an atlas type without assigning
+  `atlas$type` directly. Type is coupled to both the `<type>_atlas` subclass and
+  the `ggseg_data_<type>` payload class, so a direct field assignment leaves the
+  subclass stale and `is_tract_atlas()` disagreeing with `atlas_type()`. The
+  setter reconstructs through `ggseg_atlas()`, so it keeps all three in
+  agreement and errors when the payload does not match the requested type.
+- `plot()` now draws atlas panels in the order the views are laid out, so
+  `atlas_view_reorder()` is reflected in the output. Panels were previously
+  ordered by the sequence in which views appeared in the underlying row table;
+  for `brain_polygons` those rows nest by `label`, so the order depended on
+  which views the first label happened to carry — neither following the atlas
+  layout nor stable across atlases. Panels are now ordered by position.
 - The exported API is now organised into three documented families
   (`@family`): **atlas accessors** (read-only getters such as `atlas_palette()`,
   `atlas_labels()`), **atlas setters** (`set_atlas_palette()`), and **atlas
