@@ -44,8 +44,7 @@ describe("set_atlas_type", {
 
   it("keeps the ggseg_atlas class and ordering intact", {
     b <- set_atlas_type(tracula(), "tract")
-    expect_s3_class(b, "ggseg_atlas")
-    expect_identical(class(b), c("tract_atlas", "ggseg_atlas", "list"))
+    expect_s3_class(b, c("tract_atlas", "ggseg_atlas", "list"), exact = TRUE)
   })
 
   it("leaves every other atlas component untouched", {

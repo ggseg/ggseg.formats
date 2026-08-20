@@ -75,10 +75,6 @@ brain_labels <- function(x) {
 }
 
 
-atlas_types <- function() {
-  c("cortical", "subcortical", "tract", "cerebellar")
-}
-
 #' Detect atlas type
 #' @param x brain atlas object
 #' @return Character string: one of "cortical", "subcortical", "tract" or
@@ -708,14 +704,7 @@ atlas_view_select <- function(
   threshold = 0.5,
   weights = NULL
 ) {
-  if (
-    !rlang::is_scalar_double(threshold) && !rlang::is_scalar_integer(threshold)
-  ) {
-    cli::cli_abort("{.arg threshold} must be a single number.")
-  }
-  if (threshold < 0 || threshold > 1) {
-    cli::cli_abort("{.arg threshold} must be between 0 and 1.")
-  }
+  check_select_threshold(threshold)
 
   polygons <- atlas_polygons(atlas)
   if (is.null(polygons)) {
@@ -730,44 +719,9 @@ atlas_view_select <- function(
     return(atlas)
   }
 
-  areas <- polygon_geometry_areas(flat)
   view_names <- atlas_views(atlas)
-
-  area_by_view <- tapply(areas$area, list(areas$label, areas$view), sum)
-  area_by_view <- area_by_view[, view_names, drop = FALSE]
-  area_by_view[is.na(area_by_view)] <- 0
-
-  weights <- view_hemisphere_weights(atlas, flat, view_names, weights)
-
-  region <- atlas$core$region[match(rownames(area_by_view), atlas$core$label)]
-  region[is.na(region)] <- rownames(area_by_view)[is.na(region)]
-
-  region_area <- rowsum(area_by_view, region)
-  region_area <- sweep(region_area, 2, weights, `*`)
-  region_keep <- region_area >= threshold * apply(region_area, 1, max)
-
-  keep <- region_keep[region, , drop = FALSE] & area_by_view > 0
-  dimnames(keep) <- dimnames(area_by_view)
-
-  # A region's chosen views can hold no geometry for one of its labels -- a
-  # sagittal plane is one-sided, so the other hemisphere's label would vanish
-  # entirely. Fall back to wherever that label is largest.
-  empty <- rowSums(keep) == 0
-  for (i in which(empty)) {
-    keep[i, which.max(area_by_view[i, ])] <- TRUE
-  }
-
-  for (label in rownames(keep)) {
-    drop_views <- view_names[!keep[label, ]]
-    if (length(drop_views)) {
-      atlas <- atlas_view_remove_region(
-        atlas,
-        paste0("^", label, "$"),
-        match_on = "label",
-        views = drop_views
-      )
-    }
-  }
+  keep <- view_selection_matrix(atlas, flat, view_names, threshold, weights)
+  atlas <- apply_view_selection(atlas, keep, view_names)
 
   cli::cli_alert_info(
     "Regions drawn per view: \\
@@ -775,81 +729,6 @@ atlas_view_select <- function(
   )
 
   atlas_view_gather(atlas)
-}
-
-
-#' Scale each view by how much of the brain it can possibly show
-#'
-#' A view that cuts a single hemisphere can never match a bilateral view on
-#' area, so on raw comparison it loses every region. Weight each view by the
-#' reciprocal of the hemisphere share it covers, measured from the geometry
-#' itself rather than assumed from the view's name.
-#' @noRd
-view_hemisphere_weights <- function(atlas, flat, view_names, weights) {
-  hemi <- atlas$core$hemi[match(flat$label, atlas$core$label)]
-  lateral <- hemi %in% c("left", "right")
-  n_hemi <- vapply(
-    view_names,
-    function(v) {
-      seen <- unique(hemi[lateral & flat$view == v])
-      max(length(seen), 1L)
-    },
-    integer(1)
-  )
-  auto <- max(n_hemi) / n_hemi
-
-  if (!is.null(weights)) {
-    if (is.null(names(weights))) {
-      cli::cli_abort("{.arg weights} must be a named numeric vector.")
-    }
-    unknown <- setdiff(names(weights), view_names)
-    if (length(unknown)) {
-      cli::cli_abort("Unknown view{?s} in {.arg weights}: {.val {unknown}}.")
-    }
-    auto[names(weights)] <- weights
-  }
-
-  auto
-}
-
-
-#' Remove disconnected pieces below an area threshold
-#'
-#' Piece-level counterpart of [atlas_view_remove_small()]. sf atlases are
-#' routed through the polygon representation, which is where piece geometry is
-#' explicit, and converted back afterwards.
-#' @noRd
-#' @keywords internal
-remove_small_pieces <- function(
-  atlas,
-  min_area,
-  views = NULL,
-  labels = NULL,
-  exclude = NULL
-) {
-  if (is.null(data_poly(atlas$data)) && is.null(data_sf(atlas$data))) {
-    cli::cli_warn("Atlas has no 2D geometry, nothing to remove")
-    return(atlas)
-  }
-
-  was_sf <- is.null(data_poly(atlas$data))
-  work <- if (was_sf) as_polygon_atlas(atlas) else atlas
-
-  res <- polygons_remove_small_pieces(
-    data_poly(work$data),
-    min_area,
-    views = views,
-    labels = labels,
-    exclude = exclude
-  )
-  if (res$n_removed > 0) {
-    cli::cli_alert_info(
-      "Removed {res$n_removed} piece{?s} below area {min_area}"
-    )
-  }
-
-  out <- atlas_view_gather(set_atlas_polygons(work, res$polygons))
-  if (was_sf) as_sf_atlas(out) else out
 }
 
 
@@ -1394,4 +1273,154 @@ pack_views_horizontally <- function(view_data, gap) {
     view_data,
     x_offsets
   )
+}
+
+
+atlas_types <- function() {
+  c("cortical", "subcortical", "tract", "cerebellar")
+}
+
+
+#' Scale each view by how much of the brain it can possibly show
+#'
+#' A view that cuts a single hemisphere can never match a bilateral view on
+#' area, so on raw comparison it loses every region. Weight each view by the
+#' reciprocal of the hemisphere share it covers, measured from the geometry
+#' itself rather than assumed from the view's name.
+#' @noRd
+view_hemisphere_weights <- function(atlas, flat, view_names, weights) {
+  hemi <- atlas$core$hemi[match(flat$label, atlas$core$label)]
+  lateral <- hemi %in% c("left", "right")
+  n_hemi <- vapply(
+    view_names,
+    function(v) {
+      seen <- unique(hemi[lateral & flat$view == v])
+      max(length(seen), 1L)
+    },
+    integer(1)
+  )
+  auto <- max(n_hemi) / n_hemi
+
+  if (!is.null(weights)) {
+    if (is.null(names(weights))) {
+      cli::cli_abort("{.arg weights} must be a named numeric vector.")
+    }
+    unknown <- setdiff(names(weights), view_names)
+    if (length(unknown)) {
+      cli::cli_abort("Unknown view{?s} in {.arg weights}: {.val {unknown}}.")
+    }
+    auto[names(weights)] <- weights
+  }
+
+  auto
+}
+
+
+#' Remove disconnected pieces below an area threshold
+#'
+#' Piece-level counterpart of [atlas_view_remove_small()]. sf atlases are
+#' routed through the polygon representation, which is where piece geometry is
+#' explicit, and converted back afterwards.
+#' @noRd
+#' @keywords internal
+remove_small_pieces <- function(
+  atlas,
+  min_area,
+  views = NULL,
+  labels = NULL,
+  exclude = NULL
+) {
+  if (is.null(data_poly(atlas$data)) && is.null(data_sf(atlas$data))) {
+    cli::cli_warn("Atlas has no 2D geometry, nothing to remove")
+    return(atlas)
+  }
+
+  was_sf <- is.null(data_poly(atlas$data))
+  work <- if (was_sf) as_polygon_atlas(atlas) else atlas
+
+  res <- polygons_remove_small_pieces(
+    data_poly(work$data),
+    min_area,
+    views = views,
+    labels = labels,
+    exclude = exclude
+  )
+  if (res$n_removed > 0) {
+    cli::cli_alert_info(
+      "Removed {res$n_removed} piece{?s} below area {min_area}"
+    )
+  }
+
+  out <- atlas_view_gather(set_atlas_polygons(work, res$polygons))
+  if (was_sf) as_sf_atlas(out) else out
+}
+
+
+#' Validate the `threshold` argument of [atlas_view_select()]
+#' @noRd
+check_select_threshold <- function(threshold) {
+  if (
+    !rlang::is_scalar_double(threshold) && !rlang::is_scalar_integer(threshold)
+  ) {
+    cli::cli_abort("{.arg threshold} must be a single number.")
+  }
+  if (threshold < 0 || threshold > 1) {
+    cli::cli_abort("{.arg threshold} must be between 0 and 1.")
+  }
+  invisible(threshold)
+}
+
+
+#' Decide, per label and view, whether that label is drawn there
+#'
+#' Labels are compared within their `core$region`, so a bilateral structure's
+#' left and right sides are selected together rather than competing.
+#' @return Logical matrix, labels by views.
+#' @noRd
+view_selection_matrix <- function(atlas, flat, view_names, threshold, weights) {
+  areas <- polygon_geometry_areas(flat)
+
+  area_by_view <- tapply(areas$area, list(areas$label, areas$view), sum)
+  area_by_view <- area_by_view[, view_names, drop = FALSE]
+  area_by_view[is.na(area_by_view)] <- 0
+
+  weights <- view_hemisphere_weights(atlas, flat, view_names, weights)
+
+  region <- atlas$core$region[match(rownames(area_by_view), atlas$core$label)]
+  region[is.na(region)] <- rownames(area_by_view)[is.na(region)]
+
+  region_area <- rowsum(area_by_view, region)
+  region_area <- sweep(region_area, 2, weights, `*`)
+  region_keep <- region_area >= threshold * apply(region_area, 1, max)
+
+  keep <- region_keep[region, , drop = FALSE] & area_by_view > 0
+  dimnames(keep) <- dimnames(area_by_view)
+
+  # A region's chosen views can hold no geometry for one of its labels -- a
+  # sagittal plane is one-sided, so the other hemisphere's label would vanish
+  # entirely. Fall back to wherever that label is largest.
+  empty <- rowSums(keep) == 0
+  for (i in which(empty)) {
+    keep[i, which.max(area_by_view[i, ])] <- TRUE
+  }
+
+  keep
+}
+
+
+#' Drop each label from the views its selection matrix rules out
+#' @noRd
+apply_view_selection <- function(atlas, keep, view_names) {
+  for (label in rownames(keep)) {
+    drop_views <- view_names[!keep[label, ]]
+    if (length(drop_views)) {
+      atlas <- atlas_view_remove_region(
+        atlas,
+        paste0("^", label, "$"),
+        match_on = "label",
+        views = drop_views
+      )
+    }
+  }
+  atlas
 }

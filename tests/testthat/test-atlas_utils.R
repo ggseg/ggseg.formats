@@ -3,6 +3,7 @@ make_test_atlas <- function() {
     label = c("lh_frontal", "lh_parietal", "rh_frontal", "lh_unknown"),
     view = c("lateral", "lateral", "medial", "lateral"),
     geometry = sf::st_sfc(
+      # nolint next: object_usage_linter. Defined in helper-polygons.R.
       make_polygon(),
       sf::st_polygon(list(matrix(
         c(2, 2, 4, 2, 4, 4, 2, 2),
@@ -371,6 +372,7 @@ make_cerebellar_atlas <- function() {
     label = c("lobule_I", "dentate"),
     view = c("flatmap", "nuclei"),
     geometry = sf::st_sfc(
+      # nolint next: object_usage_linter. Defined in helper-polygons.R.
       make_polygon(),
       sf::st_polygon(list(matrix(
         c(2, 2, 4, 2, 4, 4, 2, 2),
@@ -2310,7 +2312,7 @@ describe("atlas_view_remove_small(scope = 'piece')", {
   it("drops the speck and keeps the main piece", {
     result <- atlas_view_remove_small(speck_atlas(), 10, scope = "piece")
     # 20x20 kept, 2x2 speck dropped
-    expect_equal(total_area(result), 400)
+    expect_identical(total_area(result), 400)
   })
 
   it("keeps the region present rather than removing it wholesale", {
@@ -2322,16 +2324,16 @@ describe("atlas_view_remove_small(scope = 'piece')", {
   it("never removes a region's largest piece, even below min_area", {
     # min_area far above everything: the biggest piece must still survive.
     result <- atlas_view_remove_small(speck_atlas(), 1e6, scope = "piece")
-    expect_equal(total_area(result), 400)
+    expect_identical(total_area(result), 400)
   })
 
   it("leaves geometry untouched when nothing is small enough", {
     result <- atlas_view_remove_small(speck_atlas(), 1, scope = "piece")
-    expect_equal(total_area(result), 404)
+    expect_identical(total_area(result), 404)
   })
 
   it("defaults to region scope", {
-    expect_equal(
+    expect_identical(
       atlas_view_remove_small(speck_atlas(), 10),
       atlas_view_remove_small(speck_atlas(), 10, scope = "region")
     )
