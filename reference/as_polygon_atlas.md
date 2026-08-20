@@ -40,8 +40,7 @@ the package in the polygon format.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 poly <- as_polygon_atlas(dk())
 is_atlas_polygon(poly) # TRUE
-} # }
+#> [1] TRUE
 ```

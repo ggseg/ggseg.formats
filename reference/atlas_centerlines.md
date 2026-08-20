@@ -1,31 +1,31 @@
-# Detect atlas type
+# Get atlas tract centerlines
 
-Detect atlas type
+Returns the centerline of each tract, joined with core region info and
+palette colours. Tract atlases represent each pathway as a curve through
+the bundle rather than as a surface, and render it by sweeping a tube
+along that curve, so the centerline — not a mesh — is the geometry that
+defines them.
 
 ## Usage
 
 ``` r
-atlas_type(x)
+atlas_centerlines(atlas)
 ```
 
 ## Arguments
 
-- x:
+- atlas:
 
-  brain atlas object
+  a ggseg_atlas object
 
 ## Value
 
-Character string: one of "cortical", "subcortical", "tract" or
-"cerebellar".
+data.frame with one row per tract, a `points` list-column of n x 3
+coordinate matrices and a matching `tangents` list-column
 
 ## See also
 
-[`set_atlas_type()`](https://ggsegverse.github.io/ggseg.formats/reference/set_atlas_type.md)
-to set the type.
-
 Other atlas accessors:
-[`atlas_centerlines()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_centerlines.md),
 [`atlas_geom()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geom.md),
 [`atlas_geometry_type()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geometry_type.md),
 [`atlas_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md),
@@ -34,16 +34,16 @@ Other atlas accessors:
 [`atlas_polygons()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_polygons.md),
 [`atlas_regions()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_regions.md),
 [`atlas_sf()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_sf.md),
+[`atlas_type()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_type.md),
 [`atlas_vertices()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_vertices.md),
 [`atlas_views()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_views.md)
 
 ## Examples
 
 ``` r
-atlas_type(dk())
-#> [1] "cortical"
-atlas_type(aseg())
-#> [1] "subcortical"
-atlas_type(tracula())
-#> [1] "tract"
+centerlines <- atlas_centerlines(tracula())
+nrow(centerlines)
+#> [1] 42
+dim(centerlines$points[[1]])
+#> [1] 100   3
 ```

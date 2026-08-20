@@ -9,7 +9,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggseg.formats</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.4.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.4.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,16 @@
 <span>  views <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">atlas_view_remove_small</span><span class="op">(</span><span class="va">atlas</span>, <span class="va">min_area</span>, views <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">atlas_view_remove_small</span><span class="op">(</span></span>
+<span>  <span class="va">atlas</span>,</span>
+<span>  <span class="va">min_area</span>,</span>
+<span>  views <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scope <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"region"</span>, <span class="st">"piece"</span><span class="op">)</span>,</span>
+<span>  labels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">atlas_view_select</span><span class="op">(</span><span class="va">atlas</span>, threshold <span class="op">=</span> <span class="fl">0.5</span>, weights <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">atlas_view_gather</span><span class="op">(</span><span class="va">atlas</span>, gap <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span></span>
 <span></span>
@@ -158,8 +167,35 @@ patterns. Multiple values collapsed with <code>"|"</code> for matching.</p></dd>
 
 
 <dt id="arg-min-area">min_area<a class="anchor" aria-label="anchor" href="#arg-min-area"></a></dt>
-<dd><p>For <code>atlas_view_remove_small()</code>: minimum polygon
-area to keep. Context geometries are never removed.</p></dd>
+<dd><p>For <code>atlas_view_remove_small()</code>: minimum area to keep.
+What it applies to depends on <code>scope</code>; with the default
+<code>scope = "region"</code> context geometries are never removed.</p></dd>
+
+
+<dt id="arg-scope">scope<a class="anchor" aria-label="anchor" href="#arg-scope"></a></dt>
+<dd><p>Whether <code>min_area</code> applies to a label's whole geometry in a
+view (<code>"region"</code>, the default) or to each disconnected piece
+(<code>"piece"</code>).</p></dd>
+
+
+<dt id="arg-labels-exclude">labels, exclude<a class="anchor" aria-label="anchor" href="#arg-labels-exclude"></a></dt>
+<dd><p>For <code>atlas_view_remove_small()</code>: optional regex
+scoping which labels are considered. <code>labels</code> restricts removal to
+matching labels, <code>exclude</code> spares them. Only one may be given. Useful
+with <code>scope = "piece"</code>, where a thin structure such as a cortical ribbon
+has legitimately small pieces that should not be treated as specks.</p></dd>
+
+
+<dt id="arg-threshold">threshold<a class="anchor" aria-label="anchor" href="#arg-threshold"></a></dt>
+<dd><p>For <code>atlas_view_select()</code>: minimum share, between 0 and 1,
+of a region's best-view area that a view must hold to keep drawing it.
+Higher values are more aggressive.</p></dd>
+
+
+<dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
+<dd><p>For <code>atlas_view_select()</code>: optional named numeric vector of
+per-view multipliers applied before comparing areas. Overrides the
+automatic hemisphere-coverage weighting for the views named.</p></dd>
 
 
 <dt id="arg-gap">gap<a class="anchor" aria-label="anchor" href="#arg-gap"></a></dt>
@@ -187,7 +223,9 @@ view order. Unspecified views appended at end.</p></dd>
 </ul><p><strong>View manipulation</strong> modifies the 2D sf geometry data:</p><ul><li><p><code>atlas_view_remove()</code>: remove entire views</p></li>
 <li><p><code>atlas_view_keep()</code>: keep only matching views</p></li>
 <li><p><code>atlas_view_remove_region()</code>: remove specific region geometry from sf</p></li>
-<li><p><code>atlas_view_remove_small()</code>: remove small polygon fragments</p></li>
+<li><p><code>atlas_view_remove_small()</code>: remove small regions, or stray specks</p></li>
+<li><p><code>atlas_view_select()</code>: keep each region only in the views that show it
+well</p></li>
 <li><p><code>atlas_view_gather()</code>: reposition views to close gaps</p></li>
 <li><p><code>atlas_view_reorder()</code>: change view order</p></li>
 </ul><p><strong>Core manipulation</strong> modifies atlas metadata:</p><ul><li><p><code>atlas_core_add()</code>: join additional metadata columns</p></li>
@@ -234,10 +272,34 @@ the layout stays tight.</p></li>
 <li><p><code>atlas_view_remove_region()</code>: Remove specific region geometry from sf
 data only. Core, palette, and 3D data are unchanged. Views are
 re-packed via <code>atlas_view_gather()</code> in case any view shrank.</p></li>
-<li><p><code>atlas_view_remove_small()</code>: Remove region geometries below a minimum
-area threshold. Context geometries (labels not in core) are never
-removed. Optionally scope to specific views. Views are re-packed
-via <code>atlas_view_gather()</code> in case any view shrank.</p></li>
+<li><p><code>atlas_view_remove_small()</code>: Remove geometry below a minimum area
+threshold. With <code>scope = "region"</code> (the default) a label's whole geometry
+in a view is removed when its combined area is too small, and context
+geometries (labels not in core) are never removed. With
+<code>scope = "piece"</code> individual disconnected pieces are removed while the
+rest of the region stays – use this to clear stray specks left by
+volumetric projection. A region's largest piece in a view is always kept,
+so no region disappears, and context is cleaned too. Optionally scope to
+specific views. Views are re-packed via <code>atlas_view_gather()</code> in case any
+view shrank.</p></li>
+<li><p><code>atlas_view_select()</code>: Keep each region only in the views that show
+it well.</p>
+<p>A slice or projection slab catches a structure in cross-section as readily
+as along its length, so most regions leave a sliver in most views. That
+leaves every panel cluttered and every region drawn several times over. A
+region is kept only where it is substantially represented: in any view
+holding at least <code>threshold</code> of the area it reaches in its best view.</p>
+<p>Regions are compared as a whole, across all the labels that share a
+<code>region</code> in <code>core</code>, so bilateral structures stay together – assigning
+left and right independently splits pairs across panels, which reads as
+an error rather than a choice. Every region is guaranteed to survive in
+at least one view, and context geometry (labels absent from <code>core</code>, such
+as a cortical outline) is never touched.</p>
+<p>Single-hemisphere views are the awkward case: a sagittal panel cuts one
+hemisphere while axial and coronal panels show both, so on raw area it
+loses every comparison and empties out. Such views are detected from the
+hemispheres actually present in each view and their areas scaled to
+match, so they compete fairly. Pass <code>weights</code> to override.</p></li>
 <li><p><code>atlas_view_gather()</code>: Reposition remaining views to close gaps
 after view removal.</p></li>
 <li><p><code>atlas_view_reorder()</code>: Reorder views and reposition. Views not

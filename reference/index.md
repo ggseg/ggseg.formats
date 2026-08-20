@@ -77,6 +77,8 @@ Convert old ggseg/ggseg3d atlases to the unified ggseg_atlas format.
 
 Query atlas contents without reaching into slots directly.
 
+- [`atlas_centerlines()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_centerlines.md)
+  : Get atlas tract centerlines
 - [`atlas_geom()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geom.md)
   : Get the raw 2D geometry of an atlas
 - [`atlas_geometry_type()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geometry_type.md)
@@ -97,6 +99,7 @@ Query atlas contents without reaching into slots directly.
   [`atlas_view_keep()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_view_remove_region()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_view_remove_small()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_select()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_view_gather()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_view_reorder()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   : Manipulate brain atlas regions and views
@@ -127,6 +130,8 @@ Replace atlas properties, returning a modified `ggseg_atlas`.
 
 - [`set_atlas_palette()`](https://ggsegverse.github.io/ggseg.formats/reference/set_atlas_palette.md)
   : Set the palette of an atlas
+- [`set_atlas_type()`](https://ggsegverse.github.io/ggseg.formats/reference/set_atlas_type.md)
+  : Set the type of an atlas
 
 ## Geometry representation (sf-optional)
 
@@ -161,6 +166,7 @@ enriching metadata. All return a new `ggseg_atlas`.
   [`atlas_view_keep()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_view_remove_region()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_view_remove_small()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
+  [`atlas_view_select()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_view_gather()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_view_reorder()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   : Manipulate brain atlas regions and views

@@ -23,6 +23,7 @@ Character vector of region names
 ## See also
 
 Other atlas accessors:
+[`atlas_centerlines()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_centerlines.md),
 [`atlas_geom()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geom.md),
 [`atlas_geometry_type()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geometry_type.md),
 [`atlas_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md),
@@ -35,6 +36,7 @@ Other atlas accessors:
 [`atlas_views()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_views.md)
 
 Other atlas accessors:
+[`atlas_centerlines()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_centerlines.md),
 [`atlas_geom()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geom.md),
 [`atlas_geometry_type()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geometry_type.md),
 [`atlas_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md),

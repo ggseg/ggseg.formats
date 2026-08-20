@@ -31,6 +31,9 @@ The `ggseg_atlas` with its palette replaced.
 [`atlas_palette()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_palette.md)
 to read the palette.
 
+Other atlas setters:
+[`set_atlas_type()`](https://ggsegverse.github.io/ggseg.formats/reference/set_atlas_type.md)
+
 ## Examples
 
 ``` r

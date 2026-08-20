@@ -34,6 +34,7 @@ rather than reaching into `atlas$data` directly.
 ## See also
 
 Other atlas accessors:
+[`atlas_centerlines()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_centerlines.md),
 [`atlas_geometry_type()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_geometry_type.md),
 [`atlas_labels()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_labels.md),
 [`atlas_meshes()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_meshes.md),
