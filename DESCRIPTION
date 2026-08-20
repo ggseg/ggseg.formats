@@ -33,6 +33,14 @@ Suggests:
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/Needs/website: ggsegverse/ggseg.docs
+Config/Needs/lint:
+    dplyr,
+    ggplot2,
+    hexSticker
+Config/Needs/gp:
+    dplyr,
+    ggplot2,
+    hexSticker
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
