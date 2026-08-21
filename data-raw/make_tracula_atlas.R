@@ -1,11 +1,24 @@
-# Create TRACULA (TRActs Constrained by UnderLying Anatomy) Atlas
+# Create the TRACULA white-matter tract atlas for the ggseg ecosystem
 #
-# Generates a tract atlas from FreeSurfer's TRACULA training data in MNI space.
-# This provides major white matter bundles for 2D and 3D visualization.
+# TRACULA (TRActs Constrained by UnderLying Anatomy) ships 42 major bundles as
+# tractography streamlines in MNI space. Each is reduced to a mean centerline
+# and built into a proper tract atlas (type = "tract") with
+# create_tract_from_tractography(): a 3D tube per tract, and a 2D projection
+# over the grey anatomical silhouette that input_aseg supplies.
 #
-# Requirements:
-#   - FreeSurfer installed with trctrain data
-#   - ggseg.extra package
+# The streamlines and the aparc+aseg reference are distributed together in the
+# same trctrain directory and so already share a space; no registration step is
+# needed, unlike the volumetric tract atlases.
+#
+# Source: FreeSurfer trctrain data, distributed with FreeSurfer in
+#   $FREESURFER_HOME/trctrain/
+#   (https://surfer.nmr.mgh.harvard.edu/fswiki/Tracula).
+# Reference: Yendiki A, et al. (2011). "Automated probabilistic reconstruction
+#   of white-matter pathways in health and disease using an atlas of the
+#   underlying anatomy." Frontiers in Neuroinformatics, 5:23.
+#   <doi:10.3389/fninf.2011.00023>
+#
+# Requires: ggseg.extra, RNifti, FreeSurfer 7.4.1 with trctrain data.
 #
 # Run with: source("data-raw/make_tracula_atlas.R")
 #
@@ -54,9 +67,18 @@ if (!file.exists(aseg_file)) {
 # branches and the callosal body, the middle one the thalamic radiations and
 # the forceps, the inferior one the uncinate, ILF and extreme capsule; the
 # coronal cut catches the corticospinal tract and fornix at the internal
-# capsule; the midline sagittal cut carries all eight callosal segments plus
-# the anterior commissure and MCP, and the two lateral sagittal cuts slice the
-# association bundles along their length rather than across it.
+# capsule; and the sagittal cut sits lateral enough to slice the association
+# bundles along their length rather than across it.
+#
+# One sagittal cut, not three. A midline cut looks like the obvious home for
+# the eight callosal segments, but it is the one plane where they cannot win:
+# a midline slab holds their thin arch cross-section, while mid_axial catches
+# the forceps fanning out laterally and covers several times the area. So the
+# segments are drawn axially and the midline panel comes out near-empty
+# whatever its width. Mirroring the lateral cut adds nothing either -- a
+# left/right pair of sagittal panels shows the same bundles twice, since
+# atlas_view_select() keeps bilateral regions together rather than splitting
+# them across panels.
 slab_halfwidth <- 8L
 slice_mm <- data.frame(
   name = c(
@@ -64,12 +86,10 @@ slice_mm <- data.frame(
     "mid_axial",
     "inferior_axial",
     "coronal",
-    "sagittal_left",
-    "sagittal_mid",
-    "sagittal_right"
+    "sagittal"
   ),
-  type = c("axial", "axial", "axial", "coronal", rep("sagittal", 3)),
-  mm = c(34, 10, -16, -20, -36, 0, 36),
+  type = c("axial", "axial", "axial", "coronal", "sagittal"),
+  mm = c(34, 10, -16, -20, -36),
   stringsAsFactors = FALSE
 )
 
@@ -106,7 +126,8 @@ tract_slabs <- data.frame(
 )
 print(tract_slabs)
 
-cli::cli_h1("Creating TRACULA tract atlas")
+# ── Fit a centerline per tract and build the tract atlas ─────────────────
+cli::cli_h1("Fitting tract centerlines")
 
 # Everything from the projection step onward is slab-dependent. Step 1 is not,
 # and is by far the slowest part, so it survives a rebuild.
@@ -135,6 +156,14 @@ tracula_raw <- create_tract_from_tractography(
   verbose = TRUE
 )
 
+stopifnot(
+  "tracula must be a tract atlas" = is_tract_atlas(tracula_raw)
+)
+
+# ── Name and group the tracts ────────────────────────────────────────────
+# The pipeline derives hemi and region mechanically from the .trk filenames.
+# tracula_metadata.R carries the spelled-out names and the anatomical grouping
+# those filenames cannot supply.
 cli::cli_h2("Post-processing atlas")
 
 core_with_meta <- tracula_raw$core |>
@@ -168,14 +197,18 @@ saveRDS(tracula, file.path("data-raw", "tracula_unsmoothed.rds"))
 # simplify: smoothing interpolates vertices, so simplifying first would just
 # have its saving undone.
 #
+# Projection leaves stray specks detached from their tract; those are dropped
+# first, since smoothing them would only make them tidier. The cortex is
+# spared: a thin ribbon's gyral cross-sections are legitimately small pieces,
+# not specks, and removing them strips its detail.
+#
 # The two structures want different smoothing. Tracts are solid centerline
 # tubes with no holes to lose, so morphological closing rounds them freely.
 # The cortex is a thin ribbon whose sulci are enclosed holes, and closing
 # fills any hole narrower than the smoothing distance -- so it gets
-# "ksmooth", which low-pass filters the outline without dilating it.
-# Volumetric projection leaves stray specks detached from their tract; those
-# are dropped first. The cortex is spared: a thin ribbon's gyral
-# cross-sections are legitimately small pieces, not specks.
+# "ksmooth", which low-pass filters the outline without dilating it. Chaikin
+# also preserves holes but converges after two refinements, so it cannot be
+# pushed as far.
 cli::cli_alert_info("Cleaning up geometries")
 
 tracula <- tracula |>
@@ -200,7 +233,7 @@ tracula <- tracula |>
   atlas_smooth(keep = 0.2, exclude = "^cortex")
 
 # The cortex silhouette carries ~90% of the atlas's vertices -- it is a
-# convoluted ribbon drawn across seven views, against 42 smooth tubes -- so its
+# convoluted ribbon drawn across every view, against 42 smooth tubes -- so its
 # `keep` sets the shipped size almost single-handedly. 0.2 is where the gyral
 # detail stops changing visibly: it is indistinguishable from 0.4 at any
 # plotting size while halving the atlas, and unlike 0.1 it still holds up
@@ -209,9 +242,18 @@ tracula <- tracula |>
 # ── Choose which tracts each view draws ──────────────────────────────────
 # A slab catches a passing tract in cross-section as readily as along its
 # length, so most tracts leave a sliver in most views -- which leaves every
-# panel cluttered and every tract drawn several times over. This replaces the
-# hand-curated per-view removals earlier releases carried.
-tracula <- atlas_view_select(tracula, threshold = 0.3)
+# panel cluttered and every tract drawn several times over. A tract is kept
+# only where it is substantially represented: in any view holding at least
+# `threshold` of the area it reaches in its best view.
+#
+# This replaces the hand-curated per-view removals earlier releases carried:
+# nine region/view pairs named one at a time, tuned against a single build and
+# silently wrong after any reslice. atlas_view_select() compares per region
+# rather than per label, so left and right stay together -- splitting a pair
+# across panels reads as an error rather than a choice -- and weights
+# single-hemisphere views so a sagittal panel is not beaten on raw area by the
+# axial and coronal panels that show both hemispheres.
+tracula <- atlas_view_select(tracula, threshold = 0.7)
 
 # Ordering repositions the panels, so it runs last: atlas_view_select() drops
 # regions from views and changes each panel's extent, and packing against the
@@ -221,17 +263,14 @@ tracula <- atlas_view_reorder(tracula, slice_mm$name)
 
 plot(tracula)
 
-cli::cli_alert_success("TRACULA atlas created with {nrow(tracula$core)} tracts")
+cli::cli_alert_success("tracula: {nrow(tracula$core)} tracts")
 print(tracula)
-
-cat("\nCore sample:\n")
-print(head(tracula$core, 10))
 
 cat("\nGroup distribution:\n")
 print(table(tracula$core$group, useNA = "ifany"))
 
-cat("\nViews:\n")
-print(atlas_views(tracula))
-
+# ── Save ─────────────────────────────────────────────────────────────────
+# make_sysdata.R folds data/tracula.rda into R/sysdata.rda, where the bundled
+# atlases live, and clears data/ afterwards.
 usethis::use_data(tracula, overwrite = TRUE, compress = "xz")
 cli::cli_alert_success("Saved to data/tracula.rda")
