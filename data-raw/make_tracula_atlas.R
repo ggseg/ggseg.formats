@@ -62,23 +62,31 @@ if (!file.exists(aseg_file)) {
 # ── Projection slabs at fixed anatomical positions ───────────────────────
 # Slice positions are given in RAS millimetres so they are anatomically
 # meaningful and independent of the template's voxel grid, and each slab spans
-# +/- slab_halfwidth slices around its midpoint. Positions were chosen from
-# where the 42 tracts actually are: the superior axial cut crosses the SLF
+# +/- slab_halfwidth slices around its midpoint.
+#
+# These are ggsegAtlasTrack's positions, unchanged. Both atlases are drawing
+# the same thing -- major white-matter bundles over a whole-brain silhouette --
+# and the cuts that work there work here: the superior axial crosses the SLF
 # branches and the callosal body, the middle one the thalamic radiations and
 # the forceps, the inferior one the uncinate, ILF and extreme capsule; the
-# coronal cut catches the corticospinal tract and fornix at the internal
-# capsule; and the sagittal cut sits lateral enough to slice the association
-# bundles along their length rather than across it.
+# coronal catches the corticospinal tract and fornix at the internal capsule;
+# and the sagittal sits just off midline, near enough to carry the callosal
+# arch and cingulum but still cutting the association bundles along their
+# length rather than across it.
 #
-# One sagittal cut, not three. A midline cut looks like the obvious home for
-# the eight callosal segments, but it is the one plane where they cannot win:
-# a midline slab holds their thin arch cross-section, while mid_axial catches
-# the forceps fanning out laterally and covers several times the area. So the
-# segments are drawn axially and the midline panel comes out near-empty
-# whatever its width. Mirroring the lateral cut adds nothing either -- a
-# left/right pair of sagittal panels shows the same bundles twice, since
-# atlas_view_select() keeps bilateral regions together rather than splitting
-# them across panels.
+# One sagittal cut, not three, and it must not sit on the midline. A midline
+# cut looks like the obvious home for the eight callosal segments, but it is
+# the one plane where they cannot win: it holds their thin arch cross-section,
+# while mid_axial catches the forceps fanning out laterally and covers several
+# times the area. Cut at x = 0 the panel came out with two regions in it, and
+# narrowing the slab so it reads as a single-hemisphere view and earns
+# atlas_view_select()'s weighting did not rescue it. At -12 mm it is off
+# midline enough to be a bundle plane in its own right -- cingulum, fornix and
+# the association bundles along their length -- while still crossing the
+# callosal body, and it ends up among the best-populated panels. Mirroring it
+# adds nothing: a left/right pair of sagittal panels draws the same bundles
+# twice, since atlas_view_select() keeps bilateral regions together rather
+# than splitting them across panels.
 slab_halfwidth <- 8L
 slice_mm <- data.frame(
   name = c(
@@ -89,7 +97,7 @@ slice_mm <- data.frame(
     "sagittal"
   ),
   type = c("axial", "axial", "axial", "coronal", "sagittal"),
-  mm = c(34, 10, -16, -20, -36),
+  mm = c(17, 2, -11, -17, -12),
   stringsAsFactors = FALSE
 )
 
