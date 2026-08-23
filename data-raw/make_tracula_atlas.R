@@ -59,6 +59,35 @@ if (!file.exists(aseg_file)) {
   ))
 }
 
+# ── Tract colour table ───────────────────────────────────────────────────
+# FreeSurfer gives the TRACULA pathways their own colours in
+# FreeSurferColorLUT.txt, at ids 5100-5399, so there is nothing here to
+# invent: these are the colours the same bundles are drawn in by freeview and
+# throughout the FreeSurfer documentation, and matching them is worth more
+# than any palette we could generate.
+#
+# The scheme already pairs bilaterally -- lh.af and rh.af are both
+# 153 255 255 -- which is the right call, since the two sides of a bundle are
+# the same anatomy. It also gives the callosal segments only four colours
+# between the eight of them (cc.genu shares with cc.bodyp, cc.rostrum with
+# cc.splenium, and so on). That loses a distinction, but they are adjacent
+# parts of one structure and FreeSurfer's own rendering has the same
+# collisions, so consistency wins.
+#
+# Colours are matched to tracts by position, so the table is ordered to match
+# tract_files. The match is asserted rather than assumed: an unmatched tract
+# would otherwise fall back to a generated colour without saying so.
+lut_all <- read_lut(file.path(fs_dir, "FreeSurferColorLUT.txt"))
+tract_keys <- sub("\\.bbr\\.prep\\.trk$", "", basename(tract_files))
+tract_lut <- lut_all[match(tract_keys, lut_all$label), ]
+stopifnot(
+  "every TRACULA tract must have a FreeSurfer LUT entry" = !anyNA(tract_lut$idx)
+)
+cli::cli_alert_info(
+  "Tracts: {nrow(tract_lut)} in {length(unique(tract_lut$idx))} LUT entries, \\
+   {length(unique(paste(tract_lut$R, tract_lut$G, tract_lut$B)))} colours"
+)
+
 # ── Projection slabs at fixed anatomical positions ───────────────────────
 # Slice positions are given in RAS millimetres so they are anatomically
 # meaningful and independent of the template's voxel grid, and each slab spans
@@ -153,6 +182,7 @@ if (rebuild) {
 tracula_raw <- create_tract_from_tractography(
   input_tracts = tract_files,
   input_aseg = aseg_file,
+  input_lut = tract_lut,
   atlas_name = "tracula",
   output_dir = "data-raw",
   slabs = tract_slabs,

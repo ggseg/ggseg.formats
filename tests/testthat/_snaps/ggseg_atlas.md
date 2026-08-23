@@ -115,17 +115,17 @@
       v ggseg3d (centerlines)
       --------------------------------------------------------------------------------
     Output
-            hemi      region                label                           names
-      1  midline       acomm       acomm.bbr.prep             anterior commissure
-      2  midline    cc bodyc    cc.bodyc.bbr.prep    corpus callosum body central
-      3  midline    cc bodyp    cc.bodyp.bbr.prep   corpus callosum body parietal
-      4  midline   cc bodypf   cc.bodypf.bbr.prep corpus callosum body prefrontal
-      5  midline   cc bodypm   cc.bodypm.bbr.prep   corpus callosum body premotor
-      6  midline    cc bodyt    cc.bodyt.bbr.prep   corpus callosum body temporal
-      7  midline     cc genu     cc.genu.bbr.prep            corpus callosum genu
-      8  midline  cc rostrum  cc.rostrum.bbr.prep         corpus callosum rostrum
-      9  midline cc splenium cc.splenium.bbr.prep        corpus callosum splenium
-      10    left          af       lh.af.bbr.prep              arcuate fasciculus
+            hemi      region       label                           names
+      1  midline       acomm       acomm             anterior commissure
+      2  midline    cc bodyc    cc.bodyc    corpus callosum body central
+      3  midline    cc bodyp    cc.bodyp   corpus callosum body parietal
+      4  midline   cc bodypf   cc.bodypf corpus callosum body prefrontal
+      5  midline   cc bodypm   cc.bodypm   corpus callosum body premotor
+      6  midline    cc bodyt    cc.bodyt   corpus callosum body temporal
+      7  midline     cc genu     cc.genu            corpus callosum genu
+      8  midline  cc rostrum  cc.rostrum         corpus callosum rostrum
+      9  midline cc splenium cc.splenium        corpus callosum splenium
+      10    left          af       lh.af              arcuate fasciculus
                    group
       1       commissure
       2  corpus callosum
