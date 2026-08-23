@@ -304,4 +304,30 @@ describe("resolve_fill_colors", {
       resolve_fill_colors(c("a", "b", "c"), NULL)
     )
   })
+
+  it("greys context even when the palette colours it", {
+    cols <- resolve_fill_colors(
+      c("a", "cortex_"),
+      c(a = "#FF0000", cortex_ = "#00FF00"),
+      core_labels = "a"
+    )
+    expect_identical(unname(cols["cortex_"]), "#CCCCCC")
+    expect_identical(unname(cols[["a"]]), "#FF0000")
+  })
+
+  it("greys context when there is no palette to spread", {
+    cols <- resolve_fill_colors(
+      c("a", "b", "cortex_"),
+      NULL,
+      core_labels = c("a", "b")
+    )
+    expect_identical(unname(cols["cortex_"]), "#CCCCCC")
+    # The two regions still get distinct generated colours.
+    expect_length(unique(cols[c("a", "b")]), 2L)
+  })
+
+  it("treats every label as a region when core is unknown", {
+    cols <- resolve_fill_colors(c("a", "b"), NULL)
+    expect_false(any(cols == "#CCCCCC"))
+  })
 })
