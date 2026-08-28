@@ -55,6 +55,6 @@ atlas_views(aseg())
 #> [1] "axial_3"   "axial_4"   "axial_5"   "axial_6"   "coronal_1" "coronal_2"
 #> [7] "sagittal" 
 atlas_views(tracula())
-#> [1] "axial_2"          "axial_4"          "coronal_3"        "coronal_4"       
-#> [5] "sagittal_midline" "sagittal_left"    "sagittal_right"  
+#> [1] "coronal"        "inferior_axial" "mid_axial"      "sagittal"      
+#> [5] "superior_axial"
 ```
