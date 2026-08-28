@@ -8,6 +8,7 @@ data-raw/*.png
 data-raw/*.html
 data-raw/aseg/
 data-raw/tracula/
+data-raw/tracula_unsmoothed.rds
 data-raw/dk/
 /doc/
 /Meta/

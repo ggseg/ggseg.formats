@@ -36,18 +36,5 @@ Other atlas accessors:
 \code{\link{atlas_type}()},
 \code{\link{atlas_vertices}()},
 \code{\link{atlas_views}()}
-
-Other atlas accessors: 
-\code{\link{atlas_centerlines}()},
-\code{\link{atlas_geom}()},
-\code{\link{atlas_geometry_type}()},
-\code{\link{atlas_labels}()},
-\code{\link{atlas_meshes}()},
-\code{\link{atlas_palette}()},
-\code{\link{atlas_polygons}()},
-\code{\link{atlas_sf}()},
-\code{\link{atlas_type}()},
-\code{\link{atlas_vertices}()},
-\code{\link{atlas_views}()}
 }
 \concept{atlas accessors}

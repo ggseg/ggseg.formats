@@ -205,7 +205,7 @@ as.data.frame.ggseg_atlas <- function(x, ...) {
 plot.ggseg_atlas <- function(x, ...) {
   flat <- polygons_unnest(atlas_polygons(x))
   flat <- order_context_behind(flat, x$core$label)
-  fill_colors <- resolve_fill_colors(flat$label, x$palette)
+  fill_colors <- resolve_fill_colors(flat$label, x$palette, x$core$label)
   dots <- list(...)
 
   # One panel per spatially separate piece, arranged in a near-square grid so
@@ -410,29 +410,43 @@ infer_cortical_hemi <- function(result) {
 #' `hcl()` colours are generated across the label set. Pure and deterministic
 #' so the colour logic can be tested without a graphics device.
 #'
+#' Contextual geometry is always grey. A label absent from `core` is anatomical
+#' backdrop -- the cortical outline a slice is drawn over -- rather than a
+#' region of the atlas, and that is a property of the geometry, not of the
+#' palette. Atlas creation returns no palette when it was given no colours, so
+#' without this the generated colours would be spread across the backdrop too
+#' and it would compete with the regions it sits behind.
+#'
 #' @param labels Character vector of region labels (deduplicated internally).
 #' @param palette Optional named character vector of colours keyed by label.
+#' @param core_labels Labels that are atlas regions. Any other label is drawn
+#'   as context. Defaults to treating every label as a region.
 #' @return Named character vector of colours, one per unique label.
 #' @noRd
 #' @keywords internal
-resolve_fill_colors <- function(labels, palette = NULL) {
+resolve_fill_colors <- function(labels, palette = NULL, core_labels = NULL) {
   labels <- unique(labels)
+  is_context <- if (is.null(core_labels)) {
+    rep(FALSE, length(labels))
+  } else {
+    !labels %in% core_labels
+  }
 
   if (!is.null(palette)) {
     vals <- palette[labels]
-    matched <- !is.na(vals)
+    matched <- !is.na(vals) & !is_context
     return(stats::setNames(ifelse(matched, vals, "#CCCCCC"), labels))
   }
 
-  n <- length(labels)
-  stats::setNames(
-    grDevices::hcl(
-      h = seq(0, 360, length.out = n + 1L)[seq_len(n)],
-      c = 80,
-      l = 65
-    ),
-    labels
+  region <- labels[!is_context]
+  n <- length(region)
+  cols <- stats::setNames(rep("#CCCCCC", length(labels)), labels)
+  cols[region] <- grDevices::hcl(
+    h = seq(0, 360, length.out = n + 1L)[seq_len(n)],
+    c = 80,
+    l = 65
   )
+  cols
 }
 
 #' Draw a single atlas polygon piece on the current device

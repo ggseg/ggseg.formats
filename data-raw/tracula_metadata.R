@@ -1,62 +1,64 @@
 # TRACULA tract metadata
 #
-# One row per raw FreeSurfer TRACULA tract label. `label` is the untouched atlas
-# identifier; `hemi` and `region` are derived mechanically from it (the lh./rh.
-# prefix becomes `hemi`, the remainder with the .bbr.prep suffix stripped and
-# dots spaced becomes `region`); `names` is the fully spelled-out label; `group`
-# classifies tracts.
+# One row per FreeSurfer TRACULA tract. `label` is the atlas identifier, which
+# is the name FreeSurferColorLUT.txt gives the pathway (ids 5100-5399) -- the
+# streamline files carry a trailing .bbr.prep, but that names a processing step
+# rather than the tract, and the LUT is what the atlas is keyed on. `hemi` and
+# `region` are derived mechanically from the label (the lh./rh. prefix becomes
+# `hemi`, the remainder with dots spaced becomes `region`); `names` is the fully
+# spelled-out label; `group` classifies tracts.
 #
 # Based on: https://surfer.nmr.mgh.harvard.edu/fswiki/Tracula
 
 tracula_metadata <- data.frame(
   label = c(
     # Corpus callosum segments
-    "cc.rostrum.bbr.prep",
-    "cc.genu.bbr.prep",
-    "cc.bodyc.bbr.prep",
-    "cc.bodypf.bbr.prep",
-    "cc.bodypm.bbr.prep",
-    "cc.bodyp.bbr.prep",
-    "cc.bodyt.bbr.prep",
-    "cc.splenium.bbr.prep",
+    "cc.rostrum",
+    "cc.genu",
+    "cc.bodyc",
+    "cc.bodypf",
+    "cc.bodypm",
+    "cc.bodyp",
+    "cc.bodyt",
+    "cc.splenium",
     # Anterior commissure
-    "acomm.bbr.prep",
+    "acomm",
     # Middle cerebellar peduncle
-    "mcp.bbr.prep",
+    "mcp",
     # Left hemisphere tracts
-    "lh.cst.bbr.prep",
-    "lh.af.bbr.prep",
-    "lh.ar.bbr.prep",
-    "lh.atr.bbr.prep",
-    "lh.cbd.bbr.prep",
-    "lh.cbv.bbr.prep",
-    "lh.emc.bbr.prep",
-    "lh.fat.bbr.prep",
-    "lh.fx.bbr.prep",
-    "lh.ilf.bbr.prep",
-    "lh.mlf.bbr.prep",
-    "lh.or.bbr.prep",
-    "lh.slf1.bbr.prep",
-    "lh.slf2.bbr.prep",
-    "lh.slf3.bbr.prep",
-    "lh.uf.bbr.prep",
+    "lh.cst",
+    "lh.af",
+    "lh.ar",
+    "lh.atr",
+    "lh.cbd",
+    "lh.cbv",
+    "lh.emc",
+    "lh.fat",
+    "lh.fx",
+    "lh.ilf",
+    "lh.mlf",
+    "lh.or",
+    "lh.slf1",
+    "lh.slf2",
+    "lh.slf3",
+    "lh.uf",
     # Right hemisphere tracts
-    "rh.cst.bbr.prep",
-    "rh.af.bbr.prep",
-    "rh.ar.bbr.prep",
-    "rh.atr.bbr.prep",
-    "rh.cbd.bbr.prep",
-    "rh.cbv.bbr.prep",
-    "rh.emc.bbr.prep",
-    "rh.fat.bbr.prep",
-    "rh.fx.bbr.prep",
-    "rh.ilf.bbr.prep",
-    "rh.mlf.bbr.prep",
-    "rh.or.bbr.prep",
-    "rh.slf1.bbr.prep",
-    "rh.slf2.bbr.prep",
-    "rh.slf3.bbr.prep",
-    "rh.uf.bbr.prep"
+    "rh.cst",
+    "rh.af",
+    "rh.ar",
+    "rh.atr",
+    "rh.cbd",
+    "rh.cbv",
+    "rh.emc",
+    "rh.fat",
+    "rh.fx",
+    "rh.ilf",
+    "rh.mlf",
+    "rh.or",
+    "rh.slf1",
+    "rh.slf2",
+    "rh.slf3",
+    "rh.uf"
   ),
   names = c(
     # CC segments
