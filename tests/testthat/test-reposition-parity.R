@@ -63,6 +63,29 @@ describe("gather/reorder layout is representation-independent", {
     )
   })
 
+  # Row order matters as much as coordinates: geom_brain() lays panels out in
+  # the order it meets the views, so geometry that moves without its rows
+  # moving leaves the plot unchanged.
+  view_row_order <- function(atlas) {
+    unique(polygons_unnest(atlas_polygons(atlas))$view)
+  }
+
+  it("reorder puts the rows in the requested order, both reps agree", {
+    order <- c("medial", "lateral")
+    expect_identical(view_row_order(atlas_view_reorder(sf_atlas, order)), order)
+    expect_identical(
+      view_row_order(atlas_view_reorder(poly_atlas, order)),
+      order
+    )
+  })
+
+  it("gather puts the rows in layout order, both reps agree", {
+    expect_identical(
+      view_row_order(atlas_view_gather(sf_atlas)),
+      view_row_order(atlas_view_gather(poly_atlas))
+    )
+  })
+
   it("gather orders groups left-to-right by centroid, both reps agree", {
     layout_order <- function(atlas) {
       xr <- group_xranges(atlas_view_gather(atlas))

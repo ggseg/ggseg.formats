@@ -2,6 +2,16 @@
 
 ## ggseg.formats 0.0.4.9004 (development)
 
+- `atlas_view_reorder()` now reorders the geometry rows as well as
+  repositioning them, so the new order actually shows up in a plot.
+  Consumers read view order off the row order - `ggseg::geom_brain()` lays
+  panels out in the order it meets the views - so moving the coordinates
+  without moving the rows left the plot unchanged. The sf branch always
+  rebuilt its rows group by group; the pure-R polygon branch, which every
+  bundled atlas has used since the sf-optional migration, did not. The
+  reposition parity tests compared coordinates only, which is how it went
+  unnoticed; they now compare row order too.
+
 - New `atlas_centerlines()` accessor returns a tract atlas's centerlines,
   joined with core region info and palette colours, like `atlas_meshes()` and
   `atlas_vertices()` do for the other geometry types. A tract atlas represents
