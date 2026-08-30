@@ -324,7 +324,14 @@ reposition_flat <- function(flat, type = NULL, gap = 0.15, group_order = NULL) {
   flat$x <- flat$x + x_offset[gk]
   flat$y <- flat$y + max_height
 
-  flat
+  # Rows follow the group order too, not just the coordinates. Consumers read
+  # view order off the row order -- ggseg::geom_brain() lays the panels out in
+  # the order it meets them -- so leaving the rows alone made
+  # atlas_view_reorder() move the geometry without moving the panels. The sf
+  # branch has always rebuilt its rows group by group; this is the pure-R
+  # branch catching up. order() on a factor is stable, so the structure order
+  # within a view is untouched.
+  flat[order(gk), , drop = FALSE]
 }
 
 
