@@ -208,6 +208,8 @@ Query atlas contents without reaching into slots directly.
   : Extract unique region names from an atlas
 - [`atlas_sf()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_sf.md)
   : Get atlas data for 2D rendering
+- [`atlas_structure_reorder()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_structure_reorder.md)
+  : Reorder the structures of an atlas
 - [`atlas_type()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_type.md)
   : Detect atlas type
 - [`atlas_vertices()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_vertices.md)
@@ -264,6 +266,8 @@ enriching metadata. All return a new `ggseg_atlas`.
   [`atlas_view_gather()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   [`atlas_view_reorder()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_manipulation.md)
   : Manipulate brain atlas regions and views
+- [`atlas_structure_reorder()`](https://ggsegverse.github.io/ggseg.formats/reference/atlas_structure_reorder.md)
+  : Reorder the structures of an atlas
 
 ## Bundled atlases
 
