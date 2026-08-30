@@ -263,4 +263,44 @@ dk() |>
   atlas_region_keep("frontal", match_on = "region")
 
 }
+\seealso{
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+
+Other atlas manipulations: 
+\code{\link{atlas_structure_reorder}()}
+}
 \concept{atlas manipulations}
