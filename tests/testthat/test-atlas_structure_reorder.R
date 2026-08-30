@@ -62,6 +62,49 @@ describe("atlas_structure_reorder()", {
     expect_setequal(drawn(out), drawn(a))
   })
 
+  it("moves every row a structure owns, when views are not gathered", {
+    # Ungathered geometry holds a row per structure and view, so a label can
+    # own several rows and all of them have to travel together.
+    geom <- sf::st_sf(
+      label = c("a", "b", "a", "b"),
+      view = c("lateral", "lateral", "medial", "medial"),
+      geometry = sf::st_sfc(
+        sf::st_point(c(0, 0)),
+        sf::st_point(c(1, 0)),
+        sf::st_point(c(0, 1)),
+        sf::st_point(c(1, 1))
+      )
+    )
+    atlas <- ggseg_atlas(
+      atlas = "demo",
+      type = "cortical",
+      palette = c(a = "#f00", b = "#00f"),
+      core = data.frame(
+        hemi = c("left", "left"),
+        region = c("a", "b"),
+        label = c("a", "b")
+      ),
+      data = ggseg_data_cortical(geom = geom, vertices = NULL)
+    )
+
+    out <- atlas_structure_reorder(atlas, "a", .after = "b")
+
+    expect_identical(atlas_geom(out)$label, c("b", "b", "a", "a"))
+    expect_identical(
+      atlas_geom(out)$view,
+      c("lateral", "medial", "lateral", "medial")
+    )
+  })
+
+  it("errors when a structure has no geometry", {
+    a <- aseg()
+    ghost <- a$core[1, ]
+    ghost$label <- "ghost"
+    ghost$region <- "ghost"
+    a$core <- rbind(a$core, ghost)
+    expect_snapshot(atlas_structure_reorder(a, "ghost"), error = TRUE)
+  })
+
   it("errors on an unknown structure", {
     expect_snapshot(
       atlas_structure_reorder(aseg(), "notastructure"),

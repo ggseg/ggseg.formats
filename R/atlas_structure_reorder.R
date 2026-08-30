@@ -68,8 +68,13 @@ atlas_structure_reorder <- function(
   drawn <- geom$label
   move <- resolve_structures(atlas, structures, match_on, drawn, "structures")
 
-  idx <- match(move, drawn)
-  rest <- setdiff(seq_along(drawn), idx)
+  # A label can own more than one row: geometry that has not been gathered
+  # holds a row per structure and view. Move every row a structure owns, in
+  # the order the structures were named, and keep each structure's own rows in
+  # the order they were in.
+  is_move <- drawn %in% move
+  idx <- which(is_move)[order(match(drawn[is_move], move))]
+  rest <- which(!is_move)
 
   anchor <- if (is.null(.before)) .after else .before
   if (is.null(anchor)) {
@@ -89,11 +94,12 @@ atlas_structure_reorder <- function(
         "i" = "It matched {.val {anchor_label}}."
       ))
     }
-    at <- match(anchor_label, drawn[rest])
-    if (is.na(at)) {
+    at <- which(drawn[rest] == anchor_label)
+    if (!length(at)) {
       cli::cli_abort("Cannot move a structure next to itself.")
     }
-    after <- if (is.null(.before)) at else at - 1L
+    # Land outside every row the anchor owns, not just its first.
+    after <- if (is.null(.before)) max(at) else min(at) - 1L
     new_order <- append(rest, idx, after = after)
   }
 
@@ -133,11 +139,19 @@ resolve_structures <- function(atlas, structures, match_on, drawn, arg) {
   resolved <- unique(resolved)
 
   named <- structures %in% atlas$core[[match_on]] | structures %in% drawn
-  if (any(!named)) {
+  if (!all(named)) {
     cli::cli_abort(c(
       "{.arg {arg}} names {cli::qty(sum(!named))}{?a structure/structures}
        not in this atlas.",
       "x" = "Unknown: {.val {structures[!named]}}."
+    ))
+  }
+
+  if (!length(resolved)) {
+    cli::cli_abort(c(
+      "{.arg {arg}} names nothing that this atlas draws.",
+      "i" = "{.val {structures}} {?is/are} in {.field core} but {?has/have} no
+             geometry."
     ))
   }
 

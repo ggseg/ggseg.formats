@@ -1,3 +1,12 @@
+# atlas_structure_reorder() / errors when a structure has no geometry
+
+    Code
+      atlas_structure_reorder(a, "ghost")
+    Condition
+      Error in `resolve_structures()`:
+      ! `structures` names nothing that this atlas draws.
+      i "ghost" is in core but has no geometry.
+
 # atlas_structure_reorder() / errors on an unknown structure
 
     Code
