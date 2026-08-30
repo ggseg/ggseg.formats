@@ -2,6 +2,16 @@
 
 ## ggseg.formats 0.0.4.9004 (development)
 
+- New `atlas_structure_reorder()` moves structures within an atlas's geometry
+  the way `dplyr::relocate()` moves columns, with `.before` and `.after`
+  anchors. Geometry rows are drawn in the order they appear, so this is what
+  decides which structure is painted over which where two overlap - common in
+  subcortical atlases, where a thick slab flattens structures onto one panel
+  that never touch in the brain. Note that the order belongs to the structure
+  rather than to a view: an atlas holds one geometry row per structure with
+  its views nested inside, so a structure keeps the same depth everywhere it
+  is drawn.
+
 - `atlas_view_reorder()` now reorders the geometry rows as well as
   repositioning them, so the new order actually shows up in a plot.
   Consumers read view order off the row order - `ggseg::geom_brain()` lays
